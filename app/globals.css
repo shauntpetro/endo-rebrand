@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+:root {
+  /* Core Brand Colors - Swiss & Premium */
+  --gold-primary: #D4AF37; /* Metallic Gold */
+  --gold-light: #F3E5AB;
+  --gold-dark: #AA8C2C;
+
+  --black-primary: #050505; /* Deepest Black */
+  --black-soft: #1F1F1F;
+  
+  --cream-primary: #FAFAFA; /* Clean White-ish */
+  --plum-primary: #3A2E45;
+  --coral-primary: #FF5A5F; /* Vibrant Accent */
+
+  /* New Additions */
+  --plum-dark: #1E1826;
+  --pastel-plum: #F8F7FA;
+  --pastel-gold: #FCFBF9;
+  --pastel-rose: #FFF0F0;
+
+  --gray-therapeutics: #808080;
+  --gray-light: #F5F5F5;
+  --gray-mid: #E5E5E5;
+
+  /* Medical/Scientific Accents */
+  --clinical-teal: #3A8E82;
+  --warm-rose: #E0B0B0;
+  --deep-plum: #3A2E45;
+}
+
+@theme inline {
+  --color-gold-primary: var(--gold-primary);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+
+  --color-black-primary: var(--black-primary);
+  --color-black-soft: var(--black-soft);
+  
+  --color-cream-primary: var(--cream-primary);
+  --color-plum-primary: var(--plum-primary);
+  --color-coral-primary: var(--coral-primary);
+
+  --color-plum-dark: var(--plum-dark);
+  --color-pastel-plum: var(--pastel-plum);
+  --color-pastel-gold: var(--pastel-gold);
+  --color-pastel-rose: var(--pastel-rose);
+  
+  --color-gray-therapeutics: var(--gray-therapeutics);
+  --color-gray-light: var(--gray-light);
+  --color-gray-mid: var(--gray-mid);
+
+  --color-clinical-teal: var(--clinical-teal);
+  --color-warm-rose: var(--warm-rose);
+  --color-deep-plum: var(--deep-plum);
+
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-logo: var(--font-montserrat), sans-serif;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: var(--black-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Defaults */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.03em; /* Tighter tracking for Swiss feel */
+}
+
+p {
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Selection */
+::selection {
+  background-color: var(--gold-primary);
+  color: #FFFFFF;
+}
