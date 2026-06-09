@@ -6,7 +6,10 @@ import { useVisibility } from "@/hooks/useVisibility";
 
 export default function SystemicMap({ theme = "light" }: { theme?: "light" | "dark" }) {
   const { ref: visRef, isVisible } = useVisibility();
-  const [activeNode, setActiveNode] = useState<number | null>(null);
+  const [hoverNode, setHoverNode] = useState<number | null>(null);
+  const [pinnedNode, setPinnedNode] = useState<number | null>(null);
+  const activeNode = pinnedNode ?? hoverNode;
+  const beamsActive = isVisible && activeNode === null; // pause beams while inspecting
   const isDark = theme === "dark";
 
   // Refined anatomical coordinates based on silhouette analysis
@@ -57,6 +60,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
       <AnimatePresence>
         {activeNodeData && (
           <motion.div
+            aria-live="polite"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
@@ -82,7 +86,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
       {/* Abstract Body Silhouette Container */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="relative h-[95%] w-full max-w-[400px]">
-            <svg viewBox="0 0 837.483 1819.369" className="w-full h-full drop-shadow-2xl">
+            <svg aria-hidden="true" viewBox="0 0 837.483 1819.369" className="w-full h-full drop-shadow-2xl">
                 <defs>
                     <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor={isDark ? "#4A3F5C" : "#F3F0F7"} stopOpacity="0.9" />
@@ -115,12 +119,12 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
       <motion.div
         className="absolute w-full h-1 bg-gradient-to-r from-transparent via-gold-primary to-transparent blur-sm z-0 opacity-30"
         style={{ top: 0 }}
-        animate={isVisible ? { y: ["5vh", "85vh"], opacity: [0, 0.4, 0] } : undefined}
-        transition={isVisible ? { duration: 6, repeat: Infinity, ease: "linear" } : { duration: 0 }}
+        animate={beamsActive ? { y: ["5vh", "85vh"], opacity: [0, 0.4, 0] } : undefined}
+        transition={beamsActive ? { duration: 6, repeat: Infinity, ease: "linear" } : { duration: 0 }}
       />
 
       {/* Connection Network */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
+      <svg aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-10">
         <defs>
           <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor={isDark ? "#C9A961" : "#4A3F5C"} stopOpacity="0" />
@@ -157,12 +161,12 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
                         r="2"
                         fill="#C9A961"
                         filter="url(#glow)"
-                        animate={isVisible ? {
+                        animate={beamsActive ? {
                             cx: [`${nodes[0].x}%`, `${node.x}%`],
                             cy: [`${nodes[0].y}%`, `${node.y}%`],
                             opacity: [0, 0.8, 0]
                         } : undefined}
-                        transition={isVisible ? {
+                        transition={beamsActive ? {
                             duration: 2.5 + i * 0.3,
                             repeat: Infinity,
                             ease: "easeOut"
@@ -187,10 +191,13 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
                 role="button"
                 tabIndex={0}
                 aria-label={`View ${node.label} details`}
-                onMouseEnter={() => setActiveNode(node.id)}
-                onMouseLeave={() => setActiveNode(null)}
-                onFocus={() => setActiveNode(node.id)}
-                onBlur={() => setActiveNode(null)}
+                aria-pressed={pinnedNode === node.id}
+                onMouseEnter={() => setHoverNode(node.id)}
+                onMouseLeave={() => setHoverNode(null)}
+                onFocus={() => setHoverNode(node.id)}
+                onBlur={() => setHoverNode(null)}
+                onClick={() => setPinnedNode((p) => (p === node.id ? null : node.id))}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setPinnedNode((p) => (p === node.id ? null : node.id)); } }}
             >
                 {/* Glow Ring */}
                 <div className={`absolute inset-0 rounded-full opacity-20 ${isVisible ? 'animate-ping' : ''}`}
@@ -228,14 +235,14 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.5 }}
-        className={`absolute bottom-4 right-4 z-30 ${isDark ? 'bg-plum-dark/90 border-plum-primary/30' : 'bg-white/90 border-gray-200'} backdrop-blur-md border rounded-lg shadow-lg px-5 py-4 max-w-[220px]`}>
+        className={`absolute bottom-4 right-4 z-30 ${isDark ? 'bg-plum-dark/90 border-plum-primary/30' : 'bg-white/90 border-gray-200'} backdrop-blur-md border rounded-lg shadow-lg px-5 py-4 max-w-[240px]`}>
         <h3 className={`text-[10px] font-bold ${isDark ? 'text-gold-primary' : 'text-gray-500'} uppercase mb-2`} style={{ letterSpacing: '0.1em' }}>
           Systemic Impact Map
         </h3>
-        <p className={`text-[11px] ${isDark ? 'text-gray-300' : 'text-gray-500'} leading-relaxed mb-4`}>
-          Tracing inflammatory signaling from origin to systemic targets.
+        <p className={`text-[11px] ${isDark ? 'text-gray-300' : 'text-gray-500'} leading-relaxed mb-3`}>
+          Endometriosis is systemic. Hover or click a site to inspect; beams pause while you read.
         </p>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mb-3">
           <div className="flex items-center gap-2">
             <div className={`w-3 h-3 rounded-full ${isDark ? 'bg-gold-primary' : 'bg-plum-primary'} shadow-sm`} />
             <span className="text-[10px] font-semibold text-gray-600 uppercase" style={{ letterSpacing: '0.05em' }}>Origin</span>
@@ -244,6 +251,14 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
             <div className="w-3 h-3 rounded-full bg-gold-primary shadow-sm" />
             <span className="text-[10px] font-semibold text-gray-600 uppercase" style={{ letterSpacing: '0.05em' }}>Target</span>
           </div>
+        </div>
+        <div className={`pt-3 border-t ${isDark ? 'border-plum-primary/30' : 'border-gray-200'}`}>
+          <p className={`text-[9px] font-bold uppercase tracking-[0.08em] ${isDark ? 'text-gold-primary' : 'text-gray-400'} mb-1.5`}>Associated comorbidities</p>
+          <ul className={`text-[10px] ${isDark ? 'text-gray-300' : 'text-gray-500'} space-y-1`}>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{ background: '#D4A5A5' }} /> Cardiovascular disease</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{ background: '#FF6B6B' }} /> Increased cancer risk</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{ background: '#9F8CA6' }} /> Inflammatory conditions</li>
+          </ul>
         </div>
       </motion.div>
     </div>
