@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import React, { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 // Helper for deterministic random values during SSR/Hydration
 function getDeterministicRandom(seed: number) {
@@ -43,14 +44,14 @@ export default function InnovationSection() {
             className="flex flex-col relative z-10"
           >
             <div className="overflow-hidden mb-8">
-              <motion.span 
+              <motion.span
+                className="block font-sans"
                 initial={{ y: "100%" }}
                 whileInView={{ y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-xs font-bold uppercase tracking-[0.2em] text-plum-primary block font-sans"
               >
-                The Platform
+                <Eyebrow tone="plum">The Platform</Eyebrow>
               </motion.span>
             </div>
             

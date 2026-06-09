@@ -12,6 +12,7 @@ import { STEPS } from "@/components/mechanism/constants";
 import { ChevronDown, ChevronUp, Quote } from "lucide-react";
 import Link from "next/link";
 import SuppressionCorrection from "@/components/SuppressionCorrection";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const MechanismCanvas = dynamic(
   () => import("@/components/mechanism/MechanismCanvas").then(m => m.MechanismCanvas),
@@ -134,7 +135,7 @@ export default function InnovationPage() {
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="mb-6"
             >
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary">Our Platform</span>
+              <Eyebrow>Our Platform</Eyebrow>
             </motion.div>
             <motion.h1
                 initial={{ opacity: 0, y: 30 }}
@@ -326,7 +327,7 @@ export default function InnovationPage() {
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-6 block">The Complete Mechanism</span>
+            <Eyebrow className="mb-6 block">The Complete Mechanism</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-black-primary mb-10">Five Layers of Precision</h2>
 
             {/* Horizontal step summary */}
@@ -438,7 +439,7 @@ export default function InnovationPage() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   >
-                      <span className="text-xs font-bold uppercase tracking-[0.2em] text-plum-primary mb-6 block">Platform Flexibility</span>
+                      <Eyebrow tone="plum" className="mb-6 block">Platform Flexibility</Eyebrow>
                       <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-8">Tuned for Purpose</h2>
                       <p className="text-lg text-black-soft leading-relaxed mb-6 font-light">
                           EndoCyclic&apos;s peptide platform allows for precise control over how long each peptide remains active. Diagnostic agents are designed to clear quickly after delivering their signal, while therapeutic peptides are optimized for longer residence in diseased tissue to sustain their effect.
@@ -534,7 +535,7 @@ export default function InnovationPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-4 block">Beyond Targeted Delivery</span>
+                  <Eyebrow className="mb-4 block">Beyond Targeted Delivery</Eyebrow>
                   <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-10">A New Approach to Chronic Disease</h2>
                 </motion.div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -582,7 +583,7 @@ export default function InnovationPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-plum-primary mb-4 block">Preclinical Evidence</span>
+              <Eyebrow tone="plum" className="mb-4 block">Preclinical Evidence</Eyebrow>
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-6">Programs in Development</h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto font-light">
                   Guided by the same precision-based design, we are advancing a new generation of targeted peptide medicines.

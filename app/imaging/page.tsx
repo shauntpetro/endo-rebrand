@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { DitherOverlay } from "@/components/DitherOverlay";
 import { Scan, Eye, Target, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const Scene4_SelectiveUptake = dynamic(
   () => import("@/components/mechanism/Scene4_SelectiveUptake").then(m => m.Scene4_SelectiveUptake),
@@ -96,9 +97,9 @@ export default function ImagingPage() {
                animate={{ opacity: 1, y: 0 }}
                transition={{ duration: 1, ease: "easeOut" }}
             >
-                <span className="inline-block py-1 px-3 border border-gold-primary/30 rounded-full text-gold-primary text-xs font-bold uppercase tracking-[0.2em] mb-6 backdrop-blur-sm">
+                <Eyebrow className="inline-block py-1 px-3 border border-gold-primary/30 rounded-full mb-6 backdrop-blur-sm">
                   FemLUNA Imaging Platform
-                </span>
+                </Eyebrow>
                 <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold tracking-tight leading-[0.9] mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
                   Seeing the <br/>
                   <span className="text-gold-primary italic">Undetectable</span>

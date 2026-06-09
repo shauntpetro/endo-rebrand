@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const cards = [
   {
@@ -67,13 +68,13 @@ export default function WhyNowSection() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <motion.span
+            className="mb-8 block font-sans"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-8 block font-sans"
           >
-            Strategic Inflection
+            <Eyebrow>Strategic Inflection</Eyebrow>
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

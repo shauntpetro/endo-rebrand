@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ShieldCheck, Zap, Award } from "lucide-react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const milestones = [
   {
@@ -66,9 +67,9 @@ export default function MilestoneProofBar() {
       <div className="relative z-10 mx-auto max-w-6xl px-6">
         {/* ── Section header ── */}
         <div className="mb-12 text-center">
-          <span className="mb-2 block font-sans text-xs font-bold uppercase tracking-[0.2em] text-gold-primary">
+          <Eyebrow className="mb-2 block font-sans">
             Clinical Milestones
-          </span>
+          </Eyebrow>
           <h2 className="font-serif text-3xl font-bold text-white md:text-4xl">
             Advancing Toward{" "}
             <span className="italic text-gold-primary">Patient Impact</span>

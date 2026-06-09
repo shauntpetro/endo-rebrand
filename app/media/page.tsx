@@ -17,6 +17,7 @@ import {
   Mail,
   Newspaper,
 } from "lucide-react";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const keyFacts = [
   {
@@ -300,9 +301,9 @@ export default function MediaPage() {
                 />
               </div>
               <div>
-                <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-2">
-                  CEO, Founder & Inventor
-                </p>
+                <Eyebrow className="mb-2 block">
+                  CEO, Founder &amp; Inventor
+                </Eyebrow>
                 <h3 className="text-2xl md:text-3xl font-serif font-bold text-plum-primary mb-4">
                   Dr. Tanya Petrossian, PhD
                 </h3>

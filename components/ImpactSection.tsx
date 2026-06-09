@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import React, { useRef, useEffect } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 function Counter({ value, suffix = "", decimals = 0 }: { value: number, suffix?: string, decimals?: number }) {
   const nodeRef = useRef<HTMLSpanElement>(null);
@@ -86,9 +87,9 @@ export default function ImpactSection() {
             viewport={{ once: true }}
             className="lg:col-span-5"
           >
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-8 block font-sans">
+            <Eyebrow className="mb-8 block font-sans">
               Impact
-            </span>
+            </Eyebrow>
             <h2 className="text-5xl md:text-8xl font-serif font-bold mb-12 tracking-tighter leading-none">
               Why It <br/> <span className="italic text-white/80">Matters</span>
             </h2>

@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 export default function GrantHighlight() {
   const ref = useRef(null);
@@ -51,14 +52,13 @@ export default function GrantHighlight() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col justify-center p-12 md:p-24"
           >
-            <motion.span 
-              className="block text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-8"
+            <motion.span
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              Recognition
+              <Eyebrow className="block mb-8">Recognition</Eyebrow>
             </motion.span>
             <motion.h2 
               className="text-4xl md:text-6xl font-serif font-bold text-plum-dark mb-12 leading-tight tracking-tight"

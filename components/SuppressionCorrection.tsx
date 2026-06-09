@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const LEFT = {
   eyebrow: "Today's Hormonal Drugs",
@@ -52,7 +53,7 @@ export default function SuppressionCorrection() {
     <section className="py-24 bg-cream-primary relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-14">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-4 block">The Difference</span>
+          <Eyebrow className="mb-4 block">The Difference</Eyebrow>
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary">Suppression vs. Correction</h2>
           <p className="text-lg text-black-soft font-light mt-5 leading-relaxed">
             Conventional therapy quiets the whole system. Our lead candidate is designed to act only where disease lives — correction, not destruction.

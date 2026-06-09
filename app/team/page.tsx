@@ -6,6 +6,7 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { X, Linkedin, ArrowRight } from "lucide-react";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const team = [
   {
@@ -142,7 +143,7 @@ export default function TeamPage() {
               className="w-full md:w-7/12 lg:w-8/12"
             >
               <div className="border-l-2 border-gold-primary pl-8">
-                <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">Founder & CEO</p>
+                <Eyebrow className="mb-3 block">Founder &amp; CEO</Eyebrow>
                 <h2 className="text-3xl md:text-4xl font-serif font-bold text-black-primary mb-4">{team[0].name}</h2>
                 <blockquote className="text-xl font-light italic text-black-soft mb-6 font-serif leading-relaxed">
                   &ldquo;{team[0].quote}&rdquo;
@@ -249,7 +250,7 @@ export default function TeamPage() {
                         animate="visible"
                         variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } } }}
                     >
-                        <motion.p variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">{selectedMember.role}</motion.p>
+                        <motion.p variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}><Eyebrow className="mb-3 block">{selectedMember.role}</Eyebrow></motion.p>
                         <motion.h3 variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="text-3xl font-serif font-bold text-black-primary mb-6">{selectedMember.name}</motion.h3>
                         
                         {selectedMember.quote && (

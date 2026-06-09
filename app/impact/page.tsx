@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import AchievementBar from "@/components/AchievementBar";
 import { DitherOverlay } from "@/components/DitherOverlay";
 import { Activity, Heart, AlertCircle, ArrowRight } from "lucide-react";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const SystemicMap = dynamic(() => import("@/components/SystemicMap"), {
   loading: () => (
@@ -112,9 +113,9 @@ export default function ImpactPage() {
                     className="inline-flex items-center gap-2 px-4 py-2 border border-plum-primary/10 rounded-full bg-white/40 backdrop-blur-md mb-8 shadow-sm"
                 >
                     <span className="w-2 h-2 rounded-full bg-gold-primary animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-plum-primary">
+                    <Eyebrow tone="plum">
                         Global Health Crisis
-                    </span>
+                    </Eyebrow>
                 </motion.div>
                 
                 {/* Massive Parallax Background Text */}
