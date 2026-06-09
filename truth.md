@@ -38,13 +38,24 @@ This file is the single source of truth for all website content. No copy on the 
 - Key claim: First non-invasive, definitive diagnostic for endometriosis
 - Developed as non-invasive alternative to laparoscopy (current gold standard for diagnosis)
 
-### ENDO-995
-- Indication: Maintenance therapy
+### ENDO-995 (Oncology Therapeutic)
+- Indication: Malignant solid tumors (initial focus on colon and endometrial cancers)
+- Mechanism: Tumor-selective cyclic peptide; non-hormonal
 - Stage: Pre-clinical
+- Key claim: Investigational non-hormonal therapeutic peptide in development for malignant solid tumors
+- Designed to overcome therapeutic resistance and restore responsiveness in "cold" tumors
+- Designed to unlock previously undruggable intracellular targets through selective peptide engineering
+- Potential applicability across 25%+ of solid tumor types
+- Paired with ENDO-311 as the oncology therapeutic + diagnostic match
 
-### ENDO-311
-- Indication: Colorectal cancer / solid tumors
+### ENDO-311 (Oncology Diagnostic)
+- Indication: Solid tumor diagnostics (initial focus on colon cancer)
+- Mechanism: Targeted imaging agent; radiation-free, non-hormonal, and free of heavy metals
 - Stage: Pre-clinical
+- Key claim: Investigational imaging agent for non-invasive detection and monitoring of malignant solid tumors
+- Designed for early-stage tumor localization and disease monitoring
+- Compatible with standard imaging systems
+- Companion diagnostic to ENDO-995 (oncology "detect and treat" pair)
 
 ## Milestones
 - FDA IND Allowance: Achieved (2026)
