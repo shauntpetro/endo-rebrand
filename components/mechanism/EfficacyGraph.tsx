@@ -110,7 +110,7 @@ export const EfficacyGraph = () => {
             </div>
             <h2 className="text-3xl md:text-4xl font-serif text-stone-800">
               Complete Lesion <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-primary to-gold-dark">
                 Clearance
               </span>
             </h2>
@@ -152,8 +152,8 @@ export const EfficacyGraph = () => {
               <stop offset="100%" stopColor={MECHANISM_COLORS.peptideActive} stopOpacity="0" />
             </linearGradient>
             <linearGradient id="gradHormone" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#F472B6" stopOpacity="0.1" />
-              <stop offset="100%" stopColor="#F472B6" stopOpacity="0" />
+              <stop offset="0%" stopColor="#C0879A" stopOpacity="0.1" />
+              <stop offset="100%" stopColor="#C0879A" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -212,6 +212,20 @@ export const EfficacyGraph = () => {
               );
           })}
           
+          {/* Y-axis title */}
+          <text
+            x={16}
+            y={height / 2}
+            transform={`rotate(-90 16 ${height / 2})`}
+            fill="#9CA3AF"
+            fontSize="10"
+            fontWeight="700"
+            textAnchor="middle"
+            style={{ letterSpacing: "0.12em" }}
+          >
+            LESION VOLUME (% OF BASELINE)
+          </text>
+
           {/* Crosshair Line */}
           {hoveredIndex !== null && (
              <motion.line
@@ -275,7 +289,7 @@ export const EfficacyGraph = () => {
           <motion.path 
             d={hormonePath}
             fill="none"
-            stroke="#F472B6" 
+            stroke="#C0879A" 
             strokeWidth="3"
             initial={{ pathLength: 0 }}
             whileInView={{ pathLength: 1 }}
@@ -363,11 +377,11 @@ export const EfficacyGraph = () => {
                     <g transform={`translate(${p.x}, ${p.y})`}>
                          <motion.line 
                             x1="0" y1="-15" x2="0" y2="0" 
-                            stroke="#F472B6" 
+                            stroke="#C0879A" 
                             strokeWidth="2" 
                          />
-                         <rect x="-75" y="-32" width="150" height="32" rx="16" fill="white" stroke="#F472B6" strokeWidth="2" />
-                         <text x="0" y="-16" fill="#F472B6" fontSize="10" fontWeight="bold" textAnchor="middle" alignmentBaseline="middle">
+                         <rect x="-75" y="-32" width="150" height="32" rx="16" fill="white" stroke="#C0879A" strokeWidth="2" />
+                         <text x="0" y="-16" fill="#C0879A" fontSize="10" fontWeight="bold" textAnchor="middle" alignmentBaseline="middle">
                             INCOMPLETE RESPONSE
                          </text>
                     </g>
@@ -379,7 +393,7 @@ export const EfficacyGraph = () => {
           {showPoints && (
               <>
                 {renderPoints(controlPoints, "#9CA3AF", "Control", 1.5)}
-                {renderPoints(hormonePoints, "#F472B6", "Hormone", 1.7)}
+                {renderPoints(hormonePoints, "#C0879A", "Hormone", 1.7)}
                 {renderPoints(endoPoints, MECHANISM_COLORS.peptideActive, "ENDO-205", 1.9)}
               </>
           )}
@@ -392,7 +406,7 @@ export const EfficacyGraph = () => {
                 <text x="20" y="10" fill="#4B5563" fontSize="12" fontWeight="600">ENDO-205</text>
               </g>
               <g transform="translate(16, 48)">
-                <circle cx="6" cy="6" r="4" fill="#F472B6" />
+                <circle cx="6" cy="6" r="4" fill="#C0879A" />
                 <text x="20" y="10" fill="#6B7280" fontSize="12">Hormone Therapy</text>
               </g>
               <g transform="translate(16, 72)">
@@ -421,11 +435,11 @@ export const EfficacyGraph = () => {
                               <div className="font-bold text-stone-500 mb-2 border-b border-stone-100 pb-1 uppercase tracking-wider">Week {WEEKS[hoveredIndex]}</div>
                               <div className="space-y-2">
                                   <div className="flex justify-between items-center">
-                                      <span className="flex items-center gap-2 font-medium"><span className="w-2 h-2 rounded-full bg-amber-400 shadow-sm"></span>ENDO-205</span>
-                                      <span className="font-mono font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">{endoPoints[hoveredIndex].value}</span>
+                                      <span className="flex items-center gap-2 font-medium"><span className="w-2 h-2 rounded-full bg-gold-primary shadow-sm"></span>ENDO-205</span>
+                                      <span className="font-mono font-bold text-gold-dark bg-gold-primary/10 px-1.5 py-0.5 rounded">{endoPoints[hoveredIndex].value}</span>
                                   </div>
                                   <div className="flex justify-between items-center">
-                                      <span className="flex items-center gap-2 text-stone-600"><span className="w-2 h-2 rounded-full bg-pink-400 shadow-sm"></span>Hormone</span>
+                                      <span className="flex items-center gap-2 text-stone-600"><span className="w-2 h-2 rounded-full shadow-sm" style={{ background: '#C0879A' }}></span>Hormone</span>
                                       <span className="font-mono text-stone-600">{hormonePoints[hoveredIndex].value}</span>
                                   </div>
                                   <div className="flex justify-between items-center">
@@ -443,8 +457,11 @@ export const EfficacyGraph = () => {
       </div>
       
       <div className="px-8 pb-8 flex justify-between items-center border-t border-stone-100 pt-4 mt-2">
-         <div className="text-xs text-stone-400 font-medium tracking-wide uppercase">
-            Lesion Volume (mm³) over Time
+         <div className="flex flex-col gap-0.5">
+            <div className="text-xs text-stone-400 font-medium tracking-wide uppercase">
+               Lesion Volume (% of baseline) over 12 weeks
+            </div>
+            <div className="text-[10px] italic text-stone-400/80">Representative preclinical data</div>
          </div>
          
          <div className="flex items-center gap-2">
@@ -452,7 +469,7 @@ export const EfficacyGraph = () => {
                 Show Data Points
                 <div className={clsx(
                     "w-10 h-5 rounded-full p-1 transition-colors duration-300 flex items-center",
-                    showPoints ? "bg-amber-400" : "bg-stone-200"
+                    showPoints ? "bg-gold-primary" : "bg-stone-200"
                 )} onClick={() => setShowPoints(!showPoints)}>
                     <div className={clsx(
                         "bg-white w-3.5 h-3.5 rounded-full shadow-sm transition-transform duration-300",
