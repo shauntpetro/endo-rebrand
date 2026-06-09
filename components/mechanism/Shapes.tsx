@@ -35,8 +35,8 @@ const RING_BUMPS = 8;
 
 /** Cyclic peptide — a clean closed macrocycle with residue nodes (echoes the hero molecule) */
 export const PeptideRing = ({ color, className, style, filled }: { color: string; className?: string; style?: React.CSSProperties; filled?: boolean }) => {
-  const path = wavyCirclePath(50, 50, 30, 2, RING_BUMPS);
-  const nodes = residueNodes(50, 50, 30, 2, RING_BUMPS);
+  const path = wavyCirclePath(50, 50, 30, 1, RING_BUMPS);
+  const nodes = residueNodes(50, 50, 30, 1, RING_BUMPS);
 
   return (
     <svg viewBox="0 0 100 100" className={className} style={style}>
@@ -58,8 +58,8 @@ export const PeptideRing = ({ color, className, style, filled }: { color: string
 
 /** Protonated peptide — activated macrocycle with residue nodes + H+ label */
 export const PeptideRingProtonated = ({ color, className, style }: { color: string; className?: string; style?: React.CSSProperties }) => {
-  const path = wavyCirclePath(50, 50, 30, 2, RING_BUMPS);
-  const nodes = residueNodes(50, 50, 30, 2, RING_BUMPS);
+  const path = wavyCirclePath(50, 50, 30, 1, RING_BUMPS);
+  const nodes = residueNodes(50, 50, 30, 1, RING_BUMPS);
 
   return (
     <svg viewBox="0 0 120 100" className={className} style={style}>

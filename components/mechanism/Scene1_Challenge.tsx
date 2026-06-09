@@ -302,7 +302,7 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               fill={MECHANISM_COLORS.lesionTissue}
               opacity="0.85"
               animate={{ d: fillD }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
             />
             {/* Outer membrane */}
             <motion.path
@@ -311,7 +311,7 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               strokeWidth="3.5"
               strokeLinecap="round"
               animate={{ d: membraneD }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
             />
             {/* Inner membrane echo */}
             <motion.path
@@ -321,7 +321,7 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               opacity="0.3"
               strokeLinecap="round"
               animate={{ d: innerD }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
             />
             {/* C-pocket glow — phases 1-2 */}
             <motion.ellipse
