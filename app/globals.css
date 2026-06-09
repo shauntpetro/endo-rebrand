@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+:root {
+  /* Core Brand Colors - Swiss & Premium */
+  --gold-primary: #C9A961; /* Warm Brand Gold */
+  --gold-light: #E5D4A6;
+  --gold-dark: #A68945;
+
+  --black-primary: #1A1A1A;
+  --black-soft: #2D2D2D;
+
+  --cream-primary: #F5F1E8;
+  --plum-primary: #4A3F5C;
+  --coral-primary: #FF6B6B;
+
+  /* New Additions */
+  --plum-dark: #2E263A;
+  --pastel-plum: #F3F0F7;
+  --pastel-gold: #FAF7F0;
+  --pastel-rose: #FFF5F5;
+
+  --gray-therapeutics: #6B6B6B;
+  --gray-light: #F9F9F9;
+  --gray-mid: #E0E0E0;
+
+  /* Medical/Scientific Accents */
+  --clinical-teal: #4A9B8E;
+  --warm-rose: #D4A5A5;
+  --deep-plum: #4A3F5C;
+}
+
+@theme inline {
+  --color-gold-primary: var(--gold-primary);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+
+  --color-black-primary: var(--black-primary);
+  --color-black-soft: var(--black-soft);
+  
+  --color-cream-primary: var(--cream-primary);
+  --color-plum-primary: var(--plum-primary);
+  --color-coral-primary: var(--coral-primary);
+
+  --color-plum-dark: var(--plum-dark);
+  --color-pastel-plum: var(--pastel-plum);
+  --color-pastel-gold: var(--pastel-gold);
+  --color-pastel-rose: var(--pastel-rose);
+  
+  --color-gray-therapeutics: var(--gray-therapeutics);
+  --color-gray-light: var(--gray-light);
+  --color-gray-mid: var(--gray-mid);
+
+  --color-clinical-teal: var(--clinical-teal);
+  --color-warm-rose: var(--warm-rose);
+  --color-deep-plum: var(--deep-plum);
+
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-logo: var(--font-montserrat), sans-serif;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: var(--black-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Defaults */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.03em; /* Tighter tracking for Swiss feel */
+}
+
+p {
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 97px; /* Match navbar height for anchor links */
+}
+
+/* Custom Selection */
+::selection {
+  background-color: var(--gold-primary);
+  color: #FFFFFF;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus-visible base for accessibility */
+:focus-visible {
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 2px;
+}
+
+/* Remove default outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background: var(--plum-dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 0 0 0.5rem 0.5rem;
+  transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
