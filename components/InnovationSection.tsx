@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 // Helper for deterministic random values during SSR/Hydration
 function getDeterministicRandom(seed: number) {
@@ -55,14 +56,14 @@ export default function InnovationSection() {
               </motion.span>
             </div>
             
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-plum-dark mb-12 tracking-tighter leading-[0.9]">
+            <SectionHeading className="mb-12">
               Our <br/> <span className="italic text-gold-primary relative inline-block">
                 Innovation
                 <svg className="absolute -bottom-2 left-0 w-full h-3 text-gold-primary/30" viewBox="0 0 100 10" preserveAspectRatio="none">
                   <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="2" fill="none" />
                 </svg>
               </span>
-            </h2>
+            </SectionHeading>
             
             <motion.div 
               initial={{ scaleX: 0 }}
