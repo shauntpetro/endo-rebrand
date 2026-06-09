@@ -86,7 +86,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
       {/* Abstract Body Silhouette Container */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="relative h-[95%] w-full max-w-[400px]">
-            <svg viewBox="0 0 837.483 1819.369" className="w-full h-full drop-shadow-2xl">
+            <svg aria-hidden="true" viewBox="0 0 837.483 1819.369" className="w-full h-full drop-shadow-2xl">
                 <defs>
                     <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor={isDark ? "#4A3F5C" : "#F3F0F7"} stopOpacity="0.9" />
@@ -124,7 +124,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
       />
 
       {/* Connection Network */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
+      <svg aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-10">
         <defs>
           <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor={isDark ? "#C9A961" : "#4A3F5C"} stopOpacity="0" />

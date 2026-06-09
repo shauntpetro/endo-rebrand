@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
@@ -54,7 +55,23 @@ export default function Home() {
       <InnovationSection />
       <PipelinePreview />
       <ImpactSection />
-      <AchievementBar />
+      <section className="bg-plum-dark text-white py-16">
+        <div className="container mx-auto px-6">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-8 text-center">Continue Exploring</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            {[
+              { href: "/innovation", title: "The Mechanism", desc: "How our peptides act only in diseased tissue" },
+              { href: "/imaging", title: "How We Detect It", desc: "FemLUNA™ non-invasive imaging" },
+              { href: "/pipeline", title: "How We Treat It", desc: "Our matched therapeutic & diagnostic pairs" },
+            ].map((c) => (
+              <Link key={c.href} href={c.href} className="group rounded-xl border border-white/10 hover:border-gold-primary/50 bg-white/5 hover:bg-white/10 p-6 transition-all duration-300">
+                <div className="text-lg font-serif font-bold mb-1 group-hover:text-gold-primary transition-colors">{c.title}</div>
+                <div className="text-sm text-white/60 leading-relaxed">{c.desc}</div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
       <Footer />
     </main>
   );
