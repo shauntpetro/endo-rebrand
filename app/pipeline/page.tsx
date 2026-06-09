@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { ArrowRight, Microscope, Activity, Pill, ChevronDown, Sparkles, FlaskConical, Eye, Target } from "lucide-react";
 import { useState } from "react";
 import { pipeline, PHASES as phases } from "@/components/pipeline/pipelineData";
+import PortfolioMatrix from "@/components/PortfolioMatrix";
 
 function PhaseBar({ activePhase, progress, color }: { activePhase: number, progress: number, color: string }) {
   return (
@@ -109,6 +110,16 @@ export default function PipelinePage() {
                 </p>
             </motion.div>
         </div>
+
+        {/* Portfolio overview diagram */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="mb-16"
+        >
+          <PortfolioMatrix variant="full" />
+        </motion.div>
 
         {/* Controls */}
         <motion.div
