@@ -5,6 +5,8 @@ import Link from "next/link";
 import React, { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
 import PortfolioMatrix from "@/components/PortfolioMatrix";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 // Reusable progress bar component
 const PipelineItem = ({
@@ -104,12 +106,12 @@ export default function PipelinePreview() {
             transition={{ duration: 0.8 }}
             className="order-1 lg:order-2 flex flex-col relative z-10"
           >
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-plum-primary mb-8 block font-sans">
-              Therapeutics & Diagnostics
-            </span>
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-plum-dark mb-12 tracking-tighter leading-[0.9]">
+            <Eyebrow tone="plum" className="mb-8 block font-sans">
+              Therapeutics &amp; Diagnostics
+            </Eyebrow>
+            <SectionHeading className="mb-12">
               Our <br/> <span className="italic text-gold-primary">Pipeline</span>
-            </h2>
+            </SectionHeading>
             
             <div className="space-y-8 mb-12">
               <p className="text-xl text-black-soft leading-relaxed font-normal border-l-2 border-gold-primary pl-6 font-sans">

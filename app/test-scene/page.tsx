@@ -24,7 +24,7 @@ export default function TestScene() {
           </button>
         ))}
       </div>
-      <div className="w-full max-w-2xl" style={{ height: "520px" }}>
+      <div className="w-full max-w-2xl h-[520px]">
         <Scene1_Challenge forcePhase={forcePhase} />
       </div>
     </div>

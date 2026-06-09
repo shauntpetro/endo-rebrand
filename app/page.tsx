@@ -5,6 +5,7 @@ import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
 import MilestoneProofBar from "@/components/MilestoneProofBar";
 import { SectionSkeleton } from "@/components/ui/Skeleton";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const AchievementBar = dynamic(() => import("@/components/AchievementBar"), {
   loading: () => <SectionSkeleton height="h-16" />,
@@ -39,7 +40,7 @@ const ImpactSection = dynamic(() => import("@/components/ImpactSection"), {
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col bg-[#F8F9FA]">
+    <main className="min-h-screen flex flex-col bg-surface">
       <Navbar />
       <Hero />
       <MilestoneProofBar />
@@ -57,7 +58,7 @@ export default function Home() {
       <ImpactSection />
       <section className="bg-plum-dark text-white py-16">
         <div className="container mx-auto px-6">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-8 text-center">Continue Exploring</p>
+          <Eyebrow className="mb-8 text-center block">Continue Exploring</Eyebrow>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {[
               { href: "/innovation", title: "The Mechanism", desc: "How our peptides act only in diseased tissue" },

@@ -82,7 +82,7 @@ export default function PipelinePage() {
   const getColor = (type: string) => type === 'Diagnostic' ? '#4A9B8E' : '#C9A961';
 
   return (
-    <main className="min-h-screen bg-[#FAF9F6] flex flex-col font-sans relative overflow-hidden">
+    <main className="min-h-screen bg-surface flex flex-col font-sans relative overflow-hidden">
       <Navbar />
       
       {/* Background Elements */}

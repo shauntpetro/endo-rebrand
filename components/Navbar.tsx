@@ -126,11 +126,10 @@ export default function Navbar() {
                 >
                   {link.name}
                   <motion.span
-                    className="absolute -bottom-1 left-0 h-0.5 bg-gold-primary origin-left"
+                    className="absolute -bottom-1 left-0 h-0.5 bg-gold-primary origin-left w-full"
                     initial={{ scaleX: isActive ? 1 : 0 }}
                     animate={{ scaleX: isActive ? 1 : 0 }}
                     whileHover={{ scaleX: 1 }}
-                    style={{ width: "100%" }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
                   />
                 </Link>

@@ -26,7 +26,9 @@
   /* Medical/Scientific Accents */
   --clinical-teal: #4A9B8E;
   --warm-rose: #D4A5A5;
-  --deep-plum: #4A3F5C;
+
+  /* Surface */
+  --surface: #F8F9FA;
 }
 
 @theme inline {
@@ -52,7 +54,7 @@
 
   --color-clinical-teal: var(--clinical-teal);
   --color-warm-rose: var(--warm-rose);
-  --color-deep-plum: var(--deep-plum);
+  --color-surface: var(--surface);
 
   --font-serif: var(--font-playfair), Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

@@ -12,6 +12,7 @@ import { STEPS } from "@/components/mechanism/constants";
 import { ChevronDown, ChevronUp, Quote } from "lucide-react";
 import Link from "next/link";
 import SuppressionCorrection from "@/components/SuppressionCorrection";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const MechanismCanvas = dynamic(
   () => import("@/components/mechanism/MechanismCanvas").then(m => m.MechanismCanvas),
@@ -134,7 +135,7 @@ export default function InnovationPage() {
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="mb-6"
             >
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary">Our Platform</span>
+              <Eyebrow>Our Platform</Eyebrow>
             </motion.div>
             <motion.h1
                 initial={{ opacity: 0, y: 30 }}
@@ -200,10 +201,9 @@ export default function InnovationPage() {
             animate={{ opacity: showStepper ? 1 : 0, pointerEvents: showStepper ? "auto" as const : "none" as const }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <motion.div 
-                className="absolute inset-0 -z-10"
+            <motion.div
+                className="absolute inset-0 -z-10 opacity-90"
                 animate={{ backgroundColor: bgColors[activeStep + 1] || bgColors[0] }}
-                style={{ opacity: 0.9 }}
             />
             
             <div className="relative flex justify-between items-start max-w-5xl mx-auto py-3 px-6">
@@ -327,7 +327,7 @@ export default function InnovationPage() {
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-6 block">The Complete Mechanism</span>
+            <Eyebrow className="mb-6 block">The Complete Mechanism</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-black-primary mb-10">Five Layers of Precision</h2>
 
             {/* Horizontal step summary */}
@@ -350,7 +350,7 @@ export default function InnovationPage() {
                 </motion.div>
               ))}
               {/* Connecting line behind circles */}
-              <div className="col-span-5 -mt-[52px] md:-mt-[56px] mx-auto w-[calc(100%-60px)] h-px bg-gradient-to-r from-gold-primary/20 via-gold-primary/40 to-gold-primary/20 pointer-events-none -z-10" style={{ position: 'relative', zIndex: -1 }} />
+              <div className="col-span-5 -mt-[52px] md:-mt-[56px] mx-auto w-[calc(100%-60px)] h-px bg-gradient-to-r from-gold-primary/20 via-gold-primary/40 to-gold-primary/20 pointer-events-none relative z-[-1]" />
             </div>
 
             <motion.p
@@ -439,7 +439,7 @@ export default function InnovationPage() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   >
-                      <span className="text-xs font-bold uppercase tracking-[0.2em] text-plum-primary mb-6 block">Platform Flexibility</span>
+                      <Eyebrow tone="plum" className="mb-6 block">Platform Flexibility</Eyebrow>
                       <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-8">Tuned for Purpose</h2>
                       <p className="text-lg text-black-soft leading-relaxed mb-6 font-light">
                           EndoCyclic&apos;s peptide platform allows for precise control over how long each peptide remains active. Diagnostic agents are designed to clear quickly after delivering their signal, while therapeutic peptides are optimized for longer residence in diseased tissue to sustain their effect.
@@ -535,7 +535,7 @@ export default function InnovationPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-4 block">Beyond Targeted Delivery</span>
+                  <Eyebrow className="mb-4 block">Beyond Targeted Delivery</Eyebrow>
                   <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-10">A New Approach to Chronic Disease</h2>
                 </motion.div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -583,7 +583,7 @@ export default function InnovationPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-plum-primary mb-4 block">Preclinical Evidence</span>
+              <Eyebrow tone="plum" className="mb-4 block">Preclinical Evidence</Eyebrow>
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-6">Programs in Development</h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto font-light">
                   Guided by the same precision-based design, we are advancing a new generation of targeted peptide medicines.

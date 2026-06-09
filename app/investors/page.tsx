@@ -24,6 +24,7 @@ import {
   BarChart3,
   Target,
 } from "lucide-react";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -263,9 +264,9 @@ export default function InvestorsPage() {
             transition={{ duration: 0.8 }}
             className="max-w-3xl"
           >
-            <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-4">
+            <Eyebrow className="mb-4 block">
               Investor Relations
-            </p>
+            </Eyebrow>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 tracking-tight leading-[1.1]">
               Invest in the Future of Women&apos;s Health
             </h1>
@@ -325,9 +326,9 @@ export default function InvestorsPage() {
             variants={staggerContainer}
           >
             <motion.div variants={fadeUp} transition={{ duration: 0.6 }}>
-              <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">
+              <Eyebrow className="mb-3 block">
                 The Opportunity
-              </p>
+              </Eyebrow>
               <h2 className="text-3xl md:text-5xl font-serif font-bold text-black-primary mb-4 tracking-tight">
                 A Massively Underserved Market
               </h2>
@@ -389,9 +390,9 @@ export default function InvestorsPage() {
             >
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">
+                  <Eyebrow className="mb-3 block">
                     Funding Disparity
-                  </p>
+                  </Eyebrow>
                   <h3 className="text-2xl md:text-3xl font-serif font-bold mb-4">
                     $44M vs. $1.24B
                   </h3>
@@ -403,9 +404,9 @@ export default function InvestorsPage() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">
+                  <Eyebrow className="mb-3 block">
                     Momentum Building
-                  </p>
+                  </Eyebrow>
                   <h3 className="text-2xl md:text-3xl font-serif font-bold mb-4">
                     $2.6B in 2024
                   </h3>
@@ -434,9 +435,9 @@ export default function InvestorsPage() {
             variants={staggerContainer}
           >
             <motion.div variants={fadeUp} transition={{ duration: 0.6 }}>
-              <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">
+              <Eyebrow className="mb-3 block">
                 Our Platform
-              </p>
+              </Eyebrow>
               <h2 className="text-3xl md:text-5xl font-serif font-bold text-black-primary mb-4 tracking-tight">
                 Precision Peptide Platform
               </h2>
@@ -514,9 +515,9 @@ export default function InvestorsPage() {
             variants={staggerContainer}
           >
             <motion.div variants={fadeUp} transition={{ duration: 0.6 }}>
-              <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">
+              <Eyebrow className="mb-3 block">
                 Clinical Pipeline
-              </p>
+              </Eyebrow>
               <h2 className="text-3xl md:text-5xl font-serif font-bold text-black-primary mb-4 tracking-tight">
                 Pipeline Snapshot
               </h2>
@@ -611,9 +612,9 @@ export default function InvestorsPage() {
             className="text-center max-w-3xl mx-auto"
           >
             <motion.div variants={fadeUp} transition={{ duration: 0.6 }}>
-              <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">
+              <Eyebrow className="mb-3 block">
                 For Investors
-              </p>
+              </Eyebrow>
               <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4 tracking-tight">
                 Access Investor Materials
               </h2>
@@ -675,9 +676,9 @@ export default function InvestorsPage() {
               transition={{ duration: 0.6 }}
               className="mb-10"
             >
-              <p className="text-gold-primary font-bold uppercase tracking-[0.2em] text-xs mb-3">
+              <Eyebrow className="mb-3 block">
                 Data Room Access
-              </p>
+              </Eyebrow>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-black-primary mb-4 tracking-tight">
                 Request Access
               </h2>

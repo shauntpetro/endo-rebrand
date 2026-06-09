@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { DotGrid } from "@/components/ui/DotGrid";
 
 const testimonials = [
   {
@@ -61,13 +62,7 @@ export default function Testimonials() {
       className="bg-cream-primary py-24 md:py-32 relative overflow-hidden"
     >
       {/* Subtle background dot pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: "radial-gradient(#4A3B52 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }}
-      />
+      <DotGrid />
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}

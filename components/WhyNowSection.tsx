@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { DotGrid } from "@/components/ui/DotGrid";
 
 const cards = [
   {
@@ -35,17 +37,10 @@ export default function WhyNowSection() {
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
         setVisRef(el);
       }}
-      className="bg-gradient-to-b from-cream-primary via-white to-[#F3F0F7] border-b border-black-primary relative overflow-hidden py-24 md:py-32"
+      className="bg-gradient-to-b from-cream-primary via-white to-pastel-plum border-b border-black-primary relative overflow-hidden py-24 md:py-32"
     >
       {/* Background Dot Pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage:
-            "radial-gradient(#4A3B52 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }}
-      />
+      <DotGrid />
 
       {/* Floating Gold Orb */}
       <motion.div
@@ -67,13 +62,13 @@ export default function WhyNowSection() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <motion.span
+            className="mb-8 block font-sans"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-8 block font-sans"
           >
-            Strategic Inflection
+            <Eyebrow>Strategic Inflection</Eyebrow>
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

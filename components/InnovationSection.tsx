@@ -4,6 +4,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import React, { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 // Helper for deterministic random values during SSR/Hydration
 function getDeterministicRandom(seed: number) {
@@ -31,7 +33,7 @@ export default function InnovationSection() {
   const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
-    <section ref={(el) => { (ref as React.MutableRefObject<HTMLElement | null>).current = el; setVisRef(el); }} className="bg-gradient-to-b from-[#E5D4A6]/20 via-white to-[#E8E4F0] border-b border-black-primary overflow-hidden">
+    <section ref={(el) => { (ref as React.MutableRefObject<HTMLElement | null>).current = el; setVisRef(el); }} className="bg-gradient-to-b from-gold-light/20 via-white to-[#E8E4F0] border-b border-black-primary overflow-hidden">
       <div className="container mx-auto px-6 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
           {/* Content - Swiss Flush Left */}
@@ -43,25 +45,25 @@ export default function InnovationSection() {
             className="flex flex-col relative z-10"
           >
             <div className="overflow-hidden mb-8">
-              <motion.span 
+              <motion.span
+                className="block font-sans"
                 initial={{ y: "100%" }}
                 whileInView={{ y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-xs font-bold uppercase tracking-[0.2em] text-plum-primary block font-sans"
               >
-                The Platform
+                <Eyebrow tone="plum">The Platform</Eyebrow>
               </motion.span>
             </div>
             
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-plum-dark mb-12 tracking-tighter leading-[0.9]">
+            <SectionHeading className="mb-12">
               Our <br/> <span className="italic text-gold-primary relative inline-block">
                 Innovation
                 <svg className="absolute -bottom-2 left-0 w-full h-3 text-gold-primary/30" viewBox="0 0 100 10" preserveAspectRatio="none">
                   <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="2" fill="none" />
                 </svg>
               </span>
-            </h2>
+            </SectionHeading>
             
             <motion.div 
               initial={{ scaleX: 0 }}
@@ -225,7 +227,7 @@ export default function InnovationSection() {
                  FIG 1.0 — pH-MEDIATED SELECTIVE UPTAKE
                </div>
                <div className="flex gap-2 items-center">
-                 <div className="w-2 h-2 rounded-full border-2 border-[#C9A961]/40" title="Inactive" />
+                 <div className="w-2 h-2 rounded-full border-2 border-gold-primary/40" title="Inactive" />
                  <span className="text-[7px] text-stone-400 uppercase">Inactive</span>
                  <div className="w-2 h-2 rounded-full bg-gold-primary shadow-[0_0_5px_#C9A961]" title="Active" />
                  <span className="text-[7px] text-stone-400 uppercase">Active</span>

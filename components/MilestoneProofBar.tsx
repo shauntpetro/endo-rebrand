@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ShieldCheck, Zap, Award } from "lucide-react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 const milestones = [
   {
@@ -51,7 +52,7 @@ export default function MilestoneProofBar() {
 
       {/* ── Slow-moving gold gradient orb ── */}
       <motion.div
-        className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C9A961]/10 blur-[100px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-primary/10 blur-[100px]"
         animate={isVisible ? {
           scale: [1, 1.2, 1],
           opacity: [0.2, 0.4, 0.2],
@@ -66,9 +67,9 @@ export default function MilestoneProofBar() {
       <div className="relative z-10 mx-auto max-w-6xl px-6">
         {/* ── Section header ── */}
         <div className="mb-12 text-center">
-          <span className="mb-2 block font-sans text-xs font-bold uppercase tracking-[0.2em] text-gold-primary">
+          <Eyebrow className="mb-2 block font-sans">
             Clinical Milestones
-          </span>
+          </Eyebrow>
           <h2 className="font-serif text-3xl font-bold text-white md:text-4xl">
             Advancing Toward{" "}
             <span className="italic text-gold-primary">Patient Impact</span>
