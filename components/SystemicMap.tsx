@@ -77,7 +77,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
       {/* Abstract Body Silhouette Container */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="relative h-[95%] w-full max-w-[400px]">
-            <svg aria-hidden="true" viewBox="0 0 837.483 1819.369" className="w-full h-full drop-shadow-2xl">
+            <svg aria-hidden="true" viewBox="0 0 837.483 1819.369" className="w-full h-full">
                 <defs>
                     <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor={isDark ? "#4A3F5C" : "#F3F0F7"} stopOpacity="0.9" />
@@ -108,7 +108,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
 
       {/* Scanning Effect */}
       <motion.div
-        className="absolute w-full h-1 bg-gradient-to-r from-transparent via-gold-primary to-transparent blur-sm z-0 opacity-30"
+        className="absolute w-full h-px bg-gradient-to-r from-transparent via-gold-primary/40 to-transparent z-0 opacity-0"
         style={{ top: 0 }}
         animate={beamsActive ? { y: ["5vh", "85vh"], opacity: [0, 0.4, 0] } : undefined}
         transition={beamsActive ? { duration: 6, repeat: Infinity, ease: "linear" } : { duration: 0 }}
@@ -153,7 +153,6 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
                     <motion.circle
                         r="2"
                         fill="#C9A961"
-                        filter="url(#glow)"
                         animate={beamsActive ? {
                             cx: [`${nodes[0].x}%`, `${node.x}%`],
                             cy: [`${nodes[0].y}%`, `${node.y}%`],
@@ -197,7 +196,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
             >
                 {/* Soft halo */}
                 <div
-                    className="absolute rounded-full blur-[5px] pointer-events-none"
+                    className="absolute rounded-full blur-[2px] pointer-events-none"
                     style={{
                         width: node.r * 3.4,
                         height: node.r * 3.4,

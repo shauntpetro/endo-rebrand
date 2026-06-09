@@ -297,8 +297,7 @@ export default function ImpactPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
                 {/* Map - Floating */}
                 <div className="lg:col-span-5 h-[400px] md:h-[600px] relative">
-                     <div className="absolute inset-0 bg-plum-dark/50 rounded-full blur-3xl -z-10" />
-                     <SystemicMap theme="dark" />
+                     <SystemicMap theme="light" />
                 </div>
 
                 {/* Comorbidities List - Interactive */}
