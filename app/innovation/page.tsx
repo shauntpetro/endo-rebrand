@@ -11,6 +11,7 @@ import CanvasErrorBoundary from "@/components/CanvasErrorBoundary";
 import { STEPS } from "@/components/mechanism/constants";
 import { ChevronDown, ChevronUp, Quote } from "lucide-react";
 import Link from "next/link";
+import SuppressionCorrection from "@/components/SuppressionCorrection";
 
 const MechanismCanvas = dynamic(
   () => import("@/components/mechanism/MechanismCanvas").then(m => m.MechanismCanvas),
@@ -364,6 +365,8 @@ export default function InnovationPage() {
           </motion.div>
         </div>
       </section>
+
+      <SuppressionCorrection />
 
       {/* CEO Quote Section */}
       <section className="py-24 bg-plum-dark text-white relative overflow-hidden">
