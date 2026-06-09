@@ -477,7 +477,7 @@ export default function InnovationPage() {
 
                           {/* Glow following the thumb */}
                           <motion.div
-                            className="absolute top-1/2 -translate-y-1/2 -ml-4 w-8 h-8 rounded-full bg-gold-primary/30 blur-md z-0 will-change-[left]"
+                            className="absolute top-1/2 -translate-y-1/2 -ml-4 w-8 h-8 rounded-full bg-transparent z-0 will-change-[left]"
                             animate={sliderInView ? { left: ["10%", "90%", "10%"] } : undefined}
                             transition={sliderInView ? { duration: 5, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
                           />

@@ -277,7 +277,6 @@ export default function ImagingPage() {
 
             <div className="relative">
               <div className="bg-zinc-800/50 p-12 rounded-2xl border border-zinc-700 backdrop-blur-sm text-center relative overflow-hidden group hover:border-coral-primary/30 transition-colors duration-500">
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-coral-primary/10 rounded-full blur-3xl group-hover:bg-coral-primary/20 transition-all duration-500" />
                 
                 <motion.div
                    initial={{ scale: 0.5, opacity: 0 }}
