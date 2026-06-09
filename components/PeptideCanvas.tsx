@@ -14,14 +14,30 @@ function seededRandom(seed: number): number {
 
 const emptySubscribe = () => () => {};
 
-// Brand Palette adapted for 3D style
+// Brand palette adapted for 3D — tightened to plum backbone + gold residues
 const PALETTE = {
   plum: "#9F8CA6",
-  gold: "#D6B65F",
-  brown: "#8C7A6B",
-  darkPlum: "#5D4E60",
-  bond: "#2A2A2A",
+  plumDeep: "#6E5E74",
+  gold: "#C9A961",
+  goldBright: "#E6C871",
+  bond: "#5A4A52", // warm bronze-plum (lighter than the old near-black)
 };
+
+const UP = new THREE.Vector3(0, 1, 0);
+
+/** Build a cylinder bond (position + rotation + length) spanning two points. */
+function makeBond(a: THREE.Vector3, b: THREE.Vector3) {
+  const mid = new THREE.Vector3().addVectors(a, b).multiplyScalar(0.5);
+  const dist = a.distanceTo(b);
+  const dir = new THREE.Vector3().subVectors(b, a).normalize();
+  const quat = new THREE.Quaternion().setFromUnitVectors(UP, dir);
+  const e = new THREE.Euler().setFromQuaternion(quat);
+  return {
+    position: [mid.x, mid.y, mid.z] as [number, number, number],
+    rotation: [e.x, e.y, e.z] as [number, number, number],
+    height: dist,
+  };
+}
 
 interface MoleculeProps {
   count?: number;
@@ -32,146 +48,119 @@ interface MoleculeProps {
   variant?: "hero" | "background";
 }
 
-function Molecule({ count = 12, radius = 2, position = [0,0,0], rotation = [0,0,0], scale = 1, variant = "hero" }: MoleculeProps) {
-  const group = useRef<THREE.Group>(null!);
-  
-  // Generate structure
-  const { atoms, bonds } = useMemo(() => {
-    const atomList = [];
-    const bondList = [];
-    
-    for (let i = 0; i < count; i++) {
-      const t = (i / count) * Math.PI * 2;
-      
-      const r = radius * (0.8 + 0.4 * Math.sin(t * 3));
-      const x = r * Math.cos(t);
-      const y = r * Math.sin(t);
-      const z = radius * 0.5 * Math.sin(t * 2);
-      
-      const jitter = 0.1;
-      
-      const colorKeys = ["plum", "gold", "brown", "darkPlum"];
-      const colorKey = colorKeys[i % colorKeys.length] as keyof typeof PALETTE;
+/**
+ * A cyclic peptide rendered as a clean closed backbone macrocycle with
+ * outward side-chain residues — reads unmistakably as a cyclic peptide.
+ */
+function Molecule({ count = 16, radius = 2.2, position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, variant = "hero" }: MoleculeProps) {
+  const spin = useRef<THREE.Group>(null!);
 
-      atomList.push({
-        position: [
-          x + (seededRandom(i * 4) - 0.5) * jitter,
-          y + (seededRandom(i * 4 + 1) - 0.5) * jitter,
-          z + (seededRandom(i * 4 + 2) - 0.5) * jitter
-        ] as [number, number, number],
-        size: 0.45 + seededRandom(i * 4 + 3) * 0.15,
-        color: PALETTE[colorKey]
+  const { backbone, sideChains, backboneBonds, sideBonds } = useMemo(() => {
+    const N = count;
+    const crown = radius * 0.14; // gentle out-of-plane saddle for organic 3D form
+
+    const backbone: { position: [number, number, number]; size: number; color: string; theta: number }[] = [];
+    for (let i = 0; i < N; i++) {
+      const t = (i / N) * Math.PI * 2;
+      backbone.push({
+        position: [radius * Math.cos(t), radius * Math.sin(t), crown * Math.sin(t * 2)] as [number, number, number],
+        size: 0.32 + seededRandom(i * 4 + 3) * 0.05,
+        color: i % 2 === 0 ? PALETTE.plum : PALETTE.plumDeep,
+        theta: t,
       });
     }
 
-    for (let i = 0; i < count; i++) {
-      const current = atomList[i];
-      const next = atomList[(i + 1) % count];
-      
-      const start = new THREE.Vector3(...current.position);
-      const end = new THREE.Vector3(...next.position);
-      
-      const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-      const dist = start.distanceTo(end);
-      
-      const direction = new THREE.Vector3().subVectors(end, start).normalize();
-      const up = new THREE.Vector3(0, 1, 0);
-      const quaternion = new THREE.Quaternion().setFromUnitVectors(up, direction);
-      const euler = new THREE.Euler().setFromQuaternion(quaternion);
+    // Backbone bonds: consecutive residues only — closes the ring, no interior struts.
+    const backboneBonds = backbone.map((cur, i) =>
+      makeBond(new THREE.Vector3(...cur.position), new THREE.Vector3(...backbone[(i + 1) % N].position)),
+    );
 
-      bondList.push({
-        position: [mid.x, mid.y, mid.z] as [number, number, number],
-        rotation: [euler.x, euler.y, euler.z] as [number, number, number],
-        height: dist
-      });
-      
-      if (count > 8 && i % 4 === 0) {
-         const targetIdx = (i + Math.floor(count/2)) % count;
-         const target = atomList[targetIdx];
-         const start2 = new THREE.Vector3(...current.position);
-         const end2 = new THREE.Vector3(...target.position);
-         const mid2 = new THREE.Vector3().addVectors(start2, end2).multiplyScalar(0.5);
-         const dist2 = start2.distanceTo(end2);
-         
-         if (dist2 < radius * 2.5) {
-            const direction2 = new THREE.Vector3().subVectors(end2, start2).normalize();
-            const quaternion2 = new THREE.Quaternion().setFromUnitVectors(up, direction2);
-            const euler2 = new THREE.Euler().setFromQuaternion(quaternion2);
-            
-             bondList.push({
-                position: [mid2.x, mid2.y, mid2.z] as [number, number, number],
-                rotation: [euler2.x, euler2.y, euler2.z] as [number, number, number],
-                height: dist2
-             });
-         }
-      }
+    // Side-chain residues: a short outward stub + a smaller gold sphere per residue.
+    const sideChains: { position: [number, number, number]; size: number }[] = [];
+    const sideBonds: ReturnType<typeof makeBond>[] = [];
+    for (let i = 0; i < N; i++) {
+      const t = backbone[i].theta;
+      const outward = new THREE.Vector3(Math.cos(t), Math.sin(t), 0);
+      const len = radius * (0.34 + 0.18 * seededRandom(i * 7));
+      const base = new THREE.Vector3(...backbone[i].position);
+      const tip = base
+        .clone()
+        .add(outward.multiplyScalar(len))
+        .add(new THREE.Vector3(0, 0, (seededRandom(i * 7 + 2) - 0.5) * radius * 0.18));
+      sideChains.push({ position: [tip.x, tip.y, tip.z], size: 0.16 + seededRandom(i * 7 + 1) * 0.05 });
+      sideBonds.push(makeBond(base, tip));
     }
 
-    return { atoms: atomList, bonds: bondList };
+    return { backbone, sideChains, backboneBonds, sideBonds };
   }, [count, radius]);
 
-  useFrame((state, delta) => {
-    if (group.current) {
-      group.current.rotation.y += delta * 0.05;
-      group.current.rotation.x += delta * 0.02;
-    }
+  // Stately spin around the ring's own normal so the macrocycle stays presented.
+  useFrame((_, delta) => {
+    if (spin.current) spin.current.rotation.z += delta * 0.16;
   });
 
-  return (
-    <Float 
-      speed={variant === "hero" ? 1.5 : 1} 
-      rotationIntensity={0.5} 
-      floatIntensity={0.5}
-    >
-      <group 
-        ref={group} 
-        position={position} 
-        rotation={rotation}
-        scale={scale}
-      >
-        {/* Bonds */}
-        {bonds.map((bond, i) => (
-           <group key={`bond-${i}`} position={bond.position} rotation={bond.rotation}>
-             <Cylinder args={[0.12, 0.12, bond.height, 8]} rotation={[Math.PI / 2, 0, 0]}>
-                <meshStandardMaterial
-                  color={PALETTE.bond}
-                  roughness={variant === "hero" ? 0.4 : 0.6}
-                  metalness={variant === "hero" ? 0.3 : 0.1}
-                />
-             </Cylinder>
-           </group>
-        ))}
+  const presTilt: [number, number, number] = variant === "hero" ? [-0.5, 0.45, 0] : [-0.3, 0.2, 0];
+  const bondR = variant === "hero" ? 0.075 : 0.06;
 
-        {/* Atoms */}
-        {atoms.map((atom, i) => (
-            <group key={`atom-${i}`} position={atom.position}>
-              <Sphere args={[atom.size, 16, 16]}>
-                {variant === "hero" ? (
-                  <meshStandardMaterial
-                    color={atom.color}
-                    roughness={0.2}
-                    metalness={0.1}
-                    envMapIntensity={1.8}
-                    emissive={atom.color}
-                    emissiveIntensity={0.15}
-                  />
-                ) : (
-                  <meshStandardMaterial
-                    color={atom.color}
-                    roughness={0.3}
-                    metalness={0.15}
-                    envMapIntensity={1.2}
-                  />
-                )}
+  return (
+    <Float speed={variant === "hero" ? 1.2 : 0.9} rotationIntensity={0.2} floatIntensity={0.35}>
+      <group position={position} rotation={rotation} scale={scale}>
+        {/* Fixed presentation tilt — keeps the ring at a flattering 3/4 angle */}
+        <group rotation={presTilt}>
+          <group ref={spin}>
+            {/* Backbone bonds (the macrocycle) */}
+            {backboneBonds.map((b, i) => (
+              <group key={`bb-${i}`} position={b.position} rotation={b.rotation}>
+                <Cylinder args={[bondR, bondR, b.height, 10]} rotation={[Math.PI / 2, 0, 0]}>
+                  <meshStandardMaterial color={PALETTE.bond} roughness={0.35} metalness={0.55} />
+                </Cylinder>
+              </group>
+            ))}
+
+            {/* Side-chain bonds (thinner) */}
+            {sideBonds.map((b, i) => (
+              <group key={`sb-${i}`} position={b.position} rotation={b.rotation}>
+                <Cylinder args={[bondR * 0.7, bondR * 0.7, b.height, 8]} rotation={[Math.PI / 2, 0, 0]}>
+                  <meshStandardMaterial color={PALETTE.bond} roughness={0.4} metalness={0.5} />
+                </Cylinder>
+              </group>
+            ))}
+
+            {/* Backbone atoms (plum, pearlescent) */}
+            {backbone.map((a, i) => (
+              <Sphere key={`ba-${i}`} args={[a.size, 32, 32]} position={a.position}>
+                <meshStandardMaterial
+                  color={a.color}
+                  roughness={0.18}
+                  metalness={0.25}
+                  envMapIntensity={2.0}
+                  emissive={a.color}
+                  emissiveIntensity={0.1}
+                />
               </Sphere>
-            </group>
-        ))}
+            ))}
+
+            {/* Side-chain residues (gold, glowy — catches the bloom) */}
+            {sideChains.map((s, i) => (
+              <Sphere key={`sc-${i}`} args={[s.size, 24, 24]} position={s.position}>
+                <meshStandardMaterial
+                  color={variant === "hero" ? PALETTE.goldBright : PALETTE.gold}
+                  roughness={0.12}
+                  metalness={0.35}
+                  envMapIntensity={2.2}
+                  emissive={PALETTE.gold}
+                  emissiveIntensity={variant === "hero" ? 0.4 : 0.2}
+                />
+              </Sphere>
+            ))}
+          </group>
+        </group>
       </group>
     </Float>
   );
 }
 
-function FloatingParticles({ count = 80 }: { count?: number }) {
+function FloatingParticles({ count = 60 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null!);
 
   const positions = useMemo(() => {
@@ -193,14 +182,7 @@ function FloatingParticles({ count = 80 }: { count?: number }) {
 
   return (
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial
-        transparent
-        color="#D6B65F"
-        size={0.04}
-        sizeAttenuation
-        depthWrite={false}
-        opacity={0.4}
-      />
+      <PointMaterial transparent color="#C9A961" size={0.035} sizeAttenuation depthWrite={false} opacity={0.35} />
     </Points>
   );
 }
@@ -220,19 +202,19 @@ export default function PeptideCanvas() {
   if (!mounted) return null;
 
   return (
-    <div 
+    <div
       className="absolute inset-0 z-[1] transition-all duration-[2000ms] ease-out"
       style={{
         opacity: revealed ? 1 : 0,
-        filter: revealed ? 'blur(0px)' : 'blur(20px)',
-        transform: revealed ? 'scale(1)' : 'scale(0.95)',
+        filter: revealed ? "blur(0px)" : "blur(20px)",
+        transform: revealed ? "scale(1)" : "scale(0.95)",
       }}
     >
       <Canvas
         camera={{ position: [0, 0, 15], fov: 35 }}
         gl={{
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.2
+          toneMappingExposure: 1.2,
         }}
         dpr={[1, 2]}
       >
@@ -242,53 +224,25 @@ export default function PeptideCanvas() {
           {/* Dramatic chiaroscuro lighting */}
           <ambientLight intensity={0.4} color="#FFF5E0" />
 
-          <spotLight
-            position={[15, 20, 15]}
-            angle={0.25}
-            penumbra={1}
-            intensity={2.5}
-            color="#FFF0D0"
-            castShadow
-          />
+          <spotLight position={[15, 20, 15]} angle={0.25} penumbra={1} intensity={2.5} color="#FFF0D0" castShadow />
           <pointLight position={[-10, -10, -10]} intensity={0.3} color="#E6D8FF" />
-          {/* Gold rim light — backlit halo amplified by Bloom */}
-          <pointLight position={[0, 10, -5]} intensity={0.8} color="#C9A961" />
+          {/* Gold rim light — backlit halo amplified by Bloom, glows the gold residues */}
+          <pointLight position={[0, 10, -5]} intensity={1.0} color="#C9A961" />
 
-          {/* Main Hero Molecule */}
-          <Molecule
-            position={[0, 2, 0]}
-            scale={1.0}
-            count={16}
-            radius={2.2}
-            variant="hero"
-          />
+          {/* Main Hero Macrocycle */}
+          <Molecule position={[0, 2, 0]} scale={1.0} count={16} radius={2.2} variant="hero" />
 
-          {/* Background Molecule */}
-          <Molecule
-            position={[-9, 7, -10]}
-            scale={0.7}
-            count={8}
-            radius={2}
-            variant="background"
-          />
+          {/* Background Macrocycle */}
+          <Molecule position={[-9, 7, -10]} scale={0.7} count={9} radius={2} variant="background" />
 
           {/* Ambient floating particles */}
           <FloatingParticles />
 
           {/* Postprocessing pipeline */}
           <EffectComposer multisampling={0}>
-            <Bloom
-              intensity={0.4}
-              luminanceThreshold={0.6}
-              luminanceSmoothing={0.9}
-              mipmapBlur
-            />
-            <Vignette
-              offset={0.3}
-              darkness={0.6}
-            />
+            <Bloom intensity={0.5} luminanceThreshold={0.55} luminanceSmoothing={0.9} mipmapBlur />
+            <Vignette offset={0.3} darkness={0.6} />
           </EffectComposer>
-
         </Suspense>
       </Canvas>
     </div>
