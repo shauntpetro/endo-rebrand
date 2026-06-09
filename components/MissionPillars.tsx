@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import { useRef } from "react";
 import { useVisibility } from "@/hooks/useVisibility";
+import { DotGrid } from "@/components/ui/DotGrid";
 
 const pillars = [
   {
@@ -40,9 +41,7 @@ export default function MissionPillars() {
       className="bg-gradient-to-b from-plum-primary/10 via-plum-primary/5 to-white border-b border-black-primary relative overflow-hidden py-20"
     >
       {/* Background Pattern - Subtle texture */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-           style={{ backgroundImage: 'radial-gradient(#4A3B52 1px, transparent 1px)', backgroundSize: '24px 24px' }}
-      />
+      <DotGrid />
 
       <div className="container mx-auto px-6">
         <h2 className="font-serif text-3xl md:text-4xl font-bold text-plum-dark text-center mb-10">Our Mission Pillars</h2>
