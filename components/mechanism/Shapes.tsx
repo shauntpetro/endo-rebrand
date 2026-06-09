@@ -20,9 +20,23 @@ function wavyCirclePath(cx: number, cy: number, baseR: number, amplitude: number
   return points.join(" ") + " Z";
 }
 
-/** Cyclic peptide ring — wavy circular outline matching the reference graphic */
+/** Residue node positions at each lobe peak of the macrocycle */
+function residueNodes(cx: number, cy: number, baseR: number, amplitude: number, bumps: number) {
+  const nodes: { x: number; y: number }[] = [];
+  for (let i = 0; i < bumps; i++) {
+    const angle = (i / bumps) * Math.PI * 2 - Math.PI / 2;
+    const r = baseR + amplitude;
+    nodes.push({ x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) });
+  }
+  return nodes;
+}
+
+const RING_BUMPS = 8;
+
+/** Cyclic peptide — a clean closed macrocycle with residue nodes (echoes the hero molecule) */
 export const PeptideRing = ({ color, className, style, filled }: { color: string; className?: string; style?: React.CSSProperties; filled?: boolean }) => {
-  const path = wavyCirclePath(50, 50, 30, 8, 12);
+  const path = wavyCirclePath(50, 50, 30, 2, RING_BUMPS);
+  const nodes = residueNodes(50, 50, 30, 2, RING_BUMPS);
 
   return (
     <svg viewBox="0 0 100 100" className={className} style={style}>
@@ -31,17 +45,21 @@ export const PeptideRing = ({ color, className, style, filled }: { color: string
         fill={filled ? color : "none"}
         fillOpacity={filled ? 0.15 : 0}
         stroke={color}
-        strokeWidth="5"
+        strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+      {nodes.map((n, i) => (
+        <circle key={i} cx={n.x} cy={n.y} r="5" fill={color} />
+      ))}
     </svg>
   );
 };
 
-/** Protonated peptide ring — wavy circular outline with H+ label, matching reference graphic */
+/** Protonated peptide — activated macrocycle with residue nodes + H+ label */
 export const PeptideRingProtonated = ({ color, className, style }: { color: string; className?: string; style?: React.CSSProperties }) => {
-  const path = wavyCirclePath(50, 50, 30, 8, 12);
+  const path = wavyCirclePath(50, 50, 30, 2, RING_BUMPS);
+  const nodes = residueNodes(50, 50, 30, 2, RING_BUMPS);
 
   return (
     <svg viewBox="0 0 120 100" className={className} style={style}>
@@ -50,11 +68,14 @@ export const PeptideRingProtonated = ({ color, className, style }: { color: stri
         fill={color}
         fillOpacity={0.15}
         stroke={color}
-        strokeWidth="5"
+        strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {/* H+ label in red — matching reference graphic */}
+      {nodes.map((n, i) => (
+        <circle key={i} cx={n.x} cy={n.y} r="5" fill={color} />
+      ))}
+      {/* H+ label in red */}
       <text x="90" y="30" fontFamily="sans-serif" fontWeight="bold" fontSize="16" fill="#E53E3E">
         H+
       </text>
@@ -66,17 +87,17 @@ export const PeptideRingProtonated = ({ color, className, style }: { color: stri
 export const IntracellularTarget = ({ color, className, style }: { color: string; className?: string; style?: React.CSSProperties }) => (
   <svg viewBox="0 0 100 100" className={className} style={style}>
     {/* Nuclear envelope — outer membrane */}
-    <circle cx="50" cy="50" r="40" fill={color} fillOpacity="0.25" stroke={color} strokeWidth="2.5" opacity="0.7" />
+    <circle cx="50" cy="50" r="40" fill={color} fillOpacity="0.4" stroke={color} strokeWidth="3" opacity="0.95" />
     {/* Nuclear envelope — inner membrane */}
-    <circle cx="50" cy="50" r="36" fill="none" stroke={color} strokeWidth="1" opacity="0.3" />
+    <circle cx="50" cy="50" r="36" fill="none" stroke={color} strokeWidth="1.5" opacity="0.5" />
     {/* Chromatin texture — subtle irregular shapes */}
-    <circle cx="38" cy="40" r="8" fill={color} fillOpacity="0.1" />
-    <circle cx="60" cy="55" r="6" fill={color} fillOpacity="0.08" />
-    <circle cx="45" cy="62" r="5" fill={color} fillOpacity="0.06" />
+    <circle cx="38" cy="40" r="8" fill={color} fillOpacity="0.18" />
+    <circle cx="60" cy="55" r="6" fill={color} fillOpacity="0.14" />
+    <circle cx="45" cy="62" r="5" fill={color} fillOpacity="0.12" />
     {/* Nucleolus — darker inner circle */}
-    <circle cx="50" cy="48" r="14" fill={color} fillOpacity="0.35" stroke={color} strokeWidth="1.5" opacity="0.6" />
+    <circle cx="50" cy="48" r="14" fill={color} fillOpacity="0.5" stroke={color} strokeWidth="2" opacity="0.85" />
     {/* Nucleolus highlight */}
-    <circle cx="47" cy="45" r="5" fill="white" fillOpacity="0.15" />
+    <circle cx="47" cy="45" r="5" fill="white" fillOpacity="0.2" />
   </svg>
 );
 
