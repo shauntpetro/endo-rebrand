@@ -1,38 +1,38 @@
 
 /**
- * Mechanism visualization color palette
- * Aligned with reference graphic: warm peach/cream tissues, gold/amber peptides
+ * Mechanism visualization color palette — "Clinical Precision" language
+ * Flat, very light grounds; hairline ink/charcoal line work; gold as the single accent.
  */
 export const MECHANISM_COLORS = {
-  // Tissue backgrounds — warm peach/cream tones matching reference
-  normalTissue: '#FDEBD0',       // Warm cream for normal tissue bg
-  normalTissueDark: '#F5D5A8',   // Slightly deeper peach for depth
-  lesionTissue: '#FDE0C5',       // Warmer peach for lesion tissue
-  lesionTissueDark: '#F9CFA8',   // Deeper salmon-peach for lesion depth
+  // Tissue backgrounds — flat, very light clinical grounds
+  normalTissue: '#F6F3EE',
+  normalTissueDark: '#EAE5DC',
+  lesionTissue: '#FAF2EB',
+  lesionTissueDark: '#F0E6DB',
 
-  // Peptide colors — gold/amber matching reference
-  peptideInactive: '#C9A961',    // Brand gold for inactive peptides
-  peptideActive: '#C9A961',      // Same gold for active (reference uses same)
-  peptideDark: '#A68945',        // Darker gold for outlines/strokes
+  // Peptide — gold is the single accent; inactive reads neutral
+  peptideInactive: '#A8A299',    // muted neutral (inactive)
+  peptideActive: '#C9A961',      // gold accent (active)
+  peptideDark: '#A68945',
 
-  // Cell membrane — thick gold/amber stroke matching reference
-  cellMembrane: '#A68945',       // Dark gold membrane outline
-  cellMembraneLight: '#C9A961',  // Lighter gold fill
+  // Cell membrane — hairline ink/charcoal line work
+  cellMembrane: '#4A4843',
+  cellMembraneLight: '#C3BDB1',
 
-  // Intracellular target
-  intracellularTarget: '#C9A961', // Gold target (matching reference callout)
-  intracellularTargetDark: '#8B7535', // Deep amber
+  // Intracellular target — ink outline
+  intracellularTarget: '#4A4843',
+  intracellularTargetDark: '#2E2C28',
 
-  // Accent colors
-  phRed: '#E53E3E',             // Red for H+ proton labels
-  calloutGold: '#F6C547',       // Bright gold for callout boxes (matching reference)
-  calloutGoldBg: '#FEF3C7',     // Light gold background for callout
+  // Accents
+  phRed: '#C2553F',             // muted clinical red for H+
+  calloutGold: '#C9A961',
+  calloutGoldBg: '#F6F0E2',
 
   // Neutral
   background: '#FFFFFF',
   textDark: '#1A1A1A',
   textLight: '#FFFFFF',
-  divider: '#1A1A1A',           // Black vertical divider (matching reference)
+  divider: '#1A1A1A',
 };
 
 export const STEPS = [

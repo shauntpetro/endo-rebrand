@@ -128,7 +128,7 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           <div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, #FFF8F0 0%, ${MECHANISM_COLORS.normalTissue} 50%, ${MECHANISM_COLORS.normalTissueDark} 100%)`,
+              background: MECHANISM_COLORS.normalTissue,
             }}
           />
 
@@ -161,7 +161,7 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               d="M 205,140 Q 165,120 140,128 Q 120,135 108,133 Q 100,131 92,133 Q 80,135 60,128 Q 35,120 -5,135"
               fill="none"
               stroke={MECHANISM_COLORS.cellMembrane}
-              strokeWidth="3.5"
+              strokeWidth="1.4"
               strokeLinecap="round"
             />
             <path
@@ -252,14 +252,14 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           <div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, #FFF5ED 0%, ${MECHANISM_COLORS.lesionTissue} 50%, ${MECHANISM_COLORS.lesionTissueDark} 100%)`,
+              background: MECHANISM_COLORS.lesionTissue,
             }}
           />
 
           {/* Acidic tint */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: "linear-gradient(180deg, rgba(229,62,62,0.04) 0%, rgba(229,62,62,0.07) 30%, transparent 60%)" }}
+            style={{ background: "linear-gradient(180deg, rgba(194,85,63,0.03) 0%, rgba(194,85,63,0.05) 30%, transparent 60%)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
@@ -308,7 +308,7 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
             <motion.path
               fill="none"
               stroke={MECHANISM_COLORS.cellMembrane}
-              strokeWidth="3.5"
+              strokeWidth="1.4"
               strokeLinecap="round"
               animate={{ d: membraneD }}
               transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
