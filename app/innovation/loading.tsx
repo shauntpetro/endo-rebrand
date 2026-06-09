@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function InnovationLoading() {
   return (
-    <div className="min-h-screen bg-[#F8F9FA]" role="status" aria-label="Loading Innovation page">
+    <div className="min-h-screen bg-surface" role="status" aria-label="Loading Innovation page">
       {/* Hero skeleton */}
       <div className="pt-32 pb-16">
         <div className="container mx-auto px-6">

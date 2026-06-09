@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex flex-col bg-[#F8F9FA]">
+    <main className="min-h-screen flex flex-col bg-surface">
       <Navbar />
       <div className="flex-1 flex items-center justify-center px-6">
         <motion.div

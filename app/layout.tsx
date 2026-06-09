@@ -132,7 +132,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased bg-[#F5F5F5] text-[#2D2D2D] selection:bg-[#C9A961] selection:text-white" suppressHydrationWarning>
+      <body className="antialiased bg-surface text-black-soft selection:bg-gold-primary selection:text-white" suppressHydrationWarning>
         <a href="#main-content" className="skip-to-content">
           Skip to content
         </a>

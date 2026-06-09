@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA]" role="status" aria-label="Loading page">
+    <div className="min-h-screen flex items-center justify-center bg-surface" role="status" aria-label="Loading page">
       <div className="flex flex-col items-center gap-6">
         {/* Animated molecule loader */}
         <div className="relative w-16 h-16">

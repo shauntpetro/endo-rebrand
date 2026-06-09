@@ -39,7 +39,7 @@ const ImpactSection = dynamic(() => import("@/components/ImpactSection"), {
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col bg-[#F8F9FA]">
+    <main className="min-h-screen flex flex-col bg-surface">
       <Navbar />
       <Hero />
       <MilestoneProofBar />

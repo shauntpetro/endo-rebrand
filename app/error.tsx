@@ -18,7 +18,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#F8F9FA] px-6">
+    <main className="min-h-screen flex items-center justify-center bg-surface px-6">
       <motion.div
         className="text-center max-w-lg"
         initial={{ opacity: 0, y: 20 }}

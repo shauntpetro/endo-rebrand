@@ -29,10 +29,12 @@ const config: Config = {
         "gray-light": "#F9F9F9",
         "gray-mid": "#E0E0E0",
         
+        // Surface
+        "surface": "#F8F9FA",
+
         // Accents
         "clinical-teal": "#4A9B8E",
         "warm-rose": "#D4A5A5",
-        "deep-plum": "#4A3F5C",
       },
       fontFamily: {
         serif: ["var(--font-playfair)", "serif"],
