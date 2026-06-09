@@ -311,8 +311,7 @@ export const EfficacyGraph = () => {
             d={endoPath}
             fill="none"
             stroke={MECHANISM_COLORS.peptideActive}
-            strokeWidth="4"
-            filter="drop-shadow(0px 4px 8px rgba(229, 168, 61, 0.3))"
+            strokeWidth="2.5"
             initial={{ pathLength: 0 }}
             whileInView={{ pathLength: 1 }}
             viewport={{ once: true }}
@@ -323,12 +322,12 @@ export const EfficacyGraph = () => {
           <motion.circle
             cx={endoPoints[endoPoints.length - 1].x}
             cy={endoPoints[endoPoints.length - 1].y}
-            r={6}
+            r={4}
             fill={MECHANISM_COLORS.peptideActive}
-            initial={{ opacity: 0, r: 0 }}
-            whileInView={{ opacity: [0, 0.8, 0.4, 0.8], r: [0, 10, 6, 10] }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 1.9, duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ delay: 1.9, duration: 0.4 }}
           />
 
           {/* Clearance Marker */}

@@ -43,7 +43,7 @@ function Card({ item, compact }: { item: PipelineItem; compact: boolean }) {
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
       whileHover={{ y: -3 }}
-      className="relative bg-white rounded-2xl border border-[#ece6dc] shadow-[0_10px_30px_-16px_rgba(46,38,58,0.3)] px-4 py-3.5"
+      className="relative bg-white rounded-2xl border border-[#e3ddd1] px-4 py-3.5"
     >
       <span className="absolute left-0 top-3.5 bottom-3.5 w-[3px] rounded-full" style={{ background: `linear-gradient(${c}, ${c}33)` }} />
       <div className="flex items-center gap-2 flex-wrap">
@@ -93,9 +93,8 @@ export default function PortfolioMatrix({ variant = "full" }: { variant?: "full"
     <section
       aria-label="Portfolio of matched therapeutic and diagnostic pairs"
       className="relative overflow-hidden rounded-[18px] p-6 md:p-8"
-      style={{ background: "linear-gradient(160deg,#F5F1E8 0%,#efe9db 100%)" }}
+      style={{ background: "#F7F4EF" }}
     >
-      <div className="absolute -top-24 -right-16 w-[340px] h-[340px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle,#C9A96133,transparent 70%)" }} />
       <div className="relative">
         <p className="text-[10px] font-extrabold uppercase tracking-[0.28em] text-gold-primary mb-1.5">Therapeutics &amp; Diagnostics · One Platform</p>
         <h3 className="font-serif font-bold text-plum-dark leading-none" style={{ fontSize: compact ? 24 : 30 }}>
