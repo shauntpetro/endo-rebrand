@@ -160,9 +160,9 @@ export default function ImagingPage() {
                   <div className="absolute inset-0 bg-[url('/FemLUNA-enhanced.webp')] bg-cover bg-center opacity-100 scale-110" />
                   {/* Glowing Lesions - Positioned over actual lesions in the image */}
                   {/* Anterior lesion (0.5mm) - near bladder, front of pelvis */}
-                  <div className="absolute top-[78%] left-[37%] w-2 h-2 md:w-3 md:h-3 bg-gold-primary rounded-full shadow-[0_0_25px_#D4AF37] animate-pulse" />
+                  <div className="absolute top-[78%] left-[37%] w-2 h-2 md:w-3 md:h-3 bg-gold-primary rounded-full shadow-[0_0_25px_#C9A961] animate-pulse" />
                   {/* Posterior lesion (0.8mm) - near rectum, back of pelvis - larger */}
-                  <div className="absolute bottom-[38%] right-[28%] w-3 h-3 md:w-5 md:h-5 bg-gold-primary rounded-full shadow-[0_0_40px_#D4AF37] animate-pulse delay-100" />
+                  <div className="absolute bottom-[38%] right-[28%] w-3 h-3 md:w-5 md:h-5 bg-gold-primary rounded-full shadow-[0_0_40px_#C9A961] animate-pulse delay-100" />
                   
                   <div className="absolute bottom-8 right-8 text-gold-primary font-mono text-xs md:text-sm tracking-wider backdrop-blur-md bg-black/50 p-2 rounded border border-gold-primary/30">
                      <div className="flex items-center gap-2">
@@ -177,7 +177,7 @@ export default function ImagingPage() {
                 className="absolute inset-0 bg-zinc-900 overflow-hidden border-r border-white/50"
                 style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
               >
-                  <div className="absolute inset-0 bg-[url('/standard-mri.webp')] bg-cover bg-center opacity-20 grayscale scale-110" />
+                  <div className="absolute inset-0 bg-[url('/standard-mri.webp')] bg-cover bg-center opacity-[0.7] grayscale scale-110" />
                   <div className="absolute inset-0 flex items-center justify-center">
                       <span className="bg-black/60 backdrop-blur px-4 py-2 text-zinc-500 font-mono text-xs uppercase tracking-widest border border-zinc-800">No Signal</span>
                   </div>
@@ -185,21 +185,20 @@ export default function ImagingPage() {
               
               {/* Slider Handle */}
               <div
-                 className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_20px_rgba(255,255,255,0.5)] z-10 pointer-events-none"
+                 className="absolute top-0 bottom-0 w-0.5 bg-white/90 shadow-[0_0_24px_rgba(201,169,97,0.45)] z-10 pointer-events-none"
                  style={{ left: `${sliderPosition}%` }}
               >
-                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-xl flex items-center justify-center cursor-col-resize hover:scale-110 transition-transform">
-                    <div className="flex gap-1">
-                       <div className="w-0.5 h-4 bg-zinc-400" />
-                       <div className="w-0.5 h-4 bg-zinc-400" />
-                    </div>
+                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11 h-11 bg-white rounded-full shadow-xl ring-1 ring-gold-primary/40 flex items-center justify-center cursor-col-resize hover:scale-110 transition-transform">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-plum-primary">
+                       <path d="M9 6L4 12l5 6M15 6l5 6-5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                  </div>
-                 {/* Pulse ring */}
-                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 border-white/30 animate-ping pointer-events-none" />
+                 {/* Soft pulse ring */}
+                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-gold-primary/30 animate-ping pointer-events-none" />
               </div>
 
               {/* Labels */}
-              <div className="absolute top-6 left-6 text-xs font-bold text-zinc-500 uppercase tracking-[0.2em] mix-blend-difference">Standard MRI</div>
+              <div className="absolute top-6 left-6 text-xs font-bold text-white/85 uppercase tracking-[0.2em] [text-shadow:0_1px_6px_rgba(0,0,0,0.7)]">Standard MRI</div>
               <div className="absolute top-6 right-6 text-xs font-bold text-gold-primary uppercase tracking-[0.2em]">FemLUNA Enhanced</div>
             </div>
           </motion.div>
