@@ -200,10 +200,9 @@ export default function InnovationPage() {
             animate={{ opacity: showStepper ? 1 : 0, pointerEvents: showStepper ? "auto" as const : "none" as const }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <motion.div 
-                className="absolute inset-0 -z-10"
+            <motion.div
+                className="absolute inset-0 -z-10 opacity-90"
                 animate={{ backgroundColor: bgColors[activeStep + 1] || bgColors[0] }}
-                style={{ opacity: 0.9 }}
             />
             
             <div className="relative flex justify-between items-start max-w-5xl mx-auto py-3 px-6">
@@ -350,7 +349,7 @@ export default function InnovationPage() {
                 </motion.div>
               ))}
               {/* Connecting line behind circles */}
-              <div className="col-span-5 -mt-[52px] md:-mt-[56px] mx-auto w-[calc(100%-60px)] h-px bg-gradient-to-r from-gold-primary/20 via-gold-primary/40 to-gold-primary/20 pointer-events-none -z-10" style={{ position: 'relative', zIndex: -1 }} />
+              <div className="col-span-5 -mt-[52px] md:-mt-[56px] mx-auto w-[calc(100%-60px)] h-px bg-gradient-to-r from-gold-primary/20 via-gold-primary/40 to-gold-primary/20 pointer-events-none relative z-[-1]" />
             </div>
 
             <motion.p

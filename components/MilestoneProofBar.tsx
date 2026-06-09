@@ -51,7 +51,7 @@ export default function MilestoneProofBar() {
 
       {/* ── Slow-moving gold gradient orb ── */}
       <motion.div
-        className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#C9A961]/10 blur-[100px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-primary/10 blur-[100px]"
         animate={isVisible ? {
           scale: [1, 1.2, 1],
           opacity: [0.2, 0.4, 0.2],

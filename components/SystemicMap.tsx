@@ -236,7 +236,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.5 }}
         className={`absolute bottom-4 right-4 z-30 ${isDark ? 'bg-plum-dark/90 border-plum-primary/30' : 'bg-white/90 border-gray-200'} backdrop-blur-md border rounded-lg shadow-lg px-5 py-4 max-w-[240px]`}>
-        <h3 className={`text-[10px] font-bold ${isDark ? 'text-gold-primary' : 'text-gray-500'} uppercase mb-2`} style={{ letterSpacing: '0.1em' }}>
+        <h3 className={`text-[10px] font-bold ${isDark ? 'text-gold-primary' : 'text-gray-500'} uppercase mb-2 tracking-[0.1em]`}>
           Systemic Impact Map
         </h3>
         <p className={`text-[11px] ${isDark ? 'text-gray-300' : 'text-gray-500'} leading-relaxed mb-3`}>
@@ -245,18 +245,18 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
         <div className="flex items-center gap-4 mb-3">
           <div className="flex items-center gap-2">
             <div className={`w-3 h-3 rounded-full ${isDark ? 'bg-gold-primary' : 'bg-plum-primary'} shadow-sm`} />
-            <span className="text-[10px] font-semibold text-gray-600 uppercase" style={{ letterSpacing: '0.05em' }}>Origin</span>
+            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-[0.05em]">Origin</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-gold-primary shadow-sm" />
-            <span className="text-[10px] font-semibold text-gray-600 uppercase" style={{ letterSpacing: '0.05em' }}>Target</span>
+            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-[0.05em]">Target</span>
           </div>
         </div>
         <div className={`pt-3 border-t ${isDark ? 'border-plum-primary/30' : 'border-gray-200'}`}>
           <p className={`text-[9px] font-bold uppercase tracking-[0.08em] ${isDark ? 'text-gold-primary' : 'text-gray-400'} mb-1.5`}>Associated comorbidities</p>
           <ul className={`text-[10px] ${isDark ? 'text-gray-300' : 'text-gray-500'} space-y-1`}>
-            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{ background: '#D4A5A5' }} /> Cardiovascular disease</li>
-            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{ background: '#FF6B6B' }} /> Increased cancer risk</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-warm-rose" /> Cardiovascular disease</li>
+            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-coral-primary" /> Increased cancer risk</li>
             <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{ background: '#9F8CA6' }} /> Inflammatory conditions</li>
           </ul>
         </div>

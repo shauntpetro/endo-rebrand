@@ -16,7 +16,7 @@ export default function GrantHighlight() {
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
   return (
-    <section ref={visRef as React.RefObject<HTMLElement>} className="border-b border-black-primary bg-gradient-to-b from-white via-[#F3F0F7] to-[#E8E4F0] overflow-hidden">
+    <section ref={visRef as React.RefObject<HTMLElement>} className="border-b border-black-primary bg-gradient-to-b from-white via-pastel-plum to-[#E8E4F0] overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Image Side */}

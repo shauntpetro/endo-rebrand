@@ -31,7 +31,7 @@ export default function InnovationSection() {
   const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
-    <section ref={(el) => { (ref as React.MutableRefObject<HTMLElement | null>).current = el; setVisRef(el); }} className="bg-gradient-to-b from-[#E5D4A6]/20 via-white to-[#E8E4F0] border-b border-black-primary overflow-hidden">
+    <section ref={(el) => { (ref as React.MutableRefObject<HTMLElement | null>).current = el; setVisRef(el); }} className="bg-gradient-to-b from-gold-light/20 via-white to-[#E8E4F0] border-b border-black-primary overflow-hidden">
       <div className="container mx-auto px-6 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
           {/* Content - Swiss Flush Left */}
@@ -225,7 +225,7 @@ export default function InnovationSection() {
                  FIG 1.0 — pH-MEDIATED SELECTIVE UPTAKE
                </div>
                <div className="flex gap-2 items-center">
-                 <div className="w-2 h-2 rounded-full border-2 border-[#C9A961]/40" title="Inactive" />
+                 <div className="w-2 h-2 rounded-full border-2 border-gold-primary/40" title="Inactive" />
                  <span className="text-[7px] text-stone-400 uppercase">Inactive</span>
                  <div className="w-2 h-2 rounded-full bg-gold-primary shadow-[0_0_5px_#C9A961]" title="Active" />
                  <span className="text-[7px] text-stone-400 uppercase">Active</span>

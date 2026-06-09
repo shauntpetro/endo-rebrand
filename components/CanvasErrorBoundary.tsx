@@ -12,7 +12,7 @@ interface State {
 }
 
 const DefaultFallback = () => (
-  <div className="w-full h-full min-h-[200px] bg-gradient-to-br from-[#FDF6E9] to-[#F5F1E8] flex items-center justify-center rounded-xl">
+  <div className="w-full h-full min-h-[200px] bg-gradient-to-br from-[#FDF6E9] to-cream-primary flex items-center justify-center rounded-xl">
     <div className="text-center px-6">
       <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-gold-primary/30 to-plum-primary/20 blur-sm" />
       <p className="text-sm text-stone-400">3D visualization unavailable</p>

@@ -35,7 +35,7 @@ export default function WhyNowSection() {
         (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
         setVisRef(el);
       }}
-      className="bg-gradient-to-b from-cream-primary via-white to-[#F3F0F7] border-b border-black-primary relative overflow-hidden py-24 md:py-32"
+      className="bg-gradient-to-b from-cream-primary via-white to-pastel-plum border-b border-black-primary relative overflow-hidden py-24 md:py-32"
     >
       {/* Background Dot Pattern */}
       <div
