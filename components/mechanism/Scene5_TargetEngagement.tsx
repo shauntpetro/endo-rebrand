@@ -38,7 +38,7 @@ function PeptideRingCSS() {
         const y = 50 + (radius / 50) * 50 * Math.sin(angle);
         const color = ATOM_COLORS[i % ATOM_COLORS.length];
         return (
-          <div key={i} className="absolute rounded-full" style={{ width: 10, height: 10, left: `${x}%`, top: `${y}%`, transform: "translate(-50%, -50%)", background: `radial-gradient(circle at 35% 35%, ${color}dd, ${color})`, boxShadow: `0 0 6px ${color}44` }} />
+          <div key={i} className="absolute rounded-full" style={{ width: 10, height: 10, left: `${x}%`, top: `${y}%`, transform: "translate(-50%, -50%)", background: color, boxShadow: "none" }} />
         );
       })}
     </motion.div>
@@ -141,7 +141,7 @@ export const Scene5_TargetEngagement = () => {
       <motion.div
         className="w-[400px] h-[400px] rounded-full relative flex items-center justify-center overflow-hidden"
         style={{
-          background: `radial-gradient(circle at 30% 30%, ${MECHANISM_COLORS.lesionTissue}, ${MECHANISM_COLORS.lesionTissueDark})`,
+          background: MECHANISM_COLORS.lesionTissue,
           border: `2px solid ${MECHANISM_COLORS.cellMembrane}`,
           boxShadow: 'inset 0 0 60px rgba(0,0,0,0.05)',
         }}

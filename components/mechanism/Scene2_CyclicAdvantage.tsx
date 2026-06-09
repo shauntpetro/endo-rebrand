@@ -63,8 +63,8 @@ function CyclicPeptideCSS() {
               left: `${x}%`,
               top: `${y}%`,
               transform: "translate(-50%, -50%)",
-              background: `radial-gradient(circle at 35% 35%, ${color}dd, ${color})`,
-              boxShadow: `0 0 8px ${color}44`,
+              background: color,
+              boxShadow: "none",
             }}
           />
         );
@@ -199,13 +199,13 @@ export const Scene2_CyclicAdvantage = () => {
             {/* Double-layer pulsing glow */}
             <motion.div
               className="absolute inset-0 rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.2) 0%, transparent 60%)' }}
+              style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.07) 0%, transparent 60%)' }}
               animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.7, 0.3] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div
               className="absolute -inset-4 rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.08) 0%, transparent 50%)' }}
+              style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.04) 0%, transparent 50%)' }}
               animate={{ scale: [1.2, 1.6, 1.2], opacity: [0.1, 0.3, 0.1] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
             />

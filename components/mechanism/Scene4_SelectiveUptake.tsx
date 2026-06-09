@@ -117,7 +117,7 @@ export const Scene4_SelectiveUptake = () => {
           <div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, #FFF8F0 0%, ${MECHANISM_COLORS.normalTissue} 50%, ${MECHANISM_COLORS.normalTissueDark} 100%)`,
+              background: MECHANISM_COLORS.normalTissue,
             }}
           />
 
@@ -150,7 +150,7 @@ export const Scene4_SelectiveUptake = () => {
               d="M 205,138 Q 165,120 140,128 Q 120,135 108,133 Q 100,131 92,133 Q 80,135 60,128 Q 35,120 -5,135"
               fill="none"
               stroke={MECHANISM_COLORS.cellMembrane}
-              strokeWidth="3.5"
+              strokeWidth="1.4"
               strokeLinecap="round"
             />
             <path
@@ -242,14 +242,14 @@ export const Scene4_SelectiveUptake = () => {
           <div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, #FFF5ED 0%, ${MECHANISM_COLORS.lesionTissue} 50%, ${MECHANISM_COLORS.lesionTissueDark} 100%)`,
+              background: MECHANISM_COLORS.lesionTissue,
             }}
           />
 
           {/* Acidic microenvironment tint */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: "linear-gradient(180deg, rgba(229,62,62,0.04) 0%, rgba(229,62,62,0.07) 30%, transparent 60%)" }}
+            style={{ background: "linear-gradient(180deg, rgba(194,85,63,0.03) 0%, rgba(194,85,63,0.05) 30%, transparent 60%)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
@@ -298,7 +298,7 @@ export const Scene4_SelectiveUptake = () => {
             <motion.path
               fill="none"
               stroke={MECHANISM_COLORS.cellMembrane}
-              strokeWidth="3.5"
+              strokeWidth="1.4"
               strokeLinecap="round"
               animate={{ d: membraneD }}
               transition={{ duration: 1.2, ease: "easeInOut" }}
@@ -387,7 +387,7 @@ export const Scene4_SelectiveUptake = () => {
               top: "16%",
               left: "35%",
               transform: "translate(-50%, -50%)",
-              background: `radial-gradient(circle, ${MECHANISM_COLORS.calloutGold}60 0%, transparent 70%)`,
+              background: `radial-gradient(circle, ${MECHANISM_COLORS.calloutGold}20 0%, transparent 70%)`,
             }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{
@@ -718,8 +718,8 @@ export const Scene4_SelectiveUptake = () => {
               top: "74%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              background: `radial-gradient(circle, ${MECHANISM_COLORS.calloutGold}80 0%, ${MECHANISM_COLORS.calloutGold}30 40%, transparent 70%)`,
-              filter: "blur(8px)",
+              background: `radial-gradient(circle, ${MECHANISM_COLORS.calloutGold}25 0%, transparent 65%)`,
+              filter: "blur(3px)",
             }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{

@@ -145,7 +145,7 @@ export const Scene3_PhActivation = () => {
       <motion.div
         className="absolute inset-0 -z-10"
         animate={{
-          background: `linear-gradient(180deg, #ffffff 0%, ${isAcidic ? '#FFF3D4' : '#FFFBF5'} 50%, ${isAcidic ? '#FDEBD0' : '#FFFBF5'} 100%)`
+          background: isAcidic ? MECHANISM_COLORS.lesionTissue : MECHANISM_COLORS.normalTissue
         }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
       />
@@ -200,7 +200,7 @@ export const Scene3_PhActivation = () => {
           className="relative w-36 h-36 z-10"
           animate={{
             rotate: 360,
-            filter: isAcidic ? `drop-shadow(0 0 30px ${MECHANISM_COLORS.peptideActive}) drop-shadow(0 0 60px ${MECHANISM_COLORS.peptideActive}80)` : 'drop-shadow(0 0 0px transparent)',
+            filter: isAcidic ? `drop-shadow(0 0 6px ${MECHANISM_COLORS.peptideActive})` : 'none',
           }}
           transition={{
             rotate: { duration: 10, repeat: Infinity, ease: "linear" },
