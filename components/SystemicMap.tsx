@@ -12,31 +12,22 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
   const beamsActive = isVisible && activeNode === null; // pause beams while inspecting
   const isDark = theme === "dark";
 
-  // Refined anatomical coordinates based on silhouette analysis
+  // Unified palette: plum "emitter" origin, gold "target" spread sites.
+  const ORIGIN_COLOR = isDark ? "#B5A3BC" : "#4A3F5C"; // plum
+  const TARGET_COLOR = "#C9A961"; // brand gold
+
+  // Refined anatomical coordinates based on silhouette analysis (relative to the silhouette box)
   const nodes = [
-    // Primary Origin - Center of pelvis
-    { id: 0, x: 50, y: 46, r: 14, color: isDark ? "#C9A961" : "#4A3F5C", label: "Pelvic Cavity", description: "Primary site of endometrial implants" },
-    
-    // Neurological - Center of head
-    { id: 1, x: 50, y: 10, r: 5, color: "#9F8CA6", label: "Brain", description: "Central sensitization and pain processing changes" },
-    
-    // Thoracic - Inside chest cavity (narrower spread)
-    { id: 2, x: 45, y: 28, r: 5, color: "#D4A5A5", label: "Right Lung", description: "Thoracic endometriosis, catamenial pneumothorax" },
-    { id: 3, x: 55, y: 28, r: 5, color: "#D4A5A5", label: "Left Lung", description: "Thoracic endometriosis, catamenial pneumothorax" },
-    
-    // Abdominal - Upper mid-section
-    { id: 4, x: 50, y: 38, r: 7, color: "#C9A961", label: "Abdomen", description: "Peritoneal implants and adhesions" },
-    
-    // GI - Lower abdomen, slightly off-center
-    { id: 5, x: 53, y: 43, r: 5, color: "#4A9B8E", label: "Bowel", description: "Intestinal lesions affecting motility" },
-    
-    // Reproductive - Lateral pelvis (within body width)
-    { id: 6, x: 46, y: 45, r: 5, color: "#FF6B6B", label: "Right Ovary", description: "Endometriomas, associated malignancy risk" },
-    { id: 7, x: 54, y: 45, r: 5, color: "#FF6B6B", label: "Left Ovary", description: "Endometriomas, associated malignancy risk" },
-    
-    // Neuropathy - Upper thigh/hip junction (just below pelvis, within leg width)
-    { id: 8, x: 44, y: 56, r: 4, color: "#D4A5A5", label: "Right Sciatic", description: "Cyclical sciatica from nerve involvement" },
-    { id: 9, x: 56, y: 56, r: 4, color: "#D4A5A5", label: "Left Sciatic", description: "Cyclical sciatica from nerve involvement" },
+    { id: 0, x: 50, y: 46, r: 14, color: ORIGIN_COLOR, label: "Pelvic Cavity", description: "Primary site of endometrial implants" },
+    { id: 1, x: 50, y: 10, r: 5, color: TARGET_COLOR, label: "Brain", description: "Central sensitization and pain processing changes" },
+    { id: 2, x: 45, y: 28, r: 5, color: TARGET_COLOR, label: "Right Lung", description: "Thoracic endometriosis, catamenial pneumothorax" },
+    { id: 3, x: 55, y: 28, r: 5, color: TARGET_COLOR, label: "Left Lung", description: "Thoracic endometriosis, catamenial pneumothorax" },
+    { id: 4, x: 50, y: 38, r: 7, color: TARGET_COLOR, label: "Abdomen", description: "Peritoneal implants and adhesions" },
+    { id: 5, x: 53, y: 43, r: 5, color: TARGET_COLOR, label: "Bowel", description: "Intestinal lesions affecting motility" },
+    { id: 6, x: 46, y: 45, r: 5, color: TARGET_COLOR, label: "Right Ovary", description: "Endometriomas, associated malignancy risk" },
+    { id: 7, x: 54, y: 45, r: 5, color: TARGET_COLOR, label: "Left Ovary", description: "Endometriomas, associated malignancy risk" },
+    { id: 8, x: 44, y: 56, r: 4, color: TARGET_COLOR, label: "Right Sciatic", description: "Cyclical sciatica from nerve involvement" },
+    { id: 9, x: 56, y: 56, r: 4, color: TARGET_COLOR, label: "Left Sciatic", description: "Cyclical sciatica from nerve involvement" },
   ];
 
   // Get active node data
@@ -123,8 +114,10 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
         transition={beamsActive ? { duration: 6, repeat: Infinity, ease: "linear" } : { duration: 0 }}
       />
 
-      {/* Connection Network */}
-      <svg aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-10">
+      {/* Connection Network — aligned to the silhouette box */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+       <div className="relative h-[95%] w-full max-w-[400px]">
+      <svg aria-hidden="true" className="absolute inset-0 w-full h-full">
         <defs>
           <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor={isDark ? "#C9A961" : "#4A3F5C"} stopOpacity="0" />
@@ -176,9 +169,12 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
             )
         ))}
       </svg>
+       </div>
+      </div>
 
-      {/* Interactive Nodes */}
-      <div className="absolute inset-0 w-full h-full z-20">
+      {/* Interactive Nodes — aligned to the silhouette box */}
+      <div className="absolute inset-0 flex items-center justify-center z-20">
+       <div className="relative h-[95%] w-full max-w-[400px]">
         {nodes.map((node, i) => (
             <motion.div
                 key={i}
@@ -199,25 +195,39 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
                 onClick={() => setPinnedNode((p) => (p === node.id ? null : node.id))}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setPinnedNode((p) => (p === node.id ? null : node.id)); } }}
             >
-                {/* Glow Ring */}
-                <div className={`absolute inset-0 rounded-full opacity-20 ${isVisible ? 'animate-ping' : ''}`}
-                     style={{ 
-                       width: node.r * 3, 
-                       height: node.r * 3, 
-                       left: -node.r, 
-                       top: -node.r,
-                       backgroundColor: i === 0 ? (isDark ? '#C9A961' : '#4A3F5C') : '#C9A961'
-                     }} 
+                {/* Soft halo */}
+                <div
+                    className="absolute rounded-full blur-[5px] pointer-events-none"
+                    style={{
+                        width: node.r * 3.4,
+                        height: node.r * 3.4,
+                        left: -node.r * 1.2,
+                        top: -node.r * 1.2,
+                        background: `radial-gradient(circle, ${node.color} 0%, transparent 70%)`,
+                        opacity: isVisible ? (node.id === 0 ? 0.75 : 0.45) : 0,
+                        transition: "opacity 0.6s ease",
+                    }}
                 />
-                
-                {/* Core Node */}
-                <div 
-                    className={`relative rounded-full border border-white shadow-md transition-all duration-500 ease-out ${activeNode === node.id ? 'scale-125 ring-4 ring-plum-primary/20 shadow-[0_0_15px_rgba(201,169,97,0.3)]' : ''}`}
-                    style={{ 
-                        width: node.r * 2, 
+
+                {/* Origin "emitter" pulse */}
+                {node.id === 0 && (
+                    <motion.div
+                        className="absolute rounded-full border pointer-events-none"
+                        style={{ width: node.r * 2, height: node.r * 2, borderColor: "#C9A96166" }}
+                        animate={isVisible ? { scale: [1, 2.6], opacity: [0.6, 0] } : undefined}
+                        transition={isVisible ? { duration: 2.6, repeat: Infinity, ease: "easeOut" } : { duration: 0 }}
+                    />
+                )}
+
+                {/* Crisp core */}
+                <div
+                    className={`relative rounded-full border transition-all duration-500 ease-out ${activeNode === node.id ? "scale-125" : ""}`}
+                    style={{
+                        width: node.r * 2,
                         height: node.r * 2,
-                        backgroundColor: activeNode === node.id ? '#fff' : node.color,
-                        borderColor: activeNode === node.id ? '#4A3F5C' : (isDark ? '#C9A961' : '#fff')
+                        backgroundColor: activeNode === node.id ? "#fff" : node.color,
+                        borderColor: activeNode === node.id ? "#4A3F5C" : (isDark ? "rgba(255,255,255,0.85)" : "#fff"),
+                        boxShadow: `0 0 ${node.r * (activeNode === node.id ? 1.6 : 0.9)}px ${node.color}cc`,
                     }}
                 >
                     {activeNode === node.id && (
@@ -228,6 +238,7 @@ export default function SystemicMap({ theme = "light" }: { theme?: "light" | "da
                 </div>
             </motion.div>
         ))}
+       </div>
       </div>
 
       {/* Legend Panel - Bottom Right */}
