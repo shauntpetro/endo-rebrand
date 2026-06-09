@@ -112,7 +112,7 @@ export const Scene5_TargetEngagement = () => {
 
       <motion.div className="absolute top-6 left-6 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
           <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">Target Engagement</h3>
         </div>
       </motion.div>
@@ -131,7 +131,7 @@ export const Scene5_TargetEngagement = () => {
               transition={{ duration: 0.3 }}
             />
           ))}
-          <span className="text-[9px] font-bold uppercase tracking-wider ml-1" style={{ color: phase === 'resolved' ? '#7C3AED' : phase === 'engaged' ? '#92700C' : '#9CA3AF' }}>
+          <span className="text-[9px] font-bold uppercase tracking-wider ml-1" style={{ color: phase === 'resolved' ? '#7C3AED' : phase === 'engaged' ? '#A68945' : '#9CA3AF' }}>
             {phase === 'resolved' ? 'Resolved' : phase === 'engaged' ? 'Engaging' : 'Approaching'}
           </span>
         </div>
@@ -158,7 +158,7 @@ export const Scene5_TargetEngagement = () => {
       >
         {/* Nucleus */}
         <motion.div
-          className="absolute w-24 h-24 rounded-full bg-purple-900/20 blur-xl top-1/3 left-1/3 -translate-x-1/2 -translate-y-1/2"
+          className="absolute w-24 h-24 rounded-full bg-plum-dark/20 blur-xl top-1/3 left-1/3 -translate-x-1/2 -translate-y-1/2"
           animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.3, 0.2] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -201,8 +201,8 @@ export const Scene5_TargetEngagement = () => {
             boxShadow: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-[10px] font-bold text-amber-900 uppercase tracking-wider">Target</span>
-          <div className="absolute -top-3 w-10 h-5 bg-amber-200/50 rounded-b-full backdrop-blur-sm" />
+          <span className="text-[10px] font-bold text-gold-dark uppercase tracking-wider">Target</span>
+          <div className="absolute -top-3 w-10 h-5 bg-gold-primary/20/50 rounded-b-full backdrop-blur-sm" />
         </motion.div>
 
         {/* Targeting reticle — appears during approach */}
@@ -305,14 +305,14 @@ export const Scene5_TargetEngagement = () => {
                 animate={{ opacity: 1, scale: 1, rotate: -6 }}
                 transition={{ type: "spring", bounce: 0.4, delay: 0.6 }}
               >
-                <div className="bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-xl border border-emerald-200 shadow-lg flex items-center gap-2">
+                <div className="bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-xl border border-clinical-teal/30 shadow-lg flex items-center gap-2">
                   <motion.div
-                    className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center"
+                    className="w-5 h-5 rounded-full bg-clinical-teal/15 flex items-center justify-center"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.9, type: "spring" }}
                   >
-                    <span className="text-emerald-600 text-xs font-bold">✓</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-clinical-teal"><path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </motion.div>
                   <span className="text-sm font-bold text-stone-700 uppercase tracking-wider">Resolved</span>
                 </div>
@@ -368,7 +368,7 @@ const VolumeCounter = () => {
             fill="none" stroke="#C9A961" strokeWidth="3" strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={circumference * (1 - volume / 100)}
-            animate={{ stroke: volume < 20 ? '#22C55E' : '#C9A961' }}
+            animate={{ stroke: volume < 20 ? '#4A9B8E' : '#C9A961' }}
             transition={{ duration: 0.3 }}
           />
         </svg>
@@ -376,7 +376,7 @@ const VolumeCounter = () => {
           <span
             className="text-xs font-mono font-bold"
             style={{
-              color: volume < 20 ? '#22C55E' : '#D97706',
+              color: volume < 20 ? '#4A9B8E' : '#A68945',
             }}
           >
             {volume}%

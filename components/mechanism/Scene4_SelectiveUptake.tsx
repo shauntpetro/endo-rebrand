@@ -103,7 +103,7 @@ export const Scene4_SelectiveUptake = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+        <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
         <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">
           Selective Uptake
         </h3>
@@ -129,7 +129,7 @@ export const Scene4_SelectiveUptake = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm border border-stone-200/60">
-              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+              <div className="w-2 h-2 rounded-full bg-clinical-teal" />
               <div>
                 <h3 className="font-bold text-stone-800 text-[11px] tracking-wide font-sans leading-tight">
                   Normal Tissue

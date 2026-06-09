@@ -129,7 +129,7 @@ export const Scene2_CyclicAdvantage = () => {
 
       <motion.div className="absolute top-6 left-6 z-10" variants={slideUp}>
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
           <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">The Cyclic Advantage</h3>
         </div>
       </motion.div>
@@ -217,12 +217,12 @@ export const Scene2_CyclicAdvantage = () => {
               animate={{ opacity: 0.6 }}
               transition={{ delay: 1.8 }}
             >
-              <div className="w-16 h-px bg-amber-400/50" />
-              <span className="text-[7px] font-mono text-amber-500/70 mt-0.5">~1–3 kDa</span>
+              <div className="w-16 h-px bg-gold-primary/50" />
+              <span className="text-[7px] font-mono text-gold-primary/70 mt-0.5">~1–3 kDa</span>
             </motion.div>
           </div>
           <motion.div
-            className="text-center relative z-20 -mt-2 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-amber-100 shadow-lg ring-1 ring-amber-500/10"
+            className="text-center relative z-20 -mt-2 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-gold-primary/20 shadow-lg ring-1 ring-gold-primary/10"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", bounce: 0.5 }}
           >
@@ -232,7 +232,7 @@ export const Scene2_CyclicAdvantage = () => {
               animate={{ opacity: [0.3, 0.6, 0.3] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
-            <p className="font-bold text-amber-600 text-base font-serif">Cyclic Peptide</p>
+            <p className="font-bold text-gold-dark text-base font-serif">Cyclic Peptide</p>
             <p className="text-[9px] font-bold text-stone-500 uppercase tracking-[0.2em]">Perfect Specificity</p>
           </motion.div>
         </motion.div>
@@ -268,7 +268,7 @@ export const Scene2_CyclicAdvantage = () => {
       >
         <p className="text-sm text-stone-600 font-serif leading-relaxed">
           &ldquo;Cyclic peptides occupy the <motion.span
-            className="text-amber-600 italic font-bold"
+            className="text-gold-dark italic font-bold"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.8, type: "spring", bounce: 0.4 }}

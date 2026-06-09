@@ -108,7 +108,7 @@ export const Scene3_PhActivation = () => {
 
       <motion.div className="absolute top-6 left-6 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
           <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">Smart Activation</h3>
         </div>
       </motion.div>
@@ -135,7 +135,7 @@ export const Scene3_PhActivation = () => {
             }}
             transition={{ duration: isAcidic ? 1.5 : 0.3, repeat: isAcidic ? Infinity : 0 }}
           />
-          <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isAcidic ? '#92700C' : '#9CA3AF' }}>
+          <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isAcidic ? '#A68945' : '#9CA3AF' }}>
             {isAcidic ? 'Active' : 'Dormant'}
           </span>
         </motion.div>
@@ -270,10 +270,12 @@ export const Scene3_PhActivation = () => {
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 <motion.span
-                  className="text-xl"
+                  className="flex items-center"
                   animate={{ rotate: [0, -10, 10, 0], scale: [1, 1.2, 1] }}
                   transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2 }}
-                >⚡</motion.span>
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z" /></svg>
+                </motion.span>
                 Activated!
               </motion.div>
             </motion.div>
