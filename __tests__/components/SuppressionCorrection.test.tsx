@@ -17,7 +17,7 @@ import SuppressionCorrection from "@/components/SuppressionCorrection";
 describe("SuppressionCorrection", () => {
   it("shows both the hormonal-suppression and targeted-correction columns", () => {
     render(<SuppressionCorrection />);
-    expect(screen.getByText(/Hormonal Suppression/i)).toBeDefined();
+    expect(screen.getByText(/System-Wide Suppression/i)).toBeDefined();
     expect(screen.getByText(/Targeted Correction/i)).toBeDefined();
     expect(screen.getByText(/ENDO-205/)).toBeDefined();
   });

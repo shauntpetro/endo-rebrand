@@ -24,17 +24,15 @@ const RIGHT = {
   ],
 };
 
-function Column({ data, accent, dim, ariaLabel }: { data: typeof LEFT; accent: string; dim?: boolean; ariaLabel?: string }) {
+function Column({ data, accent, dim }: { data: typeof LEFT; accent: string; dim?: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      aria-label={ariaLabel}
       className={`relative rounded-2xl border p-7 md:p-8 h-full ${dim ? "bg-gray-50 border-gray-200" : "bg-white border-gold-primary/30 shadow-[0_20px_50px_-24px_rgba(201,169,97,0.4)]"}`}
     >
-      {ariaLabel && <span className="sr-only">{ariaLabel}</span>}
       <span className="text-[10px] font-extrabold uppercase tracking-[0.2em]" style={{ color: accent }}>{data.eyebrow}</span>
       <h3 className={`font-serif font-bold mt-2 mb-6 text-2xl md:text-3xl ${dim ? "text-gray-500" : "text-plum-dark"}`}>{data.title}</h3>
       <ul className="space-y-3.5">
@@ -61,7 +59,7 @@ export default function SuppressionCorrection() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
-          <Column data={LEFT} accent="#9b93a3" dim ariaLabel="Hormonal Suppression" />
+          <Column data={LEFT} accent="#9b93a3" dim />
           <Column data={RIGHT} accent="#C9A961" />
         </div>
       </div>
