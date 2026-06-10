@@ -123,7 +123,7 @@ export default function ImpactPage() {
                     style={{ y: yBackground }}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full pointer-events-none select-none z-0 flex items-center justify-center will-change-transform"
                 >
-                     <span className="text-[22vw] md:text-[28vw] font-serif font-bold text-plum-primary/[0.03] leading-none whitespace-nowrap blur-[2px]">
+                     <span className="text-[22vw] md:text-[28vw] font-serif font-bold text-plum-primary/[0.04] leading-none whitespace-nowrap">
                         1 in 10
                      </span>
                 </motion.div>
@@ -403,7 +403,7 @@ export default function ImpactPage() {
                 
                 <div className="inline-block relative group">
                     <motion.div
-                        className="absolute -inset-1 bg-gradient-to-r from-gold-primary to-plum-primary rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"
+                        className="absolute -inset-px rounded-lg border border-gold-primary/25 opacity-100"
                         animate={{ opacity: [0.15, 0.3, 0.15] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                     />
