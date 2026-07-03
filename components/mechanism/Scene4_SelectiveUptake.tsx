@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { MECHANISM_COLORS } from "./constants";
 import { PeptideRing, PeptideRingProtonated, IntracellularTarget } from "./Shapes";
 import { useState, useEffect } from "react";
+import { useVisibility } from "@/hooks/useVisibility";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /* ====================================================================
    Scene 4 — "Selective Uptake"
@@ -52,14 +54,24 @@ const INNER_C_DEEP =
 const VESICLE_CIRC = 119; // 2*PI*19
 
 export const Scene4_SelectiveUptake = () => {
-  const [phase, setPhase] = useState(0);
+  const reduced = usePrefersReducedMotion();
+  const { setRef: setVisRef, isVisible } = useVisibility();
+  // Motion runs only when the figure is on-screen AND motion is allowed.
+  const animate = isVisible && !reduced;
+
+  // Reduced motion: start (and stay) on the final phase (target binding) so the
+  // full mechanism reads as a complete static end-state.
+  const [phase, setPhase] = useState(reduced ? TOTAL_PHASES - 1 : 0);
 
   useEffect(() => {
+    if (reduced) return;
+    // Only advance the endocytosis cycle while the figure is in view.
+    if (!isVisible) return;
     const timer = setTimeout(() => {
       setPhase((p) => (p + 1) % TOTAL_PHASES);
     }, PHASE_DURATIONS[phase]);
     return () => clearTimeout(timer);
-  }, [phase]);
+  }, [phase, reduced, isVisible]);
 
   // Membrane path states
   const fillD =
@@ -82,8 +94,9 @@ export const Scene4_SelectiveUptake = () => {
 
   return (
     <motion.div
-      className="w-full h-full relative flex flex-col overflow-hidden rounded-xl border border-stone-200 shadow-sm bg-white"
-      initial={{ opacity: 0 }}
+      ref={(node) => setVisRef(node)}
+      className="w-full h-full relative flex flex-col overflow-hidden rounded-xl border border-plum-dark/10 bg-bone-raised shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_10px_34px_-16px_rgba(74,63,92,0.22)]"
+      initial={reduced ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
@@ -99,12 +112,12 @@ export const Scene4_SelectiveUptake = () => {
       {/* Title bar */}
       <motion.div
         className="relative z-30 flex items-center gap-2 px-5 pt-4 pb-2"
-        initial={{ opacity: 0, y: 8 }}
+        initial={reduced ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
-        <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">
+        <div className="w-1.5 h-1.5 rounded-full bg-gold-primary shadow-gold-glow-sm" />
+        <h3 className="font-bold text-plum-dark uppercase tracking-widest text-xs">
           Selective Uptake
         </h3>
       </motion.div>
@@ -124,14 +137,14 @@ export const Scene4_SelectiveUptake = () => {
           {/* Label */}
           <motion.div
             className="absolute top-3 left-3 z-20"
-            initial={{ opacity: 0, y: 10 }}
+            initial={reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm border border-stone-200/60">
               <div className="w-2 h-2 rounded-full bg-clinical-teal" />
               <div>
-                <h3 className="font-bold text-stone-800 text-[11px] tracking-wide font-sans leading-tight">
+                <h3 className="font-bold text-plum-dark text-[11px] tracking-wide font-sans leading-tight">
                   Normal Tissue
                 </h3>
                 <p className="text-[8px] text-stone-400 font-bold tracking-widest font-mono">pH 7.4</p>
@@ -172,16 +185,20 @@ export const Scene4_SelectiveUptake = () => {
               key={`drift-n-${i}`}
               className="absolute w-6 h-6"
               style={{ top: p.top, left: p.left }}
-              animate={{
-                opacity: 0.7,
-                x: [0, 6 * (i % 2 ? 1 : -1), -4, 0],
-                y: [0, -3, 2, 0],
-              }}
-              transition={{
-                opacity: { duration: 0.6, delay: 0.3 },
-                x: { duration: p.dur, repeat: Infinity, ease: "easeInOut" },
-                y: { duration: p.dur * 0.9, repeat: Infinity, ease: "easeInOut" },
-              }}
+              animate={
+                animate
+                  ? { opacity: 0.7, x: [0, 6 * (i % 2 ? 1 : -1), -4, 0], y: [0, -3, 2, 0] }
+                  : { opacity: 0.7, x: 0, y: 0 }
+              }
+              transition={
+                animate
+                  ? {
+                      opacity: { duration: 0.6, delay: 0.3 },
+                      x: { duration: p.dur, repeat: Infinity, ease: "easeInOut" },
+                      y: { duration: p.dur * 0.9, repeat: Infinity, ease: "easeInOut" },
+                    }
+                  : { duration: 0 }
+              }
             >
               <PeptideRing color={MECHANISM_COLORS.peptideInactive} />
             </motion.div>
@@ -224,7 +241,7 @@ export const Scene4_SelectiveUptake = () => {
           <motion.div
             className="absolute z-20 text-center"
             style={{ top: "22%", left: "20%", width: "60%" }}
-            initial={{ opacity: 0, y: 6 }}
+            initial={reduced ? false : { opacity: 0, y: 6 }}
             animate={{ opacity: phase >= 3 ? 1 : 0, y: phase >= 3 ? 0 : 6 }}
             transition={{ duration: 0.5, delay: phase === 3 ? 0.4 : 0 }}
           >
@@ -250,7 +267,7 @@ export const Scene4_SelectiveUptake = () => {
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{ background: "linear-gradient(180deg, rgba(194,85,63,0.03) 0%, rgba(194,85,63,0.05) 30%, transparent 60%)" }}
-            initial={{ opacity: 0 }}
+            initial={reduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           />
@@ -258,23 +275,26 @@ export const Scene4_SelectiveUptake = () => {
           {/* Label */}
           <motion.div
             className="absolute top-3 left-3 z-20"
-            initial={{ opacity: 0, y: 10 }}
+            initial={reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm border border-stone-200/60">
               <motion.div
                 className="w-2 h-2 rounded-full"
-                animate={{
-                  backgroundColor: MECHANISM_COLORS.phRed,
-                  scale: [1, 1.3, 1],
-                }}
-                transition={{
-                  scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
-                }}
+                animate={
+                  animate
+                    ? { backgroundColor: MECHANISM_COLORS.phRed, scale: [1, 1.3, 1] }
+                    : { backgroundColor: MECHANISM_COLORS.phRed, scale: 1 }
+                }
+                transition={
+                  animate
+                    ? { scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" } }
+                    : { duration: 0 }
+                }
               />
               <div>
-                <h3 className="font-bold text-stone-800 text-[11px] tracking-wide font-sans leading-tight">Lesion Tissue</h3>
+                <h3 className="font-bold text-plum-dark text-[11px] tracking-wide font-sans leading-tight">Lesion Tissue</h3>
                 <motion.p
                   className="text-[8px] font-bold tracking-widest font-mono"
                   style={{ color: MECHANISM_COLORS.phRed }}
@@ -334,20 +354,32 @@ export const Scene4_SelectiveUptake = () => {
               key={`h-${i}`}
               className="absolute z-10"
               style={{ top: h.top, left: h.left }}
-              animate={{
-                opacity: h.nearPeptide && phase >= 1 ? 0.15 : [0.5, 0.85, 0.5],
-                y: h.nearPeptide && phase >= 1 ? 0 : [0, -2, 0],
-                scale: h.nearPeptide && phase === 1 ? [1, 1.3, 0.8] : 1,
-              }}
-              transition={{
-                opacity: h.nearPeptide && phase >= 1
-                  ? { duration: 0.6 }
-                  : { duration: 2.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: h.delay },
-                y: h.nearPeptide && phase >= 1
-                  ? { duration: 0.4 }
-                  : { duration: 2.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: h.delay },
-                scale: { duration: 0.8 },
-              }}
+              animate={
+                animate
+                  ? {
+                      opacity: h.nearPeptide && phase >= 1 ? 0.15 : [0.5, 0.85, 0.5],
+                      y: h.nearPeptide && phase >= 1 ? 0 : [0, -2, 0],
+                      scale: h.nearPeptide && phase === 1 ? [1, 1.3, 0.8] : 1,
+                    }
+                  : {
+                      opacity: h.nearPeptide && phase >= 1 ? 0.15 : 0.7,
+                      y: 0,
+                      scale: 1,
+                    }
+              }
+              transition={
+                animate
+                  ? {
+                      opacity: h.nearPeptide && phase >= 1
+                        ? { duration: 0.6 }
+                        : { duration: 2.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: h.delay },
+                      y: h.nearPeptide && phase >= 1
+                        ? { duration: 0.4 }
+                        : { duration: 2.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: h.delay },
+                      scale: { duration: 0.8 },
+                    }
+                  : { duration: 0 }
+              }
             >
               <span className="text-[10px] font-bold font-sans" style={{ color: MECHANISM_COLORS.phRed }}>H&#x207A;</span>
             </motion.div>
@@ -368,13 +400,13 @@ export const Scene4_SelectiveUptake = () => {
               opacity: phase === 0 ? 0.9 : 0,
               top: "18%",
               left: "42%",
-              x: [0, 3, -2, 0],
-              y: [0, -2, 1, 0],
+              x: animate ? [0, 3, -2, 0] : 0,
+              y: animate ? [0, -2, 1, 0] : 0,
             }}
             transition={{
               opacity: { duration: 0.3 },
-              x: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-              y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
+              x: animate ? { duration: 5, repeat: Infinity, ease: "easeInOut" } : { duration: 0 },
+              y: animate ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" } : { duration: 0 },
             }}
           >
             <PeptideRing color={MECHANISM_COLORS.peptideInactive} />
@@ -453,7 +485,7 @@ export const Scene4_SelectiveUptake = () => {
           <motion.div
             className="absolute z-20 text-center"
             style={{ top: "22%", left: "15%", width: "70%" }}
-            initial={{ opacity: 0, y: 6 }}
+            initial={reduced ? false : { opacity: 0, y: 6 }}
             animate={{ opacity: phase >= 3 ? 1 : 0, y: phase >= 3 ? 0 : 6 }}
             transition={{ duration: 0.5, delay: phase === 3 ? 0.6 : 0 }}
           >
@@ -699,14 +731,14 @@ export const Scene4_SelectiveUptake = () => {
                 ease: "easeOut",
               }}
             />
-            {/* Nucleus label */}
+            {/* Intracellular target label */}
             <motion.div
               className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap"
               animate={{ opacity: phase >= 3 ? 0.7 : 0 }}
               transition={{ duration: 0.4 }}
             >
               <span className="text-[7px] font-bold uppercase tracking-widest text-stone-500">
-                Nucleus
+                Intracellular target
               </span>
             </motion.div>
           </motion.div>
@@ -738,8 +770,8 @@ export const Scene4_SelectiveUptake = () => {
 
       {/* ============ BOTTOM LEGEND ============ */}
       <motion.div
-        className="relative mx-3 mb-3 mt-2 px-4 py-3 rounded-xl bg-stone-50/80 backdrop-blur-sm border border-stone-200/80"
-        initial={{ opacity: 0, y: 10 }}
+        className="relative mx-3 mb-3 mt-2 px-4 py-3 rounded-xl bg-bone/70 backdrop-blur-sm border border-plum-dark/10"
+        initial={reduced ? false : { opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
@@ -794,7 +826,7 @@ export const Scene4_SelectiveUptake = () => {
           <motion.span
             className="text-[9px] font-bold uppercase tracking-widest text-stone-500"
             key={phase}
-            initial={{ opacity: 0, y: 4 }}
+            initial={reduced ? false : { opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >

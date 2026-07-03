@@ -7,9 +7,6 @@ import MilestoneProofBar from "@/components/MilestoneProofBar";
 import { SectionSkeleton } from "@/components/ui/Skeleton";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 
-const AchievementBar = dynamic(() => import("@/components/AchievementBar"), {
-  loading: () => <SectionSkeleton height="h-16" />,
-});
 const WhyNowSection = dynamic(() => import("@/components/WhyNowSection"), {
   loading: () => <SectionSkeleton height="h-96" />,
 });
@@ -24,9 +21,6 @@ const Testimonials = dynamic(() => import("@/components/Testimonials"), {
 });
 const MissionPillars = dynamic(() => import("@/components/MissionPillars"), {
   loading: () => <SectionSkeleton height="h-96" />,
-});
-const TransitionStatement = dynamic(() => import("@/components/TransitionStatement"), {
-  loading: () => <SectionSkeleton height="h-screen" />,
 });
 const InnovationSection = dynamic(() => import("@/components/InnovationSection"), {
   loading: () => <SectionSkeleton height="h-96" />,
@@ -44,14 +38,11 @@ export default function Home() {
       <Navbar />
       <Hero />
       <MilestoneProofBar />
-      <AchievementBar theme="light" />
       <WhyNowSection />
       <GrantHighlight />
       <CredibilitySection />
       <Testimonials />
       <MissionPillars />
-
-      <TransitionStatement />
 
       <InnovationSection />
       <PipelinePreview />

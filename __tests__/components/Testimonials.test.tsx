@@ -32,20 +32,19 @@ vi.mock("@/hooks/useVisibility", () => ({
 import Testimonials from "@/components/Testimonials";
 
 describe("Testimonials", () => {
-  it("renders 3 testimonial cards", () => {
+  it("renders the founder pull-quote with attribution", () => {
     render(React.createElement(Testimonials));
-    expect(screen.getByText("Clinical Advisor")).toBeDefined();
-    expect(screen.getByText("Industry Partner")).toBeDefined();
-    expect(screen.getByText("Research Collaborator")).toBeDefined();
+    expect(screen.getByText("From Our Founder")).toBeDefined();
+    expect(screen.getByText("Dr. Tanya Petrossian, PhD")).toBeDefined();
+    expect(screen.getByText(/Founder & CEO, EndoCyclic Therapeutics/)).toBeDefined();
   });
 
-  it("contains expected quote text", () => {
-    render(React.createElement(Testimonials));
-    expect(
-      screen.getByText(/paradigm shift in how we think about treating endometriosis/)
-    ).toBeDefined();
-    expect(
-      screen.getByText(/cyclic peptide platform is compelling/)
-    ).toBeDefined();
+  it("uses truth.md-safe founder copy (disease-modifying, designed to eliminate)", () => {
+    const { container } = render(React.createElement(Testimonials));
+    const text = (container.textContent || "").toLowerCase();
+    expect(text).toContain("managed, not modified");
+    expect(text).toContain("non-hormonal, disease-modifying");
+    // no cure-adjacent / absolute language
+    expect(text).not.toMatch(/\bcure\b|guaranteed|proven|wipe it out|only way forward/);
   });
 });

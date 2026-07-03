@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { MECHANISM_COLORS } from "./constants";
 import { useState, useEffect, useMemo } from "react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /** Deterministic pseudo-random: same seed always yields the same 0-1 value */
 function seededRandom(seed: number): number {
@@ -62,7 +63,10 @@ const HParticle = ({ delay, startX, startY, index }: { delay: number; startX: nu
 };
 
 export const Scene3_PhActivation = () => {
-  const [pH, setPh] = useState(7.4);
+  const reduced = usePrefersReducedMotion();
+  // When reduced motion is preferred, freeze to the activated lesion state
+  // (pH 6.0) so the mechanism reads fully in a static frame.
+  const [pH, setPh] = useState(reduced ? 6.0 : 7.4);
   const particlePositions = useMemo(() =>
     Array.from({ length: 12 }, (_, i) => ({
       x: 80 + seededRandom(i * 2 + 100) * 300,
@@ -71,6 +75,8 @@ export const Scene3_PhActivation = () => {
   []);
 
   useEffect(() => {
+    // Reduced motion: initial state is already 6.0 — skip the per-frame rAF sweep.
+    if (reduced) return;
     const duration = 7000;
     const startTime = Date.now();
     let raf: number;
@@ -85,61 +91,52 @@ export const Scene3_PhActivation = () => {
     };
     raf = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [reduced]);
 
   const isAcidic = pH < 6.8;
   const acidity = Math.max(0, Math.min(1, (7.4 - pH) / 1.4)); // 0 = neutral, 1 = fully acidic
+  const pulse = isAcidic && !reduced; // gate looping pulses behind reduced motion
 
   return (
-    <motion.div
-      className="w-full h-full relative flex flex-col items-center justify-between rounded-xl border border-stone-200 shadow-sm p-8 overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="w-full h-full relative flex flex-col items-center justify-between rounded-xl border border-plum-dark/10 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] p-8 overflow-hidden">
       {/* Dot-grid background */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(circle, #000 0.5px, transparent 0.5px)',
+          backgroundImage: 'radial-gradient(circle, #2E263A 0.5px, transparent 0.5px)',
           backgroundSize: '12px 12px',
         }}
       />
 
-      <motion.div className="absolute top-6 left-6 z-10">
+      <div className="absolute top-6 left-6 z-10">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
-          <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">Smart Activation</h3>
+          <h3 className="font-bold text-plum-dark uppercase tracking-widest text-xs">Smart Activation</h3>
         </div>
-      </motion.div>
+      </div>
 
-      {/* pH status badge */}
-      <motion.div
-        className="absolute top-6 right-6 z-10"
-        animate={{
-          opacity: 1,
-        }}
-      >
+      {/* pH status badge — flat, warm-clinical */}
+      <div className="absolute top-6 right-6 z-10">
         <motion.div
-          className="bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 border shadow-sm flex items-center gap-1.5"
+          className="bg-bone-raised/90 backdrop-blur-sm rounded-full px-3 py-1.5 border shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] flex items-center gap-1.5"
           animate={{
-            borderColor: isAcidic ? 'rgba(201,169,97,0.4)' : 'rgba(214,211,209,0.6)',
+            borderColor: isAcidic ? 'rgba(201,169,97,0.45)' : 'rgba(46,38,58,0.12)',
           }}
           transition={{ duration: 0.3 }}
         >
           <motion.div
             className="w-1.5 h-1.5 rounded-full"
             animate={{
-              backgroundColor: isAcidic ? '#C9A961' : '#D1D5DB',
-              scale: isAcidic ? [1, 1.3, 1] : 1,
+              backgroundColor: isAcidic ? '#C9A961' : '#C3BDB1',
+              scale: pulse ? [1, 1.3, 1] : 1,
             }}
-            transition={{ duration: isAcidic ? 1.5 : 0.3, repeat: isAcidic ? Infinity : 0 }}
+            transition={{ duration: pulse ? 1.5 : 0.3, repeat: pulse ? Infinity : 0 }}
           />
-          <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isAcidic ? '#A68945' : '#9CA3AF' }}>
+          <span className={`text-[9px] font-bold uppercase tracking-wider ${isAcidic ? 'text-gold-deep' : 'text-plum-primary/50'}`}>
             {isAcidic ? 'Active' : 'Dormant'}
           </span>
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* Environment Background — shifts from neutral cream to warm gold */}
       <motion.div
@@ -150,9 +147,9 @@ export const Scene3_PhActivation = () => {
         transition={{ duration: 0.8, ease: "easeInOut" }}
       />
 
-      {/* Ambient H+ ions floating around when acidic */}
+      {/* Ambient H+ ions floating around when acidic — motion only */}
       <AnimatePresence>
-        {isAcidic && (
+        {pulse && (
           <>
             {particlePositions.map((pos, i) => (
               <HParticle
@@ -169,9 +166,9 @@ export const Scene3_PhActivation = () => {
 
       <div className="flex-1 flex items-center justify-center w-full relative">
 
-        {/* Activation Ripple Pulses */}
+        {/* Activation Ripple Pulses — motion only (frozen under reduced motion) */}
         <AnimatePresence>
-          {isAcidic && [0, 1, 2].map((i) => (
+          {pulse && [0, 1, 2].map((i) => (
             <motion.div
               key={`ripple-${i}`}
               className="absolute rounded-full"
@@ -182,7 +179,7 @@ export const Scene3_PhActivation = () => {
               transition={{ duration: 2.5, delay: i * 0.7, repeat: Infinity, ease: "easeOut" }}
             />
           ))}
-          {isAcidic && (
+          {pulse && (
             <motion.div
               className="absolute"
               initial={{ scale: 0, opacity: 0 }}
@@ -195,27 +192,30 @@ export const Scene3_PhActivation = () => {
           )}
         </AnimatePresence>
 
-        {/* The Peptide — with dramatic glow build-up */}
+        {/* The Peptide — warm gold glow in the acidic state */}
         <motion.div
           className="relative w-36 h-36 z-10"
           animate={{
-            rotate: 360,
+            rotate: reduced ? 0 : 360,
             filter: isAcidic ? `drop-shadow(0 0 6px ${MECHANISM_COLORS.peptideActive})` : 'none',
           }}
           transition={{
-            rotate: { duration: 10, repeat: Infinity, ease: "linear" },
+            rotate: reduced ? { duration: 0 } : { duration: 10, repeat: Infinity, ease: "linear" },
             filter: { duration: 0.8, ease: "easeInOut" },
           }}
         >
           <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
-            {/* Outer glow ring when activating */}
+            {/* Outer accent ring when activating — steady hairline under reduced motion */}
             <motion.circle
               cx="50" cy="50" r="46"
               fill="none"
               stroke={MECHANISM_COLORS.calloutGold}
               strokeWidth="1"
-              animate={{ opacity: isAcidic ? [0.3, 0.6, 0.3] : 0, r: isAcidic ? [44, 48, 44] : 46 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              animate={{
+                opacity: isAcidic ? (pulse ? [0.3, 0.6, 0.3] : 0.5) : 0,
+                r: pulse ? [44, 48, 44] : 46,
+              }}
+              transition={pulse ? { duration: 2, repeat: Infinity, ease: "easeInOut" } : { duration: 0.4 }}
             />
 
             {/* Wavy peptide ring */}
@@ -223,12 +223,12 @@ export const Scene3_PhActivation = () => {
               d={PEPTIDE_PATH}
               fill={isAcidic ? MECHANISM_COLORS.peptideActive : "none"}
               fillOpacity={isAcidic ? 0.15 : 0}
-              stroke={isAcidic ? MECHANISM_COLORS.peptideActive : "#9CA3AF"}
+              stroke={isAcidic ? MECHANISM_COLORS.peptideActive : MECHANISM_COLORS.peptideInactive}
               strokeWidth="5"
               strokeLinecap="round"
               strokeLinejoin="round"
               animate={{
-                stroke: isAcidic ? MECHANISM_COLORS.peptideActive : "#9CA3AF",
+                stroke: isAcidic ? MECHANISM_COLORS.peptideActive : MECHANISM_COLORS.peptideInactive,
                 strokeWidth: isAcidic ? 6 : 5,
               }}
               transition={{ duration: 0.5 }}
@@ -236,17 +236,17 @@ export const Scene3_PhActivation = () => {
 
             {/* Neutral R label */}
             <motion.g animate={{ opacity: isAcidic ? 0 : 1 }} transition={{ duration: 0.3 }}>
-              <text x="50" y="50" textAnchor="middle" dy=".35em" fill="#6B7280" fontSize="16" fontWeight="bold" fontFamily="sans-serif">R</text>
+              <text x="50" y="50" textAnchor="middle" dy=".35em" fill={MECHANISM_COLORS.cellMembrane} fontSize="16" fontWeight="bold" fontFamily="sans-serif">R</text>
             </motion.g>
 
             {/* Activated RH+ label */}
             <motion.g animate={{ opacity: isAcidic ? 1 : 0, scale: isAcidic ? 1 : 0.8 }} transition={{ duration: 0.3 }}>
-              <text x="42" y="50" textAnchor="middle" dy=".35em" fill={MECHANISM_COLORS.peptideActive} fontSize="14" fontWeight="bold" fontFamily="sans-serif">R</text>
+              <text x="42" y="50" textAnchor="middle" dy=".35em" fill={MECHANISM_COLORS.peptideDark} fontSize="14" fontWeight="bold" fontFamily="sans-serif">R</text>
               <motion.text
                 x="64" y="43" textAnchor="middle" dy=".35em"
                 fill={MECHANISM_COLORS.phRed} fontSize="13" fontWeight="bold" fontFamily="sans-serif"
-                animate={{ scale: isAcidic ? [1, 1.15, 1] : 1 }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                animate={{ scale: pulse ? [1, 1.15, 1] : 1 }}
+                transition={pulse ? { duration: 1.5, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
               >
                 H⁺
               </motion.text>
@@ -254,46 +254,34 @@ export const Scene3_PhActivation = () => {
           </svg>
         </motion.div>
 
-        {/* Activation Callout — slides in from right */}
-        <AnimatePresence>
-          {isAcidic && (
+        {/* Active state label — flat, warm-clinical (replaces gamified badge) */}
+        <AnimatePresence mode="wait">
+          {isAcidic ? (
             <motion.div
+              key="active"
               className="absolute top-1/2 -translate-y-1/2 right-4 md:right-10 z-20"
-              initial={{ opacity: 0, scale: 0.5, x: 30 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.5, x: 30 }}
-              transition={{ type: "spring", bounce: 0.5, duration: 0.6 }}
-            >
-              <motion.div
-                className="bg-gradient-to-br from-gold-light to-gold-primary border border-white text-black-primary font-bold px-6 py-3 rounded-xl shadow-lg flex items-center gap-2"
-                animate={{ boxShadow: ['0 4px 20px rgba(201,169,97,0.3)', '0 8px 30px rgba(201,169,97,0.5)', '0 4px 20px rgba(201,169,97,0.3)'] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <motion.span
-                  className="flex items-center"
-                  animate={{ rotate: [0, -10, 10, 0], scale: [1, 1.2, 1] }}
-                  transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2 }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z" /></svg>
-                </motion.span>
-                Activated!
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Neutral state label */}
-        <AnimatePresence>
-          {!isAcidic && (
-            <motion.div
-              className="absolute top-1/2 -translate-y-1/2 right-4 md:right-10 z-20"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 0.5, x: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.3 }}
             >
-              <div className="text-stone-400 font-medium text-sm tracking-wide px-4 py-2 rounded-lg border border-stone-200 bg-white/80">
-                Inactive
+              <div className="flex items-center gap-2 bg-bone-raised border border-gold-primary/40 px-5 py-2.5 rounded-full shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+                <span className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
+                <span className="text-xs font-bold uppercase tracking-widest text-gold-deep">Active</span>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="inactive"
+              className="absolute top-1/2 -translate-y-1/2 right-4 md:right-10 z-20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center gap-2 bg-bone-raised/80 border border-plum-dark/10 px-5 py-2.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-plum-primary/30" />
+                <span className="text-xs font-bold uppercase tracking-widest text-plum-primary/50">Inactive</span>
               </div>
             </motion.div>
           )}
@@ -301,24 +289,19 @@ export const Scene3_PhActivation = () => {
       </div>
 
       {/* Controls Display */}
-      <motion.div
-        className="w-full max-w-md flex flex-col gap-6 z-10 bg-stone-50/80 backdrop-blur-sm p-6 rounded-xl border border-stone-200/60 shadow-sm"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-      >
-        <div className="flex justify-between text-[10px] font-bold text-stone-400 uppercase tracking-[0.15em]">
-          <motion.span animate={{ color: isAcidic ? '#D1D5DB' : '#4B5563' }} transition={{ duration: 0.3 }}>
+      <div className="w-full max-w-md flex flex-col gap-6 z-10 bg-bone-raised/80 backdrop-blur-sm p-6 rounded-xl border border-plum-dark/10 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div className="flex justify-between text-[10px] font-bold uppercase tracking-[0.15em]">
+          <motion.span animate={{ color: isAcidic ? '#C3BDB1' : '#4A3F5C' }} transition={{ duration: 0.3 }}>
             Bloodstream (pH 7.4)
           </motion.span>
-          <motion.span animate={{ color: isAcidic ? '#C9A961' : '#D1D5DB' }} transition={{ duration: 0.3 }}>
+          <motion.span animate={{ color: isAcidic ? '#8A6D2E' : '#C3BDB1' }} transition={{ duration: 0.3 }}>
             Lesion (pH 6.0)
           </motion.span>
         </div>
 
         <div className="relative h-12 flex items-center">
           {/* Gradient Track */}
-          <div className="absolute inset-0 h-3 rounded-full bg-gradient-to-r from-gray-200 via-orange-100 to-gold-primary shadow-inner top-1/2 -translate-y-1/2" />
+          <div className="absolute inset-0 h-3 rounded-full bg-gradient-to-r from-stone-200 via-orange-100 to-gold-primary shadow-inner top-1/2 -translate-y-1/2" />
 
           {/* Active region highlight */}
           <motion.div
@@ -337,44 +320,44 @@ export const Scene3_PhActivation = () => {
             const pct = ((7.4 - tick) / 1.4) * 100;
             return (
               <div key={tick} className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center" style={{ left: `${pct}%` }}>
-                <div className="w-px h-5 bg-stone-300/50" />
-                <span className="text-[7px] text-stone-400 font-mono mt-0.5">{tick.toFixed(1)}</span>
+                <div className="w-px h-5 bg-plum-dark/15" />
+                <span className="text-[7px] text-plum-primary/40 font-mono mt-0.5 tabular-nums">{tick.toFixed(1)}</span>
               </div>
             );
           })}
 
           {/* Animated Thumb */}
           <motion.div
-            className="absolute h-10 w-10 bg-white rounded-full shadow-lg z-10 flex items-center justify-center"
+            className="absolute h-10 w-10 bg-bone-raised rounded-full shadow-lg z-10 flex items-center justify-center"
             style={{
               left: `calc(${((7.4 - pH) / 1.4) * 100}% - 20px)`,
-              border: `4px solid ${isAcidic ? MECHANISM_COLORS.calloutGold : MECHANISM_COLORS.cellMembrane}`,
+              border: `4px solid ${isAcidic ? MECHANISM_COLORS.calloutGold : MECHANISM_COLORS.cellMembraneLight}`,
             }}
             animate={{
-              scale: isAcidic ? 1.15 : 1,
+              scale: isAcidic ? 1.12 : 1,
               boxShadow: isAcidic
-                ? `0 0 20px ${MECHANISM_COLORS.calloutGold}60`
-                : '0 2px 8px rgba(0,0,0,0.1)',
+                ? `0 0 14px ${MECHANISM_COLORS.calloutGold}55`
+                : '0 2px 8px rgba(46,38,58,0.10)',
             }}
             transition={{ duration: 0.3 }}
           >
             <motion.div
               className="w-2 h-2 rounded-full"
-              animate={{ backgroundColor: isAcidic ? MECHANISM_COLORS.calloutGold : '#D1D5DB' }}
+              animate={{ backgroundColor: isAcidic ? MECHANISM_COLORS.calloutGold : '#C3BDB1' }}
               transition={{ duration: 0.3 }}
             />
           </motion.div>
         </div>
 
         <div className="text-center">
-          <p className="text-stone-400 text-sm font-medium uppercase tracking-widest mb-1">Current Environment pH</p>
+          <p className="text-plum-primary/50 text-sm font-medium uppercase tracking-widest mb-1">Current Environment pH</p>
           <motion.div
             animate={{
               scale: isAcidic ? 1.1 : 1,
-              color: isAcidic ? MECHANISM_COLORS.peptideActive : '#4B5563',
+              color: isAcidic ? MECHANISM_COLORS.peptideActive : '#4A3F5C',
             }}
             transition={{ duration: 0.3 }}
-            className="text-4xl font-mono font-bold"
+            className="text-4xl font-mono font-bold tabular-nums"
           >
             {pH.toFixed(1)}
           </motion.div>
@@ -383,12 +366,12 @@ export const Scene3_PhActivation = () => {
             className="mx-auto mt-2 h-1 rounded-full"
             style={{ width: '60%' }}
             animate={{
-              background: `linear-gradient(90deg, #D1D5DB ${(1 - acidity) * 100}%, ${MECHANISM_COLORS.calloutGold} ${(1 - acidity) * 100}%)`,
+              background: `linear-gradient(90deg, #C3BDB1 ${(1 - acidity) * 100}%, ${MECHANISM_COLORS.calloutGold} ${(1 - acidity) * 100}%)`,
             }}
-            transition={{ duration: 0.1 }}
+            transition={{ duration: reduced ? 0 : 0.1 }}
           />
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };

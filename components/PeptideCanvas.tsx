@@ -2,9 +2,10 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Sphere, Cylinder, Float, Points, PointMaterial } from "@react-three/drei";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { useRef, useState, useMemo, useEffect, useSyncExternalStore, Suspense } from "react";
 import * as THREE from "three";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /** Deterministic pseudo-random: same seed always yields the same 0-1 value */
 function seededRandom(seed: number): number {
@@ -14,13 +15,13 @@ function seededRandom(seed: number): number {
 
 const emptySubscribe = () => () => {};
 
-// Brand palette adapted for 3D — tightened to plum backbone + gold residues
+// Brand palette adapted for 3D — plum backbone + luminous gold residues on warm cream
 const PALETTE = {
   plum: "#9F8CA6",
   plumDeep: "#6E5E74",
   gold: "#C9A961",
   goldBright: "#E6C871",
-  bond: "#5A4A52", // warm bronze-plum (lighter than the old near-black)
+  bond: "#5A4A52", // warm bronze-plum
 };
 
 const UP = new THREE.Vector3(0, 1, 0);
@@ -46,13 +47,14 @@ interface MoleculeProps {
   rotation?: [number, number, number];
   scale?: number;
   variant?: "hero" | "background";
+  reduced?: boolean;
 }
 
 /**
  * A cyclic peptide rendered as a clean closed backbone macrocycle with
  * outward side-chain residues — reads unmistakably as a cyclic peptide.
  */
-function Molecule({ count = 16, radius = 2.2, position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, variant = "hero" }: MoleculeProps) {
+function Molecule({ count = 16, radius = 2.2, position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, variant = "hero", reduced = false }: MoleculeProps) {
   const spin = useRef<THREE.Group>(null!);
 
   const { backbone, sideChains, backboneBonds, sideBonds } = useMemo(() => {
@@ -70,12 +72,10 @@ function Molecule({ count = 16, radius = 2.2, position = [0, 0, 0], rotation = [
       });
     }
 
-    // Backbone bonds: consecutive residues only — closes the ring, no interior struts.
     const backboneBonds = backbone.map((cur, i) =>
       makeBond(new THREE.Vector3(...cur.position), new THREE.Vector3(...backbone[(i + 1) % N].position)),
     );
 
-    // Side-chain residues: a short outward stub + a smaller gold sphere per residue.
     const sideChains: { position: [number, number, number]; size: number }[] = [];
     const sideBonds: ReturnType<typeof makeBond>[] = [];
     for (let i = 0; i < N; i++) {
@@ -94,16 +94,16 @@ function Molecule({ count = 16, radius = 2.2, position = [0, 0, 0], rotation = [
     return { backbone, sideChains, backboneBonds, sideBonds };
   }, [count, radius]);
 
-  // Stately spin around the ring's own normal so the macrocycle stays presented.
+  // Stately spin around the ring's own normal — frozen under reduced motion.
   useFrame((_, delta) => {
-    if (spin.current) spin.current.rotation.z += delta * 0.16;
+    if (spin.current && !reduced) spin.current.rotation.z += delta * 0.16;
   });
 
   const presTilt: [number, number, number] = variant === "hero" ? [-0.5, 0.45, 0] : [-0.3, 0.2, 0];
   const bondR = variant === "hero" ? 0.075 : 0.06;
 
   return (
-    <Float speed={variant === "hero" ? 1.2 : 0.9} rotationIntensity={0.2} floatIntensity={0.35}>
+    <Float speed={reduced ? 0 : variant === "hero" ? 1.2 : 0.9} rotationIntensity={reduced ? 0 : 0.2} floatIntensity={reduced ? 0 : 0.35}>
       <group position={position} rotation={rotation} scale={scale}>
         {/* Fixed presentation tilt — keeps the ring at a flattering 3/4 angle */}
         <group rotation={presTilt}>
@@ -140,7 +140,7 @@ function Molecule({ count = 16, radius = 2.2, position = [0, 0, 0], rotation = [
               </Sphere>
             ))}
 
-            {/* Side-chain residues (gold, glowy — catches the bloom) */}
+            {/* Side-chain residues (gold, luminous — catches the bloom) */}
             {sideChains.map((s, i) => (
               <Sphere key={`sc-${i}`} args={[s.size, 24, 24]} position={s.position}>
                 <meshStandardMaterial
@@ -149,7 +149,7 @@ function Molecule({ count = 16, radius = 2.2, position = [0, 0, 0], rotation = [
                   metalness={0.35}
                   envMapIntensity={2.2}
                   emissive={PALETTE.gold}
-                  emissiveIntensity={variant === "hero" ? 0.4 : 0.2}
+                  emissiveIntensity={variant === "hero" ? 0.45 : 0.22}
                 />
               </Sphere>
             ))}
@@ -160,7 +160,7 @@ function Molecule({ count = 16, radius = 2.2, position = [0, 0, 0], rotation = [
   );
 }
 
-function FloatingParticles({ count = 60 }: { count?: number }) {
+function FloatingParticles({ count = 44, reduced = false }: { count?: number; reduced?: boolean }) {
   const ref = useRef<THREE.Points>(null!);
 
   const positions = useMemo(() => {
@@ -174,7 +174,7 @@ function FloatingParticles({ count = 60 }: { count?: number }) {
   }, [count]);
 
   useFrame((_, delta) => {
-    if (ref.current) {
+    if (ref.current && !reduced) {
       ref.current.rotation.y += delta * 0.01;
       ref.current.rotation.x += delta * 0.005;
     }
@@ -182,20 +182,31 @@ function FloatingParticles({ count = 60 }: { count?: number }) {
 
   return (
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial transparent color="#C9A961" size={0.035} sizeAttenuation depthWrite={false} opacity={0.35} />
+      <PointMaterial transparent color="#C9A961" size={0.035} sizeAttenuation depthWrite={false} opacity={0.32} />
     </Points>
   );
 }
 
+/** Subtle cursor parallax — the whole molecule leans toward the pointer. Frozen under reduced motion. */
+function ParallaxRig({ children, reduced }: { children: React.ReactNode; reduced: boolean }) {
+  const rig = useRef<THREE.Group>(null!);
+  useFrame((state) => {
+    if (!rig.current || reduced) return;
+    const targetX = state.pointer.y * 0.12;
+    const targetY = state.pointer.x * 0.18;
+    rig.current.rotation.x += (targetX - rig.current.rotation.x) * 0.04;
+    rig.current.rotation.y += (targetY - rig.current.rotation.y) * 0.04;
+  });
+  return <group ref={rig}>{children}</group>;
+}
+
 export default function PeptideCanvas() {
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const reduced = usePrefersReducedMotion();
   const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
-    // Cinematic delay before revealing
-    const timer = setTimeout(() => {
-      setRevealed(true);
-    }, 800); // Start reveal after logo/nav animation
+    const timer = setTimeout(() => setRevealed(true), 600);
     return () => clearTimeout(timer);
   }, []);
 
@@ -203,45 +214,44 @@ export default function PeptideCanvas() {
 
   return (
     <div
-      className="absolute inset-0 z-[1] transition-all duration-[2000ms] ease-out"
+      className="absolute inset-0 z-[1] transition-all duration-[1600ms] ease-out"
       style={{
         opacity: revealed ? 1 : 0,
-        filter: revealed ? "blur(0px)" : "blur(20px)",
-        transform: revealed ? "scale(1)" : "scale(0.95)",
+        filter: revealed ? "blur(0px)" : "blur(16px)",
+        transform: revealed ? "scale(1)" : "scale(0.96)",
       }}
     >
       <Canvas
         camera={{ position: [0, 0, 15], fov: 35 }}
         gl={{
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.2,
+          toneMappingExposure: 1.25,
         }}
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
       >
         <Suspense fallback={null}>
           <Environment preset="city" />
 
-          {/* Dramatic chiaroscuro lighting */}
-          <ambientLight intensity={0.4} color="#FFF5E0" />
-
-          <spotLight position={[15, 20, 15]} angle={0.25} penumbra={1} intensity={2.5} color="#FFF0D0" castShadow />
+          {/* Warm chiaroscuro — light emerging on cream */}
+          <ambientLight intensity={0.45} color="#FFF5E0" />
+          <spotLight position={[15, 20, 15]} angle={0.25} penumbra={1} intensity={2.4} color="#FFF0D0" />
           <pointLight position={[-10, -10, -10]} intensity={0.3} color="#E6D8FF" />
           {/* Gold rim light — backlit halo amplified by Bloom, glows the gold residues */}
-          <pointLight position={[0, 10, -5]} intensity={1.0} color="#C9A961" />
+          <pointLight position={[0, 10, -5]} intensity={1.1} color="#C9A961" />
 
-          {/* Main Hero Macrocycle */}
-          <Molecule position={[0, 2, 0]} scale={1.0} count={16} radius={2.2} variant="hero" />
-
-          {/* Background Macrocycle */}
-          <Molecule position={[-9, 7, -10]} scale={0.7} count={9} radius={2} variant="background" />
+          <ParallaxRig reduced={reduced}>
+            {/* Main Hero Macrocycle */}
+            <Molecule position={[0, 2, 0]} scale={1.0} count={16} radius={2.2} variant="hero" reduced={reduced} />
+            {/* Background Macrocycle */}
+            <Molecule position={[-9, 7, -10]} scale={0.7} count={9} radius={2} variant="background" reduced={reduced} />
+          </ParallaxRig>
 
           {/* Ambient floating particles */}
-          <FloatingParticles />
+          <FloatingParticles reduced={reduced} />
 
-          {/* Postprocessing pipeline */}
+          {/* Postprocessing — warm luminous bloom (the "light back") */}
           <EffectComposer multisampling={0}>
-            <Bloom intensity={0.5} luminanceThreshold={0.55} luminanceSmoothing={0.9} mipmapBlur />
-            <Vignette offset={0.3} darkness={0.6} />
+            <Bloom intensity={0.62} luminanceThreshold={0.5} luminanceSmoothing={0.9} mipmapBlur />
           </EffectComposer>
         </Suspense>
       </Canvas>

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { MECHANISM_COLORS } from "./constants";
 
 /**
  * Generates a wavy circle path matching the reference graphic's cyclic peptide style.
@@ -75,8 +76,8 @@ export const PeptideRingProtonated = ({ color, className, style }: { color: stri
       {nodes.map((n, i) => (
         <circle key={i} cx={n.x} cy={n.y} r="5" fill={color} />
       ))}
-      {/* H+ label in red */}
-      <text x="90" y="30" fontFamily="sans-serif" fontWeight="bold" fontSize="16" fill="#E53E3E">
+      {/* H+ label in clinical red */}
+      <text x="90" y="30" fontFamily="sans-serif" fontWeight="bold" fontSize="16" fill={MECHANISM_COLORS.phRed}>
         H+
       </text>
     </svg>
@@ -97,7 +98,7 @@ export const IntracellularTarget = ({ color, className, style }: { color: string
     {/* Nucleolus — darker inner circle */}
     <circle cx="50" cy="48" r="14" fill={color} fillOpacity="0.5" stroke={color} strokeWidth="2" opacity="0.85" />
     {/* Nucleolus highlight */}
-    <circle cx="47" cy="45" r="5" fill="white" fillOpacity="0.2" />
+    <circle cx="47" cy="45" r="5" fill={MECHANISM_COLORS.gloss} fillOpacity="0.2" />
   </svg>
 );
 
@@ -111,8 +112,8 @@ export const CellBody = ({
   className?: string;
   style?: React.CSSProperties;
 }) => {
-  const fillColor = variant === "normal" ? "#FDEBD0" : "#FDE8D0";
-  const strokeColor = variant === "normal" ? "#C9A961" : "#A68945";
+  const fillColor = variant === "normal" ? MECHANISM_COLORS.cellNormalFill : MECHANISM_COLORS.cellLesionFill;
+  const strokeColor = variant === "normal" ? MECHANISM_COLORS.cellNormalStroke : MECHANISM_COLORS.cellLesionStroke;
 
   return (
     <svg viewBox="0 0 200 200" className={className} style={style} preserveAspectRatio="xMidYMid meet">

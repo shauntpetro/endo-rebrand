@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /* ------------------------------------------------------------------ */
 /*  Stagger variants                                                  */
@@ -23,14 +24,14 @@ const scaleIn = {
 /* ------------------------------------------------------------------ */
 const ATOM_COLORS = ["#9F8CA6", "#D6B65F", "#8C7A6B", "#5D4E60"];
 
-function CyclicPeptideCSS() {
+function CyclicPeptideCSS({ reduced }: { reduced: boolean }) {
   const count = 10;
   const radius = 50; // px
   return (
     <motion.div
       className="relative w-full h-full"
-      animate={{ rotate: 360 }}
-      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      animate={reduced ? undefined : { rotate: 360 }}
+      transition={reduced ? undefined : { duration: 20, repeat: Infinity, ease: "linear" }}
     >
       {/* Bonds (lines between atoms) */}
       <svg className="absolute inset-0 w-full h-full" viewBox="0 0 120 120">
@@ -42,7 +43,7 @@ function CyclicPeptideCSS() {
           const x2 = 60 + radius * Math.cos(angle2);
           const y2 = 60 + radius * Math.sin(angle2);
           return (
-            <line key={`bond-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#2A2A2A" strokeWidth="2.5" strokeLinecap="round" />
+            <line key={`bond-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#2E263A" strokeWidth="2.5" strokeLinecap="round" />
           );
         })}
       </svg>
@@ -56,7 +57,7 @@ function CyclicPeptideCSS() {
         return (
           <div
             key={`atom-${i}`}
-            className="absolute rounded-full shadow-md"
+            className="absolute rounded-full"
             style={{
               width: size,
               height: size,
@@ -76,13 +77,13 @@ function CyclicPeptideCSS() {
 /* ------------------------------------------------------------------ */
 /*  SVG Antibody Y-shape                                              */
 /* ------------------------------------------------------------------ */
-function AntibodySVG() {
+function AntibodySVG({ reduced }: { reduced: boolean }) {
   return (
     <motion.svg
       viewBox="0 0 80 90"
       className="w-full h-full"
-      animate={{ y: [0, -3, 0] }}
-      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      animate={reduced ? undefined : { y: [0, -3, 0] }}
+      transition={reduced ? undefined : { duration: 3, repeat: Infinity, ease: "easeInOut" }}
     >
       {/* Left arm */}
       <line x1="40" y1="45" x2="15" y2="15" stroke="#5D4E60" strokeWidth="5" strokeLinecap="round" />
@@ -111,18 +112,28 @@ function AntibodySVG() {
 /*  Scene                                                             */
 /* ------------------------------------------------------------------ */
 export const Scene2_CyclicAdvantage = () => {
+  const reduced = usePrefersReducedMotion();
+
   return (
     <motion.div
-      className="w-full h-full relative flex flex-col items-center justify-center bg-white rounded-xl border border-stone-200 shadow-sm p-8 overflow-hidden"
+      className="w-full h-full relative flex flex-col items-center justify-center bg-bone-raised rounded-xl border border-plum-dark/10 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] p-8 overflow-hidden"
       variants={container}
-      initial="hidden"
+      initial={reduced ? "show" : "hidden"}
       animate="show"
     >
+      {/* Warm luminous accent — the one confident glow (frozen static under reduced motion) */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[26rem] h-[26rem] rounded-full pointer-events-none will-change-transform"
+        style={{ background: "radial-gradient(circle, rgba(201,169,97,0.14) 0%, transparent 70%)" }}
+        animate={reduced ? undefined : { scale: [1, 1.1, 1], opacity: [0.7, 1, 0.7] }}
+        transition={reduced ? undefined : { duration: 16, repeat: Infinity, ease: "easeInOut" }}
+      />
+
       {/* Dot-grid background */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(circle, #000 0.5px, transparent 0.5px)',
+          backgroundImage: 'radial-gradient(circle, #2E263A 0.5px, transparent 0.5px)',
           backgroundSize: '12px 12px',
         }}
       />
@@ -130,14 +141,14 @@ export const Scene2_CyclicAdvantage = () => {
       <motion.div className="absolute top-6 left-6 z-10" variants={slideUp}>
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
-          <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">The Cyclic Advantage</h3>
+          <h3 className="font-bold text-plum-primary uppercase tracking-widest text-xs">The Cyclic Advantage</h3>
         </div>
       </motion.div>
 
       {/* Size comparison bracket / baseline */}
       <motion.div
         className="absolute bottom-[140px] left-1/2 -translate-x-1/2 w-[85%] max-w-lg h-px"
-        style={{ background: 'linear-gradient(90deg, transparent 0%, #E5E7EB 20%, #E5E7EB 80%, transparent 100%)' }}
+        style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(46,38,58,0.14) 20%, rgba(46,38,58,0.14) 80%, transparent 100%)' }}
         variants={slideUp}
       />
 
@@ -149,47 +160,42 @@ export const Scene2_CyclicAdvantage = () => {
             <motion.div className="relative w-14 h-14">
               {/* Dashed orbit ring */}
               <motion.div
-                className="absolute inset-0 border border-dashed border-stone-300/50 rounded-full"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 border border-dashed border-plum-dark/20 rounded-full"
+                animate={reduced ? undefined : { rotate: 360 }}
+                transition={reduced ? undefined : { duration: 12, repeat: Infinity, ease: "linear" }}
               />
               {/* Scattered dots — chaotic motion showing lack of control */}
               <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                animate={reduced ? undefined : { rotate: 360 }}
+                transition={reduced ? undefined : { duration: 6, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-0"
               >
                 <motion.div
-                  className="absolute top-0 right-1 w-2.5 h-2.5 bg-stone-400 rounded-full shadow-sm"
-                  animate={{ x: [0, 5, -3, 0], y: [0, -4, 3, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute top-0 right-1 w-2.5 h-2.5 bg-plum-dark/30 rounded-full"
+                  animate={reduced ? undefined : { x: [0, 5, -3, 0], y: [0, -4, 3, 0] }}
+                  transition={reduced ? undefined : { duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                 />
                 <motion.div
-                  className="absolute bottom-1 left-1 w-3.5 h-3.5 bg-stone-500 rounded-full shadow-sm"
-                  animate={{ x: [0, -4, 6, 0], y: [0, 3, -2, 0] }}
-                  transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute bottom-1 left-1 w-3.5 h-3.5 bg-plum-dark/40 rounded-full"
+                  animate={reduced ? undefined : { x: [0, -4, 6, 0], y: [0, 3, -2, 0] }}
+                  transition={reduced ? undefined : { duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
                 />
                 <motion.div
-                  className="absolute top-3 left-0 w-2 h-2 bg-stone-300 rounded-full shadow-sm"
-                  animate={{ x: [0, 3, -5, 0], y: [0, 5, -1, 0] }}
-                  transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute top-3 left-0 w-2 h-2 bg-plum-dark/25 rounded-full"
+                  animate={reduced ? undefined : { x: [0, 3, -5, 0], y: [0, 5, -1, 0] }}
+                  transition={reduced ? undefined : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
                 />
               </motion.div>
-              {/* Size indicator line */}
-              <motion.div
-                className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.5 }}
-                transition={{ delay: 1.5 }}
-              >
-                <div className="w-8 h-px bg-stone-300" />
-                <span className="text-[7px] font-mono text-stone-300 mt-0.5">~0.5 kDa</span>
-              </motion.div>
+              {/* Size indicator line — statically visible for legibility */}
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                <div className="w-8 h-px bg-plum-dark/20" />
+                <span className="text-[10px] font-mono text-plum-dark/50 mt-0.5 tabular-nums">~0.5 kDa</span>
+              </div>
             </motion.div>
           </div>
           <div className="text-center relative z-10">
-            <p className="font-bold text-stone-700 text-xs uppercase tracking-wide mb-1">Small Molecule</p>
-            <p className="text-[9px] font-medium text-stone-400 uppercase tracking-wider">Lack Specificity</p>
+            <p className="font-bold text-plum-primary text-xs uppercase tracking-wide mb-1">Small Molecule</p>
+            <p className="text-[9px] font-medium text-plum-dark/50 uppercase tracking-wider">Low Specificity</p>
           </div>
         </motion.div>
 
@@ -199,77 +205,67 @@ export const Scene2_CyclicAdvantage = () => {
             {/* Double-layer pulsing glow */}
             <motion.div
               className="absolute inset-0 rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.07) 0%, transparent 60%)' }}
-              animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.7, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.09) 0%, transparent 60%)' }}
+              animate={reduced ? undefined : { scale: [1, 1.4, 1], opacity: [0.3, 0.7, 0.3] }}
+              transition={reduced ? undefined : { duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div
               className="absolute -inset-4 rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.04) 0%, transparent 50%)' }}
-              animate={{ scale: [1.2, 1.6, 1.2], opacity: [0.1, 0.3, 0.1] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.05) 0%, transparent 50%)' }}
+              animate={reduced ? undefined : { scale: [1.2, 1.6, 1.2], opacity: [0.1, 0.3, 0.1] }}
+              transition={reduced ? undefined : { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
             />
-            <CyclicPeptideCSS />
-            {/* Size indicator line */}
-            <motion.div
-              className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex flex-col items-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
-              transition={{ delay: 1.8 }}
-            >
-              <div className="w-16 h-px bg-gold-primary/50" />
-              <span className="text-[7px] font-mono text-gold-primary/70 mt-0.5">~1–3 kDa</span>
-            </motion.div>
+            <CyclicPeptideCSS reduced={reduced} />
+            {/* Size indicator line — statically visible for legibility */}
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex flex-col items-center">
+              <div className="w-16 h-px bg-gold-primary/60" />
+              <span className="text-[10px] font-mono text-gold-deep mt-0.5 tabular-nums">~1–3 kDa</span>
+            </div>
           </div>
           <motion.div
-            className="text-center relative z-20 -mt-2 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-gold-primary/20 shadow-lg ring-1 ring-gold-primary/10"
-            whileHover={{ scale: 1.05 }}
+            className="text-center relative z-20 -mt-2 bg-bone-raised/90 backdrop-blur-md px-4 py-2 rounded-full border border-gold-primary/30 shadow-gold-glow-sm"
+            whileHover={reduced ? undefined : { scale: 1.05 }}
             transition={{ type: "spring", bounce: 0.5 }}
           >
             <motion.div
               className="absolute -top-1 left-1/2 -translate-x-1/2 w-10 h-1.5 rounded-full blur-sm"
               style={{ background: 'rgba(201,169,97,0.3)' }}
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              animate={reduced ? undefined : { opacity: [0.3, 0.6, 0.3] }}
+              transition={reduced ? undefined : { duration: 2, repeat: Infinity }}
             />
-            <p className="font-bold text-gold-dark text-base font-serif">Cyclic Peptide</p>
-            <p className="text-[9px] font-bold text-stone-500 uppercase tracking-[0.2em]">Perfect Specificity</p>
+            <p className="font-bold text-gold-deep text-base font-serif">Cyclic Peptide</p>
+            <p className="text-[9px] font-bold text-plum-primary uppercase tracking-[0.2em]">High Specificity</p>
           </motion.div>
         </motion.div>
 
         {/* Antibody — SVG Y-shape (replaces Three.js Canvas) */}
         <motion.div className="flex flex-col items-center justify-end h-full gap-3 group relative p-2 w-28" variants={slideUp}>
           <div className="h-24 w-24 relative flex items-center justify-center">
-            <AntibodySVG />
-            {/* Size indicator */}
-            <motion.div
-              className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              transition={{ delay: 2.0 }}
-            >
-              <div className="w-14 h-px bg-stone-300" />
-              <span className="text-[7px] font-mono text-stone-300 mt-0.5">~150 kDa</span>
-            </motion.div>
+            <AntibodySVG reduced={reduced} />
+            {/* Size indicator — statically visible for legibility */}
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
+              <div className="w-14 h-px bg-plum-dark/20" />
+              <span className="text-[10px] font-mono text-plum-dark/50 mt-0.5 tabular-nums">~150 kDa</span>
+            </div>
           </div>
           <div className="text-center relative z-10">
-            <p className="font-bold text-stone-700 text-xs uppercase tracking-wide mb-1">Antibody</p>
-            <p className="text-[9px] font-medium text-stone-400 uppercase tracking-wider">Too Large</p>
+            <p className="font-bold text-plum-primary text-xs uppercase tracking-wide mb-1">Antibody</p>
+            <p className="text-[9px] font-medium text-plum-dark/50 uppercase tracking-wider">Too Large</p>
           </div>
         </motion.div>
       </div>
 
       {/* Quote panel */}
       <motion.div
-        className="mt-6 text-center max-w-md relative z-10 bg-stone-50/80 backdrop-blur-sm rounded-xl px-6 py-4 border border-stone-100"
-        initial={{ opacity: 0, y: 10 }}
+        className="mt-6 text-center max-w-md relative z-10 bg-bone/80 backdrop-blur-sm rounded-xl px-6 py-4 border border-plum-dark/10"
+        initial={reduced ? false : { opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.8 }}
       >
-        <p className="text-sm text-stone-600 font-serif leading-relaxed">
+        <p className="text-sm text-black-soft font-serif leading-relaxed">
           &ldquo;Cyclic peptides occupy the <motion.span
-            className="text-gold-dark italic font-bold"
-            initial={{ opacity: 0, scale: 0.9 }}
+            className="text-gold-deep italic font-bold"
+            initial={reduced ? false : { opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.8, type: "spring", bounce: 0.4 }}
           >sweet spot</motion.span>: large enough for specificity, small enough to penetrate cells.&rdquo;

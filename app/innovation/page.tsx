@@ -13,13 +13,14 @@ import { ChevronDown, ChevronUp, Quote } from "lucide-react";
 import Link from "next/link";
 import SuppressionCorrection from "@/components/SuppressionCorrection";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const MechanismCanvas = dynamic(
   () => import("@/components/mechanism/MechanismCanvas").then(m => m.MechanismCanvas),
   {
     ssr: false,
     loading: () => (
-      <div className="w-full aspect-square flex items-center justify-center bg-gradient-to-b from-[#FFFBF5] to-[#FFF8F0] rounded-xl">
+      <div className="w-full aspect-square flex items-center justify-center bg-gradient-to-b from-bone-raised to-bone rounded-xl">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gold-primary/30 to-gold-primary/10 animate-pulse" />
       </div>
     ),
@@ -31,7 +32,7 @@ const EfficacyGraph = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[400px] flex items-center justify-center bg-white rounded-xl border border-stone-200">
+      <div className="w-full h-[400px] flex items-center justify-center bg-bone-raised rounded-xl border border-plum-dark/10">
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-primary/20 to-gold-primary/5 animate-pulse" />
       </div>
     ),
@@ -41,6 +42,11 @@ const EfficacyGraph = dynamic(
 export default function InnovationPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [navbarHeight, setNavbarHeight] = useState(97);
+  // Render a SINGLE MechanismCanvas responsively so only one R3F tree ticks at a
+  // time. `isDesktop` decides which layout slot the canvas mounts into; the other
+  // slot renders no canvas, so the two React trees never run simultaneously.
+  const [isDesktop, setIsDesktop] = useState(false);
+  const reduced = usePrefersReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
   const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
   const mechanismWrapperRef = useRef<HTMLDivElement>(null);
@@ -50,7 +56,16 @@ export default function InnovationPage() {
   const showStepper = mechanismInView && !mechanismEndInView;
   const sliderRef = useRef(null);
   const sliderInView = useInView(sliderRef, { margin: "200px" });
-  
+  const animateSlider = sliderInView && !reduced;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const apply = () => setIsDesktop(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
   useEffect(() => {
     const updateNavbarHeight = () => {
       const navbar = document.querySelector('nav');
@@ -58,10 +73,10 @@ export default function InnovationPage() {
         setNavbarHeight(navbar.offsetHeight);
       }
     };
-    
+
     updateNavbarHeight();
     window.addEventListener('resize', updateNavbarHeight);
-    
+
     return () => {
       window.removeEventListener('resize', updateNavbarHeight);
     };
@@ -110,55 +125,52 @@ export default function InnovationPage() {
     }
   };
 
+  // Warm bone / bone-raised beats that breathe as you move through the mechanism.
   const bgColors = [
-      'rgba(250, 250, 250, 1)', // Default/Hero
-      'rgba(245, 241, 232, 1)', // Step 1
-      'rgba(248, 248, 250, 1)', // Step 2
-      'rgba(255, 255, 255, 1)', // Step 3
-      'rgba(252, 248, 250, 1)', // Step 4
-      'rgba(255, 255, 255, 1)'  // Step 5
+      'rgba(250, 246, 236, 1)', // Default / Hero — bone-raised
+      'rgba(244, 238, 225, 1)', // Step 1 — bone
+      'rgba(250, 246, 236, 1)', // Step 2
+      'rgba(244, 238, 225, 1)', // Step 3
+      'rgba(250, 246, 236, 1)', // Step 4
+      'rgba(244, 238, 225, 1)'  // Step 5
   ];
 
   return (
-    <motion.main 
+    <motion.main
         className="min-h-screen flex flex-col font-sans transition-colors duration-500"
         animate={{ backgroundColor: bgColors[activeStep + 1] || bgColors[0] }}
     >
       <Navbar />
-      
+
       {/* Hero */}
-      <section ref={heroRef} className="pt-24 md:pt-40 pb-16 md:pb-24 container mx-auto px-6 relative z-10">
+      <section
+        ref={heroRef}
+        className="pt-24 md:pt-40 pb-16 md:pb-24 container mx-auto px-6 relative z-10"
+        style={{
+          background:
+            "radial-gradient(70% 55% at 78% 30%, rgba(201,169,97,0.14), transparent 62%)",
+        }}
+      >
         <div className="max-w-5xl">
-            <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-6"
-            >
+            <div className="reveal-rise mb-6" style={{ animationDelay: "0.05s" }}>
               <Eyebrow>Our Platform</Eyebrow>
-            </motion.div>
-            <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="text-6xl md:text-[96px] font-serif font-bold mb-8 tracking-tight text-black-primary leading-[0.95]"
+            </div>
+            <h1
+                className="reveal-rise text-6xl md:text-[96px] font-serif font-bold mb-8 tracking-tight text-plum-dark leading-[0.95] text-balance"
+                style={{ animationDelay: "0.14s" }}
             >
               Treating the <br />
               <span className="text-gold-primary italic">&ldquo;Untreatable&rdquo;</span>
-            </motion.h1>
-            <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                className="text-xl md:text-2xl text-black-soft max-w-3xl leading-relaxed font-light mb-12"
+            </h1>
+            <p
+                className="reveal-rise text-xl md:text-2xl text-black-soft max-w-3xl leading-relaxed font-light mb-12"
+                style={{ animationDelay: "0.26s" }}
             >
               A new frontier in peptide therapeutics and imaging. EndoCyclic&apos;s precision peptides target diseased cells from the inside out, enabling selective uptake, pH-sensitive activation, and direct engagement of intracellular targets.
-            </motion.p>
-            <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="flex items-center gap-6 text-sm text-stone-500 font-medium"
+            </p>
+            <div
+                className="reveal-rise flex items-center gap-6 text-sm text-plum-dark/60 font-medium"
+                style={{ animationDelay: "0.38s" }}
             >
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-clinical-teal" />
@@ -172,31 +184,26 @@ export default function InnovationPage() {
                 <div className="w-1.5 h-1.5 rounded-full bg-plum-primary" />
                 <span>Non-Hormonal</span>
               </div>
-            </motion.div>
+            </div>
         </div>
 
-        {/* Scroll hint */}
-        <motion.div
-          className="flex flex-col items-center mt-12"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-        >
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-stone-400 mb-3">Explore the mechanism</span>
+        {/* Scroll hint — visible in static state; bounce freezes under reduced motion */}
+        <div className="reveal-rise flex flex-col items-center mt-12" style={{ animationDelay: "0.52s" }}>
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-plum-dark/40 mb-3">Explore the mechanism</span>
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            animate={reduced ? undefined : { y: [0, 6, 0] }}
+            transition={reduced ? { duration: 0 } : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           >
-            <ChevronDown size={20} className="text-gold-primary" />
+            <ChevronDown size={20} className="text-gold-deep" />
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Wrapper for Sticky Elements */}
       <div className="relative" ref={mechanismWrapperRef}>
           {/* Step Progress Bar - Sticky within this wrapper */}
           <motion.section
-            className="sticky z-30 backdrop-blur-md border-b border-black-primary/5 hidden md:block"
+            className="sticky z-30 backdrop-blur-md border-b border-plum-dark/10 hidden md:block"
             style={{ top: navbarHeight }}
             animate={{ opacity: showStepper ? 1 : 0, pointerEvents: showStepper ? "auto" as const : "none" as const }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -205,10 +212,10 @@ export default function InnovationPage() {
                 className="absolute inset-0 -z-10 opacity-90"
                 animate={{ backgroundColor: bgColors[activeStep + 1] || bgColors[0] }}
             />
-            
+
             <div className="relative flex justify-between items-start max-w-5xl mx-auto py-3 px-6">
                 {/* Progress Line */}
-                <div className="absolute top-[34px] left-[40px] right-[40px] h-0.5 bg-gray-200 -z-10">
+                <div className="absolute top-[34px] left-[40px] right-[40px] h-0.5 bg-plum-dark/10 -z-10">
                     <motion.div
                         className="h-full w-full bg-gradient-to-r from-gold-primary to-gold-dark origin-left"
                         initial={{ scaleX: 0 }}
@@ -218,7 +225,7 @@ export default function InnovationPage() {
                 </div>
 
                 {STEPS.map((step, index) => (
-                    <div 
+                    <div
                         key={step.id}
                         onClick={() => scrollToStep(index)}
                         tabIndex={0}
@@ -228,22 +235,22 @@ export default function InnovationPage() {
                         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); scrollToStep(index); } }}
                         className={clsx(
                             "flex flex-col items-center gap-2 cursor-pointer group relative z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary rounded-full",
-                            activeStep >= index ? "text-gold-primary" : "text-gray-400"
+                            activeStep >= index ? "text-gold-deep" : "text-plum-dark/40"
                         )}
                     >
                         <div className={clsx(
                             "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-[2px] transition-all duration-500",
                             activeStep === index
-                                ? "border-gold-primary bg-gold-primary text-white scale-110 shadow-[0_0_12px_rgba(201,169,97,0.4)]"
+                                ? "border-gold-primary bg-gold-primary text-white scale-110 shadow-gold-glow-sm"
                                 : activeStep > index
-                                    ? "border-black-primary bg-black-primary text-gold-primary"
-                                    : "border-gray-300 bg-white text-gray-300"
+                                    ? "border-plum-dark bg-plum-dark text-gold-primary"
+                                    : "border-plum-dark/25 bg-bone-raised text-plum-dark/30"
                         )}>
                             {index + 1}
                         </div>
                         <span className={clsx(
                             "text-[9px] font-bold uppercase tracking-widest transition-colors duration-300 hidden md:block text-center max-w-[100px] leading-tight",
-                            activeStep === index ? "text-gold-primary" : "text-gray-400"
+                            activeStep === index ? "text-gold-deep" : "text-plum-dark/40"
                         )}>
                             {step.title}
                         </span>
@@ -256,19 +263,23 @@ export default function InnovationPage() {
           <div className="relative pb-16 pt-8 md:pt-12">
             <div className="container mx-auto px-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                
-                {/* Mobile Visual (shown only on mobile) */}
+
+                {/* Mobile Visual (shown only on mobile) — single canvas, mounts only when NOT desktop */}
                 <div className="lg:hidden relative mb-8">
-                  <div className="aspect-[4/3] w-full rounded-xl shadow-lg border border-gray-mid bg-white overflow-hidden">
-                    <CanvasErrorBoundary><MechanismCanvas currentStep={activeStep + 1} autoPlay={false} /></CanvasErrorBoundary>
+                  <div className="aspect-[4/3] w-full rounded-xl shadow-lg shadow-plum-dark/10 border border-plum-dark/10 bg-bone-raised overflow-hidden">
+                    {!isDesktop && (
+                      <CanvasErrorBoundary><MechanismCanvas currentStep={activeStep + 1} autoPlay={false} /></CanvasErrorBoundary>
+                    )}
                   </div>
                 </div>
 
-                {/* Sticky Visual (Left — Desktop) */}
+                {/* Sticky Visual (Left — Desktop) — single canvas, mounts only when desktop */}
                 <div className="hidden lg:block relative">
-                  <div className="sticky top-[230px] h-[min(520px,calc(100vh-260px))] w-full rounded-2xl shadow-2xl shadow-stone-300/40 border border-stone-200/60 bg-white overflow-hidden transition-all duration-500">
+                  <div className="sticky top-[230px] h-[min(520px,calc(100vh-260px))] w-full rounded-2xl shadow-2xl shadow-plum-dark/10 border border-plum-dark/10 bg-bone-raised overflow-hidden transition-all duration-500">
                     <div className="w-full h-full">
-                      <CanvasErrorBoundary><MechanismCanvas currentStep={activeStep + 1} autoPlay={false} /></CanvasErrorBoundary>
+                      {isDesktop && (
+                        <CanvasErrorBoundary><MechanismCanvas currentStep={activeStep + 1} autoPlay={false} /></CanvasErrorBoundary>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -277,15 +288,15 @@ export default function InnovationPage() {
                 <div className="py-12 lg:py-0 relative">
                   {/* Navigation Helpers — only visible during mechanism steps */}
                   <motion.div
-                    className="fixed right-6 bottom-24 z-50 flex flex-col gap-2 mix-blend-multiply text-black-primary hover:opacity-100 transition-opacity"
-                    animate={{ opacity: showStepper ? 0.5 : 0, pointerEvents: showStepper ? "auto" as const : "none" as const }}
+                    className="fixed right-6 bottom-24 z-50 flex flex-col gap-2 text-plum-dark hover:opacity-100 transition-opacity"
+                    animate={{ opacity: showStepper ? 0.7 : 0, pointerEvents: showStepper ? "auto" as const : "none" as const }}
                     transition={{ duration: 0.3 }}
                   >
                       <button
                         onClick={() => activeStep > 0 && scrollToStep(activeStep - 1)}
                         disabled={activeStep === 0}
                         aria-label="Previous step"
-                        className="p-3 rounded-full border border-black-primary/20 bg-white/50 hover:bg-white shadow-sm disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
+                        className="p-3 rounded-full border border-plum-dark/15 bg-bone-raised/70 hover:bg-bone-raised shadow-sm disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
                       >
                           <ChevronUp size={20} />
                       </button>
@@ -293,18 +304,19 @@ export default function InnovationPage() {
                         onClick={() => activeStep < STEPS.length - 1 && scrollToStep(activeStep + 1)}
                         disabled={activeStep === STEPS.length - 1}
                         aria-label="Next step"
-                        className="p-3 rounded-full border border-black-primary/20 bg-white/50 hover:bg-white shadow-sm disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
+                        className="p-3 rounded-full border border-plum-dark/15 bg-bone-raised/70 hover:bg-bone-raised shadow-sm disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
                       >
                           <ChevronDown size={20} />
                       </button>
                   </motion.div>
 
                   {STEPS.map((step, index) => (
-                    <ScrollStep 
-                      key={step.id} 
-                      step={step} 
-                      index={index} 
+                    <ScrollStep
+                      key={step.id}
+                      step={step}
+                      index={index}
                       isActive={activeStep === index}
+                      reduced={reduced}
                       // Remove manual onActive, use IntersectionObserver logic above
                       ref={(el: HTMLDivElement | null) => { stepsRef.current[index] = el; }}
                     />
@@ -318,7 +330,7 @@ export default function InnovationPage() {
       </div>
 
       {/* Mechanism Summary Bridge */}
-      <section className="py-20 bg-gradient-to-b from-white to-stone-50 relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-b from-bone-raised to-bone relative overflow-hidden">
         <div className="container mx-auto px-6">
           <motion.div
             className="max-w-4xl mx-auto text-center"
@@ -328,7 +340,7 @@ export default function InnovationPage() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <Eyebrow className="mb-6 block">The Complete Mechanism</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-black-primary mb-10">Five Layers of Precision</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-plum-dark mb-10 text-balance">Five Layers of Precision</h2>
 
             {/* Horizontal step summary */}
             <div className="grid grid-cols-5 gap-2 max-w-3xl mx-auto">
@@ -344,13 +356,13 @@ export default function InnovationPage() {
                   <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-gold-primary to-gold-dark flex items-center justify-center text-white font-bold text-sm mb-2 shadow-md shadow-gold-primary/20">
                     {index + 1}
                   </div>
-                  <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-black-primary/70 leading-tight text-center">
+                  <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-plum-dark/70 leading-tight text-center">
                     {step.title}
                   </span>
                 </motion.div>
               ))}
               {/* Connecting line behind circles */}
-              <div className="col-span-5 -mt-[52px] md:-mt-[56px] mx-auto w-[calc(100%-60px)] h-px bg-gradient-to-r from-gold-primary/20 via-gold-primary/40 to-gold-primary/20 pointer-events-none relative z-[-1]" />
+              <div className="col-span-5 -mt-[52px] md:-mt-[56px] mx-auto w-[calc(100%-60px)] h-px bg-gradient-to-r from-gold-primary/20 via-gold-primary/50 to-gold-primary/20 pointer-events-none relative z-[-1]" />
             </div>
 
             <motion.p
@@ -360,7 +372,7 @@ export default function InnovationPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.6 }}
             >
-              Together, these five layers ensure therapeutic activity only at the site of disease — a level of selectivity no other modality achieves.
+              Together, these five layers are designed to concentrate therapeutic activity at the site of disease — the foundation of our precision approach.
             </motion.p>
           </motion.div>
         </div>
@@ -368,9 +380,9 @@ export default function InnovationPage() {
 
       <SuppressionCorrection />
 
-      {/* CEO Quote Section */}
+      {/* CEO Quote Section — deliberate plum-dark cinematic beat */}
       <section className="py-24 bg-plum-dark text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/5 to-transparent pointer-events-none" />
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-gold-primary/10 to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
                 <motion.div
@@ -386,7 +398,7 @@ export default function InnovationPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-3xl md:text-5xl font-serif font-light leading-tight mb-12"
+                  className="text-3xl md:text-5xl font-serif font-light leading-tight mb-12 text-balance"
                 >
                     &ldquo;We aim to end the era of blanket, cytotoxic compounds and usher in a new class of targeted, non-hormonal therapeutics.&rdquo;
                 </motion.blockquote>
@@ -397,7 +409,7 @@ export default function InnovationPage() {
                   transition={{ duration: 0.5, delay: 0.4 }}
                   className="flex flex-col items-center"
                 >
-                    <div className="relative w-16 h-16 rounded-full bg-gray-700 mb-4 overflow-hidden border-2 border-gold-primary">
+                    <div className="relative w-16 h-16 rounded-full bg-plum-primary mb-4 overflow-hidden border-2 border-gold-primary">
                          <Image
                             src="/team/tanya-petrossian.avif"
                             alt="Dr. Tanya Petrossian"
@@ -430,7 +442,7 @@ export default function InnovationPage() {
       </section>
 
       {/* Tuned For Purpose */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-bone-raised">
           <div className="container mx-auto px-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                   <motion.div
@@ -440,19 +452,19 @@ export default function InnovationPage() {
                       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   >
                       <Eyebrow tone="plum" className="mb-6 block">Platform Flexibility</Eyebrow>
-                      <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-8">Tuned for Purpose</h2>
+                      <h2 className="text-4xl md:text-5xl font-serif font-bold text-plum-dark mb-8 text-balance">Tuned for Purpose</h2>
                       <p className="text-lg text-black-soft leading-relaxed mb-6 font-light">
                           EndoCyclic&apos;s peptide platform allows for precise control over how long each peptide remains active. Diagnostic agents are designed to clear quickly after delivering their signal, while therapeutic peptides are optimized for longer residence in diseased tissue to sustain their effect.
                       </p>
-                      <div className="p-5 rounded-lg bg-gradient-to-r from-gold-primary/10 to-transparent border-l-[3px] border-gold-primary my-8">
-                          <p className="text-lg font-serif font-medium italic leading-relaxed text-black-primary/80">
+                      <div className="p-5 rounded-lg bg-gradient-to-r from-gold-primary/12 to-transparent border-l-[3px] border-gold-primary my-8">
+                          <p className="text-lg font-serif font-medium italic leading-relaxed text-plum-dark/80">
                             &ldquo;The same core chemistry can be used for two entirely different applications. It&apos;s just a matter of tuning how long it stays and what it&apos;s meant to do.&rdquo;
                           </p>
                       </div>
                   </motion.div>
                   <motion.div
                     ref={sliderRef}
-                    className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-8 md:p-12 border border-gray-100 relative overflow-hidden min-h-[400px] flex flex-col justify-center"
+                    className="bg-bone rounded-xl p-8 md:p-12 border border-plum-dark/10 relative overflow-hidden min-h-[400px] flex flex-col justify-center"
                     initial={{ opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
@@ -460,32 +472,25 @@ export default function InnovationPage() {
                   >
                         {/* Title */}
                         <div className="text-center mb-10">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-stone-400">Residence Time Spectrum</span>
+                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-plum-dark/40">Residence Time Spectrum</span>
                         </div>
 
                         {/* Spectrum bar */}
                         <div className="relative mx-auto w-full max-w-sm">
                           {/* Gradient track */}
-                          <div className="h-3 rounded-full bg-gradient-to-r from-clinical-teal via-gold-primary to-plum-primary opacity-80" />
+                          <div className="h-3 rounded-full bg-gradient-to-r from-clinical-teal via-gold-primary to-plum-primary opacity-90" />
 
-                          {/* Animated slider thumb */}
+                          {/* Animated slider thumb — freezes under reduced motion */}
                           <motion.div
-                            className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white rounded-full shadow-lg border-[3px] border-gold-primary z-10 will-change-[left]"
-                            animate={sliderInView ? { left: ["10%", "90%", "10%"] } : undefined}
-                            transition={sliderInView ? { duration: 5, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
-                          />
-
-                          {/* Glow following the thumb */}
-                          <motion.div
-                            className="absolute top-1/2 -translate-y-1/2 -ml-4 w-8 h-8 rounded-full bg-transparent z-0 will-change-[left]"
-                            animate={sliderInView ? { left: ["10%", "90%", "10%"] } : undefined}
-                            transition={sliderInView ? { duration: 5, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
+                            className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-bone-raised rounded-full shadow-lg border-[3px] border-gold-primary z-10 will-change-[left]"
+                            animate={animateSlider ? { left: ["10%", "90%", "10%"] } : undefined}
+                            transition={animateSlider ? { duration: 5, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
                           />
 
                           {/* Tick marks */}
                           <div className="flex justify-between mt-4 px-1">
                             {[...Array(5)].map((_, i) => (
-                              <div key={i} className="w-px h-2 bg-stone-300" />
+                              <div key={i} className="w-px h-2 bg-plum-dark/20" />
                             ))}
                           </div>
                         </div>
@@ -497,14 +502,14 @@ export default function InnovationPage() {
                               <svg className="w-5 h-5 text-clinical-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             </div>
                             <span className="text-xs font-bold uppercase tracking-wider text-clinical-teal">Diagnostic</span>
-                            <span className="text-[10px] text-stone-400 mt-1 leading-tight">Rapid clearance<br />Signal &amp; release</span>
+                            <span className="text-[10px] text-plum-dark/40 mt-1 leading-tight">Rapid clearance<br />Signal &amp; release</span>
                           </div>
                           <div className="flex flex-col items-center text-center max-w-[120px]">
                             <div className="w-11 h-11 rounded-full bg-plum-primary/10 border-2 border-plum-primary flex items-center justify-center mb-2">
                               <svg className="w-5 h-5 text-plum-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
                             </div>
                             <span className="text-xs font-bold uppercase tracking-wider text-plum-primary">Therapeutic</span>
-                            <span className="text-[10px] text-stone-400 mt-1 leading-tight">Sustained presence<br />Engage &amp; correct</span>
+                            <span className="text-[10px] text-plum-dark/40 mt-1 leading-tight">Sustained presence<br />Engage &amp; correct</span>
                           </div>
                         </div>
 
@@ -512,11 +517,11 @@ export default function InnovationPage() {
                         <div className="flex justify-between items-center mt-8 mx-auto w-full max-w-sm px-2">
                           <div className="flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-clinical-teal" />
-                            <span className="text-[11px] font-bold text-stone-600">FemLUNA&trade;</span>
+                            <span className="text-[11px] font-bold text-plum-dark/70">FemLUNA&trade;</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-plum-primary" />
-                            <span className="text-[11px] font-bold text-stone-600">ENDO-205</span>
+                            <span className="text-[11px] font-bold text-plum-dark/70">ENDO-205</span>
                           </div>
                         </div>
                   </motion.div>
@@ -536,7 +541,7 @@ export default function InnovationPage() {
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Eyebrow className="mb-4 block">Beyond Targeted Delivery</Eyebrow>
-                  <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-10">A New Approach to Chronic Disease</h2>
+                  <h2 className="text-4xl md:text-5xl font-serif font-bold text-plum-dark mb-10 text-balance">A New Approach to Chronic Disease</h2>
                 </motion.div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <motion.div
@@ -558,11 +563,11 @@ export default function InnovationPage() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
                     >
-                        <div className="bg-white p-8 rounded-xl border border-gold-primary/20 shadow-lg">
+                        <div className="bg-bone-raised p-8 rounded-xl border border-gold-primary/25 shadow-lg shadow-plum-dark/5">
                             <p className="text-xl italic font-serif text-plum-dark mb-6">
                                 &ldquo;We&apos;ve seen peptides do amazing things, drugs like Ozempic and Wegovy have transformed how we treat metabolic disease. Now we&apos;re using that same power to take on endometriosis.&rdquo;
                             </p>
-                            <div className="flex items-center gap-2 text-sm font-bold text-gold-primary uppercase tracking-widest">
+                            <div className="flex items-center gap-2 text-sm font-bold text-gold-deep uppercase tracking-widest">
                                 <span className="w-8 h-[1px] bg-gold-primary" />
                                 Dr. Tanya Petrossian
                             </div>
@@ -574,7 +579,7 @@ export default function InnovationPage() {
       </section>
 
       {/* Efficacy Graph / Programs */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-24 bg-bone relative overflow-hidden">
 
         <div className="container mx-auto px-6 text-center mb-16 relative z-10">
             <motion.div
@@ -584,8 +589,8 @@ export default function InnovationPage() {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
               <Eyebrow tone="plum" className="mb-4 block">Preclinical Evidence</Eyebrow>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-black-primary mb-6">Programs in Development</h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto font-light">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-plum-dark mb-6 text-balance">Programs in Development</h2>
+              <p className="text-xl text-black-soft max-w-2xl mx-auto font-light">
                   Guided by the same precision-based design, we are advancing a new generation of targeted peptide medicines.
               </p>
             </motion.div>
@@ -623,7 +628,7 @@ export default function InnovationPage() {
   );
 }
 
-function ScrollStep({ step, index, isActive, ref }: { step: { id: number; title: string; description: string; detail: string }, index: number, isActive: boolean, ref: React.RefCallback<HTMLDivElement | null> }) {
+function ScrollStep({ step, index, isActive, reduced, ref }: { step: { id: number; title: string; description: string; detail: string }, index: number, isActive: boolean, reduced: boolean, ref: React.RefCallback<HTMLDivElement | null> }) {
 
   return (
     <div
@@ -637,7 +642,7 @@ function ScrollStep({ step, index, isActive, ref }: { step: { id: number; title:
         <motion.div
           className={clsx(
             "flex flex-col justify-center p-6 pl-10 border-l-2 transition-all duration-500",
-            isActive ? "border-gold-primary" : "border-gray-200"
+            isActive ? "border-gold-primary" : "border-plum-dark/15"
           )}
           initial={{ opacity: 0.3, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -654,14 +659,14 @@ function ScrollStep({ step, index, isActive, ref }: { step: { id: number; title:
             <motion.div
               className="w-2 h-2 rounded-full transition-colors duration-500"
               animate={{
-                backgroundColor: isActive ? "var(--color-gold-primary)" : "#D1D5DB",
-                scale: isActive ? [1, 1.3, 1] : 1,
+                backgroundColor: isActive ? "var(--color-gold-primary)" : "#C9B8A8",
+                scale: isActive && !reduced ? [1, 1.3, 1] : 1,
               }}
-              transition={{ scale: { duration: 2, repeat: isActive ? Infinity : 0, ease: "easeInOut" } }}
+              transition={{ scale: { duration: 2, repeat: isActive && !reduced ? Infinity : 0, ease: "easeInOut" } }}
             />
             <span className={clsx(
               "font-sans text-sm font-bold uppercase tracking-[3px] transition-colors duration-500",
-              isActive ? "text-gold-primary" : "text-gray-400"
+              isActive ? "text-gold-deep" : "text-plum-dark/40"
             )}>
               STEP 0{index + 1}
             </span>
@@ -672,8 +677,8 @@ function ScrollStep({ step, index, isActive, ref }: { step: { id: number; title:
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className={clsx(
-              "text-3xl md:text-[44px] font-serif font-bold mb-6 leading-[1.1] transition-colors duration-500",
-              isActive ? "text-black-primary" : "text-gray-400"
+              "text-3xl md:text-[44px] font-serif font-bold mb-6 leading-[1.1] transition-colors duration-500 text-balance",
+              isActive ? "text-plum-dark" : "text-plum-dark/35"
             )}
           >
             {step.title}
@@ -696,11 +701,11 @@ function ScrollStep({ step, index, isActive, ref }: { step: { id: number; title:
             className={clsx(
               "p-5 rounded-lg transition-all duration-500 border-l-[3px]",
               isActive
-                ? "bg-gradient-to-r from-gold-primary/10 to-transparent border-gold-primary"
+                ? "bg-gradient-to-r from-gold-primary/12 to-transparent border-gold-primary"
                 : "bg-transparent border-transparent"
             )}
           >
-              <p className="text-lg md:text-xl font-serif font-medium italic leading-relaxed text-black-primary/80">
+              <p className="text-lg md:text-xl font-serif font-medium italic leading-relaxed text-plum-dark/80">
                 &ldquo;{step.detail}&rdquo;
               </p>
           </motion.div>

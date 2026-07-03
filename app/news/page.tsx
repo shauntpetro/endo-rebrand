@@ -8,6 +8,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ArrowUpRight, Download, Calendar, Search, Mail, CheckCircle2 } from "lucide-react";
 import clsx from "clsx";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -89,7 +91,7 @@ const articles: Article[] = [
     date: "Sep 16, 2025",
     source: "EndoCyclic Therapeutics",
     title: "Dr. Tanya Petrossian on ENDO-205's Transformative Potential",
-    excerpt: "Dr. Tanya Petrossian, CEO of EndoCyclic Therapeutics, emphasizes that ENDO-205 has the potential to deliver a safe, effective, and transformative solution for women living with endometriosis, addressing a condition with an economic burden exceeding $100 billion annually in the U.S. alone.",
+    excerpt: "Dr. Tanya Petrossian, CEO of EndoCyclic Therapeutics, emphasizes that ENDO-205 has the potential to deliver a transformative, disease-modifying solution for women living with endometriosis, addressing a condition with an economic burden exceeding $200 billion annually in the U.S. alone.",
     image: "/team/tanya-petrossian.avif",
     link: "https://www.biospace.com/press-releases/endocyclic-therapeutics-awarded-rare-nih-perfect-10-grant-for-endometriosis-therapeutic",
     featured: false
@@ -134,6 +136,7 @@ const categories: ArticleType[] = ["All", "Press Release", "Award", "Interview"]
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState<ArticleType>("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const reduced = usePrefersReducedMotion();
 
   // Newsletter state
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -190,71 +193,80 @@ export default function NewsPage() {
 
   const filteredArticles = articles.filter(article => {
     const matchesCategory = selectedCategory === "All" || article.type === selectedCategory;
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          article.source.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   const featuredArticle = articles.find(a => a.featured) || articles[0];
-  // Don't show featured article in the grid if we are on "All" view and no search, 
+  // Don't show featured article in the grid if we are on "All" view and no search,
   // but if we filter, we might want to just show everything in a grid.
-  // Let's keep it simple: If "All" and no search, show featured separately. 
+  // Let's keep it simple: If "All" and no search, show featured separately.
   // Otherwise just show grid.
   const showFeaturedLayout = selectedCategory === "All" && !searchQuery;
-  
-  const gridArticles = showFeaturedLayout 
-    ? filteredArticles.filter(a => a.id !== featuredArticle.id) 
+
+  const gridArticles = showFeaturedLayout
+    ? filteredArticles.filter(a => a.id !== featuredArticle.id)
     : filteredArticles;
 
+  // Transform-only entrance variants — content stays visible if motion can't run.
+  const cardVariants = {
+    hidden: { y: reduced ? 0 : 20 },
+    visible: { y: 0 },
+  };
+
   return (
-    <main className="min-h-screen bg-white flex flex-col selection:bg-gold-primary/30">
+    <main className="min-h-screen bg-bone flex flex-col selection:bg-gold-primary/30">
       <Navbar />
-      
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-pastel-plum overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-           <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] max-w-[80vw] max-h-[80vw] rounded-full bg-gold-primary/20 blur-[100px]" />
-           <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] max-w-[80vw] max-h-[80vw] rounded-full bg-plum-primary/10 blur-[80px]" />
+
+      {/* Hero Section — luminous cream with a warm gold beat */}
+      <section
+        className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden border-b border-plum-dark/10"
+        style={{
+          background:
+            "radial-gradient(75% 55% at 70% 28%, rgba(201,169,97,0.15), transparent 60%), linear-gradient(180deg, #FAF6EC, #F4EEE1 62%)",
+        }}
+      >
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] max-w-[80vw] max-h-[80vw] rounded-full bg-gold-primary/15 blur-[120px]" />
+          <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] max-w-[80vw] max-h-[80vw] rounded-full bg-plum-primary/[0.08] blur-[90px]" />
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+          <div className="max-w-4xl border-t border-plum-dark/15 pt-10">
+            <span className="reveal-rise block mb-5" style={{ animationDelay: "0.05s" }}>
+              <Eyebrow>Newsroom</Eyebrow>
+            </span>
+            <h1
+              className="reveal-rise font-serif font-bold text-plum-dark mb-8 text-[clamp(2.6rem,8vw,5.5rem)] leading-[0.95] tracking-tight text-balance"
+              style={{ animationDelay: "0.12s" }}
             >
-              <h5 className="text-gold-primary font-bold tracking-widest uppercase mb-4 text-sm">Newsroom</h5>
-              <h1 className="text-5xl md:text-7xl font-serif font-medium text-plum-primary mb-8 leading-tight">
-                Pioneering Progress in <br/>
-                <span className="italic">Women&apos;s Health</span>
-              </h1>
-              <p className="text-xl text-gray-therapeutics max-w-2xl leading-relaxed mb-10">
-                Stay up to date with our latest breakthroughs, clinical milestones, and corporate announcements as we work to redefine standard of care.
-              </p>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="flex flex-wrap gap-4"
-              >
-                <a href="#newsletter" className="flex items-center gap-2 px-6 py-3 bg-plum-primary text-white rounded-lg font-bold uppercase tracking-wider text-xs hover:bg-gold-primary transition-colors shadow-lg shadow-plum-primary/20">
-                  <Mail size={16} /> Subscribe to Updates
-                </a>
-                <Link href="/media" className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-lg text-plum-primary font-bold uppercase tracking-wider text-xs hover:border-gold-primary hover:text-gold-primary transition-colors shadow-sm">
-                  <Download size={16} /> Media Kit
-                </Link>
-              </motion.div>
-            </motion.div>
+              Pioneering progress in <br />
+              <span className="italic text-gold-deep">women&apos;s health</span>
+            </h1>
+            <p
+              className="reveal-rise text-xl text-black-soft max-w-2xl leading-relaxed mb-10"
+              style={{ animationDelay: "0.24s" }}
+            >
+              Stay up to date with our latest breakthroughs, clinical milestones, and corporate announcements as we work to redefine standard of care.
+            </p>
+
+            <div className="reveal-rise flex flex-wrap gap-4" style={{ animationDelay: "0.34s" }}>
+              <a href="#newsletter" className="flex items-center gap-2 px-6 py-3 bg-plum-dark text-bone rounded-lg font-bold uppercase tracking-wider text-xs hover:bg-gold-primary hover:text-plum-dark transition-colors shadow-lg shadow-plum-dark/20">
+                <Mail size={16} /> Subscribe to Updates
+              </a>
+              <Link href="/media" className="flex items-center gap-2 px-6 py-3 bg-bone-raised border border-plum-dark/15 rounded-lg text-plum-dark font-bold uppercase tracking-wider text-xs hover:border-gold-primary hover:text-gold-deep transition-colors shadow-sm">
+                <Download size={16} /> Media Kit
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Filters & Search */}
-      <section className="py-10 border-b border-gray-100 sticky top-[88px] bg-white/90 backdrop-blur-md z-30">
+      <section className="py-8 border-b border-plum-dark/10 sticky top-[88px] bg-bone/90 backdrop-blur-md z-30">
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          
+
           {/* Categories */}
           <div role="group" aria-label="Filter articles by category" className="flex overflow-x-auto pb-2 md:pb-0 gap-2 w-full md:w-auto no-scrollbar">
             {categories.map((category) => (
@@ -265,8 +277,8 @@ export default function NewsPage() {
                 className={clsx(
                   "px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary",
                   selectedCategory === category
-                    ? "bg-plum-primary text-white shadow-md"
-                    : "bg-gray-light text-gray-500 hover:bg-gray-200"
+                    ? "bg-plum-dark text-bone shadow-md"
+                    : "bg-bone-raised text-gray-therapeutics border border-plum-dark/10 hover:border-gold-primary/40 hover:text-plum-dark"
                 )}
               >
                 {category}
@@ -281,33 +293,35 @@ export default function NewsPage() {
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-light border border-transparent focus:bg-white focus:border-plum-primary focus:outline-none transition-all text-sm placeholder:text-gray-400"
+              className="w-full pl-10 pr-4 py-2 rounded-full bg-bone-raised border border-plum-dark/10 focus:bg-white focus:border-gold-primary focus:outline-none transition-all text-sm text-black-soft placeholder:text-gray-therapeutics/70"
             />
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-plum-primary transition-colors" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-therapeutics/70 group-focus-within:text-gold-deep transition-colors" />
           </div>
         </div>
       </section>
 
-      <section aria-label="News articles" className="flex-grow bg-white pb-24 pt-12">
+      <section aria-label="News articles" className="flex-grow pb-24 pt-12">
         <div className="container mx-auto px-6">
-          
+
           {/* Featured Article */}
           <AnimatePresence mode="wait">
             {showFeaturedLayout && (
-              <motion.a 
+              <motion.a
                 key="featured"
                 href={featuredArticle.link}
                 target={featuredArticle.link.startsWith('http') ? '_blank' : '_self'}
                 rel={featuredArticle.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={reduced ? false : { y: 20 }}
+                animate={{ y: 0 }}
                 exit={{ opacity: 0, height: 0 }}
                 className="mb-16 block"
               >
-                 <div className="group relative rounded-xl overflow-hidden bg-white shadow-xl border border-gray-100 grid grid-cols-1 lg:grid-cols-12 hover:shadow-[0_20px_60px_rgba(74,63,92,0.12)] transition-all duration-500">
-                    <div className="lg:col-span-7 relative h-64 md:h-96 lg:h-auto overflow-hidden bg-gray-100">
+                 <div className="group relative rounded-2xl overflow-hidden bg-bone-raised border border-plum-dark/10 grid grid-cols-1 lg:grid-cols-12 hover:border-gold-primary/40 hover:shadow-[0_20px_60px_rgba(46,38,58,0.10)] transition-all duration-500">
+                    {/* Luminous hairline accent */}
+                    <span className="absolute top-0 left-0 h-[3px] w-24 bg-gold-primary transition-all duration-500 group-hover:w-full z-10" />
+                    <div className="lg:col-span-7 relative h-64 md:h-96 lg:h-auto overflow-hidden bg-bone">
                         {featuredArticle.image.endsWith('.svg') ? (
-                            <div className="absolute inset-0 flex items-center justify-center p-12 bg-gradient-to-br from-plum-primary/5 to-gold-primary/5">
+                            <div className="absolute inset-0 flex items-center justify-center p-12 bg-gradient-to-br from-plum-primary/5 to-gold-primary/[0.08]">
                                 <Image
                                     src={featuredArticle.image}
                                     alt={featuredArticle.title}
@@ -326,31 +340,31 @@ export default function NewsPage() {
                                     priority
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent lg:hidden" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-plum-dark/50 to-transparent lg:hidden" />
                             </>
                         )}
                     </div>
-                    <div className="lg:col-span-5 p-10 lg:p-14 flex flex-col justify-center relative bg-white">
+                    <div className="lg:col-span-5 p-10 lg:p-14 flex flex-col justify-center relative bg-bone-raised">
                         <div className="flex items-center gap-3 mb-6">
-                             <span className="px-3 py-1 rounded-full bg-gold-primary/10 text-gold-dark font-bold uppercase tracking-wider text-xs hover:scale-105 transition-transform">
+                             <span className="px-3 py-1 rounded-full bg-gold-primary/12 border border-gold-primary/30 text-gold-deep font-bold uppercase tracking-wider text-xs">
                                 {featuredArticle.type}
                              </span>
-                             <time className="text-gray-400 text-sm flex items-center gap-1" dateTime={featuredArticle.date}>
+                             <time className="text-gray-therapeutics text-sm flex items-center gap-1" dateTime={featuredArticle.date}>
                                 <Calendar size={14} /> {featuredArticle.date}
                              </time>
                         </div>
-                        
-                        <h2 className="text-3xl md:text-4xl font-serif text-plum-primary mb-6 group-hover:text-gold-dark transition-colors leading-tight">
+
+                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-plum-dark mb-6 group-hover:text-gold-deep transition-colors leading-tight text-balance">
                             {featuredArticle.title}
                         </h2>
-                        
+
                         {featuredArticle.excerpt && (
-                            <p className="text-gray-therapeutics mb-8 leading-relaxed">
+                            <p className="text-black-soft mb-8 leading-relaxed">
                                 {featuredArticle.excerpt}
                             </p>
                         )}
 
-                        <div className="flex items-center gap-2 text-plum-primary font-bold uppercase tracking-widest text-xs group-hover:translate-x-2 transition-transform mt-auto">
+                        <div className="flex items-center gap-2 text-plum-dark font-bold uppercase tracking-widest text-xs group-hover:translate-x-2 transition-transform mt-auto">
                             Read Story <ArrowUpRight size={16} />
                         </div>
                     </div>
@@ -374,14 +388,16 @@ export default function NewsPage() {
                         href={article.link}
                         target={article.link.startsWith('http') ? '_blank' : '_self'}
                         rel={article.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                        variants={cardVariants}
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ duration: 0.4 }}
-                        className="group bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-[0_12px_40px_rgba(74,63,92,0.1)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
+                        className="group relative bg-bone-raised rounded-2xl overflow-hidden border border-plum-dark/10 hover:border-gold-primary/40 hover:shadow-[0_12px_40px_rgba(46,38,58,0.10)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
                     >
-                        <div className="relative h-60 overflow-hidden bg-gray-100">
+                        {/* Luminous hairline accent */}
+                        <span className="absolute top-0 left-0 h-[2px] w-16 bg-gold-primary transition-all duration-500 group-hover:w-full z-10" />
+                        <div className="relative h-60 overflow-hidden bg-bone">
                             {article.image.endsWith('.svg') ? (
-                                <div className="absolute inset-0 flex items-center justify-center p-8 bg-gradient-to-br from-plum-primary/5 to-gold-primary/5">
+                                <div className="absolute inset-0 flex items-center justify-center p-8 bg-gradient-to-br from-plum-primary/5 to-gold-primary/[0.08]">
                                     <Image
                                         src={article.image}
                                         alt={article.title}
@@ -399,29 +415,29 @@ export default function NewsPage() {
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
                             )}
-                            <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/95 backdrop-blur text-[10px] font-bold uppercase tracking-wider text-plum-primary shadow-sm">
+                            <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-bone/95 backdrop-blur text-[10px] font-bold uppercase tracking-wider text-plum-dark shadow-sm">
                                 {article.source}
                             </div>
                         </div>
                         <div className="p-8 flex flex-col flex-grow">
-                             <div className="flex items-center gap-3 mb-4 text-xs text-gray-400 font-medium uppercase tracking-widest">
-                                 <span className="text-gold-dark">{article.type}</span>
+                             <div className="flex items-center gap-3 mb-4 text-xs text-gray-therapeutics font-medium uppercase tracking-widest">
+                                 <span className="text-gold-deep">{article.type}</span>
                                  <span>•</span>
                                  <time dateTime={article.date}>{article.date}</time>
                              </div>
-                             <h3 className="text-xl font-bold text-plum-primary mb-3 group-hover:text-gold-dark transition-colors line-clamp-3">
+                             <h3 className="text-xl font-serif font-bold text-plum-dark mb-3 group-hover:text-gold-deep transition-colors line-clamp-3 text-balance">
                                  {article.title}
                              </h3>
                              {article.excerpt && (
-                                <p className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-4">
+                                <p className="text-gray-therapeutics text-sm leading-relaxed line-clamp-3 mb-4">
                                     {article.excerpt}
                                 </p>
                              )}
-                             <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-plum-primary">
+                             <div className="mt-auto pt-4 border-t border-plum-dark/10 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-plum-dark">
                                  <span className="opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 duration-300 flex items-center">
                                     Read More <ArrowUpRight size={14} className="ml-1" />
                                  </span>
-                                 <span className="text-[10px] text-gray-300 font-normal normal-case tracking-normal">{article.source}</span>
+                                 <span className="text-[10px] text-gray-therapeutics/60 font-normal normal-case tracking-normal">{article.source}</span>
                              </div>
                         </div>
                     </motion.a>
@@ -431,14 +447,14 @@ export default function NewsPage() {
 
           {filteredArticles.length === 0 && (
             <div className="text-center py-20">
-                <div className="bg-gray-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Search size={24} className="text-gray-400" />
+                <div className="bg-bone-raised border border-plum-dark/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search size={24} className="text-gray-therapeutics" />
                 </div>
-                <h3 className="text-xl font-bold text-plum-primary mb-2">No articles found</h3>
-                <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
-                <button 
+                <h3 className="text-xl font-serif font-bold text-plum-dark mb-2">No articles found</h3>
+                <p className="text-gray-therapeutics">Try adjusting your search or filter criteria.</p>
+                <button
                     onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}
-                    className="mt-6 text-gold-dark font-bold hover:underline"
+                    className="mt-6 text-gold-deep font-bold hover:underline"
                 >
                     Clear filters
                 </button>
@@ -447,19 +463,19 @@ export default function NewsPage() {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="bg-plum-primary py-20 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/5 to-transparent pointer-events-none" />
+      {/* Newsletter Section — cinematic plum-dark beat */}
+      <section id="newsletter" className="bg-plum-dark py-20 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-gold-primary/[0.06] to-transparent pointer-events-none" />
         <div className="container mx-auto px-6 relative z-10">
             <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={reduced ? false : { y: 30 }}
+                whileInView={{ y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
                 className="grid md:grid-cols-2 gap-12 items-center"
             >
                 <div>
-                    <h2 className="text-3xl md:text-4xl font-serif mb-6">Stay connected with our journey</h2>
+                    <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6 text-balance">Stay connected with our journey</h2>
                     <p className="text-white/70 text-lg mb-8 max-w-md">
                         Join our newsletter to receive the latest updates on our clinical progress, scientific publications, and company news.
                     </p>
@@ -524,11 +540,11 @@ export default function NewsPage() {
                         <button
                             type="submit"
                             disabled={newsletterSubmitting}
-                            className="w-full py-4 bg-gold-primary text-plum-primary font-bold uppercase tracking-widest rounded hover:bg-white transition-colors mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="w-full py-4 bg-gold-primary text-plum-dark font-bold uppercase tracking-widest rounded hover:bg-white transition-colors mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                             {newsletterSubmitting ? (
                                 <>
-                                    <div className="w-4 h-4 border-2 border-plum-primary/30 border-t-plum-primary rounded-full animate-spin" />
+                                    <div className="w-4 h-4 border-2 border-plum-dark/30 border-t-plum-dark rounded-full animate-spin" />
                                     Subscribing...
                                 </>
                             ) : (

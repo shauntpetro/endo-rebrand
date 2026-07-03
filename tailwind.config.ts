@@ -13,6 +13,7 @@ const config: Config = {
         "gold-primary": "#C9A961",
         "gold-light": "#E5D4A6",
         "gold-dark": "#A68945",
+        "gold-deep": "#8A6D2E",
         "black-primary": "#1A1A1A",
         "black-soft": "#2D2D2D",
         "cream-primary": "#F5F1E8",
@@ -29,8 +30,10 @@ const config: Config = {
         "gray-light": "#F9F9F9",
         "gray-mid": "#E0E0E0",
         
-        // Surface
-        "surface": "#F8F9FA",
+        // Surface — warm bone ground ("Luminous Editorial")
+        "surface": "#F4EEE1",
+        "bone": "#F4EEE1",
+        "bone-raised": "#FAF6EC",
 
         // Accents
         "clinical-teal": "#4A9B8E",

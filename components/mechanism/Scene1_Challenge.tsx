@@ -1,9 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { MECHANISM_COLORS } from "./constants";
 import { PeptideRing, PeptideRingProtonated, IntracellularTarget } from "./Shapes";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /* ====================================================================
    Scene 1 — "The Discovery"
@@ -16,10 +17,19 @@ import React, { useState, useEffect } from "react";
      Phase 3: C-pocket lips close → forms O (vesicle), membrane seals
      Phase 4: Vesicle transports to intracellular target
      Phase 5: Vesicle scatters open, peptide binds to target
+
+   Motion policy (Luminous Editorial):
+   - The perpetual auto-cycle + all infinite sub-animations run only when the
+     figure is in view AND the OS does not request reduced motion.
+   - Reduced motion / no forcePhase → freeze to a static, fully-resolved
+     end-state (phase 5, peptide engaged at target) so the schematic reads
+     clearly without any looping.
    ==================================================================== */
 
 const PHASE_DURATIONS = [3000, 2800, 2800, 2000, 2500, 4000];
 const TOTAL_PHASES = 6;
+// Static end-state shown when motion is reduced: the completed uptake cycle.
+const REDUCED_PHASE = 5;
 
 /* ------------------------------------------------------------------ */
 /*  Lesion membrane SVG paths — identical command structure for morph  */
@@ -52,23 +62,39 @@ const INNER_C_DEEP =
 
 const VESICLE_CIRC = 119; // 2*PI*19
 
+// Gold that passes as TEXT on warm cream (WCAG). Bright gold is fills/decoration only.
+const GOLD_TEXT = "#8A6D2E";
+
 interface Scene1Props {
   forcePhase?: number;
 }
 
 export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
-  const [phase, setPhase] = useState(forcePhase ?? 0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(rootRef, { amount: 0.35 });
+  const reduced = usePrefersReducedMotion();
+
+  const [phase, setPhase] = useState(forcePhase ?? (reduced ? REDUCED_PHASE : 0));
+
+  // Infinite loops become one-shot settles when motion is reduced.
+  const loop = reduced ? 0 : Infinity;
 
   useEffect(() => {
+    // Explicit phase (test harness / step-driven) always wins — sync to the prop.
     if (forcePhase !== undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- controlled-prop sync
       setPhase(forcePhase);
       return;
     }
+    // Reduced motion → initial state is already REDUCED_PHASE; just never cycle.
+    if (reduced) return;
+    // Only advance the cycle while the figure is actually on screen.
+    if (!inView) return;
     const timer = setTimeout(() => {
       setPhase((p) => (p + 1) % TOTAL_PHASES);
     }, PHASE_DURATIONS[phase]);
     return () => clearTimeout(timer);
-  }, [phase, forcePhase]);
+  }, [phase, forcePhase, reduced, inView]);
 
   // Membrane path states based on phase
   // Phase 3+: membrane morphs from C_DEEP directly to FLAT
@@ -92,33 +118,40 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
     INNER_FLAT;
 
   return (
-    <motion.div
-      className="w-full h-full relative flex flex-col overflow-hidden rounded-xl border border-stone-200 shadow-sm bg-white"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
+      ref={rootRef}
+      className="w-full h-full relative flex flex-col overflow-hidden rounded-xl border border-plum-dark/10 shadow-sm bg-bone-raised"
     >
-      {/* Dot-grid */}
+      {/* Warm luminous wash — one confident accent from the top edge */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
+        aria-hidden
+        className="absolute inset-0 pointer-events-none z-0"
         style={{
-          backgroundImage: "radial-gradient(circle, #000 0.5px, transparent 0.5px)",
-          backgroundSize: "12px 12px",
+          background:
+            "radial-gradient(120% 80% at 50% -12%, rgba(201,169,97,0.12), transparent 60%)",
+        }}
+      />
+
+      {/* Dot-grid — warm gold hairline dots */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none opacity-[0.06] z-0"
+        style={{
+          backgroundImage: "radial-gradient(circle, #C9A961 0.6px, transparent 0.6px)",
+          backgroundSize: "13px 13px",
         }}
       />
 
       {/* Title bar */}
-      <motion.div
-        className="relative z-30 flex items-center gap-2 px-5 pt-4 pb-2"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
+        className="reveal-rise relative z-30 flex items-center gap-2 px-5 pt-4 pb-2"
+        style={{ animationDelay: "0.08s" }}
       >
         <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
-        <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">
+        <h3 className="font-bold text-plum-dark uppercase tracking-widest text-xs">
           The Discovery
         </h3>
-      </motion.div>
+      </div>
 
       {/* ============ MAIN SPLIT VIEW ============ */}
       <div className="flex-1 relative flex min-h-0">
@@ -133,22 +166,20 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           />
 
           {/* Label */}
-          <motion.div
-            className="absolute top-3 left-3 z-20"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+          <div
+            className="reveal-rise absolute top-3 left-3 z-20"
+            style={{ animationDelay: "0.2s" }}
           >
-            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm border border-stone-200/60">
+            <div className="flex items-center gap-2 bg-bone-raised/85 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm border border-plum-dark/10">
               <div className="w-2 h-2 rounded-full bg-clinical-teal" />
               <div>
-                <h3 className="font-bold text-stone-800 text-[11px] tracking-wide font-sans leading-tight">
+                <h3 className="font-bold text-plum-dark text-[11px] tracking-wide font-sans leading-tight">
                   Normal Tissue
                 </h3>
-                <p className="text-[8px] text-stone-400 font-bold tracking-widest font-mono">pH 7.4</p>
+                <p className="text-[8px] text-plum-primary/60 font-bold tracking-widest font-mono">pH 7.4</p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Tissue mass — sealed, gentle wavy membrane */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 200 300" preserveAspectRatio="none">
@@ -181,16 +212,14 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
             <motion.div
               key={`drift-n-${i}`}
               className="absolute w-6 h-6"
-              style={{ top: p.top, left: p.left }}
+              style={{ top: p.top, left: p.left, opacity: 0.7 }}
               animate={{
-                opacity: 0.7,
                 x: [0, 6 * (i % 2 ? 1 : -1), -4, 0],
                 y: [0, -3, 2, 0],
               }}
               transition={{
-                opacity: { duration: 0.6, delay: 0.3 },
-                x: { duration: p.dur, repeat: Infinity, ease: "easeInOut" },
-                y: { duration: p.dur * 0.9, repeat: Infinity, ease: "easeInOut" },
+                x: { duration: p.dur, repeat: loop, ease: "easeInOut" },
+                y: { duration: p.dur * 0.9, repeat: loop, ease: "easeInOut" },
               }}
             >
               <PeptideRing color={MECHANISM_COLORS.peptideInactive} />
@@ -218,7 +247,6 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           <motion.div
             className="absolute z-20 pointer-events-none"
             style={{ top: "38%", left: "47%" }}
-            initial={{ opacity: 0, scale: 0.5 }}
             animate={{
               opacity: phase === 3 ? [0, 1, 1, 0] : 0,
               scale: phase === 3 ? [0.5, 1.3, 1.1, 0.5] : 0.5,
@@ -234,18 +262,17 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           <motion.div
             className="absolute z-20 text-center"
             style={{ top: "24%", left: "20%", width: "60%" }}
-            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: phase >= 3 ? 1 : 0, y: phase >= 3 ? 0 : 6 }}
             transition={{ duration: 0.5, delay: phase === 3 ? 0.4 : 0 }}
           >
-            <span className="text-[8px] font-bold uppercase tracking-widest text-stone-500 bg-white/70 px-2 py-0.5 rounded-md backdrop-blur-sm">
+            <span className="text-[8px] font-bold uppercase tracking-widest text-plum-primary/70 bg-bone-raised/80 px-2 py-0.5 rounded-md backdrop-blur-sm">
               No uptake
             </span>
           </motion.div>
         </div>
 
         {/* ============ DIVIDER ============ */}
-        <div className="w-[2px] h-full bg-stone-900 z-30" />
+        <div className="w-[2px] h-full bg-plum-dark z-30" />
 
         {/* ========== LESION TISSUE (RIGHT) ========== */}
         <div className="w-1/2 h-full relative overflow-hidden">
@@ -256,44 +283,37 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
             }}
           />
 
-          {/* Acidic tint */}
-          <motion.div
+          {/* Acidic tint — static warm ground */}
+          <div
             className="absolute inset-0 pointer-events-none"
             style={{ background: "linear-gradient(180deg, rgba(194,85,63,0.03) 0%, rgba(194,85,63,0.05) 30%, transparent 60%)" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
           />
 
           {/* Label */}
-          <motion.div
-            className="absolute top-3 left-3 z-20"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+          <div
+            className="reveal-rise absolute top-3 left-3 z-20"
+            style={{ animationDelay: "0.3s" }}
           >
-            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm border border-stone-200/60">
+            <div className="flex items-center gap-2 bg-bone-raised/85 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm border border-plum-dark/10">
               <motion.div
                 className="w-2 h-2 rounded-full"
-                animate={{
-                  backgroundColor: MECHANISM_COLORS.phRed,
-                  scale: [1, 1.3, 1],
-                }}
+                style={{ backgroundColor: MECHANISM_COLORS.phRed }}
+                animate={{ scale: [1, 1.3, 1] }}
                 transition={{
-                  scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+                  scale: { duration: 1.5, repeat: loop, ease: "easeInOut" },
                 }}
               />
               <div>
-                <h3 className="font-bold text-stone-800 text-[11px] tracking-wide font-sans leading-tight">Lesion Tissue</h3>
-                <motion.p
+                <h3 className="font-bold text-plum-dark text-[11px] tracking-wide font-sans leading-tight">Lesion Tissue</h3>
+                <p
                   className="text-[8px] font-bold tracking-widest font-mono"
                   style={{ color: MECHANISM_COLORS.phRed }}
                 >
                   pH 6.0&ndash;6.5
-                </motion.p>
+                </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Tissue mass — animated C-pocket membrane */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 200 300" preserveAspectRatio="none">
@@ -353,10 +373,10 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               transition={{
                 opacity: h.nearPeptide && phase >= 2
                   ? { duration: 0.6 }
-                  : { duration: 2.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: h.delay },
+                  : { duration: 2.5 + i * 0.3, repeat: loop, ease: "easeInOut", delay: h.delay },
                 y: h.nearPeptide && phase >= 2
                   ? { duration: 0.4 }
-                  : { duration: 2.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: h.delay },
+                  : { duration: 2.5 + i * 0.3, repeat: loop, ease: "easeInOut", delay: h.delay },
                 scale: { duration: 0.8 },
               }}
             >
@@ -375,18 +395,16 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           {/* Neutral peptide — Phase 0 only */}
           <motion.div
             className="absolute w-7 h-7 z-20"
-            initial={{ opacity: 0 }}
+            style={{ top: "18%", left: "42%" }}
             animate={{
               opacity: phase === 0 ? 0.9 : 0,
-              top: "18%",
-              left: "42%",
               x: [0, 3, -2, 0],
               y: [0, -2, 1, 0],
             }}
             transition={{
               opacity: { duration: 0.3 },
-              x: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-              y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
+              x: { duration: 5, repeat: loop, ease: "easeInOut" },
+              y: { duration: 4.5, repeat: loop, ease: "easeInOut" },
             }}
           >
             <PeptideRing color={MECHANISM_COLORS.peptideInactive} />
@@ -401,7 +419,6 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               transform: "translate(-50%, -50%)",
               background: `radial-gradient(circle, ${MECHANISM_COLORS.calloutGold}60 0%, transparent 70%)`,
             }}
-            initial={{ scale: 0, opacity: 0 }}
             animate={{
               scale: phase === 1 ? [0, 2, 0] : 0,
               opacity: phase === 1 ? [0, 0.8, 0] : 0,
@@ -412,7 +429,6 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           {/* Active peptide — Phase 1: approaches; Phase 2: inside deep C-pocket */}
           <motion.div
             className="absolute w-8 h-7 z-20"
-            initial={{ opacity: 0 }}
             animate={{
               opacity:
                 phase === 1 ? 1 :
@@ -452,7 +468,6 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               strokeWidth="1.5"
               strokeDasharray="4 3"
               markerEnd="url(#arrow-s1)"
-              style={{ opacity: 0 }}
               animate={{
                 pathLength: phase === 2 ? 1 : 0,
                 opacity: phase === 2 ? 0.6 : 0,
@@ -465,13 +480,12 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           <motion.div
             className="absolute z-20 text-center"
             style={{ top: "24%", left: "15%", width: "70%" }}
-            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: phase >= 3 ? 1 : 0, y: phase >= 3 ? 0 : 6 }}
             transition={{ duration: 0.5, delay: phase === 3 ? 0.6 : 0 }}
           >
             <span
               className="text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md backdrop-blur-sm"
-              style={{ color: MECHANISM_COLORS.calloutGold, backgroundColor: "rgba(255,255,255,0.7)" }}
+              style={{ color: GOLD_TEXT, backgroundColor: "rgba(250,246,236,0.8)" }}
             >
               Selective uptake
             </span>
@@ -483,15 +497,13 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               Phase 5: scatters open, releases peptide */}
           <motion.div
             className="absolute pointer-events-none"
-            style={{ zIndex: 19 }}
-            initial={{ opacity: 0, top: "58%", left: "50%" }}
+            style={{ zIndex: 19, left: "50%" }}
             animate={{
               top:
                 phase === 3 ? "58%" :
                 phase === 4 ? "72%" :
                 phase === 5 ? "74%" :
                 "58%",
-              left: "50%",
               opacity: phase >= 3 ? 1 : 0,
             }}
             transition={{
@@ -500,7 +512,6 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
                 ease: [0.4, 0, 0.2, 1],
                 delay: phase === 4 ? 0.3 : 0,
               },
-              left: { duration: 0.6 },
               opacity: { duration: 0.8, delay: phase === 3 ? 0.2 : 0 },
             }}
           >
@@ -691,7 +702,6 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
           <motion.div
             className="absolute z-20"
             style={{ top: "78%", left: "44%", width: "48px", height: "48px" }}
-            initial={{ scale: 0.85, opacity: 0.3 }}
             animate={{
               scale: phase === 5 ? [1, 1, 1.2, 1.1] : phase >= 3 ? 0.95 : 0.85,
               opacity: phase >= 2 ? (phase === 5 ? 1 : 0.55) : 0.3,
@@ -719,14 +729,14 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
                 ease: "easeOut",
               }}
             />
-            {/* Nucleus label */}
+            {/* Intracellular target label */}
             <motion.div
               className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap"
               animate={{ opacity: phase >= 3 ? 0.7 : 0 }}
               transition={{ duration: 0.4 }}
             >
-              <span className="text-[7px] font-bold uppercase tracking-widest text-stone-500">
-                Nucleus
+              <span className="text-[7px] font-bold uppercase tracking-widest text-plum-primary/70">
+                Intracellular target
               </span>
             </motion.div>
           </motion.div>
@@ -741,7 +751,6 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               background: `radial-gradient(circle, ${MECHANISM_COLORS.calloutGold}80 0%, ${MECHANISM_COLORS.calloutGold}30 40%, transparent 70%)`,
               filter: "blur(8px)",
             }}
-            initial={{ scale: 0, opacity: 0 }}
             animate={{
               scale: phase === 5 ? [0, 0, 3, 2.2] : 0,
               opacity: phase === 5 ? [0, 0, 1, 0.5] : 0,
@@ -765,7 +774,6 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
               height: "32px",
               transform: "translate(-50%, -50%)",
             }}
-            initial={{ scale: 0, opacity: 0 }}
             animate={{
               scale: phase === 5 ? [0, 0, 1, 3.5] : 0,
               opacity: phase === 5 ? [0, 0, 0.9, 0] : 0,
@@ -781,14 +789,12 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
       </div>
 
       {/* ============ BOTTOM LEGEND ============ */}
-      <motion.div
-        className="relative mx-3 mb-3 mt-2 px-4 py-3 rounded-xl bg-stone-50/80 backdrop-blur-sm border border-stone-200/80"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+      <div
+        className="reveal-rise relative mx-3 mb-3 mt-2 px-4 py-3 rounded-xl bg-bone/80 backdrop-blur-sm border border-plum-dark/10"
+        style={{ animationDelay: "0.4s" }}
       >
         <div className="flex items-center gap-2 mb-2.5">
-          <div className="flex-1 h-1 bg-stone-200 rounded-full overflow-hidden">
+          <div className="flex-1 h-1 bg-plum-dark/10 rounded-full overflow-hidden">
             <motion.div
               className="h-full rounded-full"
               style={{ backgroundColor: MECHANISM_COLORS.calloutGold }}
@@ -802,7 +808,7 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
                 key={i}
                 className="w-2 h-2 rounded-full"
                 animate={{
-                  backgroundColor: i <= phase ? MECHANISM_COLORS.calloutGold : "#D1D5DB",
+                  backgroundColor: i <= phase ? MECHANISM_COLORS.calloutGold : "#D8CFBE",
                   scale: phase === i ? 1.4 : 1,
                 }}
                 transition={{ duration: 0.3 }}
@@ -815,7 +821,7 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
             <motion.div className="w-8 h-8" animate={{ scale: phase <= 0 ? 1 : 0.85, opacity: phase <= 0 ? 1 : 0.4 }}>
               <PeptideRing color={MECHANISM_COLORS.peptideInactive} />
             </motion.div>
-            <motion.span className="text-[9px] font-bold uppercase tracking-wider" animate={{ color: phase <= 0 ? "#57534e" : "#a8a29e" }}>
+            <motion.span className="text-[9px] font-bold uppercase tracking-wider" animate={{ color: phase <= 0 ? "#4A3F5C" : "#A8A299" }}>
               Inactive
             </motion.span>
           </div>
@@ -823,29 +829,29 @@ export const Scene1_Challenge = ({ forcePhase }: Scene1Props = {}) => {
             <motion.path
               d="M 2,6 L 14,6 M 11,3 L 15,6 L 11,9"
               fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-              animate={{ stroke: phase === 1 ? MECHANISM_COLORS.calloutGold : "#9CA3AF" }}
+              animate={{ stroke: phase === 1 ? MECHANISM_COLORS.calloutGold : "#B8B0A2" }}
             />
           </svg>
           <div className="flex items-center gap-1.5">
             <motion.div className="w-10 h-8" animate={{ scale: phase >= 1 ? 1.05 : 0.85, opacity: phase >= 1 ? 1 : 0.35 }}>
               <PeptideRingProtonated color={MECHANISM_COLORS.peptideActive} />
             </motion.div>
-            <motion.span className="text-[9px] font-bold uppercase tracking-wider" animate={{ color: phase >= 1 ? "#57534e" : "#a8a29e" }}>
+            <motion.span className="text-[9px] font-bold uppercase tracking-wider" animate={{ color: phase >= 1 ? "#4A3F5C" : "#A8A299" }}>
               Activated
             </motion.span>
           </div>
-          <div className="w-px h-5 bg-stone-300 mx-1" />
+          <div className="w-px h-5 bg-plum-dark/15 mx-1" />
           <motion.span
-            className="text-[9px] font-bold uppercase tracking-widest text-stone-500"
+            className="text-[9px] font-bold uppercase tracking-widest text-plum-primary/70"
             key={phase}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {["Peptide drift", "Protonation", "Cell entry", "Vesicle forming", "Transport", "Nucleus binding"][phase]}
+            {["Peptide drift", "Protonation", "Cell entry", "Vesicle forming", "Transport", "Target binding"][phase]}
           </motion.span>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };

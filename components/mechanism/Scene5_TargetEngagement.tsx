@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { MECHANISM_COLORS } from "./constants";
 import { useState, useEffect, useMemo } from "react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 
 /** Deterministic pseudo-random: same seed always yields the same 0-1 value */
@@ -14,14 +15,14 @@ function seededRandom(seed: number): number {
 const ATOM_COLORS = ["#9F8CA6", "#D6B65F", "#8C7A6B", "#5D4E60"];
 
 /* CSS Peptide Ring — replaces Three.js Canvas to avoid AnimatePresence crash */
-function PeptideRingCSS() {
+function PeptideRingCSS({ spin = true }: { spin?: boolean }) {
   const count = 8;
   const radius = 35;
   return (
     <motion.div
       className="relative w-full h-full"
-      animate={{ rotate: 360 }}
-      transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+      animate={spin ? { rotate: 360 } : undefined}
+      transition={spin ? { duration: 14, repeat: Infinity, ease: "linear" } : { duration: 0 }}
     >
       <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
         {Array.from({ length: count }).map((_, i) => {
@@ -74,9 +75,15 @@ const BurstParticle = ({ angle, delay, index }: { angle: number; delay: number; 
 };
 
 export const Scene5_TargetEngagement = () => {
-  const [phase, setPhase] = useState<'approaching' | 'engaged' | 'resolved'>('approaching');
+  const reduced = usePrefersReducedMotion();
+  // Static end-state under reduced motion: land on the resolved narrative beat.
+  const [phase, setPhase] = useState<'approaching' | 'engaged' | 'resolved'>(
+    reduced ? 'resolved' : 'approaching'
+  );
 
   useEffect(() => {
+    // Reduced motion: the initial state is already 'resolved' — just skip the loop.
+    if (reduced) return;
     let timer: ReturnType<typeof setTimeout>;
     const cycle = () => {
       setPhase('approaching');
@@ -90,48 +97,56 @@ export const Scene5_TargetEngagement = () => {
     };
     cycle();
     return () => clearTimeout(timer);
-  }, []);
-
-  const engaged = phase === 'engaged' || phase === 'resolved';
+  }, [reduced]);
 
   return (
     <motion.div
-      className="w-full h-full relative flex items-center justify-center bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden p-8"
-      initial={{ opacity: 0 }}
+      className="w-full h-full relative flex items-center justify-center rounded-xl border border-plum-dark/10 shadow-sm overflow-hidden p-8"
+      style={{
+        background:
+          "radial-gradient(75% 60% at 50% 32%, rgba(201,169,97,0.10), transparent 62%), linear-gradient(180deg, #FAF6EC, #F4EEE1 70%)",
+      }}
+      initial={reduced ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: reduced ? 0 : 0.5 }}
     >
-      {/* Dot-grid background */}
+      {/* Dot-grid background — warm hairline */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(circle, #000 0.5px, transparent 0.5px)',
+          backgroundImage: 'radial-gradient(circle, #2E263A 0.5px, transparent 0.5px)',
           backgroundSize: '12px 12px',
         }}
+      />
+
+      {/* One confident luminous accent — warm gold, static */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(201,169,97,0.12) 0%, transparent 70%)" }}
       />
 
       <motion.div className="absolute top-6 left-6 z-10">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-gold-primary" />
-          <h3 className="font-bold text-stone-800 uppercase tracking-widest text-xs">Target Engagement</h3>
+          <h3 className="font-bold text-plum-dark uppercase tracking-widest text-xs">Target Engagement</h3>
         </div>
       </motion.div>
 
       {/* Phase indicator — pill badge style */}
       <motion.div className="absolute top-6 right-6 z-20">
-        <div className="bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-stone-200/60 shadow-sm flex items-center gap-2">
+        <div className="bg-bone-raised/85 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-plum-dark/10 shadow-sm flex items-center gap-2">
           {['approaching', 'engaged', 'resolved'].map((p) => (
             <motion.div
               key={p}
               className="w-2 h-2 rounded-full"
               animate={{
-                backgroundColor: phase === p ? MECHANISM_COLORS.calloutGold : '#E5E7EB',
+                backgroundColor: phase === p ? MECHANISM_COLORS.calloutGold : '#E3DCCE',
                 scale: phase === p ? 1.3 : 1,
               }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: reduced ? 0 : 0.3 }}
             />
           ))}
-          <span className="text-[9px] font-bold uppercase tracking-wider ml-1" style={{ color: phase === 'resolved' ? '#7C3AED' : phase === 'engaged' ? '#A68945' : '#9CA3AF' }}>
+          <span className="text-[9px] font-bold uppercase tracking-wider ml-1" style={{ color: phase === 'resolved' ? '#4A3F5C' : phase === 'engaged' ? '#8A6D2E' : '#9C978C' }}>
             {phase === 'resolved' ? 'Resolved' : phase === 'engaged' ? 'Engaging' : 'Approaching'}
           </span>
         </div>
@@ -143,24 +158,24 @@ export const Scene5_TargetEngagement = () => {
         style={{
           background: MECHANISM_COLORS.lesionTissue,
           border: `2px solid ${MECHANISM_COLORS.cellMembrane}`,
-          boxShadow: 'inset 0 0 60px rgba(0,0,0,0.05)',
+          boxShadow: 'inset 0 0 60px rgba(74,63,92,0.05)',
         }}
         animate={{
-          scale: phase === 'resolved' ? 0.85 : phase === 'engaged' ? 0.92 : [1, 1.015, 1],
+          scale: phase === 'resolved' ? 0.85 : phase === 'engaged' ? 0.92 : reduced ? 1 : [1, 1.015, 1],
           filter: phase === 'resolved' ? "grayscale(0.4)" : "grayscale(0)",
         }}
         transition={{
-          scale: phase === 'approaching'
+          scale: phase === 'approaching' && !reduced
             ? { duration: 4, repeat: Infinity, ease: "easeInOut" }
-            : { duration: 1.5, ease: "easeInOut" },
-          filter: { duration: 1 },
+            : { duration: reduced ? 0 : 1.5, ease: "easeInOut" },
+          filter: { duration: reduced ? 0 : 1 },
         }}
       >
         {/* Nucleus */}
         <motion.div
           className="absolute w-24 h-24 rounded-full bg-plum-dark/20 blur-xl top-1/3 left-1/3 -translate-x-1/2 -translate-y-1/2"
-          animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.3, 0.2] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          animate={reduced ? { scale: 1, opacity: 0.25 } : { scale: [1, 1.1, 1], opacity: [0.2, 0.3, 0.2] }}
+          transition={reduced ? { duration: 0 } : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
 
         {/* Organelle details */}
@@ -168,14 +183,14 @@ export const Scene5_TargetEngagement = () => {
           <motion.path
             d="M 80,200 Q 130,180 100,160 Q 70,140 110,120 Q 140,100 120,80"
             fill="none" stroke="#9F8CA6" strokeWidth="2.5"
-            animate={{ d: ["M 80,200 Q 130,180 100,160 Q 70,140 110,120 Q 140,100 120,80", "M 82,202 Q 128,178 98,158 Q 68,138 108,118 Q 138,98 118,78", "M 80,200 Q 130,180 100,160 Q 70,140 110,120 Q 140,100 120,80"] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            animate={reduced ? undefined : { d: ["M 80,200 Q 130,180 100,160 Q 70,140 110,120 Q 140,100 120,80", "M 82,202 Q 128,178 98,158 Q 68,138 108,118 Q 138,98 118,78", "M 80,200 Q 130,180 100,160 Q 70,140 110,120 Q 140,100 120,80"] }}
+            transition={reduced ? { duration: 0 } : { duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
           <path d="M 90,210 Q 140,190 110,170 Q 80,150 120,130" fill="none" stroke="#9F8CA6" strokeWidth="1.5" />
           <motion.ellipse
             cx="300" cy="280" rx="35" ry="18" fill="none" stroke="#8C7A6B" strokeWidth="2" transform="rotate(-30, 300, 280)"
-            animate={{ rx: [35, 38, 35], ry: [18, 16, 18] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            animate={reduced ? undefined : { rx: [35, 38, 35], ry: [18, 16, 18] }}
+            transition={reduced ? { duration: 0 } : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
           <circle cx="120" cy="300" r="12" fill="none" stroke="#D6B65F" strokeWidth="1.5" opacity="0.6" />
           <circle cx="280" cy="120" r="8" fill="none" stroke="#D6B65F" strokeWidth="1" opacity="0.4" />
@@ -186,23 +201,23 @@ export const Scene5_TargetEngagement = () => {
           className="w-20 h-20 rounded-xl flex items-center justify-center relative z-10"
           style={{
             backgroundColor: MECHANISM_COLORS.intracellularTarget,
-            boxShadow: '0 10px 20px rgba(244, 224, 77, 0.3)',
+            boxShadow: '0 10px 20px rgba(201,169,97,0.25)',
           }}
           animate={{
-            rotate: phase === 'approaching' ? [0, 5, -5, 0] : 0,
-            scale: phase === 'engaged' ? [1, 1.08, 1] : 1,
-            boxShadow: phase === 'engaged'
+            rotate: phase === 'approaching' && !reduced ? [0, 5, -5, 0] : 0,
+            scale: phase === 'engaged' && !reduced ? [1, 1.08, 1] : 1,
+            boxShadow: phase === 'engaged' && !reduced
               ? ['0 10px 20px rgba(201,169,97,0.3)', '0 10px 40px rgba(201,169,97,0.6)', '0 10px 20px rgba(201,169,97,0.3)']
-              : '0 10px 20px rgba(244, 224, 77, 0.3)',
+              : '0 10px 20px rgba(201,169,97,0.25)',
           }}
           transition={{
-            rotate: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-            scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
-            boxShadow: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+            rotate: reduced ? { duration: 0 } : { duration: 4, repeat: Infinity, ease: "easeInOut" },
+            scale: reduced ? { duration: 0 } : { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+            boxShadow: reduced ? { duration: 0 } : { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="text-[10px] font-bold text-gold-dark uppercase tracking-wider">Target</span>
-          <div className="absolute -top-3 w-10 h-5 bg-gold-primary/20/50 rounded-b-full backdrop-blur-sm" />
+          <span className="text-[10px] font-bold text-gold-light uppercase tracking-wider">Target</span>
+          <div className="absolute -top-3 w-10 h-5 bg-gold-primary/30 rounded-b-full backdrop-blur-sm" />
         </motion.div>
 
         {/* Targeting reticle — appears during approach */}
@@ -250,7 +265,7 @@ export const Scene5_TargetEngagement = () => {
               exit={{ x: 0, y: 0, opacity: 0, scale: 0.2 }}
               transition={{ duration: 2.2, ease: [0.25, 0.1, 0.25, 1] as const, times: [0, 0.3, 0.7, 1] }}
             >
-              <PeptideRingCSS />
+              <PeptideRingCSS spin={!reduced} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -293,28 +308,28 @@ export const Scene5_TargetEngagement = () => {
                   key={`close-ring-${i}`}
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none rounded-full border-[2px]"
                   style={{ borderColor: `${MECHANISM_COLORS.peptideDark}80` }}
-                  initial={{ width: 180 - i * 30, height: 180 - i * 30, opacity: 0, rotate: i * 30 }}
-                  animate={{ width: 20, height: 20, opacity: [0, 0.8, 0.5], rotate: 360 + i * 30 }}
-                  transition={{ duration: 2, delay: i * 0.3, ease: "easeInOut" }}
+                  initial={reduced ? { width: 20, height: 20, opacity: 0.5 } : { width: 180 - i * 30, height: 180 - i * 30, opacity: 0, rotate: i * 30 }}
+                  animate={reduced ? { width: 20, height: 20, opacity: 0.5 } : { width: 20, height: 20, opacity: [0, 0.8, 0.5], rotate: 360 + i * 30 }}
+                  transition={reduced ? { duration: 0 } : { duration: 2, delay: i * 0.3, ease: "easeInOut" }}
                 />
               ))}
               {/* Resolution stamp */}
               <motion.div
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30"
-                initial={{ opacity: 0, scale: 3, rotate: -30 }}
+                initial={reduced ? { opacity: 1, scale: 1, rotate: -6 } : { opacity: 0, scale: 3, rotate: -30 }}
                 animate={{ opacity: 1, scale: 1, rotate: -6 }}
-                transition={{ type: "spring", bounce: 0.4, delay: 0.6 }}
+                transition={reduced ? { duration: 0 } : { type: "spring", bounce: 0.4, delay: 0.6 }}
               >
-                <div className="bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-xl border border-clinical-teal/30 shadow-lg flex items-center gap-2">
+                <div className="bg-bone-raised/90 backdrop-blur-md px-5 py-2.5 rounded-xl border border-clinical-teal/30 shadow-lg flex items-center gap-2">
                   <motion.div
                     className="w-5 h-5 rounded-full bg-clinical-teal/15 flex items-center justify-center"
-                    initial={{ scale: 0 }}
+                    initial={reduced ? { scale: 1 } : { scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ delay: 0.9, type: "spring" }}
+                    transition={reduced ? { duration: 0 } : { delay: 0.9, type: "spring" }}
                   >
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-clinical-teal"><path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </motion.div>
-                  <span className="text-sm font-bold text-stone-700 uppercase tracking-wider">Resolved</span>
+                  <span className="text-sm font-bold text-plum-dark uppercase tracking-wider">Resolved</span>
                 </div>
               </motion.div>
             </>
@@ -327,17 +342,22 @@ export const Scene5_TargetEngagement = () => {
         {phase === 'resolved' && (
           <motion.div
             className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20"
-            initial={{ opacity: 0, y: 30 }}
+            initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            transition={{ delay: 1.0, type: "spring", bounce: 0.3 }}
+            transition={reduced ? { duration: 0 } : { delay: 1.0, type: "spring", bounce: 0.3 }}
           >
-            <div className="bg-stone-50/90 backdrop-blur-md px-6 py-3 rounded-xl border border-stone-200/60 shadow-sm flex items-center gap-4">
+            <div className="bg-bone-raised/90 backdrop-blur-md px-6 py-3 rounded-xl border border-plum-dark/10 shadow-sm flex items-center gap-4">
               <VolumeCounter />
-              <div className="w-px h-10 bg-stone-200" />
+              <div className="w-px h-10 bg-plum-dark/10" />
               <div>
-                <p className="text-xs font-bold text-stone-700">Natural Clearance</p>
-                <p className="text-[10px] text-stone-400 mt-0.5">No inflammation, no toxicity</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-bold text-plum-dark">Natural Clearance</p>
+                  <span className="text-[8px] font-bold uppercase tracking-wider text-gold-deep border border-gold-primary/40 rounded-full px-1.5 py-0.5 leading-none">
+                    Illustrative
+                  </span>
+                </div>
+                <p className="text-[10px] text-stone-500 mt-0.5">Correction, not destruction — non-cytotoxic clearance</p>
               </div>
             </div>
           </motion.div>
@@ -348,15 +368,19 @@ export const Scene5_TargetEngagement = () => {
 };
 
 const VolumeCounter = () => {
-  const [volume, setVolume] = useState(100);
+  const reduced = usePrefersReducedMotion();
+  // Illustrative depletion — under reduced motion, jump to the static end-state.
+  const [volume, setVolume] = useState(reduced ? 0 : 100);
   const circumference = 2 * Math.PI * 18;
 
   useEffect(() => {
+    // Reduced motion: initial state is already 0 — just skip the depletion.
+    if (reduced) return;
     const interval = setInterval(() => {
       setVolume(v => Math.max(0, v - 1));
     }, 30);
     return () => clearInterval(interval);
-  }, []);
+  }, [reduced]);
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -369,21 +393,21 @@ const VolumeCounter = () => {
             strokeDasharray={circumference}
             strokeDashoffset={circumference * (1 - volume / 100)}
             animate={{ stroke: volume < 20 ? '#4A9B8E' : '#C9A961' }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: reduced ? 0 : 0.3 }}
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <span
-            className="text-xs font-mono font-bold"
+            className="text-xs font-mono font-bold tabular-nums"
             style={{
-              color: volume < 20 ? '#4A9B8E' : '#A68945',
+              color: volume < 20 ? '#4A9B8E' : '#8A6D2E',
             }}
           >
             {volume}%
           </span>
         </div>
       </div>
-      <span className="text-[8px] font-bold text-stone-400 uppercase tracking-wider">Volume</span>
+      <span className="text-[8px] font-bold text-stone-400 uppercase tracking-wider">Illustrative</span>
     </div>
   );
 };

@@ -28,9 +28,16 @@ export const MECHANISM_COLORS = {
   calloutGold: '#C9A961',
   calloutGoldBg: '#F6F0E2',
 
+  // Cell body — warm luminous tissue fills + gold hairline strokes
+  cellNormalFill: '#FBEFDC',    // warm bone-peach (healthy tissue)
+  cellNormalStroke: '#C9A961',  // luminous gold hairline
+  cellLesionFill: '#F8E9D6',    // deeper warm peach (lesion tissue)
+  cellLesionStroke: '#A68945',  // gold-deep hairline
+
   // Neutral
   background: '#FFFFFF',
   textDark: '#1A1A1A',
+  gloss: '#FFFFFF',             // white specular highlight / gloss
   textLight: '#FFFFFF',
   divider: '#1A1A1A',
 };

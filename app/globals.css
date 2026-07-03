@@ -2,9 +2,10 @@
 
 :root {
   /* Core Brand Colors - Swiss & Premium */
-  --gold-primary: #C9A961; /* Warm Brand Gold */
+  --gold-primary: #C9A961; /* Warm Brand Gold — metallic fills, borders, large display */
   --gold-light: #E5D4A6;
   --gold-dark: #A68945;
+  --gold-deep: #8A6D2E;   /* Text-safe gold — use for gold TEXT (bright gold fails WCAG on cream) */
 
   --black-primary: #1A1A1A;
   --black-soft: #2D2D2D;
@@ -27,14 +28,17 @@
   --clinical-teal: #4A9B8E;
   --warm-rose: #D4A5A5;
 
-  /* Surface */
-  --surface: #F8F9FA;
+  /* Surface — warm bone ground ("Luminous Editorial") */
+  --surface: #F4EEE1;
+  --bone: #F4EEE1;
+  --bone-raised: #FAF6EC;
 }
 
 @theme inline {
   --color-gold-primary: var(--gold-primary);
   --color-gold-light: var(--gold-light);
   --color-gold-dark: var(--gold-dark);
+  --color-gold-deep: var(--gold-deep);
 
   --color-black-primary: var(--black-primary);
   --color-black-soft: var(--black-soft);
@@ -55,6 +59,8 @@
   --color-clinical-teal: var(--clinical-teal);
   --color-warm-rose: var(--warm-rose);
   --color-surface: var(--surface);
+  --color-bone: var(--bone);
+  --color-bone-raised: var(--bone-raised);
 
   --font-serif: var(--font-playfair), Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -62,7 +68,7 @@
 }
 
 body {
-  background-color: #FFFFFF;
+  background-color: var(--surface);
   color: var(--black-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -84,6 +90,28 @@ p {
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 97px; /* Match navbar height for anchor links */
+}
+
+/* Deterministic entrance reveal. Transform-only on purpose: content stays fully
+   visible in its static state, so if animations are paused/disabled it degrades to
+   a plain (un-shifted-at-worst) but always-readable element — never opacity:0 stuck.
+   The prefers-reduced-motion rule below zeroes the duration → instant final state. */
+@keyframes rise-in {
+  from { transform: translateY(22px); }
+  to   { transform: none; }
+}
+.reveal-rise {
+  animation: rise-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Page-transition enter (template.tsx). Transform-only so the page is NEVER
+   hidden if the animation can't run — a blank page is far worse than no transition. */
+@keyframes page-enter {
+  from { transform: translateY(10px); }
+  to   { transform: none; }
+}
+.page-enter {
+  animation: page-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* Custom Selection */

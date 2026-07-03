@@ -1,136 +1,80 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useRef } from "react";
-import { useVisibility } from "@/hooks/useVisibility";
-import { DotGrid } from "@/components/ui/DotGrid";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
-const testimonials = [
-  {
-    id: 1,
-    quote:
-      "Endometriosis has seen limited true innovation for decades, with treatments focused primarily on managing symptoms rather than addressing the underlying disease.",
-    name: "Dr. Tanya Petrossian, PhD",
-    title: "Founder & CEO",
-    organization: "EndoCyclic Therapeutics",
-  },
-  {
-    id: 2,
-    quote:
-      "It has taken more than a decade of focused research and an entirely new scientific path to establish that there is not only a non-hormonal approach, but that it is the only way forward.",
-    name: "Dr. Tanya Petrossian, PhD",
-    title: "Founder & CEO",
-    organization: "EndoCyclic Therapeutics",
-  },
-  {
-    id: 3,
-    quote:
-      "A disease that attacks 10 percent of our girls and women worldwide attacks all of us, so let's wipe it out.",
-    name: "Dr. Tanya Petrossian, PhD",
-    title: "Founder & CEO",
-    organization: "EndoCyclic Therapeutics",
-  },
-];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
-  },
+/**
+ * Founder pull-quote — a single plum-dark cinematic beat.
+ *
+ * Copy traces to truth.md: non-hormonal, disease-modifying, "designed to
+ * eliminate" (all approved language). No cure-adjacent or absolute claims.
+ */
+const FOUNDER_QUOTE = {
+  lead: "For decades, endometriosis has been managed, not modified.",
+  emphasis:
+    "We built a non-hormonal, disease-modifying approach designed to eliminate lesions at their source",
+  tail: " — not just quiet the symptoms.",
+  name: "Dr. Tanya Petrossian, PhD",
+  title: "Founder & CEO, EndoCyclic Therapeutics",
 };
 
 export default function Testimonials() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const { setRef: setVisRef, isVisible } = useVisibility();
+  const reduced = usePrefersReducedMotion();
 
   return (
-    <section
-      ref={(el) => {
-        (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
-        setVisRef(el);
-      }}
-      className="bg-cream-primary py-24 md:py-32 relative overflow-hidden"
-    >
-      {/* Subtle background dot pattern */}
-      <DotGrid />
+    <section className="relative overflow-hidden bg-plum-dark py-28 md:py-40">
+      {/* Single luminous gold accent — static radial glow (no looping animation) */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(60% 55% at 50% 30%, rgba(201,169,97,0.16), transparent 65%)",
+        }}
+      />
+      {/* Hairline top rule */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gold-primary/25" aria-hidden="true" />
 
       <div className="container mx-auto px-6 relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-[0.2em] text-gold-primary mb-8 block font-sans"
+        <div className="max-w-4xl mx-auto text-center">
+          <span
+            className="reveal-rise block mb-10 text-xs font-bold uppercase tracking-[0.2em] text-gold-primary"
+            style={reduced ? undefined : { animationDelay: "0.05s" }}
           >
             From Our Founder
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
-            className="text-4xl md:text-6xl font-serif font-bold text-plum-dark tracking-tight"
+          </span>
+
+          {/* Oversized decorative quote mark */}
+          <span
+            aria-hidden="true"
+            className="reveal-rise block font-serif text-gold-primary/40 leading-none select-none text-7xl md:text-8xl mb-2"
+            style={reduced ? undefined : { animationDelay: "0.1s" }}
           >
-            The Vision Behind{" "}
-            <span className="italic text-gold-primary">EndoCyclic</span>
-          </motion.h2>
+            {"“"}
+          </span>
+
+          <blockquote
+            className="reveal-rise font-serif font-medium text-cream-primary tracking-tight text-balance text-[clamp(1.9rem,4.2vw,3.4rem)] leading-[1.12]"
+            style={reduced ? undefined : { animationDelay: "0.18s" }}
+          >
+            {FOUNDER_QUOTE.lead}{" "}
+            <span className="text-gold-primary italic">{FOUNDER_QUOTE.emphasis}</span>
+            {FOUNDER_QUOTE.tail}
+          </blockquote>
+
+          {/* Attribution */}
+          <figcaption
+            className="reveal-rise mt-12 flex flex-col items-center gap-1"
+            style={reduced ? undefined : { animationDelay: "0.3s" }}
+          >
+            <span className="mb-5 h-px w-12 bg-gold-primary/50" aria-hidden="true" />
+            <span className="font-sans font-bold text-cream-primary text-sm md:text-base">
+              {FOUNDER_QUOTE.name}
+            </span>
+            <span className="font-sans text-cream-primary/60 text-sm">
+              {FOUNDER_QUOTE.title}
+            </span>
+          </figcaption>
         </div>
-
-        {/* Testimonial Cards Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-        >
-          {testimonials.map((testimonial) => (
-            <motion.div
-              key={testimonial.id}
-              variants={itemVariants}
-              className="group relative bg-white rounded-xl p-8 md:p-10 shadow-[0_4px_24px_rgba(74,63,92,0.06)] hover:shadow-[0_16px_48px_rgba(74,63,92,0.12)] hover:-translate-y-1 transition-all duration-500"
-            >
-              {/* Gold accent bar at top */}
-              <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-gold-primary to-transparent opacity-40 group-hover:opacity-100 transition-opacity duration-500" />
-
-              {/* Decorative quotation mark */}
-              <span
-                className="block text-6xl md:text-7xl leading-none text-gold-primary/30 font-serif select-none mb-4"
-                aria-hidden="true"
-              >
-                {"\u201C"}
-              </span>
-
-              {/* Quote text */}
-              <p className="text-black-primary text-base md:text-lg leading-relaxed font-sans mb-8">
-                {testimonial.quote}
-              </p>
-
-              {/* Attribution */}
-              <div className="border-t border-gray-mid pt-5">
-                <p className="font-sans font-bold text-plum-dark text-sm">
-                  {testimonial.name}
-                </p>
-                <p className="font-sans text-gray-therapeutics text-sm">
-                  {testimonial.title}, {testimonial.organization}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
       </div>
     </section>
   );
