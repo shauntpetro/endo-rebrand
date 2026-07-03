@@ -73,6 +73,7 @@ export default function CredibilitySection() {
                   alt={item.label}
                   width={item.width}
                   height={item.height}
+                  style={{ width: "auto", height: "auto" }}
                   className="max-h-14 w-auto object-contain opacity-70 grayscale transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0"
                 />
               </div>

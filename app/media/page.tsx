@@ -244,6 +244,7 @@ export default function MediaPage() {
                     alt={logo.alt}
                     width={280}
                     height={140}
+                    style={{ width: "auto", height: "auto" }}
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
