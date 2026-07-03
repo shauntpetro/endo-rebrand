@@ -120,12 +120,13 @@ export default function Navbar() {
                   className={clsx(
                     "text-[10px] xl:text-xs font-bold uppercase tracking-[0.08em] xl:tracking-[0.1em] transition-colors relative group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary rounded-lg whitespace-nowrap",
                     isActive
-                      ? "text-gold-primary"
-                      : (!isScrolled && isDarkHeader ? "text-white hover:text-gold-primary" : "text-black-primary hover:text-gold-primary")
+                      ? (!isScrolled && isDarkHeader ? "text-gold-primary" : "text-gold-deep")
+                      : (!isScrolled && isDarkHeader ? "text-white hover:text-gold-primary" : "text-black-primary hover:text-gold-deep")
                   )}
                 >
                   {link.name}
                   <motion.span
+                    aria-hidden="true"
                     className="absolute -bottom-1 left-0 h-0.5 bg-gold-primary origin-left w-full"
                     initial={{ scaleX: isActive ? 1 : 0 }}
                     animate={{ scaleX: isActive ? 1 : 0 }}
@@ -161,6 +162,7 @@ export default function Navbar() {
           <button
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
+            aria-controls="mobile-menu"
             className={clsx(
               "lg:hidden p-3 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary rounded-lg relative z-[60]",
               !isScrolled && isDarkHeader && !isOpen ? "text-white" : "text-black-primary"
@@ -193,6 +195,9 @@ export default function Navbar() {
         {isOpen && (
           <motion.div
             key="mobile-menu"
+            id="mobile-menu"
+            role="navigation"
+            aria-label="Mobile navigation"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -210,8 +215,8 @@ export default function Navbar() {
                   href={link.href}
                   aria-current={pathname === link.href ? "page" : undefined}
                   className={clsx(
-                    "text-2xl font-bold hover:text-gold-primary hover:translate-x-2 transition-all duration-300 uppercase tracking-tighter block",
-                    pathname === link.href ? "text-gold-primary" : "text-black-primary"
+                    "text-2xl font-bold hover:text-gold-deep hover:translate-x-2 transition-all duration-300 uppercase tracking-tighter block",
+                    pathname === link.href ? "text-gold-deep" : "text-black-primary"
                   )}
                   onClick={closeMenu}
                 >

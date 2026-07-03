@@ -52,6 +52,7 @@ export default function WhyNowSection() {
 
       {/* Warm luminous accent — the one confident glow, frozen static under reduced motion */}
       <motion.div
+        aria-hidden="true"
         className="absolute top-[38%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] rounded-full pointer-events-none will-change-transform"
         style={{
           background:
@@ -84,7 +85,7 @@ export default function WhyNowSection() {
           >
             Why EndoCyclic,
             <br />
-            <span className="italic text-gold-primary">Why Now</span>
+            <span className="italic text-gold-deep">Why Now</span>
           </h2>
         </div>
 
@@ -97,7 +98,10 @@ export default function WhyNowSection() {
               style={{ animationDelay: `${0.25 + index * 0.12}s` }}
             >
               {/* One warm accent rule — hairline gold, widens on hover */}
-              <span className="absolute top-0 left-0 h-[2px] w-16 bg-gold-primary transition-all duration-500 group-hover:w-full" />
+              <span
+                aria-hidden="true"
+                className="absolute top-0 left-0 h-[2px] w-16 bg-gold-primary transition-all duration-500 group-hover:w-full"
+              />
 
               {/* Card Top */}
               <div className="flex justify-between items-start mb-8">

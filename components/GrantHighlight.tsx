@@ -85,7 +85,7 @@ export default function GrantHighlight() {
               className="reveal-rise flex items-center gap-3 mb-10"
               style={{ animationDelay: "0.38s" }}
             >
-              <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-clinical-teal/10 text-clinical-teal border border-clinical-teal/20 rounded-full">
+              <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-clinical-teal/10 text-[#2F6E62] border border-clinical-teal/20 rounded-full">
                 IND Cleared
               </span>
               <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-gold-primary/12 text-gold-deep border border-gold-primary/40 rounded-full">

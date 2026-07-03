@@ -5,7 +5,7 @@
   --gold-primary: #C9A961; /* Warm Brand Gold — metallic fills, borders, large display */
   --gold-light: #E5D4A6;
   --gold-dark: #A68945;
-  --gold-deep: #8A6D2E;   /* Text-safe gold — use for gold TEXT (bright gold fails WCAG on cream) */
+  --gold-deep: #806524;   /* Text-safe gold on LIGHT bg — ~4.8:1 on cream (WCAG AA). Use for gold TEXT on cream; on DARK bg use gold-primary/gold-light instead. */
 
   --black-primary: #1A1A1A;
   --black-soft: #2D2D2D;
@@ -26,6 +26,7 @@
 
   /* Medical/Scientific Accents */
   --clinical-teal: #4A9B8E;
+  --clinical-teal-deep: #2F6E62; /* Text-safe teal on LIGHT bg — ~4.9:1 on cream (WCAG AA) */
   --warm-rose: #D4A5A5;
 
   /* Surface — warm bone ground ("Luminous Editorial") */
@@ -57,6 +58,7 @@
   --color-gray-mid: var(--gray-mid);
 
   --color-clinical-teal: var(--clinical-teal);
+  --color-clinical-teal-deep: var(--clinical-teal-deep);
   --color-warm-rose: var(--warm-rose);
   --color-surface: var(--surface);
   --color-bone: var(--bone);

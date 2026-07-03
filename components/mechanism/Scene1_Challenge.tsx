@@ -63,7 +63,7 @@ const INNER_C_DEEP =
 const VESICLE_CIRC = 119; // 2*PI*19
 
 // Gold that passes as TEXT on warm cream (WCAG). Bright gold is fills/decoration only.
-const GOLD_TEXT = "#8A6D2E";
+const GOLD_TEXT = "#806524";
 
 interface Scene1Props {
   forcePhase?: number;

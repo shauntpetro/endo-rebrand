@@ -222,10 +222,10 @@ export default function ContactPage() {
               <div className="reveal-rise" style={{ animationDelay: "0.3s" }}>
                 <div className="flex items-start gap-4 group">
                   <div className="w-11 h-11 rounded-full bg-gold-primary/12 border border-gold-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-gold-primary/20 transition-colors duration-300">
-                    <MapPin className="text-gold-deep" size={18} />
+                    <MapPin className="text-gold-deep" size={18} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-serif font-bold text-plum-dark mb-2">Office</h3>
+                    <h2 className="text-lg font-serif font-bold text-plum-dark mb-2">Office</h2>
                     <p className="text-black-soft leading-relaxed">
                       Irvine, California<br />
                       United States
@@ -238,10 +238,10 @@ export default function ContactPage() {
               <div className="reveal-rise" style={{ animationDelay: "0.4s" }}>
                 <div className="flex items-start gap-4 group">
                   <div className="w-11 h-11 rounded-full bg-gold-primary/12 border border-gold-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-gold-primary/20 transition-colors duration-300">
-                    <Mail className="text-gold-deep" size={18} />
+                    <Mail className="text-gold-deep" size={18} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-serif font-bold text-plum-dark mb-2">Email</h3>
+                    <h2 className="text-lg font-serif font-bold text-plum-dark mb-2">Email</h2>
                     <a
                       href="mailto:info@endocyclic.com"
                       className="text-black-soft hover:text-gold-deep underline decoration-gold-primary/40 underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
@@ -256,28 +256,28 @@ export default function ContactPage() {
               <div className="reveal-rise" style={{ animationDelay: "0.5s" }}>
                 <div className="flex items-start gap-4 group">
                   <div className="w-11 h-11 rounded-full bg-gold-primary/12 border border-gold-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-gold-primary/20 transition-colors duration-300">
-                    <Linkedin className="text-gold-deep" size={18} />
+                    <Linkedin className="text-gold-deep" size={18} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-serif font-bold text-plum-dark mb-2">Connect</h3>
+                    <h2 className="text-lg font-serif font-bold text-plum-dark mb-2">Connect</h2>
                     <div className="flex gap-4">
                       <a
                         href="https://www.linkedin.com/company/endocyclic-therapeutics"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-11 h-11 rounded-full bg-bone-raised border border-plum-dark/10 hover:border-gold-primary/40 hover:bg-gold-primary/10 flex items-center justify-center transition-colors group/link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
-                        aria-label="LinkedIn"
+                        aria-label="EndoCyclic Therapeutics on LinkedIn (opens in new tab)"
                       >
-                        <Linkedin className="text-black-soft group-hover/link:text-gold-deep transition-colors" size={18} />
+                        <Linkedin className="text-black-soft group-hover/link:text-gold-deep transition-colors" size={18} aria-hidden="true" />
                       </a>
                       <a
                         href="https://twitter.com/EndoCyclic"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-11 h-11 rounded-full bg-bone-raised border border-plum-dark/10 hover:border-gold-primary/40 hover:bg-gold-primary/10 flex items-center justify-center transition-colors group/link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
-                        aria-label="Twitter"
+                        aria-label="EndoCyclic Therapeutics on Twitter (opens in new tab)"
                       >
-                        <Twitter className="text-black-soft group-hover/link:text-gold-deep transition-colors" size={18} />
+                        <Twitter className="text-black-soft group-hover/link:text-gold-deep transition-colors" size={18} aria-hidden="true" />
                       </a>
                     </div>
                   </div>
@@ -286,7 +286,7 @@ export default function ContactPage() {
 
               {/* Additional Info */}
               <div className="reveal-rise pt-8 border-t border-plum-dark/10" style={{ animationDelay: "0.6s" }}>
-                <p className="text-sm text-black-soft/70 leading-relaxed">
+                <p className="text-sm text-black-soft/80 leading-relaxed">
                   For media inquiries, partnership opportunities, or general questions, please use the contact form or reach out directly via email.
                 </p>
               </div>
@@ -307,11 +307,11 @@ export default function ContactPage() {
               {isSubmitted ? (
                 <div className="relative text-center py-12" role="status" aria-live="polite">
                   <div className="w-16 h-16 rounded-full bg-gold-primary/12 border border-gold-primary/30 flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle2 className="text-gold-deep" size={32} />
+                    <CheckCircle2 className="text-gold-deep" size={32} aria-hidden="true" />
                   </div>
-                  <h3 className="text-3xl font-serif font-bold text-plum-dark mb-3">
+                  <h2 className="text-3xl font-serif font-bold text-plum-dark mb-3">
                     Thank You
-                  </h3>
+                  </h2>
                   <p className="text-black-soft">
                     Your message has been sent. We&apos;ll get back to you soon.
                   </p>
@@ -335,7 +335,7 @@ export default function ContactPage() {
                   {/* Form-level error */}
                   {formError && (
                     <div role="alert" className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-                      <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={18} />
+                      <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={18} aria-hidden="true" />
                       <p className="text-sm text-red-700">{formError}</p>
                     </div>
                   )}
@@ -350,6 +350,7 @@ export default function ContactPage() {
                         id="name"
                         name="name"
                         required
+                        autoComplete="name"
                         aria-describedby={touchedFields.name && fieldErrors.name ? "name-error" : undefined}
                         aria-invalid={touchedFields.name && !!fieldErrors.name}
                         value={formData.name}
@@ -357,12 +358,12 @@ export default function ContactPage() {
                         onBlur={handleBlur}
                         className={getFieldClassName(
                           "name",
-                          "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary"
+                          "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary placeholder:text-black-soft/70"
                         )}
                         placeholder="Your name"
                       />
                       {touchedFields.name && fieldErrors.name && (
-                        <p id="name-error" role="alert" className="mt-1.5 text-sm text-red-600">{fieldErrors.name}</p>
+                        <p id="name-error" role="alert" className="mt-1.5 text-sm text-red-700">{fieldErrors.name}</p>
                       )}
                     </div>
                     <div>
@@ -374,6 +375,7 @@ export default function ContactPage() {
                         id="email"
                         name="email"
                         required
+                        autoComplete="email"
                         aria-describedby={touchedFields.email && fieldErrors.email ? "email-error" : undefined}
                         aria-invalid={touchedFields.email && !!fieldErrors.email}
                         value={formData.email}
@@ -381,12 +383,12 @@ export default function ContactPage() {
                         onBlur={handleBlur}
                         className={getFieldClassName(
                           "email",
-                          "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary"
+                          "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary placeholder:text-black-soft/70"
                         )}
                         placeholder="your.email@example.com"
                       />
                       {touchedFields.email && fieldErrors.email && (
-                        <p id="email-error" role="alert" className="mt-1.5 text-sm text-red-600">{fieldErrors.email}</p>
+                        <p id="email-error" role="alert" className="mt-1.5 text-sm text-red-700">{fieldErrors.email}</p>
                       )}
                     </div>
                   </div>
@@ -399,9 +401,10 @@ export default function ContactPage() {
                       type="text"
                       id="company"
                       name="company"
+                      autoComplete="organization"
                       value={formData.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white border border-plum-dark/15 rounded-lg focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-colors text-black-primary"
+                      className="w-full px-4 py-3 bg-white border border-plum-dark/15 rounded-lg focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-colors text-black-primary placeholder:text-black-soft/70"
                       placeholder="Your company or organization"
                     />
                   </div>
@@ -433,7 +436,7 @@ export default function ContactPage() {
                       <option value="other">Other</option>
                     </select>
                     {touchedFields.subject && fieldErrors.subject && (
-                      <p id="subject-error" role="alert" className="text-red-500 text-xs mt-1.5 font-medium">{fieldErrors.subject}</p>
+                      <p id="subject-error" role="alert" className="text-red-700 text-xs mt-1.5 font-medium">{fieldErrors.subject}</p>
                     )}
                   </div>
 
@@ -453,12 +456,12 @@ export default function ContactPage() {
                       onBlur={handleBlur}
                       className={getFieldClassName(
                         "message",
-                        "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary resize-none"
+                        "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary placeholder:text-black-soft/70 resize-none"
                       )}
                       placeholder="Tell us how we can help... (minimum 10 characters)"
                     />
                     {touchedFields.message && fieldErrors.message && (
-                      <p id="message-error" role="alert" className="mt-1.5 text-sm text-red-600">{fieldErrors.message}</p>
+                      <p id="message-error" role="alert" className="mt-1.5 text-sm text-red-700">{fieldErrors.message}</p>
                     )}
                   </div>
 
@@ -470,13 +473,13 @@ export default function ContactPage() {
                     >
                       {isSubmitting ? (
                         <>
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true" />
                           Sending...
                         </>
                       ) : (
                         <>
                           Send Message
-                          <Send size={16} className="group-hover:translate-x-1 transition-transform" />
+                          <Send size={16} className="group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                         </>
                       )}
                     </button>
@@ -500,7 +503,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-6 max-w-7xl relative">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="reveal-rise" style={{ animationDelay: "0.1s" }}>
-              <Eyebrow className="block mb-4">Newsletter</Eyebrow>
+              <Eyebrow tone="gold-on-dark" className="block mb-4">Newsletter</Eyebrow>
               <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4 tracking-tight text-balance">
                 Stay <span className="italic text-gold-primary">Informed</span>
               </h2>
@@ -515,7 +518,7 @@ export default function ContactPage() {
                   role="status"
                   aria-live="polite"
                 >
-                  <CheckCircle2 className="text-gold-primary flex-shrink-0" size={24} />
+                  <CheckCircle2 className="text-gold-primary flex-shrink-0" size={24} aria-hidden="true" />
                   <p className="text-white">Thank you for subscribing! We&apos;ll keep you updated.</p>
                 </div>
               ) : (
@@ -539,12 +542,13 @@ export default function ContactPage() {
                       type="email"
                       placeholder="your.email@example.com"
                       aria-label="Newsletter email address"
+                      autoComplete="email"
                       value={newsletterEmail}
                       onChange={(e) => {
                         setNewsletterEmail(e.target.value);
                         if (newsletterError) setNewsletterError("");
                       }}
-                      className={`flex-1 px-4 py-3 bg-white/10 border rounded-lg text-white placeholder:text-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-primary focus-visible:ring-offset-2 focus-visible:ring-offset-plum-dark transition-colors ${
+                      className={`flex-1 px-4 py-3 bg-white/10 border rounded-lg text-white placeholder:text-white/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-primary focus-visible:ring-offset-2 focus-visible:ring-offset-plum-dark transition-colors ${
                         newsletterError ? "border-red-400 focus:border-red-400" : "border-white/20 focus:border-gold-primary"
                       }`}
                     />
@@ -555,7 +559,7 @@ export default function ContactPage() {
                     >
                       {newsletterSubmitting ? (
                         <>
-                          <div className="w-4 h-4 border-2 border-plum-dark/30 border-t-plum-dark rounded-full animate-spin" />
+                          <div className="w-4 h-4 border-2 border-plum-dark/30 border-t-plum-dark rounded-full animate-spin" aria-hidden="true" />
                           Subscribing...
                         </>
                       ) : (

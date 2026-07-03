@@ -51,7 +51,7 @@ export default function PipelinePreview() {
             </div>
 
             <SectionHeading className="reveal-rise mb-10">
-              Our <br /> <span className="italic text-gold-primary">Pipeline</span>
+              Our <br /> <span className="italic text-gold-deep">Pipeline</span>
             </SectionHeading>
 
             <p

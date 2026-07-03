@@ -49,7 +49,7 @@ export default function Home() {
       <ImpactSection />
       <section className="bg-plum-dark text-white py-16">
         <div className="container mx-auto px-6">
-          <Eyebrow className="mb-8 text-center block">Continue Exploring</Eyebrow>
+          <Eyebrow tone="gold-on-dark" className="mb-8 text-center block">Continue Exploring</Eyebrow>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {[
               { href: "/innovation", title: "The Mechanism", desc: "How our peptides act only in diseased tissue" },

@@ -65,9 +65,9 @@ export default function InnovationSection() {
 
             <div className="reveal-rise mb-10" style={{ animationDelay: "0.14s" }}>
               <SectionHeading>
-                Our <br/> <span className="italic text-gold-primary relative inline-block">
+                Our <br/> <span className="italic text-gold-deep relative inline-block">
                   Innovation
-                  <svg className="absolute -bottom-2 left-0 w-full h-3 text-gold-primary/40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <svg aria-hidden="true" focusable="false" className="absolute -bottom-2 left-0 w-full h-3 text-gold-primary/40" viewBox="0 0 100 10" preserveAspectRatio="none">
                     <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="2" fill="none" />
                   </svg>
                 </span>
@@ -99,7 +99,7 @@ export default function InnovationSection() {
               >
                 <span className="relative z-10 flex items-center">
                   Read More
-                  <svg className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg aria-hidden="true" focusable="false" className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </span>
@@ -219,9 +219,9 @@ export default function InnovationSection() {
                </div>
                <div className="flex gap-2 items-center">
                  <div className="w-2 h-2 rounded-full border border-gold-primary/50" title="Inactive" />
-                 <span className="text-[7px] text-stone-400 uppercase">Inactive</span>
+                 <span className="text-[7px] text-stone-600 uppercase">Inactive</span>
                  <div className="w-2 h-2 rounded-full bg-gold-primary shadow-gold-glow-sm" title="Active" />
-                 <span className="text-[7px] text-stone-400 uppercase">Active</span>
+                 <span className="text-[7px] text-stone-600 uppercase">Active</span>
                </div>
              </div>
           </motion.div>

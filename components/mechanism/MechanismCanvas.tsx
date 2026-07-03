@@ -47,6 +47,9 @@ export const MechanismCanvas = ({ currentStep, children }: MechanismCanvasProps)
 
   return (
     <div
+      role="group"
+      aria-label="Mechanism of action animation"
+      aria-roledescription="animated diagram"
       className="w-full aspect-[4/3] md:aspect-square lg:aspect-auto lg:h-full relative rounded-2xl overflow-hidden border border-plum-dark/10 shadow-gold-glow-sm"
       style={{
         background:

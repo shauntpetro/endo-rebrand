@@ -109,10 +109,14 @@ export default function MissionPillars() {
 
               <Link
                 href={pillar.link}
+                aria-label={`Learn more about ${pillar.title}`}
                 className="inline-flex items-center text-xs font-bold uppercase tracking-[0.2em] text-plum-primary group-hover:text-gold-deep transition-colors font-sans mt-auto"
               >
                 <span className="border-b border-current pb-1">Learn More</span>
-                <span className="ml-3 text-lg leading-none transition-transform duration-300 group-hover:translate-x-1">
+                <span
+                  aria-hidden="true"
+                  className="ml-3 text-lg leading-none transition-transform duration-300 group-hover:translate-x-1"
+                >
                   →
                 </span>
               </Link>

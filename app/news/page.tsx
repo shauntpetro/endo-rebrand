@@ -253,10 +253,10 @@ export default function NewsPage() {
 
             <div className="reveal-rise flex flex-wrap gap-4" style={{ animationDelay: "0.34s" }}>
               <a href="#newsletter" className="flex items-center gap-2 px-6 py-3 bg-plum-dark text-bone rounded-lg font-bold uppercase tracking-wider text-xs hover:bg-gold-primary hover:text-plum-dark transition-colors shadow-lg shadow-plum-dark/20">
-                <Mail size={16} /> Subscribe to Updates
+                <Mail size={16} aria-hidden="true" /> Subscribe to Updates
               </a>
               <Link href="/media" className="flex items-center gap-2 px-6 py-3 bg-bone-raised border border-plum-dark/15 rounded-lg text-plum-dark font-bold uppercase tracking-wider text-xs hover:border-gold-primary hover:text-gold-deep transition-colors shadow-sm">
-                <Download size={16} /> Media Kit
+                <Download size={16} aria-hidden="true" /> Media Kit
               </Link>
             </div>
           </div>
@@ -291,17 +291,19 @@ export default function NewsPage() {
             <input
               type="text"
               placeholder="Search articles..."
+              aria-label="Search articles"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-full bg-bone-raised border border-plum-dark/10 focus:bg-white focus:border-gold-primary focus:outline-none transition-all text-sm text-black-soft placeholder:text-gray-therapeutics/70"
+              className="w-full pl-10 pr-4 py-2 rounded-full bg-bone-raised border border-plum-dark/10 focus:bg-white focus:border-gold-primary focus:outline-none transition-all text-sm text-black-soft placeholder:text-gray-therapeutics"
             />
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-therapeutics/70 group-focus-within:text-gold-deep transition-colors" />
+            <Search size={16} aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-therapeutics/70 group-focus-within:text-gold-deep transition-colors" />
           </div>
         </div>
       </section>
 
       <section aria-label="News articles" className="flex-grow pb-24 pt-12">
         <div className="container mx-auto px-6">
+          <h2 className="sr-only">News articles</h2>
 
           {/* Featured Article */}
           <AnimatePresence mode="wait">
@@ -351,7 +353,7 @@ export default function NewsPage() {
                                 {featuredArticle.type}
                              </span>
                              <time className="text-gray-therapeutics text-sm flex items-center gap-1" dateTime={featuredArticle.date}>
-                                <Calendar size={14} /> {featuredArticle.date}
+                                <Calendar size={14} aria-hidden="true" /> {featuredArticle.date}
                              </time>
                         </div>
 
@@ -366,7 +368,7 @@ export default function NewsPage() {
                         )}
 
                         <div className="flex items-center gap-2 text-plum-dark font-bold uppercase tracking-widest text-xs group-hover:translate-x-2 transition-transform mt-auto">
-                            Read Story <ArrowUpRight size={16} />
+                            Read Story <ArrowUpRight size={16} aria-hidden="true" />
                         </div>
                     </div>
                  </div>
@@ -424,7 +426,7 @@ export default function NewsPage() {
                         <div className="p-8 flex flex-col flex-grow">
                              <div className="flex items-center gap-3 mb-4 text-xs text-gray-therapeutics font-medium uppercase tracking-widest">
                                  <span className="text-gold-deep">{article.type}</span>
-                                 <span>•</span>
+                                 <span aria-hidden="true">•</span>
                                  <time dateTime={article.date}>{article.date}</time>
                              </div>
                              <h3 className="text-xl font-serif font-bold text-plum-dark mb-3 group-hover:text-gold-deep transition-colors line-clamp-3 text-balance">
@@ -436,10 +438,10 @@ export default function NewsPage() {
                                 </p>
                              )}
                              <div className="mt-auto pt-4 border-t border-plum-dark/10 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-plum-dark">
-                                 <span className="opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 duration-300 flex items-center">
-                                    Read More <ArrowUpRight size={14} className="ml-1" />
+                                 <span className="opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 group-focus-visible:translate-x-0 duration-300 flex items-center">
+                                    Read More <ArrowUpRight size={14} aria-hidden="true" className="ml-1" />
                                  </span>
-                                 <span className="text-[10px] text-gray-therapeutics/60 font-normal normal-case tracking-normal">{article.source}</span>
+                                 <span className="text-[10px] text-gray-therapeutics font-normal normal-case tracking-normal">{article.source}</span>
                              </div>
                         </div>
                     </motion.a>
@@ -448,9 +450,9 @@ export default function NewsPage() {
           </motion.div>
 
           {filteredArticles.length === 0 && (
-            <div className="text-center py-20">
+            <div role="status" className="text-center py-20">
                 <div className="bg-bone-raised border border-plum-dark/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Search size={24} className="text-gray-therapeutics" />
+                    <Search size={24} aria-hidden="true" className="text-gray-therapeutics" />
                 </div>
                 <h3 className="text-xl font-serif font-bold text-plum-dark mb-2">No articles found</h3>
                 <p className="text-gray-therapeutics">Try adjusting your search or filter criteria.</p>
@@ -494,10 +496,11 @@ export default function NewsPage() {
                         <motion.div
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
+                          role="status"
                           className="flex flex-col items-center gap-4 py-8 text-center"
                         >
                           <div className="w-14 h-14 rounded-full bg-gold-primary/20 flex items-center justify-center">
-                            <CheckCircle2 className="text-gold-primary" size={28} />
+                            <CheckCircle2 className="text-gold-primary" size={28} aria-hidden="true" />
                           </div>
                           <div>
                             <h3 className="text-xl font-bold mb-2">You&apos;re Subscribed!</h3>
@@ -531,12 +534,15 @@ export default function NewsPage() {
                                     setNewsletterEmail(e.target.value);
                                     if (newsletterError) setNewsletterError("");
                                 }}
+                                aria-required="true"
+                                aria-invalid={newsletterError ? true : undefined}
+                                aria-describedby={newsletterError ? "newsletter_email_error" : undefined}
                                 className={`w-full px-4 py-3 rounded bg-white/10 border text-white placeholder:text-white/30 focus:outline-none transition-colors ${
                                     newsletterError ? "border-red-400 focus:border-red-400" : "border-white/20 focus:border-gold-primary"
                                 }`}
                             />
                             {newsletterError && (
-                                <p className="mt-1.5 text-sm text-red-400">{newsletterError}</p>
+                                <p id="newsletter_email_error" role="alert" className="mt-1.5 text-sm text-red-400">{newsletterError}</p>
                             )}
                         </div>
                         <button
@@ -546,7 +552,7 @@ export default function NewsPage() {
                         >
                             {newsletterSubmitting ? (
                                 <>
-                                    <div className="w-4 h-4 border-2 border-plum-dark/30 border-t-plum-dark rounded-full animate-spin" />
+                                    <div aria-hidden="true" className="w-4 h-4 border-2 border-plum-dark/30 border-t-plum-dark rounded-full animate-spin motion-reduce:animate-none" />
                                     Subscribing...
                                 </>
                             ) : (

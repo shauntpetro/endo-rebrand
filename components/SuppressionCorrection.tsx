@@ -50,12 +50,17 @@ function Column({
     >
       {/* Highlighted candidate gets one confident hairline gold rule, widens on hover */}
       {highlight && (
-        <span className="absolute top-0 left-0 h-[2px] w-16 bg-gold-primary rounded-full transition-all duration-500 group-hover:w-full" />
+        <span
+          aria-hidden="true"
+          className="absolute top-0 left-0 h-[2px] w-16 bg-gold-primary rounded-full transition-all duration-500 group-hover:w-full"
+        />
       )}
 
       <span
-        className="text-[10px] font-extrabold uppercase tracking-[0.2em]"
-        style={{ color: accent }}
+        className={`text-[10px] font-extrabold uppercase tracking-[0.2em] ${
+          highlight ? "text-gold-deep" : ""
+        }`}
+        style={highlight ? undefined : { color: accent }}
       >
         {data.eyebrow}
       </span>
@@ -70,6 +75,7 @@ function Column({
         {data.points.map((p) => (
           <li key={p} className="flex items-start gap-3 text-sm leading-relaxed">
             <span
+              aria-hidden="true"
               className="mt-1.5 w-2 h-2 rounded-full shrink-0"
               style={{ background: accent, opacity: highlight ? 1 : 0.7 }}
             />
@@ -104,6 +110,7 @@ export default function SuppressionCorrection() {
     >
       {/* One warm luminous accent, biased toward the correction column — frozen static under reduced motion */}
       <motion.div
+        aria-hidden="true"
         className="absolute top-[42%] right-[8%] w-[26rem] h-[26rem] rounded-full pointer-events-none will-change-transform"
         style={{
           background:
@@ -139,7 +146,7 @@ export default function SuppressionCorrection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
           <Column data={LEFT} accent="#6B6270" delay={0.35} />
-          <Column data={RIGHT} accent="#8A6D2E" delay={0.47} highlight />
+          <Column data={RIGHT} accent="#806524" delay={0.47} highlight />
         </div>
       </div>
     </section>

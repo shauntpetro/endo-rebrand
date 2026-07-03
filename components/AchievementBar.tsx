@@ -39,11 +39,13 @@ function logoFilter(isLight: boolean, partner: Partner) {
 export default function AchievementBar({ theme = "dark" }: { theme?: "light" | "dark" }) {
   const isLight = theme === "light";
   const [isPaused, setIsPaused] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
   const { ref: visRef, isVisible } = useVisibility();
   const reduced = usePrefersReducedMotion();
 
   // Marquee only runs when motion is welcome AND the section is on screen.
-  const animateMarquee = isVisible && !reduced;
+  // WCAG 2.2.2: userPaused gives keyboard/AT users a way to stop the movement.
+  const animateMarquee = isVisible && !reduced && !userPaused;
 
   return (
     <section
@@ -63,6 +65,7 @@ export default function AchievementBar({ theme = "dark" }: { theme?: "light" | "
     >
       {/* Warm hairline seam — one confident luminous accent, frozen static under reduced motion */}
       <motion.div
+        aria-hidden="true"
         className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gold-primary/50 to-transparent z-10"
         animate={animateMarquee ? { opacity: [0.35, 0.7, 0.35] } : undefined}
         transition={
@@ -114,14 +117,32 @@ export default function AchievementBar({ theme = "dark" }: { theme?: "light" | "
           className="relative w-full flex items-center overflow-hidden"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
+          onFocus={() => setIsPaused(true)}
+          onBlur={() => setIsPaused(false)}
         >
+          {/* WCAG 2.2.2 pause control — visually hidden until keyboard focus */}
+          <button
+            type="button"
+            onClick={() => setUserPaused((p) => !p)}
+            aria-pressed={userPaused}
+            className={`sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-4 focus:z-20 focus:px-3 focus:py-1.5 focus:rounded-md focus:text-xs focus:font-sans focus:font-semibold ${
+              isLight
+                ? "focus:bg-plum-dark focus:text-white"
+                : "focus:bg-white focus:text-plum-dark"
+            }`}
+          >
+            {userPaused ? "Play partner logo animation" : "Pause partner logo animation"}
+          </button>
+
           {/* Warm vignette edges */}
           <div
+            aria-hidden="true"
             className={`absolute left-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-r ${
               isLight ? "from-bone" : "from-plum-dark"
             } to-transparent pointer-events-none`}
           />
           <div
+            aria-hidden="true"
             className={`absolute right-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-l ${
               isLight ? "from-bone" : "from-plum-dark"
             } to-transparent pointer-events-none`}

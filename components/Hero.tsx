@@ -107,7 +107,7 @@ export default function Hero() {
             <div className="reveal-rise flex items-center gap-3 mb-8" style={{ animationDelay: "0.42s" }}>
               <div className="flex items-center gap-2 px-4 py-2 bg-clinical-teal/10 border border-clinical-teal/30 rounded-full">
                 <span className="w-2 h-2 rounded-full bg-clinical-teal" />
-                <span className="text-xs font-bold uppercase tracking-widest text-clinical-teal">IND Cleared</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-clinical-teal-deep">IND Cleared</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-gold-primary/12 border border-gold-primary/40 rounded-full">
                 <span className="text-xs font-bold uppercase tracking-widest text-gold-deep">NIH-Backed</span>

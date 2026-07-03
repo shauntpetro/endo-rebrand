@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
@@ -70,18 +70,51 @@ const team = [
 
 export default function TeamPage() {
   const [selectedMember, setSelectedMember] = useState<typeof team[0] | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
 
-  // Close modal on Escape key
+  // Close modal on Escape key + trap Tab focus inside the dialog
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Escape") setSelectedMember(null);
+    if (e.key === "Escape") {
+      setSelectedMember(null);
+      return;
+    }
+    if (e.key === "Tab" && modalRef.current) {
+      const focusables = modalRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      const inside = active ? modalRef.current.contains(active) : false;
+      if (e.shiftKey) {
+        if (!inside || active === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (!inside || active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
   }, []);
 
   useEffect(() => {
     if (selectedMember) {
+      lastFocusedRef.current = document.activeElement as HTMLElement | null;
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
+      // Move focus into the dialog once it mounts
+      requestAnimationFrame(() => closeButtonRef.current?.focus());
     } else {
       document.body.style.overflow = "";
+      // Restore focus to the element that opened the dialog
+      if (lastFocusedRef.current) {
+        lastFocusedRef.current.focus();
+        lastFocusedRef.current = null;
+      }
     }
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
@@ -153,7 +186,7 @@ export default function TeamPage() {
 
               <div className="w-full md:w-7/12 lg:w-8/12 flex items-center">
                 <div className="border-l-2 border-gold-primary pl-8 md:pl-10 py-10 md:py-12 pr-8">
-                  <Eyebrow className="mb-3 block">Founder &amp; CEO</Eyebrow>
+                  <Eyebrow tone="gold-on-dark" className="mb-3 block">Founder &amp; CEO</Eyebrow>
                   <h2 className="text-3xl md:text-5xl font-serif font-bold text-cream-primary mb-5 tracking-tight text-balance">
                     {team[0].name}
                   </h2>
@@ -237,6 +270,7 @@ export default function TeamPage() {
             onClick={() => setSelectedMember(null)}
           >
             <motion.div
+              ref={modalRef}
               role="dialog"
               aria-modal="true"
               aria-labelledby="bio-modal-name"
@@ -247,6 +281,7 @@ export default function TeamPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <button
+                ref={closeButtonRef}
                 onClick={() => setSelectedMember(null)}
                 aria-label="Close dialog"
                 className="absolute top-4 right-4 p-2 bg-bone-raised/85 backdrop-blur rounded-full text-plum-dark hover:bg-gold-primary/15 hover:rotate-90 transition-all duration-300 z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"

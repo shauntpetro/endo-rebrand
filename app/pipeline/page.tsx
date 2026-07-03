@@ -16,7 +16,11 @@ import { useVisibility } from "@/hooks/useVisibility";
     (no width-from-0 reveal that could leave the bar blank if JS is paused). */
 function PhaseBar({ activePhase, progress, color }: { activePhase: number; progress: number; color: string }) {
   return (
-    <div className="w-full relative h-8 flex items-center">
+    <div
+      className="w-full relative h-8 flex items-center"
+      role="img"
+      aria-label={`Development progress: currently in ${phases[activePhase]}`}
+    >
       <div className="absolute inset-0 grid grid-cols-6 gap-1.5">
         {phases.map((_, i) => {
           const filled = i < activePhase;
@@ -49,7 +53,7 @@ function PhaseBar({ activePhase, progress, color }: { activePhase: number; progr
 
 function GridPattern() {
   return (
-    <svg className="absolute inset-0 w-full h-full opacity-[0.035] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+    <svg aria-hidden="true" className="absolute inset-0 w-full h-full opacity-[0.035] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
           <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
@@ -108,7 +112,7 @@ export default function PipelinePage() {
             style={{ animationDelay: "0.15s" }}
           >
             Precision <br />
-            <span className="text-gold-primary italic">Pipeline</span>
+            <span className="text-gold-deep italic">Pipeline</span>
           </h1>
           <p
             className="reveal-rise text-xl md:text-2xl text-black-soft font-light leading-relaxed max-w-2xl border-l-2 border-gold-primary pl-6"
@@ -141,7 +145,11 @@ export default function PipelinePage() {
           className="reveal-rise flex flex-col md:flex-row justify-between items-end gap-8 mb-12"
           style={{ animationDelay: "0.4s" }}
         >
-          <div className="flex gap-1.5 sm:gap-2 bg-bone-raised p-1.5 rounded-full shadow-sm border border-plum-dark/10">
+          <div
+            role="group"
+            aria-label="Filter pipeline by program type"
+            className="flex gap-1.5 sm:gap-2 bg-bone-raised p-1.5 rounded-full shadow-sm border border-plum-dark/10"
+          >
             {(["All", "Therapeutic", "Diagnostic"] as const).map((type) => (
               <button
                 key={type}
@@ -150,7 +158,7 @@ export default function PipelinePage() {
                 className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all duration-300 whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary ${
                   filter === type
                     ? "bg-plum-dark text-white shadow-md"
-                    : "text-plum-primary/60 hover:text-plum-primary hover:bg-plum-dark/[0.04]"
+                    : "text-plum-primary/80 hover:text-plum-primary hover:bg-plum-dark/[0.04]"
                 }`}
               >
                 {type}
@@ -158,7 +166,7 @@ export default function PipelinePage() {
             ))}
           </div>
 
-          <div className="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-plum-primary/45">
+          <div className="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-plum-primary/80">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-gold-primary"></div> Therapeutic
             </div>
@@ -169,7 +177,7 @@ export default function PipelinePage() {
         </div>
 
         {/* Pipeline Table Header - Desktop */}
-        <div className="hidden md:grid grid-cols-12 gap-8 mb-6 px-8 text-[11px] font-bold uppercase tracking-[0.2em] text-plum-primary/40">
+        <div className="hidden md:grid grid-cols-12 gap-8 mb-6 px-8 text-[11px] font-bold uppercase tracking-[0.2em] text-plum-primary/80">
           <div className="col-span-4">Candidate Profile</div>
           <div className="col-span-8 grid grid-cols-6 gap-1 text-center">
             {phases.map((phase) => (
@@ -189,8 +197,18 @@ export default function PipelinePage() {
               style={{ animationDelay: `${0.1 + index * 0.08}s` }}
             >
               <div
+                role="button"
+                tabIndex={0}
+                aria-expanded={expandedId === candidate.id}
+                aria-controls={`candidate-details-${candidate.id}`}
                 className="px-8 py-8 cursor-pointer relative"
                 onClick={() => setExpandedId(expandedId === candidate.id ? null : candidate.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setExpandedId(expandedId === candidate.id ? null : candidate.id);
+                  }
+                }}
               >
                 {/* Warm accent rule on the left edge — widens on hover */}
                 <div
@@ -204,23 +222,23 @@ export default function PipelinePage() {
                     <div className="flex items-center gap-3 mb-2">
                       {candidate.type === "Therapeutic" ? (
                         <div className="w-9 h-9 rounded-lg bg-gold-primary/12 flex items-center justify-center text-gold-deep shrink-0 group-hover:bg-gold-primary/20 transition-colors duration-300">
-                          <Pill size={15} />
+                          <Pill size={15} aria-hidden="true" />
                         </div>
                       ) : (
                         <div className="w-9 h-9 rounded-lg bg-clinical-teal/12 flex items-center justify-center text-clinical-teal shrink-0 group-hover:bg-clinical-teal/20 transition-colors duration-300">
-                          <Microscope size={15} />
+                          <Microscope size={15} aria-hidden="true" />
                         </div>
                       )}
                       <div>
-                        <h3 className="text-2xl font-serif font-bold text-plum-dark group-hover:text-gold-deep transition-colors leading-tight">
+                        <h2 className="text-2xl font-serif font-bold text-plum-dark group-hover:text-gold-deep transition-colors leading-tight">
                           {candidate.name}
-                        </h3>
+                        </h2>
                       </div>
                       {/* Status Badge */}
                       <span
                         className="ml-auto md:ml-2 shrink-0 text-[9px] font-bold uppercase tracking-[0.15em] px-2.5 py-1 rounded-full border"
                         style={{
-                          color: getColor(candidate.type) === "#C9A961" ? "#8A6D2E" : "#2F6E62",
+                          color: getColor(candidate.type) === "#C9A961" ? "#806524" : "#2F6E62",
                           borderColor: `${getColor(candidate.type)}30`,
                           backgroundColor: `${getColor(candidate.type)}0F`,
                         }}
@@ -228,7 +246,7 @@ export default function PipelinePage() {
                         {candidate.status}
                       </span>
                     </div>
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-plum-primary/45 mb-1 pl-12">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-plum-primary/80 mb-1 pl-12">
                       {candidate.mechanism}
                     </p>
                     <p className="text-sm text-black-soft pl-12 font-light">{candidate.indication}</p>
@@ -237,7 +255,7 @@ export default function PipelinePage() {
                   {/* Phase Visualization */}
                   <div className="col-span-1 md:col-span-8 w-full">
                     <div className="md:hidden flex justify-between items-center mb-4">
-                      <span className="text-xs font-bold uppercase tracking-widest text-plum-primary/45">Current Phase</span>
+                      <span className="text-xs font-bold uppercase tracking-widest text-plum-primary/80">Current Phase</span>
                       <span className="text-xs font-bold text-plum-dark">{phases[candidate.phase]}</span>
                     </div>
                     <PhaseBar activePhase={candidate.phase} progress={candidate.progress} color={getColor(candidate.type)} />
@@ -245,20 +263,24 @@ export default function PipelinePage() {
                 </div>
 
                 {/* Expand / Collapse Indicator */}
-                <div className="absolute bottom-4 right-8 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <div className="absolute bottom-4 right-8 flex items-center gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-gold-deep flex items-center gap-1.5 bg-bone-raised/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm border border-plum-dark/10 hover:bg-gold-primary hover:text-white hover:border-transparent transition-colors">
                     {expandedId === candidate.id ? "Collapse" : "Learn More"}
-                    <ChevronDown size={12} className={`transition-transform duration-300 ${expandedId === candidate.id ? "rotate-180" : ""}`} />
+                    <ChevronDown size={12} aria-hidden="true" className={`transition-transform duration-300 ${expandedId === candidate.id ? "rotate-180" : ""}`} />
                   </span>
                 </div>
               </div>
 
               {/* Expanded Details — user-triggered disclosure (accordion) */}
               <motion.div
+                id={`candidate-details-${candidate.id}`}
+                role="region"
+                aria-label={`${candidate.name} details`}
                 initial={false}
                 animate={{ height: expandedId === candidate.id ? "auto" : 0 }}
                 transition={{ duration: reduced ? 0 : 0.4, ease: [0.22, 1, 0.36, 1] }}
                 className="overflow-hidden"
+                inert={expandedId !== candidate.id}
               >
                 <div className="px-8 py-8 md:pl-[calc(33.33%+2rem)] border-t border-plum-dark/10 bg-gradient-to-br from-bone to-bone-raised">
                   <p className="text-black-soft font-light leading-relaxed max-w-2xl text-sm mb-6">
@@ -272,7 +294,8 @@ export default function PipelinePage() {
                           className="flex items-start gap-3 text-sm text-black-soft p-3 bg-bone-raised rounded-lg border border-plum-dark/10 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
                         >
                           <span
-                            className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 text-white text-[10px] font-bold tabular-nums"
+                            aria-hidden="true"
+                            className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 text-black-primary text-[10px] font-bold tabular-nums"
                             style={{ backgroundColor: getColor(candidate.type) }}
                           >
                             {i + 1}
@@ -287,9 +310,9 @@ export default function PipelinePage() {
                       href="/contact?subject=data"
                       className="flex items-center gap-2 px-5 py-2.5 bg-plum-dark text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-gold-primary transition-colors whitespace-nowrap group/btn shadow-sm"
                     >
-                      View Data <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                      View Data <ArrowRight size={14} aria-hidden="true" className="group-hover/btn:translate-x-1 transition-transform" />
                     </Link>
-                    <span className="text-[10px] text-plum-primary/45 uppercase tracking-widest font-bold">
+                    <span className="text-[10px] text-plum-primary/80 uppercase tracking-widest font-bold">
                       {phases[candidate.phase]} &middot; {candidate.type}
                     </span>
                   </div>
@@ -301,9 +324,9 @@ export default function PipelinePage() {
           {filteredPipeline.length === 0 && (
             <div className="py-32 text-center">
               <div className="w-16 h-16 bg-plum-dark/[0.05] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Activity className="w-8 h-8 text-plum-primary/30" />
+                <Activity aria-hidden="true" className="w-8 h-8 text-plum-primary/30" />
               </div>
-              <p className="text-plum-primary/50 font-light">No candidates found matching this criteria.</p>
+              <p className="text-plum-primary/80 font-light">No candidates found matching this criteria.</p>
             </div>
           )}
         </div>
@@ -321,7 +344,7 @@ export default function PipelinePage() {
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 rounded-full bg-gold-primary/15 flex items-center justify-center text-gold-primary shrink-0">
-                <Activity size={14} />
+                <Activity size={14} aria-hidden="true" />
               </div>
               <h2 className="text-2xl md:text-3xl font-serif font-bold text-cream-primary">Future Applications</h2>
             </div>
@@ -345,11 +368,11 @@ export default function PipelinePage() {
                     className="flex items-start gap-3 p-5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-gold-primary/40 hover:bg-white/[0.07] transition-all duration-300 group/future cursor-default"
                   >
                     <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center shrink-0 group-hover/future:bg-gold-primary/15 transition-colors duration-300">
-                      <Icon size={14} className="text-cream-primary/60 group-hover/future:text-gold-primary transition-colors duration-300" />
+                      <Icon size={14} aria-hidden="true" className="text-cream-primary/60 group-hover/future:text-gold-primary transition-colors duration-300" />
                     </div>
                     <div>
                       <p className="text-sm font-bold text-cream-primary group-hover/future:text-gold-primary transition-colors duration-300">{item.label}</p>
-                      <p className="text-xs text-cream-primary/50 mt-0.5 leading-relaxed">{item.desc}</p>
+                      <p className="text-xs text-cream-primary/70 mt-0.5 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 );

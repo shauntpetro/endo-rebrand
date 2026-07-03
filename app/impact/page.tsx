@@ -15,8 +15,8 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const SystemicMap = dynamic(() => import("@/components/SystemicMap"), {
   loading: () => (
-    <div className="w-full h-[500px] flex items-center justify-center">
-      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gold-primary/20 to-gold-primary/5 animate-pulse" />
+    <div role="status" aria-label="Loading visualization" className="w-full h-[500px] flex items-center justify-center">
+      <div aria-hidden="true" className="w-16 h-16 rounded-full bg-gradient-to-br from-gold-primary/20 to-gold-primary/5 animate-pulse" />
     </div>
   ),
 });
@@ -118,7 +118,7 @@ export default function ImpactPage() {
                     className="reveal-rise inline-flex items-center gap-2 px-4 py-2 border border-plum-dark/10 rounded-full bg-bone-raised/70 backdrop-blur-md mb-8 shadow-sm"
                     style={{ animationDelay: "0.05s" }}
                 >
-                    <span className="w-2 h-2 rounded-full bg-gold-primary" />
+                    <span aria-hidden="true" className="w-2 h-2 rounded-full bg-gold-primary" />
                     <Eyebrow tone="plum">
                         Global Health Crisis
                     </Eyebrow>
@@ -126,6 +126,7 @@ export default function ImpactPage() {
 
                 {/* Massive Parallax Background Text — decorative, transform-only */}
                 <motion.div
+                    aria-hidden="true"
                     style={{ y: yBackground }}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full pointer-events-none select-none z-0 flex items-center justify-center will-change-transform"
                 >
@@ -139,7 +140,7 @@ export default function ImpactPage() {
                     style={{ animationDelay: "0.15s" }}
                 >
                     The Silent <br />
-                    <span className="italic bg-clip-text text-transparent bg-gradient-to-r from-plum-primary via-plum-primary to-gold-primary pr-4 pb-2">Epidemic</span>
+                    <span className="italic bg-clip-text text-transparent bg-gradient-to-r from-plum-primary via-plum-primary to-gold-deep pr-4 pb-2">Epidemic</span>
                 </h1>
 
                 <motion.div
@@ -183,6 +184,7 @@ export default function ImpactPage() {
       >
         <DotGrid />
         <div className="container mx-auto px-6 relative z-10">
+            <h2 className="sr-only">Disease Burden Statistics</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {stats.map((stat, i) => (
                     <div
@@ -200,15 +202,15 @@ export default function ImpactPage() {
                         {/* One warm accent rule — hairline gold, widens on hover */}
                         <span className="absolute top-0 left-0 h-[2px] w-12 bg-gold-primary transition-all duration-500 group-hover:w-full" />
 
-                        <h3 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-plum-dark tabular-nums group-hover:scale-[1.02] transition-transform duration-500 origin-left">
+                        <p className="text-5xl md:text-6xl font-serif font-bold mb-4 text-plum-dark tabular-nums group-hover:scale-[1.02] transition-transform duration-500 origin-left">
                             {stat.value}
-                        </h3>
+                        </p>
 
                         <div className="h-px w-12 bg-plum-dark/15 my-6 group-hover:w-full group-hover:bg-gradient-to-r group-hover:from-gold-primary group-hover:to-transparent transition-all duration-700" />
 
-                        <h4 className="text-sm font-bold uppercase tracking-widest mb-3 text-gold-deep transition-colors">
+                        <h3 className="text-sm font-bold uppercase tracking-widest mb-3 text-gold-deep transition-colors">
                             {stat.label}
-                        </h4>
+                        </h3>
                         <p className="text-base text-black-soft font-light leading-relaxed">
                             {stat.description}
                         </p>
@@ -221,7 +223,7 @@ export default function ImpactPage() {
       {/* "The Spiral" - Visual Narrative */}
       <section className="py-40 bg-bone-raised relative overflow-hidden">
         {/* Abstract Spiral Background — CSS spin freezes under reduced motion (globals) */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-[0.05] pointer-events-none">
+        <div aria-hidden="true" className="absolute right-0 top-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-[0.05] pointer-events-none">
              <svg viewBox="0 0 100 100" className="w-full h-full animate-[spin_60s_linear_infinite] text-plum-primary">
                 <path d="M50,50 m0,-45 a45,45 0 1,1 0,90 a45,45 0 1,1 0,-90" fill="none" stroke="currentColor" strokeWidth="0.5" />
                 <path d="M50,50 m0,-35 a35,35 0 1,1 0,70 a35,35 0 1,1 0,-70" fill="none" stroke="currentColor" strokeWidth="0.5" />
@@ -238,7 +240,7 @@ export default function ImpactPage() {
                      </div>
 
                      <h2 className="text-5xl md:text-6xl font-serif font-bold mb-8 text-plum-dark leading-tight text-balance">
-                        &ldquo;This is where the <br/> <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-gold-primary to-plum-primary pr-4">spiral</span> begins.&rdquo;
+                        &ldquo;This is where the <br/> <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-gold-deep to-plum-primary pr-4">spiral</span> begins.&rdquo;
                     </h2>
 
                     <div className="prose prose-lg text-black-soft font-light leading-relaxed">
@@ -255,7 +257,7 @@ export default function ImpactPage() {
                             &ldquo;They&apos;re given treatment after treatment that doesn&apos;t work, because no one&apos;s looking at the disease underneath.&rdquo;
                         </p>
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-full bg-plum-primary/10 overflow-hidden relative">
+                            <div aria-hidden="true" className="w-12 h-12 rounded-full bg-plum-primary/10 overflow-hidden relative">
                                 <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-plum-primary">TP</div>
                             </div>
                             <div>
@@ -356,7 +358,7 @@ export default function ImpactPage() {
 
         <div className="container mx-auto max-w-5xl text-center relative z-10">
             <div className="reveal-rise relative" style={{ animationDelay: "0.05s" }}>
-                <span className="text-plum-primary/40 text-9xl font-serif absolute -top-20 left-1/2 -translate-x-1/2 select-none opacity-20">
+                <span aria-hidden="true" className="text-plum-primary/40 text-9xl font-serif absolute -top-20 left-1/2 -translate-x-1/2 select-none opacity-20">
                     Identity
                 </span>
 
@@ -366,7 +368,7 @@ export default function ImpactPage() {
                     className="reveal-rise relative p-12 md:p-20 bg-bone-raised rounded-xl border-y-4 border-gold-primary/25 shadow-[0_20px_60px_rgba(74,63,92,0.08)]"
                     style={{ animationDelay: "0.18s" }}
                 >
-                    <div className="absolute top-8 left-8 text-6xl font-serif text-gold-primary/25 leading-none">“</div>
+                    <div aria-hidden="true" className="absolute top-8 left-8 text-6xl font-serif text-gold-primary/25 leading-none">“</div>
                     <blockquote className="text-2xl md:text-4xl font-serif italic text-plum-dark leading-relaxed relative z-10">
                         It’s not just pelvic pain. It’s the erosion of confidence, of identity, of opportunity. It makes it harder to show up to work. Harder to start a family. Harder to live your life the way you imagined.
                     </blockquote>

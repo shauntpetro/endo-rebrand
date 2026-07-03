@@ -121,11 +121,11 @@ export const EfficacyGraph = () => {
         <div>
             <div className="flex items-center gap-2 mb-3">
                 <span className="h-px w-8 bg-gold-primary"></span>
-                <h3 className="text-xs font-bold text-gold-deep uppercase tracking-widest">Preclinical Concept</h3>
+                <p className="text-xs font-bold text-gold-deep uppercase tracking-widest">Preclinical Concept</p>
             </div>
             <h2 className="text-3xl md:text-4xl font-serif text-plum-dark leading-tight text-balance">
               Designed to eliminate <br className="hidden md:block" />
-              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-gold-primary to-gold-dark">
+              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-gold-deep to-gold-dark">
                 endometriosis lesions
               </span>
             </h2>
@@ -142,6 +142,8 @@ export const EfficacyGraph = () => {
         {/* Controls */}
         <div className="flex bg-bone p-1 rounded-lg border border-plum-dark/10">
             <button
+                type="button"
+                aria-pressed={model === 'mouse'}
                 onClick={() => setModel('mouse')}
                 className={clsx(
                     "px-5 py-2 rounded-md text-xs font-bold uppercase tracking-wide transition-all duration-300",
@@ -153,6 +155,8 @@ export const EfficacyGraph = () => {
                 Mouse Model
             </button>
             <button
+                type="button"
+                aria-pressed={model === 'rat'}
                 onClick={() => setModel('rat')}
                 className={clsx(
                     "px-5 py-2 rounded-md text-xs font-bold uppercase tracking-wide transition-all duration-300",
@@ -427,18 +431,24 @@ export const EfficacyGraph = () => {
          </div>
 
          <div className="flex items-center gap-2">
-             <label className="text-xs font-medium text-plum-dark/60 cursor-pointer select-none flex items-center gap-2">
+             <button
+                type="button"
+                role="switch"
+                aria-checked={showPoints}
+                onClick={() => setShowPoints(!showPoints)}
+                className="text-xs font-medium text-plum-dark/60 cursor-pointer select-none flex items-center gap-2"
+             >
                 Show Data Points
-                <div className={clsx(
+                <span className={clsx(
                     "w-10 h-5 rounded-full p-1 transition-colors duration-300 flex items-center",
                     showPoints ? "bg-gold-primary" : "bg-plum-dark/15"
-                )} onClick={() => setShowPoints(!showPoints)}>
-                    <div className={clsx(
+                )}>
+                    <span className={clsx(
                         "bg-white w-3.5 h-3.5 rounded-full shadow-sm transition-transform duration-300",
                         showPoints ? "translate-x-5" : "translate-x-0"
                     )} />
-                </div>
-             </label>
+                </span>
+             </button>
          </div>
       </div>
     </div>

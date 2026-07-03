@@ -160,7 +160,7 @@ export default function InnovationPage() {
                 style={{ animationDelay: "0.14s" }}
             >
               Treating the <br />
-              <span className="text-gold-primary italic">&ldquo;Untreatable&rdquo;</span>
+              <span className="text-gold-deep italic">&ldquo;Untreatable&rdquo;</span>
             </h1>
             <p
                 className="reveal-rise text-xl md:text-2xl text-black-soft max-w-3xl leading-relaxed font-light mb-12"
@@ -169,7 +169,7 @@ export default function InnovationPage() {
               A new frontier in peptide therapeutics and imaging. EndoCyclic&apos;s precision peptides target diseased cells from the inside out, enabling selective uptake, pH-sensitive activation, and direct engagement of intracellular targets.
             </p>
             <div
-                className="reveal-rise flex items-center gap-6 text-sm text-plum-dark/60 font-medium"
+                className="reveal-rise flex items-center gap-6 text-sm text-plum-dark/70 font-medium"
                 style={{ animationDelay: "0.38s" }}
             >
               <div className="flex items-center gap-2">
@@ -189,12 +189,12 @@ export default function InnovationPage() {
 
         {/* Scroll hint — visible in static state; bounce freezes under reduced motion */}
         <div className="reveal-rise flex flex-col items-center mt-12" style={{ animationDelay: "0.52s" }}>
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-plum-dark/40 mb-3">Explore the mechanism</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-plum-dark/70 mb-3">Explore the mechanism</span>
           <motion.div
             animate={reduced ? undefined : { y: [0, 6, 0] }}
             transition={reduced ? { duration: 0 } : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           >
-            <ChevronDown size={20} className="text-gold-deep" />
+            <ChevronDown size={20} className="text-gold-deep" aria-hidden="true" />
           </motion.div>
         </div>
       </section>
@@ -207,6 +207,7 @@ export default function InnovationPage() {
             style={{ top: navbarHeight }}
             animate={{ opacity: showStepper ? 1 : 0, pointerEvents: showStepper ? "auto" as const : "none" as const }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
+            aria-hidden={!showStepper}
           >
             <motion.div
                 className="absolute inset-0 -z-10 opacity-90"
@@ -228,29 +229,29 @@ export default function InnovationPage() {
                     <div
                         key={step.id}
                         onClick={() => scrollToStep(index)}
-                        tabIndex={0}
+                        tabIndex={showStepper ? 0 : -1}
                         role="button"
                         aria-label={`Go to step ${index + 1}: ${step.title}`}
                         aria-current={activeStep === index ? "step" : undefined}
                         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); scrollToStep(index); } }}
                         className={clsx(
                             "flex flex-col items-center gap-2 cursor-pointer group relative z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary rounded-full",
-                            activeStep >= index ? "text-gold-deep" : "text-plum-dark/40"
+                            activeStep >= index ? "text-gold-deep" : "text-plum-dark/70"
                         )}
                     >
                         <div className={clsx(
                             "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-[2px] transition-all duration-500",
                             activeStep === index
-                                ? "border-gold-primary bg-gold-primary text-white scale-110 shadow-gold-glow-sm"
+                                ? "border-gold-primary bg-gold-primary text-plum-dark scale-110 shadow-gold-glow-sm"
                                 : activeStep > index
                                     ? "border-plum-dark bg-plum-dark text-gold-primary"
-                                    : "border-plum-dark/25 bg-bone-raised text-plum-dark/30"
+                                    : "border-plum-dark/25 bg-bone-raised text-plum-dark/70"
                         )}>
                             {index + 1}
                         </div>
                         <span className={clsx(
                             "text-[9px] font-bold uppercase tracking-widest transition-colors duration-300 hidden md:block text-center max-w-[100px] leading-tight",
-                            activeStep === index ? "text-gold-deep" : "text-plum-dark/40"
+                            activeStep === index ? "text-gold-deep" : "text-plum-dark/70"
                         )}>
                             {step.title}
                         </span>
@@ -291,22 +292,25 @@ export default function InnovationPage() {
                     className="fixed right-6 bottom-24 z-50 flex flex-col gap-2 text-plum-dark hover:opacity-100 transition-opacity"
                     animate={{ opacity: showStepper ? 0.7 : 0, pointerEvents: showStepper ? "auto" as const : "none" as const }}
                     transition={{ duration: 0.3 }}
+                    aria-hidden={!showStepper}
                   >
                       <button
                         onClick={() => activeStep > 0 && scrollToStep(activeStep - 1)}
                         disabled={activeStep === 0}
+                        tabIndex={showStepper ? undefined : -1}
                         aria-label="Previous step"
                         className="p-3 rounded-full border border-plum-dark/15 bg-bone-raised/70 hover:bg-bone-raised shadow-sm disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
                       >
-                          <ChevronUp size={20} />
+                          <ChevronUp size={20} aria-hidden="true" />
                       </button>
                       <button
                         onClick={() => activeStep < STEPS.length - 1 && scrollToStep(activeStep + 1)}
                         disabled={activeStep === STEPS.length - 1}
+                        tabIndex={showStepper ? undefined : -1}
                         aria-label="Next step"
                         className="p-3 rounded-full border border-plum-dark/15 bg-bone-raised/70 hover:bg-bone-raised shadow-sm disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
                       >
-                          <ChevronDown size={20} />
+                          <ChevronDown size={20} aria-hidden="true" />
                       </button>
                   </motion.div>
 
@@ -353,7 +357,7 @@ export default function InnovationPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.1 * index }}
                 >
-                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-gold-primary to-gold-dark flex items-center justify-center text-white font-bold text-sm mb-2 shadow-md shadow-gold-primary/20">
+                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-gold-primary to-gold-dark flex items-center justify-center text-plum-dark font-bold text-sm mb-2 shadow-md shadow-gold-primary/20">
                     {index + 1}
                   </div>
                   <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-plum-dark/70 leading-tight text-center">
@@ -391,7 +395,7 @@ export default function InnovationPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5 }}
                 >
-                  <Quote className="w-12 h-12 text-gold-primary mx-auto mb-8" />
+                  <Quote className="w-12 h-12 text-gold-primary mx-auto mb-8" aria-hidden="true" />
                 </motion.div>
                 <motion.blockquote
                   initial={{ opacity: 0, y: 20 }}
@@ -472,7 +476,7 @@ export default function InnovationPage() {
                   >
                         {/* Title */}
                         <div className="text-center mb-10">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-plum-dark/40">Residence Time Spectrum</span>
+                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-plum-dark/70">Residence Time Spectrum</span>
                         </div>
 
                         {/* Spectrum bar */}
@@ -499,17 +503,17 @@ export default function InnovationPage() {
                         <div className="flex justify-between items-start mt-6 mx-auto w-full max-w-sm">
                           <div className="flex flex-col items-center text-center max-w-[120px]">
                             <div className="w-11 h-11 rounded-full bg-clinical-teal/10 border-2 border-clinical-teal flex items-center justify-center mb-2">
-                              <svg className="w-5 h-5 text-clinical-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                              <svg aria-hidden="true" className="w-5 h-5 text-clinical-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             </div>
                             <span className="text-xs font-bold uppercase tracking-wider text-clinical-teal">Diagnostic</span>
-                            <span className="text-[10px] text-plum-dark/40 mt-1 leading-tight">Rapid clearance<br />Signal &amp; release</span>
+                            <span className="text-[10px] text-plum-dark/70 mt-1 leading-tight">Rapid clearance<br />Signal &amp; release</span>
                           </div>
                           <div className="flex flex-col items-center text-center max-w-[120px]">
                             <div className="w-11 h-11 rounded-full bg-plum-primary/10 border-2 border-plum-primary flex items-center justify-center mb-2">
-                              <svg className="w-5 h-5 text-plum-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                              <svg aria-hidden="true" className="w-5 h-5 text-plum-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
                             </div>
                             <span className="text-xs font-bold uppercase tracking-wider text-plum-primary">Therapeutic</span>
-                            <span className="text-[10px] text-plum-dark/40 mt-1 leading-tight">Sustained presence<br />Engage &amp; correct</span>
+                            <span className="text-[10px] text-plum-dark/70 mt-1 leading-tight">Sustained presence<br />Engage &amp; correct</span>
                           </div>
                         </div>
 
@@ -666,23 +670,23 @@ function ScrollStep({ step, index, isActive, reduced, ref }: { step: { id: numbe
             />
             <span className={clsx(
               "font-sans text-sm font-bold uppercase tracking-[3px] transition-colors duration-500",
-              isActive ? "text-gold-deep" : "text-plum-dark/40"
+              isActive ? "text-gold-deep" : "text-plum-dark/70"
             )}>
               STEP 0{index + 1}
             </span>
           </motion.div>
 
-          <motion.h3
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className={clsx(
               "text-3xl md:text-[44px] font-serif font-bold mb-6 leading-[1.1] transition-colors duration-500 text-balance",
-              isActive ? "text-plum-dark" : "text-plum-dark/35"
+              isActive ? "text-plum-dark" : "text-plum-dark/60"
             )}
           >
             {step.title}
-          </motion.h3>
+          </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}

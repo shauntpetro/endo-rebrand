@@ -51,6 +51,7 @@ export default function MilestoneProofBar() {
     >
       {/* ── Single warm luminous orb behind the accent card (gated on reduced motion) ── */}
       <motion.div
+        aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30 will-change-transform"
         style={{
           background:
@@ -108,6 +109,7 @@ export default function MilestoneProofBar() {
                     className={`flex h-12 w-12 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110 ${milestone.bgClass}`}
                   >
                     <Icon
+                      aria-hidden="true"
                       className={`h-6 w-6 ${milestone.colorClass}`}
                       strokeWidth={1.5}
                     />
@@ -119,7 +121,7 @@ export default function MilestoneProofBar() {
                   </h3>
 
                   {/* Sublabel */}
-                  <span className="font-mono text-xs uppercase tracking-widest text-black-primary/60">
+                  <span className="font-mono text-xs uppercase tracking-widest text-black-primary/75">
                     {milestone.sublabel}
                   </span>
                 </div>

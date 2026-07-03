@@ -112,7 +112,7 @@ export default function ImagingPage() {
               style={{ animationDelay: "0.15s" }}
             >
               Seeing the <br />
-              <span className="text-gold-primary italic">Undetectable</span>
+              <span className="text-gold-deep italic">Undetectable</span>
             </h1>
 
             <p
@@ -126,7 +126,8 @@ export default function ImagingPage() {
 
         {/* Scroll Indicator — JS loop gated behind reduced motion */}
         <motion.div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-plum-primary/60"
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-plum-primary/80"
+          aria-hidden="true"
           animate={reduced ? undefined : { y: [0, 10, 0] }}
           transition={reduced ? { duration: 0 } : { duration: 2, repeat: Infinity }}
         >
@@ -146,6 +147,8 @@ export default function ImagingPage() {
                  aria-valuemin={0}
                  aria-valuemax={100}
                  aria-valuenow={Math.round(sliderPosition)}
+                 aria-valuetext={`${Math.round(sliderPosition)}% Standard MRI, ${100 - Math.round(sliderPosition)}% FemLUNA Enhanced`}
+                 aria-orientation="horizontal"
                  tabIndex={0}
                  onKeyDown={(e) => {
                    if (e.key === "ArrowLeft") setSliderPosition((p) => Math.max(0, p - 2));
@@ -180,7 +183,7 @@ export default function ImagingPage() {
               >
                   <div className="absolute inset-0 bg-[url('/standard-mri.webp')] bg-cover bg-center opacity-[0.7] grayscale scale-110" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="bg-black/60 backdrop-blur px-4 py-2 text-zinc-500 font-mono text-xs uppercase tracking-widest border border-zinc-800">No Signal</span>
+                      <span className="bg-black/60 backdrop-blur px-4 py-2 text-zinc-300 font-mono text-xs uppercase tracking-widest border border-zinc-800">No Signal</span>
                   </div>
               </div>
 
@@ -190,7 +193,7 @@ export default function ImagingPage() {
                  style={{ left: `${sliderPosition}%` }}
               >
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11 h-11 bg-white rounded-full shadow-xl ring-1 ring-gold-primary/40 flex items-center justify-center cursor-col-resize hover:scale-110 transition-transform">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-plum-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-plum-primary" aria-hidden="true">
                        <path d="M9 6L4 12l5 6M15 6l5 6-5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                  </div>
@@ -206,10 +209,10 @@ export default function ImagingPage() {
 
           <div className="reveal-rise flex justify-center gap-8 mt-8 text-sm font-medium text-plum-primary" style={{ animationDelay: "0.2s" }}>
             <div className="flex items-center gap-2 hover:text-gold-deep transition-colors">
-               <Scan size={16} /> <span>Non-Invasive Detection</span>
+               <Scan size={16} aria-hidden="true" /> <span>Non-Invasive Detection</span>
             </div>
             <div className="flex items-center gap-2 hover:text-gold-deep transition-colors">
-               <Eye size={16} /> <span>Sub-mm Detection</span>
+               <Eye size={16} aria-hidden="true" /> <span>Sub-mm Detection</span>
             </div>
           </div>
         </div>
@@ -227,7 +230,7 @@ export default function ImagingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
               <span className="reveal-rise block mb-4" style={{ animationDelay: "0.05s" }}>
-                <Eyebrow>The Current Standard Fails</Eyebrow>
+                <Eyebrow tone="gold-on-dark">The Current Standard Fails</Eyebrow>
               </span>
               <h2
                 className="reveal-rise text-4xl md:text-6xl font-serif font-bold mb-8 leading-tight text-balance"
@@ -253,9 +256,9 @@ export default function ImagingPage() {
                     className="reveal-rise flex items-start gap-4 border-l border-white/15 pl-6 py-2 hover:border-coral-primary transition-colors duration-300"
                     style={{ animationDelay: `${0.4 + i * 0.12}s` }}
                   >
-                    <AlertCircle className="text-coral-primary shrink-0 mt-1" size={20} />
+                    <AlertCircle className="text-coral-primary shrink-0 mt-1" size={20} aria-hidden="true" />
                     <div>
-                      <h4 className="font-bold text-lg mb-1">{item.title}</h4>
+                      <h3 className="font-bold text-lg mb-1">{item.title}</h3>
                       <p className="text-white/50 text-sm">{item.desc}</p>
                     </div>
                   </div>
@@ -266,12 +269,12 @@ export default function ImagingPage() {
             <div className="relative">
               <div className="reveal-rise bg-white/[0.04] p-12 rounded-2xl border border-white/10 backdrop-blur-sm text-center relative overflow-hidden group hover:border-gold-primary/30 transition-colors duration-500" style={{ animationDelay: "0.2s" }}>
                 <div className="text-9xl font-serif font-bold text-white mb-4 relative z-10 tabular-nums">
-                  1<span className="text-white/25 text-7xl">/</span>3
+                  1<span className="text-white/40 text-7xl">/</span>3
                 </div>
                 <p className="text-2xl text-white/80 font-light max-w-xs mx-auto relative z-10">
                   women leave surgery <span className="text-coral-primary font-medium">without</span> a diagnosis.
                 </p>
-                <div className="mt-8 text-sm text-white/40 uppercase tracking-widest">
+                <div className="mt-8 text-sm text-white/60 uppercase tracking-widest">
                   Misdiagnosis Rate
                 </div>
               </div>
@@ -322,7 +325,7 @@ export default function ImagingPage() {
                  ].map(({ Icon, title, desc }, i) => (
                    <div className="reveal-rise group" key={title} style={{ animationDelay: `${0.15 + i * 0.12}s` }}>
                       <h3 className="text-2xl font-serif font-bold text-plum-dark mb-4 flex items-center gap-3 group-hover:text-plum-primary transition-colors">
-                        <Icon className="text-gold-primary group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" /> {title}
+                        <Icon className="text-gold-primary group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" aria-hidden="true" /> {title}
                       </h3>
                       <p className="text-lg text-black-soft leading-relaxed border-l-2 border-plum-dark/10 pl-6 group-hover:border-gold-primary transition-colors">
                         {desc}
@@ -334,7 +337,11 @@ export default function ImagingPage() {
               {/* Visual Side - Reusing Mechanism Component */}
               <div className="lg:col-span-7 h-[280px] sm:h-[350px] md:h-[600px] relative">
                 <div className="absolute inset-0 bg-bone rounded-xl transform rotate-2 scale-[0.98] -z-10" />
-                <div className="h-full w-full shadow-2xl rounded-xl overflow-hidden border border-plum-dark/10">
+                <div
+                  className="h-full w-full shadow-2xl rounded-xl overflow-hidden border border-plum-dark/10"
+                  role="img"
+                  aria-label="Animated visualization of selective uptake: FemLUNA peptides binding to endometriotic lesion tissue while ignoring healthy tissue"
+                >
                    <Scene4_SelectiveUptake />
                 </div>
               </div>
@@ -372,9 +379,9 @@ export default function ImagingPage() {
               >
                 <div className="flex justify-between items-start">
                   <div className={`p-3 rounded-full transition-transform duration-300 group-hover:scale-110 ${card.dark ? "bg-white/10" : "bg-gold-primary/10 group-hover:bg-gold-primary/20"}`}>
-                     <Target size={24} className={card.dark ? "text-gold-primary" : "text-gold-deep"} />
+                     <Target size={24} className={card.dark ? "text-gold-primary" : "text-gold-deep"} aria-hidden="true" />
                   </div>
-                  <ArrowRight className={`opacity-0 group-hover:opacity-100 transition-opacity ${card.dark ? "text-white" : "text-plum-dark"}`} />
+                  <ArrowRight className={`opacity-0 group-hover:opacity-100 transition-opacity ${card.dark ? "text-white" : "text-plum-dark"}`} aria-hidden="true" />
                 </div>
 
                 <div>

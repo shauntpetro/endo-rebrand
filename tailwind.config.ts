@@ -13,7 +13,7 @@ const config: Config = {
         "gold-primary": "#C9A961",
         "gold-light": "#E5D4A6",
         "gold-dark": "#A68945",
-        "gold-deep": "#8A6D2E",
+        "gold-deep": "#806524",
         "black-primary": "#1A1A1A",
         "black-soft": "#2D2D2D",
         "cream-primary": "#F5F1E8",
@@ -37,6 +37,7 @@ const config: Config = {
 
         // Accents
         "clinical-teal": "#4A9B8E",
+        "clinical-teal-deep": "#2F6E62",
         "warm-rose": "#D4A5A5",
       },
       fontFamily: {

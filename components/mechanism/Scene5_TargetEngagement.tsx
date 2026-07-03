@@ -146,7 +146,7 @@ export const Scene5_TargetEngagement = () => {
               transition={{ duration: reduced ? 0 : 0.3 }}
             />
           ))}
-          <span className="text-[9px] font-bold uppercase tracking-wider ml-1" style={{ color: phase === 'resolved' ? '#4A3F5C' : phase === 'engaged' ? '#8A6D2E' : '#9C978C' }}>
+          <span className="text-[9px] font-bold uppercase tracking-wider ml-1" style={{ color: phase === 'resolved' ? '#4A3F5C' : phase === 'engaged' ? '#806524' : '#9C978C' }}>
             {phase === 'resolved' ? 'Resolved' : phase === 'engaged' ? 'Engaging' : 'Approaching'}
           </span>
         </div>
@@ -400,7 +400,7 @@ const VolumeCounter = () => {
           <span
             className="text-xs font-mono font-bold tabular-nums"
             style={{
-              color: volume < 20 ? '#4A9B8E' : '#8A6D2E',
+              color: volume < 20 ? '#4A9B8E' : '#806524',
             }}
           >
             {volume}%

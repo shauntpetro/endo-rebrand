@@ -158,7 +158,7 @@ export default function MediaPage() {
               diagnostics, and oncology.
             </p>
             <div className="mt-8 pt-6 border-t border-plum-dark/10">
-              <p className="text-xs text-plum-dark/40 uppercase tracking-[0.2em] font-bold">
+              <p className="text-xs text-plum-dark/70 uppercase tracking-[0.2em] font-bold">
                 Boilerplate for press use
               </p>
             </div>
@@ -190,10 +190,10 @@ export default function MediaPage() {
               >
                 <span className="absolute top-0 left-0 h-[2px] w-12 bg-gold-primary rounded-full transition-all duration-500 group-hover:w-full" />
                 <div className="w-12 h-12 rounded-full bg-surface border border-gold-primary/30 flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110">
-                  <fact.icon className="w-5 h-5 text-gold-deep" />
+                  <fact.icon className="w-5 h-5 text-gold-deep" aria-hidden="true" />
                 </div>
 
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-plum-dark/40 mb-2 group-hover:text-plum-dark transition-colors">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-plum-dark/70 mb-2 group-hover:text-plum-dark transition-colors">
                   {fact.label}
                 </p>
                 <h3 className="text-xl font-serif font-bold text-plum-dark mb-3 text-balance">
@@ -253,16 +253,17 @@ export default function MediaPage() {
                     <p className="font-bold text-plum-dark text-sm">
                       {logo.label}
                     </p>
-                    <p className="text-xs text-plum-dark/40 mt-0.5 tabular-nums">
+                    <p className="text-xs text-plum-dark/70 mt-0.5 tabular-nums">
                       {logo.filename}
                     </p>
                   </div>
                   <a
                     href={logo.src}
                     download={logo.filename}
+                    aria-label={`Download ${logo.label} (${logo.filename})`}
                     className="inline-flex items-center gap-2 px-4 py-2 bg-plum-dark text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-gold-primary hover:text-plum-dark transition-colors"
                   >
-                    <Download size={14} />
+                    <Download size={14} aria-hidden="true" />
                     Download
                   </a>
                 </div>
@@ -316,6 +317,7 @@ export default function MediaPage() {
                 View Full Team
                 <ArrowRight
                   size={14}
+                  aria-hidden="true"
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </Link>
@@ -361,7 +363,7 @@ export default function MediaPage() {
                   href="mailto:info@endocyclic.com"
                   className="inline-flex items-center justify-center gap-3 text-lg text-white hover:text-gold-primary transition-colors group"
                 >
-                  <Mail size={20} className="text-gold-primary" />
+                  <Mail size={20} className="text-gold-primary" aria-hidden="true" />
                   <span className="font-medium">info@endocyclic.com</span>
                 </a>
 
@@ -372,14 +374,14 @@ export default function MediaPage() {
                     href="/contact"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gold-primary text-plum-dark font-bold uppercase tracking-wider text-xs rounded-lg hover:bg-white transition-colors"
                   >
-                    <Mail size={16} />
+                    <Mail size={16} aria-hidden="true" />
                     Contact Us
                   </Link>
                   <Link
                     href="/news"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 border border-white/20 text-white font-bold uppercase tracking-wider text-xs rounded-lg hover:border-gold-primary hover:text-gold-primary transition-colors"
                   >
-                    <Newspaper size={16} />
+                    <Newspaper size={16} aria-hidden="true" />
                     Latest Coverage
                   </Link>
                 </div>

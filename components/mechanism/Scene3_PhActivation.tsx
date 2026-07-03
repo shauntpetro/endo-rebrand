@@ -294,7 +294,7 @@ export const Scene3_PhActivation = () => {
           <motion.span animate={{ color: isAcidic ? '#C3BDB1' : '#4A3F5C' }} transition={{ duration: 0.3 }}>
             Bloodstream (pH 7.4)
           </motion.span>
-          <motion.span animate={{ color: isAcidic ? '#8A6D2E' : '#C3BDB1' }} transition={{ duration: 0.3 }}>
+          <motion.span animate={{ color: isAcidic ? '#806524' : '#C3BDB1' }} transition={{ duration: 0.3 }}>
             Lesion (pH 6.0)
           </motion.span>
         </div>

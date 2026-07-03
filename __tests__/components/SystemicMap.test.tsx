@@ -28,6 +28,8 @@ describe("SystemicMap", () => {
     render(<SystemicMap />);
     const node = screen.getByLabelText(/View Pelvic Cavity details/i);
     fireEvent.click(node);
-    expect(screen.getByText(/Primary site of endometrial implants/i)).toBeDefined();
+    // Description now appears in the visible panel AND the persistent aria-live
+    // region (a11y improvement), so there may be more than one match.
+    expect(screen.getAllByText(/Primary site of endometrial implants/i).length).toBeGreaterThan(0);
   });
 });

@@ -77,7 +77,7 @@ export default function CredibilitySection() {
                   className="max-h-14 w-auto object-contain opacity-70 grayscale transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0"
                 />
               </div>
-              <span className="block text-center text-[11px] font-sans uppercase tracking-wider leading-snug text-plum-primary/60 transition-colors duration-500 group-hover:text-plum-primary/80">
+              <span className="block text-center text-[11px] font-sans uppercase tracking-wider leading-snug text-plum-primary/80 transition-colors duration-500 group-hover:text-plum-primary">
                 {item.label}
               </span>
             </div>

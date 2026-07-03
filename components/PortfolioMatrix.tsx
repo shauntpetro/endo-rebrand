@@ -10,7 +10,7 @@ const AREAS: { key: DiseaseArea; sub: string }[] = [
 /** Accent = luminous decoration color; text = deepened tone for WCAG-legible labels on cream. */
 function tonesFor(type: PipelineItem["type"]) {
   return type === "Therapeutic"
-    ? { accent: "#C9A961", text: "#8A6D2E" } // gold-primary / gold-deep
+    ? { accent: "#C9A961", text: "#806524" } // gold-primary / gold-deep
     : { accent: "#4A9B8E", text: "#2F6E62" }; // clinical-teal / teal-deep
 }
 
@@ -101,9 +101,9 @@ export default function PortfolioMatrix({ variant = "full" }: { variant?: "full"
         <p className="reveal-rise text-[10px] font-extrabold uppercase tracking-[0.28em] text-gold-deep mb-1.5" style={{ animationDelay: "0.05s" }}>
           Therapeutics &amp; Diagnostics · One Platform
         </p>
-        <h3 className="reveal-rise font-serif font-bold text-plum-dark leading-none text-balance" style={{ fontSize: compact ? 24 : 30, animationDelay: "0.12s" }}>
-          One Platform, <span className="text-gold-primary italic">Matched Pairs</span>
-        </h3>
+        <h2 className="reveal-rise font-serif font-bold text-plum-dark leading-none text-balance" style={{ fontSize: compact ? 24 : 30, animationDelay: "0.12s" }}>
+          One Platform, <span className="text-gold-deep italic">Matched Pairs</span>
+        </h2>
         {!compact && (
           <p className="reveal-rise text-xs text-[#544c60] max-w-[460px] leading-relaxed mt-2" style={{ animationDelay: "0.18s" }}>
             A single precision-peptide engine producing matched pairs — a diagnostic to find disease and a therapeutic to clear it — across two disease areas.

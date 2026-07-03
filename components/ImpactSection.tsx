@@ -117,7 +117,7 @@ export default function ImpactSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-5">
             <div className="reveal-rise" style={{ animationDelay: "0.1s" }}>
-              <Eyebrow className="mb-8 block font-sans">Impact</Eyebrow>
+              <Eyebrow tone="gold-on-dark" className="mb-8 block font-sans">Impact</Eyebrow>
               <h2
                 className="text-5xl md:text-8xl font-serif font-bold mb-12 tracking-tighter leading-none"
                 style={{ textWrap: "balance" }}
@@ -147,7 +147,7 @@ export default function ImpactSection() {
                   <div className="text-xs font-bold uppercase tracking-widest text-gold-primary mb-1">
                     {stat.label}
                   </div>
-                  <div className="text-[10px] text-white/60 font-mono uppercase tracking-wider">
+                  <div className="text-[10px] text-white/70 font-mono uppercase tracking-wider">
                     {stat.desc}
                   </div>
                 </div>
@@ -243,7 +243,10 @@ export default function ImpactSection() {
                 className="inline-flex items-center group text-lg text-white hover:text-gold-primary transition-colors font-sans"
               >
                 <span className="border-b border-gold-primary pb-1">Read Full Impact Report</span>
-                <span className="ml-3 transform group-hover:translate-x-2 transition-transform duration-300">
+                <span
+                  aria-hidden="true"
+                  className="ml-3 transform group-hover:translate-x-2 transition-transform duration-300"
+                >
                   →
                 </span>
               </Link>

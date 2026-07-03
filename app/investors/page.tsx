@@ -223,7 +223,10 @@ export default function InvestorsPage() {
   };
 
   const scrollToForm = () => {
-    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    formRef.current?.scrollIntoView({
+      behavior: reduced ? "auto" : "smooth",
+      block: "start",
+    });
   };
 
   const getFieldClassName = (fieldName: string, baseClass: string) => {
@@ -267,7 +270,7 @@ export default function InvestorsPage() {
               className="reveal-rise mb-4 block"
               style={{ animationDelay: "0.05s" }}
             >
-              <Eyebrow>Investor Relations</Eyebrow>
+              <Eyebrow tone="gold-on-dark">Investor Relations</Eyebrow>
             </span>
             <h1
               className="reveal-rise text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 tracking-tight leading-[1.05] text-balance"
@@ -392,7 +395,7 @@ export default function InvestorsPage() {
           >
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <Eyebrow className="mb-3 block">Funding Disparity</Eyebrow>
+                <Eyebrow tone="gold-on-dark" className="mb-3 block">Funding Disparity</Eyebrow>
                 <h3 className="text-2xl md:text-3xl font-serif font-bold mb-4 tabular-nums">
                   $44M vs. $1.24B
                 </h3>
@@ -404,7 +407,7 @@ export default function InvestorsPage() {
                 </p>
               </div>
               <div className="md:border-l border-white/15 md:pl-8">
-                <Eyebrow className="mb-3 block">Momentum Building</Eyebrow>
+                <Eyebrow tone="gold-on-dark" className="mb-3 block">Momentum Building</Eyebrow>
                 <h3 className="text-2xl md:text-3xl font-serif font-bold mb-4 tabular-nums">
                   $2.6B in 2024
                 </h3>
@@ -581,7 +584,7 @@ export default function InvestorsPage() {
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
           <div className="text-center max-w-3xl mx-auto">
             <div className="reveal-rise" style={{ animationDelay: "0.05s" }}>
-              <Eyebrow className="mb-3 block">For Investors</Eyebrow>
+              <Eyebrow tone="gold-on-dark" className="mb-3 block">For Investors</Eyebrow>
               <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4 tracking-tight text-balance">
                 Access Investor Materials
               </h2>
@@ -849,7 +852,7 @@ export default function InvestorsPage() {
                     className="block text-sm font-semibold text-plum-dark mb-2 uppercase tracking-wider"
                   >
                     Message{" "}
-                    <span className="font-normal normal-case tracking-normal text-black-soft/60">
+                    <span className="font-normal normal-case tracking-normal text-black-soft/70">
                       (optional)
                     </span>
                   </label>
@@ -873,7 +876,10 @@ export default function InvestorsPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div
+                          className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                          aria-hidden="true"
+                        />
                         Submitting...
                       </>
                     ) : (
