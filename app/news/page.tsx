@@ -327,6 +327,7 @@ export default function NewsPage() {
                                     alt={featuredArticle.title}
                                     width={400}
                                     height={300}
+                                    style={{ width: "auto", height: "auto" }}
                                     className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
                                 />
                             </div>
@@ -403,6 +404,7 @@ export default function NewsPage() {
                                         alt={article.title}
                                         width={300}
                                         height={200}
+                                        style={{ width: "auto", height: "auto" }}
                                         className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
                                     />
                                 </div>
