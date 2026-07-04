@@ -17,14 +17,14 @@ export default function CoverScene() {
         initial={{ scale: reduced ? 1 : 0.4, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.1, ease: EASE, delay: 0.15 }}
-        className="pointer-events-none absolute -right-[6%] top-1/2 h-[54vmin] w-[54vmin] -translate-y-1/2 shape-dot bg-gold"
+        className="pointer-events-none absolute -bottom-[24%] -right-[7%] h-[52vmin] w-[52vmin] shape-dot bg-gold"
       />
       <motion.div
         aria-hidden
         initial={{ scale: reduced ? 1 : 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.9, ease: EASE, delay: 0.5 }}
-        className="pointer-events-none absolute right-[9%] top-[26%] h-[17vmin] w-[17vmin] shape-dot bg-teal"
+        className="pointer-events-none absolute right-[5%] top-[14%] h-[15vmin] w-[15vmin] shape-dot bg-teal"
       />
       <motion.div
         aria-hidden
