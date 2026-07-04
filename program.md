@@ -15,12 +15,11 @@ Increase buyer/investor clarity and trust. The site should function as a strateg
 7. Every homepage section should answer one question in 10 seconds
 
 ## Editable Surface
-Modify these for content experiments (post-2026 "Modernist Color-Block" single-page scroll-film):
-- `lib/site.ts` — shared content/data (pipeline, burden stats, milestones, partners, team bios, news, contacts)
-- `app/page.tsx` — the film shell (scene order)
-- `components/film/scenes/*` — the 8 acts' composition + copy
-- `components/film/overlays/*` — the 7 in-place content panels
-- `components/film/*` — framework (HUD, Scene, OverlayHost, FilmCTA); `components/site/*` — reusable primitives
+Modify these for content experiments (post-2026 "Calm Clinical" multi-page site):
+- `lib/site.ts` — shared content/data (nav, pipeline, burden stats, milestones, partners, team bios, news, contacts)
+- `app/page.tsx` — homepage (calm reference)
+- `app/<route>/page.tsx` + `app/<route>/layout.tsx` — the 9 pages (page = content; layout = metadata)
+- `components/site/*` — shared UI (Nav, Footer, Section, Container, Eyebrow, Button, Reveal, CountUp, Field)
 
 ## Fixed Surface (Do Not Modify for Content)
 - `app/globals.css` — design tokens (Tailwind v4 `@theme`) and type/layout utilities

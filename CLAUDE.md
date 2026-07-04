@@ -9,7 +9,7 @@ Read these files for full context before making any changes:
 - `truth.md` — approved scientific facts. **Only modify when explicitly prompted by the user.** All copy must match this file.
 - `program.md` — optimization methodology, editable surface, eval rubric
 
-The repo is a Next.js 16 app (React 19, TypeScript, Tailwind CSS 4, Framer Motion). Dev server runs on port 3000. The site is a **single-page cinematic "scroll-film"** in a **"Modernist Color-Block" (Bauhaus-tech)** design system (2026 ground-up redesign): saturated plum/ink/gold/teal/cream color-block panels, oversized **Syne** grotesque display type, geometric shapes, and highlight-marker accents. There is **no top nav and no separate content routes** — a persistent HUD navigates the acts, and deep content (pipeline, team, news, contact, investors, media, imaging) opens as in-place **overlays** (deep-linkable via `#!<id>` hashes). No Three.js/WebGL.
+The repo is a Next.js 16 app (React 19, TypeScript, Tailwind CSS 4, Framer Motion). Dev server runs on port 3000. The site is a **clean, conventional multi-page site** in a **"Calm Clinical"** design system (2026 ground-up redesign): a soft off-white ground, muted plum text, gentle clinical-teal accents and soft pastel section washes, **one clean sans (Hanken Grotesk) at modest sizes**, and generous whitespace. Restraint is the point — quiet and refined, not loud. **Nav and Footer live in the root layout** (`app/layout.tsx`); each page is a normal route. No Three.js/WebGL, no scroll-jacking.
 
 ```bash
 npm install
@@ -19,14 +19,12 @@ npm run dev
 ## What you CAN do
 
 Content and structure live in a few clear places:
-- `lib/site.ts` — the shared content/data source (pipeline candidates, disease-burden stats, milestones, partners, team bios, news, contact constants). Every fact here traces to `truth.md`. Edit copy here.
-- `app/page.tsx` — the film shell (composes the scenes + HUD + overlay host).
-- `components/film/scenes/*` — the 8 full-viewport acts (Cover, Problem, Platform, Mechanism, Pipeline [horizontal pin], Proof, Team, Ask).
-- `components/film/overlays/*` — the 7 in-place content panels (Pipeline, Team, News, Contact, Invest, Media, Imaging).
-- `components/film/*` — the framework (HUD, Scene/HorizontalPin, OverlayHost + `overlay.tsx` context, FilmCTA).
-- `components/site/*` — reusable primitives still in use (Reveal, SplitText, Marquee, CountUp, Field, ScrollManager).
+- `lib/site.ts` — the shared content/data source (nav links, pipeline candidates, disease-burden stats, milestones, partners, team bios, news, contact constants). Every fact here traces to `truth.md`.
+- `app/page.tsx` — the homepage (the GOLD-STANDARD reference for the calm style).
+- `app/<route>/page.tsx` + `app/<route>/layout.tsx` — the 9 pages (innovation, pipeline, imaging, impact, team, news, contact, investors, media). `page.tsx` is the content (`"use client"` only if it has a form/filter/modal); `layout.tsx` is a server component holding `metadata` + JSON-LD.
+- `components/site/*` — the shared UI: `Nav`, `Footer`, `Section`, `Container`, `Eyebrow`, `Button`, `Reveal`, `CountUp`, `Field`, `ScrollManager`.
 
-You can also modify layout files, API routes, and any component for bug fixes, features, or structural improvements.
+You can also modify API routes and any component for bug fixes, features, or structural improvements.
 
 ## What you CANNOT do
 
@@ -34,28 +32,29 @@ You can also modify layout files, API routes, and any component for bug fixes, f
 - **Contradict truth.md** — every claim on the site must be traceable to this file
 - **Use prohibited language** — never say "cure" (without "potential"), "guaranteed", "proven", or "safe" (pre-Phase 3). See `truth.md` for full list.
 - **Invent data** — never fabricate efficacy numbers, clearance rates, or claims not in `truth.md`.
-- **Break the design system** — the design tokens live in `app/globals.css` (Tailwind v4 `@theme`); there is no `tailwind.config.ts`. Don't redefine tokens or restyle the framework (`components/film/*`) for one-off content experiments — reuse the `Scene`/overlay tones, `FilmCTA`, and the utility classes.
+- **Break the design system** — the design tokens live in `app/globals.css` (Tailwind v4 `@theme`); there is no `tailwind.config.ts`. Keep it calm: reuse `Section` tones + the `.t-*` utility classes and the shared components; don't reach for oversized type, bold color-blocks, or busy decoration.
 
-## Design system — "Modernist Color-Block" (Bauhaus-tech)
+## Design system — "Calm Clinical"
 
-Tokens are in `app/globals.css` under `@theme`, consumed as Tailwind utilities. Sections/panels are **whole saturated color blocks** (via `Scene` / overlay `tone`), not tinted surfaces.
+Tokens are in `app/globals.css` under `@theme`, consumed as Tailwind utilities. Sections are gently washed (`Section tone=…`), not saturated blocks.
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| Cream / paper | `#F1EBDD` | Light panel + text on dark |
-| Cream-2 | `#E7DCCB` | Deeper cream panel (rhythm) |
-| Ink | `#17131C` | Near-black panel + text on light |
-| Plum | `#2E263A` | Brand dark panel |
-| Gold | `#C9A961` | Solid gold blocks/shapes/accents |
-| Gold ink | `#6E551C` | Gold **text** on cream (AA) |
-| Gold soft | `#E3C77E` | Gold text/accent on dark (AA) |
-| Teal | `#3E8E82` | Solid teal blocks/shapes |
-| Teal ink | `#2A5F55` | Teal text on cream (AA) |
-| Paper-on-dark | `#F1EBDD` | Text on ink/plum/teal panels |
+| Paper | `#FBFAF8` | Primary soft off-white ground |
+| Tint plum / teal / warm | `#F4F1F8` / `#EDF5F2` / `#F6F3EE` | Soft section washes for rhythm |
+| Ink | `#2E263A` | Headings + strong text (muted plum) |
+| Ink body | `#4B4553` | Body text |
+| Muted | `#6F6A76` | Secondary / captions (AA on paper) |
+| Teal | `#4A9B8E` | Decorative dots/fills |
+| Teal ink | `#2F6E62` | Teal **text** / links (AA) |
+| Plum | `#2E263A` | Rare dark section (e.g. closing CTA), footer |
+| Line | `#2E263A1F` | Hairlines |
 
-**Fonts:** **Syne** (grotesque display, variable) via `--font-syne` (mapped to `font-serif`/`.t-*` headings); **Hanken Grotesk** (body/UI) via `--font-hanken`. The wordmark is the `logo.avif` image. No serif, no italics (Syne has none — `.italic-display` is a no-op; accent with color or `.mark-gold`/`.mark-teal`).
+**Fonts:** **Hanken Grotesk** only, via `--font-hanken` — headings and body at modest sizes (weight ~500 for headings). The wordmark is the `logo.avif` image. No serif, no display face, no monospace.
 
-**Utilities (globals.css):** `.t-display` (hero words, keep to 1–3 words), `.t-h1`–`.t-h3`, `.t-lead`, `.t-body`, `.t-label`, `.t-num` (big figures); `.mark-gold`/`.mark-teal` (highlight markers); `.shape-dot`/`.shape-bar`/`.shape-half-*` (geometry); `.container-editorial`, `.section-rhythm`, `.klink`. Tailwind text-size utilities override `.t-*` sizes when co-applied (use for small elements). Motion easing: `--ease-expo`, `--ease-quart`.
+**Utilities (globals.css):** `.t-hero` (page H1 — modest, not huge), `.t-h2`, `.t-h3`, `.t-lead`, `.t-body`, `.t-stat` (big figures), `.eyebrow` (small tracked teal label); `.section` (vertical rhythm), `.container-page` / `.container-prose`, `.reveal` (quiet CSS fade-up — always ends visible), `.hairline`, `.link-underline`. Components: `<Section tone="paper|white|tint-plum|tint-teal|tint-warm|plum">`, `<Button variant="primary|ghost|ghost-on-dark|quiet">`, `<Eyebrow>`, `<Reveal delay>`, `<CountUp>`, `Field` (`TextField`/`TextArea`/`SelectField`/`Honeypot`).
+
+Note: don't add a root `loading.tsx`/`template.tsx` — a whole-page Suspense boundary was found to leave content hidden; they were removed on purpose.
 
 ## Performance & motion constraints
 
