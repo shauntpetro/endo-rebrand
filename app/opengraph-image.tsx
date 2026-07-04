@@ -11,57 +11,30 @@ export default async function Image() {
     (
       <div
         style={{
-          background: "#1A1524",
+          background: "#fbfaf8",
           width: "100%",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px",
-          fontFamily: "Georgia, serif",
+          fontFamily: "Helvetica, Arial, sans-serif",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: "22px",
-            letterSpacing: "4px",
-            textTransform: "uppercase",
-            color: "#E3C77E",
-          }}
-        >
-          <span>EndoCyclic Therapeutics</span>
-          <span>Irvine, CA</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "22px", letterSpacing: "3px", textTransform: "uppercase", color: "#2f6e62" }}>
+          <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#4a9b8e" }} />
+          <span>Clinical-stage precision medicine</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ width: "96px", height: "3px", background: "#C9A961", marginBottom: "32px" }} />
-          <div
-            style={{
-              fontSize: "92px",
-              color: "#EDE7DA",
-              lineHeight: 0.98,
-              letterSpacing: "-3px",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <span>Correction,</span>
-            <span>
-              not <span style={{ color: "#E3C77E", fontStyle: "italic" }}>destruction.</span>
-            </span>
+          <div style={{ fontSize: "64px", color: "#2e263a", lineHeight: 1.1, letterSpacing: "-1.5px", fontWeight: 500, maxWidth: "900px" }}>
+            Medicine designed to act only where disease lives.
           </div>
         </div>
 
-        <div
-          style={{
-            fontSize: "26px",
-            color: "rgba(237,231,218,0.72)",
-            fontFamily: "Helvetica, Arial, sans-serif",
-          }}
-        >
-          First-in-class · Non-hormonal · FDA IND Allowance for ENDO-205
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "24px", color: "#6f6a76" }}>
+          <span>EndoCyclic Therapeutics</span>
+          <span>Non-hormonal · Phase 1 · Irvine, CA</span>
         </div>
       </div>
     ),

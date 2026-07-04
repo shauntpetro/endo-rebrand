@@ -15,14 +15,13 @@ export const SITE = {
     "A clinical-stage precision medicine company. Non-hormonal peptides that act only where disease lives.",
 } as const;
 
+// Lean primary nav — the rest lives in the footer.
 export const NAV_LINKS = [
-  { name: "Innovation", href: "/innovation" },
+  { name: "Platform", href: "/innovation" },
   { name: "Pipeline", href: "/pipeline" },
-  { name: "Imaging", href: "/imaging" },
   { name: "Impact", href: "/impact" },
   { name: "Team", href: "/team" },
-  { name: "News & Media", href: "/news" },
-  { name: "Investors", href: "/investors" },
+  { name: "News", href: "/news" },
   { name: "Contact", href: "/contact" },
 ] as const;
 

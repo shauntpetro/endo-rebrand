@@ -2,25 +2,21 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main
-      id="main-content"
-      className="relative flex min-h-svh flex-col justify-center overflow-hidden bg-ink text-cream"
-    >
-      <div aria-hidden className="pointer-events-none absolute -right-[8%] top-1/2 h-[50vmin] w-[50vmin] -translate-y-1/2 shape-dot bg-gold opacity-90" />
-      <div className="container-editorial relative z-10">
-        <p className="t-label text-gold-soft">Error 404 — off the reel</p>
-        <h1 className="t-display mt-8 max-w-[14ch] uppercase">
-          This frame <span className="text-gold-soft">doesn’t exist.</span>
-        </h1>
-        <p className="t-lead mt-8 max-w-lg text-muted-on-dark">
-          The page you’re looking for isn’t part of the film. Let’s get you back to the start.
+    <main id="main-content" className="flex min-h-svh flex-col justify-center bg-paper pt-24">
+      <div className="container-page">
+        <p className="eyebrow">Error 404</p>
+        <h1 className="t-hero mt-5 max-w-xl text-ink">This page couldn’t be found.</h1>
+        <p className="t-lead mt-5 max-w-lg">
+          The page you’re looking for doesn’t exist or has moved. Let’s get you back on track.
         </p>
-        <Link
-          href="/"
-          className="t-label mt-12 inline-flex items-center gap-2 bg-gold px-8 py-4 text-ink transition-colors hover:bg-cream"
-        >
-          Back to the beginning
-        </Link>
+        <div className="mt-9 flex flex-wrap gap-3">
+          <Link href="/" className="rounded-full bg-plum px-6 py-3 text-sm font-medium text-on-dark transition-colors hover:bg-teal-ink">
+            Back to home
+          </Link>
+          <Link href="/contact" className="rounded-full border border-line px-6 py-3 text-sm text-ink transition-colors hover:border-ink">
+            Contact us
+          </Link>
+        </div>
       </div>
     </main>
   );

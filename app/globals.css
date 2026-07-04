@@ -1,85 +1,58 @@
 @import "tailwindcss";
 
 /* ============================================================================
-   EndoCyclic — "Modernist Color-Block" design system (Bauhaus-tech)
-   Saturated plum/gold/teal panels · geometric shapes · oversized Syne grotesque
-   display · Hanken Grotesk body. Brand colors used as confident blocks, not a
-   soft wash. Tokens live here (Tailwind v4 @theme).
+   EndoCyclic — "Calm Clinical" design system
+   Soft off-white ground · muted plum text · gentle clinical teal + soft pastels ·
+   one clean sans (Hanken Grotesk) at modest sizes · generous whitespace.
+   Quiet, refined, trustworthy — minimal by intent.
    ============================================================================ */
 
 @theme {
-  /* Light grounds / cream blocks */
-  --color-paper: #f1ebdd;       /* primary light panel / page base (warm cream) */
-  --color-cream: #f1ebdd;
-  --color-cream-2: #e7dccb;     /* deeper cream panel for rhythm */
-  --color-paper-raised: #fbf7ee;
-  --color-paper-sunk: #e7dccb;
-  --color-bone: #fbf7ee;
+  /* Grounds */
+  --color-paper: #fbfaf8;       /* primary soft off-white */
+  --color-surface: #ffffff;     /* raised cards */
+  --color-tint-plum: #f4f1f8;   /* soft plum section wash */
+  --color-tint-teal: #edf5f2;   /* soft teal section wash */
+  --color-tint-warm: #f6f3ee;   /* soft warm neutral wash */
 
-  /* Ink (text on light + near-black panel) */
-  --color-ink: #17131c;
-  --color-ink-soft: #2a2233;
-  --color-ink-muted: #554c60;
-  --color-line: #17131c22;
+  /* Text */
+  --color-ink: #2e263a;         /* headings + strong text (muted plum) */
+  --color-ink-body: #4b4553;    /* body text */
+  --color-muted: #6f6a76;       /* secondary / captions (AA on paper) */
+  --color-line: #2e263a1f;      /* hairlines (~12%) */
+  --color-line-soft: #2e263a12;
 
-  /* Plum panels (brand dark) */
+  /* Plum (dark footer / rare accent) */
   --color-plum: #2e263a;
-  --color-plum-mid: #4a3f5c;
   --color-plum-deep: #241e30;
-  --color-plum-abyss: #1a1524;
+  --color-on-dark: #f1eef4;
+  --color-muted-on-dark: #b7b1c0;
+  --color-line-on-dark: #ffffff1f;
 
-  /* Gold (solid blocks + accents) */
+  /* Clinical teal (primary accent) */
+  --color-teal: #4a9b8e;        /* decorative fills / dots */
+  --color-teal-ink: #2f6e62;    /* teal TEXT / links on light (AA) */
+  --color-teal-tint: #e4efeb;
+
+  /* Restrained gold (brand whisper) */
   --color-gold: #c9a961;
-  --color-gold-soft: #e3c77e;
-  --color-gold-light: #e3c77e;
-  --color-gold-ink: #6e551c;    /* gold TEXT on cream (AA ~5.9:1) */
-  --color-gold-deep: #5a4415;
+  --color-gold-ink: #806524;    /* gold text on light (AA) */
 
-  /* Teal (solid blocks + accents) */
-  --color-teal: #3e8e82;
-  --color-teal-bright: #57ac9e;
-  --color-teal-ink: #2a5f55;    /* teal TEXT on cream (AA) */
+  /* Soft rose (very sparing warmth) */
+  --color-rose: #d4a5a5;
 
-  /* Rose (warm accent, sparing) */
-  --color-rose: #d98e86;
-  --color-rose-deep: #a85c54;
-
-  /* On-dark text */
-  --color-paper-on-dark: #f1ebdd;
-  --color-cream-on-dark: #f1ebdd;
-  --color-muted-on-dark: #b4a9bd;
-  --color-line-on-dark: #f1ebdd26;
-
-  /* Fonts — grotesque display (Syne) + grotesque body (Hanken) */
-  --font-serif: var(--font-syne), "Syne", ui-sans-serif, system-ui, sans-serif; /* display slot */
-  --font-display: var(--font-syne), "Syne", ui-sans-serif, sans-serif;
   --font-sans: var(--font-hanken), "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
 
-  /* Motion */
-  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --animate-rise: rise-in 0.85s var(--ease-expo) both;
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes rise-in {
-  from { transform: translateY(24px); }
-  to { transform: none; }
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes page-enter {
-  from { transform: translateY(10px); opacity: 0.001; }
-  to { transform: none; opacity: 1; }
-}
-@keyframes block-wipe {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0 0 0 0); }
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from { opacity: 0.001; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -94,192 +67,127 @@ html {
 }
 
 body {
-  background-color: var(--color-plum);
-  color: var(--color-ink);
+  background-color: var(--color-paper);
+  color: var(--color-ink-body);
   font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
-::selection { background-color: var(--color-gold); color: #17131c; }
+::selection { background-color: var(--color-teal-tint); color: var(--color-ink); }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 0.95;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
   text-wrap: balance;
 }
 p { text-wrap: pretty; }
 
 /* ---------------------------------------------------------------------------
-   Fluid grotesque type scale — heavier, tighter, poster-like
+   Modest, calm type scale (utility classes)
    --------------------------------------------------------------------------- */
-.t-display {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 7vw, 6.5rem);
-  line-height: 0.9;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-}
-.t-h1 {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 4.5rem);
-  line-height: 0.98;
-  font-weight: 800;
-  letter-spacing: -0.035em;
+.t-hero {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
 }
 .t-h2 {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4.6vw, 3.9rem);
-  line-height: 0.95;
-  font-weight: 700;
-  letter-spacing: -0.035em;
+  font-size: clamp(1.55rem, 2.7vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
 }
 .t-h3 {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 2.4vw, 2.1rem);
-  line-height: 1.02;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.15rem, 1.6vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 .t-lead {
-  font-family: var(--font-sans);
-  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
-  line-height: 1.45;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.075rem, 1.4vw, 1.3rem);
   font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-muted);
 }
-.t-body { font-size: 1.0625rem; line-height: 1.65; }
-.t-label {
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-weight: 700;
-}
-.t-num {
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums lining-nums;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-}
-/* Legacy accent hook — grotesque has no italic, so this is a no-op guard that
-   prevents ugly synthesized obliques. Use .mark-gold / text-gold-ink for accents. */
-.italic-display { font-style: normal; }
-
-/* Bauhaus highlight markers */
-.mark-gold {
-  background: var(--color-gold);
+.t-body { font-size: 1rem; line-height: 1.7; }
+.t-stat {
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
   color: var(--color-ink);
-  padding: 0 0.18em;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
+  font-variant-numeric: tabular-nums;
 }
-.mark-teal {
-  background: var(--color-teal);
-  color: var(--color-cream);
-  padding: 0 0.18em;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-.mark-underline {
-  box-shadow: inset 0 -0.14em 0 var(--color-gold);
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-teal-ink);
 }
 
 /* ---------------------------------------------------------------------------
    Layout
    --------------------------------------------------------------------------- */
-.gutter { padding-inline: clamp(1.5rem, 5vw, 6rem); }
-.container-editorial {
+.container-page {
   width: 100%;
-  max-width: 90rem;
+  max-width: 74rem;      /* 1184px — calm, not too wide */
   margin-inline: auto;
-  padding-inline: clamp(1.5rem, 5vw, 6rem);
+  padding-inline: clamp(1.25rem, 5vw, 3rem);
 }
-.container-reading {
+.container-prose {
   width: 100%;
-  max-width: 54rem;
+  max-width: 46rem;
   margin-inline: auto;
-  padding-inline: clamp(1.5rem, 5vw, 6rem);
+  padding-inline: clamp(1.25rem, 5vw, 3rem);
 }
-.section-rhythm { padding-block: clamp(4.5rem, 11vw, 10rem); }
-
-.hairline { height: 2px; background: var(--color-ink); border: 0; }
-.hairline-dark { height: 2px; background: var(--color-line-on-dark); border: 0; }
-
-/* Geometric shape helpers (Bauhaus vocabulary) */
-.shape-dot { border-radius: 9999px; }
-.shape-bar { border-radius: 9999px; }
-.shape-half-t { border-radius: 9999px 9999px 0 0; }
-.shape-half-r { border-radius: 0 9999px 9999px 0; }
-.shape-quarter { border-radius: 0 9999px 0 0; }
-.spin-slow { animation: spin-slow 26s linear infinite; }
-
-/* Subtle grain on saturated panels */
-.grain::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: url("/noise.svg");
-  opacity: 0.05;
-  mix-blend-mode: overlay;
+.section {
+  padding-block: clamp(4rem, 9vw, 8rem);
 }
+.hairline { height: 1px; background: var(--color-line); border: 0; }
 
-/* ---------------------------------------------------------------------------
-   Reveal primitives (transform/opacity/clip only → readable if motion off)
-   --------------------------------------------------------------------------- */
-.reveal-rise { animation: var(--animate-rise); }
-.page-enter { animation: page-enter 0.5s var(--ease-expo) both; }
-.block-wipe { animation: block-wipe 0.9s var(--ease-expo) both; }
-.line-mask { display: block; overflow: hidden; padding-bottom: 0.08em; }
+/* Reveal — quiet fade-up; content stays visible if motion can't run */
+.reveal { animation: fade-up 0.7s var(--ease-soft) both; }
+.page-enter { animation: page-enter 0.4s var(--ease-soft) both; }
 
-/* Marquee */
-.marquee-track { display: flex; width: max-content; animation: marquee 34s linear infinite; }
-.marquee:hover .marquee-track { animation-play-state: paused; }
-
-/* Kinetic underline */
-.klink { position: relative; }
-.klink::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -0.22em;
-  height: 2px;
-  width: 100%;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s var(--ease-expo);
+/* Understated link underline */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.35s var(--ease-soft);
 }
-.klink:hover::after,
-.klink[data-active="true"]::after { transform: scaleX(1); }
+.link-underline:hover { background-size: 100% 1px; }
 
 /* ---------------------------------------------------------------------------
    Accessibility
    --------------------------------------------------------------------------- */
 :focus-visible {
-  outline: 3px solid var(--color-gold);
+  outline: 2px solid var(--color-teal-ink);
   outline-offset: 2px;
-  border-radius: 1px;
+  border-radius: 3px;
 }
 :focus:not(:focus-visible) { outline: none; }
 
 .skip-to-content {
   position: absolute;
   top: -100%;
-  left: 1.5rem;
+  left: 1.25rem;
   z-index: 9999;
-  padding: 0.75rem 1.25rem;
-  background: var(--color-gold);
-  color: #17131c;
-  font-family: var(--font-sans);
-  font-weight: 800;
+  padding: 0.7rem 1.15rem;
+  background: var(--color-plum);
+  color: #fff;
+  font-weight: 600;
   font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 0 0 0.4rem 0.4rem;
   transition: top 0.2s ease;
 }
 .skip-to-content:focus { top: 0; }
@@ -294,5 +202,4 @@ p { text-wrap: pretty; }
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .marquee-track, .spin-slow { animation: none !important; }
 }

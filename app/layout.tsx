@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import { Syne, Hanken_Grotesk } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import MotionProvider from "@/components/MotionProvider";
 import PostHogProvider from "@/components/PostHogProvider";
 import ScrollManager from "@/components/site/ScrollManager";
-
-const syne = Syne({
-  subsets: ["latin"],
-  variable: "--font-syne",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
-});
+import Nav from "@/components/site/Nav";
+import Footer from "@/components/site/Footer";
 
 const hanken = Hanken_Grotesk({
   subsets: ["latin"],
@@ -112,7 +107,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${syne.variable} ${hanken.variable}`}>
+    <html lang="en" className={hanken.variable}>
       <head>
         <script
           type="application/ld+json"
@@ -126,7 +121,9 @@ export default function RootLayout({
         <MotionProvider>
           <PostHogProvider>
             <ScrollManager />
+            <Nav />
             {children}
+            <Footer />
           </PostHogProvider>
         </MotionProvider>
       </body>
