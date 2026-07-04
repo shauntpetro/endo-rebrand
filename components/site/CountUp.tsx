@@ -39,7 +39,12 @@ export default function CountUp({
       if (p < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
+    // Guarantee the final value even if rAF is throttled (e.g. a backgrounded tab).
+    const settle = setTimeout(() => setDisplay(value), duration + 400);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(settle);
+    };
   }, [value, duration, reduced]);
 
   const formatted = display.toLocaleString("en-US", {
