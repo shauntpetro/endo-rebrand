@@ -103,7 +103,7 @@ export default function ProblemScene() {
         </p>
 
         <Reveal className="mt-6">
-          <h2 className="t-display max-w-[15ch] uppercase text-cream">
+          <h2 className="t-h1 max-w-[18ch] uppercase text-cream">
             The most common disease <span className="mark-gold">no one is taught to see.</span>
           </h2>
         </Reveal>
