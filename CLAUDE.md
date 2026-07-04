@@ -9,7 +9,7 @@ Read these files for full context before making any changes:
 - `truth.md` — approved scientific facts. **Only modify when explicitly prompted by the user.** All copy must match this file.
 - `program.md` — optimization methodology, editable surface, eval rubric
 
-The repo is a Next.js 16 app (React 19, TypeScript, Tailwind CSS 4, Three.js/R3F, Framer Motion). Dev server runs on port 3000.
+The repo is a Next.js 16 app (React 19, TypeScript, Tailwind CSS 4, Framer Motion). Dev server runs on port 3000. The site uses the **"Kinetic Editorial"** design system (2026 ground-up redesign): a warm gallery-white ground, oversized Fraunces display type, dossier folios, restrained gold, and deep plum "plates". Mechanism is told in crafted SVG (`components/site/PeptideDiagram.tsx`) — there is no Three.js/WebGL.
 
 ```bash
 npm install
@@ -18,46 +18,48 @@ npm run dev
 
 ## What you CAN do
 
-Modify content in the **editable surface** components:
-- `components/Hero.tsx` — headline, subheadline, badge text
-- `components/MilestoneProofBar.tsx` — milestone labels and sublabels
-- `components/WhyNowSection.tsx` — card titles and descriptions
-- `components/MissionPillars.tsx` — pillar descriptions
-- `components/PipelinePreview.tsx` — pipeline items and descriptions
-- `components/ImpactSection.tsx` — stats and impact copy
+Content lives in a few clear places:
+- `lib/site.ts` — the shared content/data source (nav, pipeline candidates, disease-burden stats, milestones, partners, contact constants). Every fact here traces to `truth.md`. Edit copy here to keep it consistent across pages.
+- `app/page.tsx` and `app/*/page.tsx` — page composition and page-specific copy.
+- `components/site/*` — shared, reusable UI (Nav, Footer, Section, Container, Reveal, SplitText, Marquee, CountUp, MagneticButton, Field, PeptideDiagram, FolioHeading, Eyebrow, Rule).
 
-You can also modify page-level files (`app/*/page.tsx`), layout files, API routes, and any component for bug fixes, features, or structural improvements.
+You can also modify layout files, API routes, and any component for bug fixes, features, or structural improvements.
 
 ## What you CANNOT do
 
 - **Modify `truth.md` without explicit user request** — only update when the user explicitly asks
 - **Contradict truth.md** — every claim on the site must be traceable to this file
 - **Use prohibited language** — never say "cure" (without "potential"), "guaranteed", "proven", or "safe" (pre-Phase 3). See `truth.md` for full list.
-- **Break the design system** — do not modify `tailwind.config.ts` or `app/globals.css` for content experiments
-- **Modify 3D visualization code** for content experiments — `PeptideCanvas.tsx`, `mechanism/*`, `shaders/*` are fixed surface
+- **Invent data** — never fabricate efficacy numbers, clearance rates, or claims not in `truth.md`.
+- **Break the design system** — the design tokens live in `app/globals.css` (Tailwind v4 `@theme`); there is no `tailwind.config.ts`. Don't redefine tokens or restyle shared primitives for one-off content experiments — reuse `components/site/*` and the utility classes.
 
-## Design system
+## Design system — "Kinetic Editorial"
+
+Tokens are defined in `app/globals.css` under `@theme` and consumed as Tailwind utilities (`bg-paper`, `text-ink`, `text-gold-ink`, `bg-plum-deep`, `border-line`, …).
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| Gold | `#C9A961` | Primary accent, CTAs, hover states, focus outlines |
-| Plum | `#4A3F5C` | Headings, dark UI elements |
-| Plum Dark | `#2E263A` | Dark backgrounds, footer |
-| Clinical Teal | `#4A9B8E` | Diagnostic/medical indicators |
-| Cream | `#F5F1E8` | Light section backgrounds |
-| Black | `#1A1A1A` | Body text |
+| Paper | `#F7F4EC` | Page ground (warm gallery white) |
+| Ink | `#17140F` | Primary text / display headings on paper |
+| Ink muted | `#57503F` | Secondary/body text on paper (AA) |
+| Gold | `#C9A961` | Decor, rules, large display accents |
+| Gold ink | `#7A5E1F` | Gold **text** on paper (AA ~5.5:1) |
+| Gold light | `#E3C77E` | Gold text/accent on dark plates (AA) |
+| Plum deep | `#241E30` | Dark "plate" backgrounds |
+| Plum abyss | `#1A1524` | Deepest plate / footer |
+| Paper-on-dark | `#EDE7DA` | Body text on dark plates |
+| Teal ink | `#2E6E62` | Diagnostic indicator text (AA) |
 
-**Fonts:** Playfair Display (headings), Inter (body), Montserrat (logo)
+**Fonts:** Fraunces (display/serif, variable) via `--font-fraunces`; Hanken Grotesk (body/UI, variable) via `--font-hanken`. The wordmark is the `logo.avif` image asset. No Inter/Playfair/Montserrat/monospace.
 
-**Animations:** `shimmer` (2s), `glow-pulse` (3s), `float` (6s) — defined in tailwind.config.ts
+**Type/layout utilities (globals.css):** `.t-display`, `.t-h1`–`.t-h3`, `.t-lead`, `.t-body`, `.t-label`, `.t-num`, `.italic-display`, `.container-editorial`, `.container-reading`, `.section-rhythm`, `.klink` (kinetic underline). Motion easing tokens: `--ease-expo`, `--ease-quart`.
 
-## Performance constraints
+## Performance & motion constraints
 
-- Lazy-load heavy sections with `next/dynamic` + `Skeleton` loaders
-- SSR disabled for all Canvas/3D components (`ssr: false`)
-- GPU detection via `useGPUDetect` hook — degrade gracefully (full 3D → static gradient)
-- Target Lighthouse 90+
-- `useVisibility` hook triggers scroll animations via IntersectionObserver
+- All motion is transform/opacity/clip-path only; content stays readable if motion can't run.
+- Respect reduced motion: `MotionProvider` sets `reducedMotion="user"`; components use framer's `useReducedMotion`.
+- Scroll reveals via framer `whileInView` (`components/site/Reveal.tsx`); count-ups via IntersectionObserver (`CountUp.tsx`).
+- Target Lighthouse 90+.
 
 ## Security
 
