@@ -5,6 +5,8 @@ import Eyebrow from "@/components/site/Eyebrow";
 import Button from "@/components/site/Button";
 import Reveal from "@/components/site/Reveal";
 import CountUp from "@/components/site/CountUp";
+import Figure from "@/components/site/Figure";
+import MechanismFlow from "@/components/figures/MechanismFlow";
 import { PIPELINE, PHASES, BURDEN_STATS, MILESTONES, PARTNERS } from "@/lib/site";
 
 /* -------------------------------------------------------------------- Hero */
@@ -94,6 +96,14 @@ function Platform() {
               One platform spanning therapeutics, diagnostics, and oncology — engineered to be
               exquisitely selective.
             </p>
+            <p className="t-body mt-5 text-muted">
+              Every program follows the same three-step logic. The cyclic peptide stays inert at
+              physiological pH and switches on only in the acidic microenvironment that surrounds
+              disease; a proprietary endocytic pathway then concentrates it inside diseased cells
+              while adjacent healthy tissue is passed over; and once inside, it is designed to
+              correct the underlying biology — not to suppress hormones or destroy surrounding
+              tissue.
+            </p>
           </Reveal>
         </div>
         <div className="mt-14 grid gap-10 md:grid-cols-3">
@@ -105,7 +115,15 @@ function Platform() {
             </Reveal>
           ))}
         </div>
-        <div className="mt-12">
+        <Reveal className="mt-16 md:mt-20">
+          <Figure
+            label="Figure 1"
+            caption="The precision peptide mechanism in three stages — inert at physiological pH, selectively taken up by diseased cells, and designed to resolve the lesion while surrounding healthy tissue remains intact. Investigational mechanism; based on preclinical findings."
+          >
+            <MechanismFlow />
+          </Figure>
+        </Reveal>
+        <div className="mt-14">
           <Button href="/innovation" variant="quiet">How the platform works</Button>
         </div>
       </Container>

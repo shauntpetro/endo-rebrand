@@ -4,6 +4,8 @@ import Eyebrow from "@/components/site/Eyebrow";
 import Button from "@/components/site/Button";
 import Reveal from "@/components/site/Reveal";
 import CountUp from "@/components/site/CountUp";
+import Figure from "@/components/site/Figure";
+import DiseaseBurden from "@/components/figures/DiseaseBurden";
 import { BURDEN_STATS } from "@/lib/site";
 
 /* -------------------------------------------------------------------- Hero */
@@ -48,10 +50,13 @@ function Burden() {
           </Reveal>
           <Reveal delay={0.1} className="self-end md:col-span-6 md:col-start-7">
             <p className="t-body text-muted">
-              Endometriosis is a chronic disease in which endometrial-like tissue grows
-              outside the uterus — a leading cause of infertility and chronic pelvic
-              pain. It is associated with comorbidities including cardiovascular disease,
-              an increased risk of certain cancers, and other inflammatory conditions.
+              Endometriosis is a chronic, systemic disease in which endometrial-like
+              tissue grows outside the uterus, driving inflammation, scarring, and
+              adhesions. It is a leading cause of infertility and chronic pelvic pain — and
+              its reach extends well beyond the pelvis. The disease is associated with
+              comorbidities including cardiovascular disease, an increased risk of certain
+              cancers, and other inflammatory conditions. For a condition affecting roughly
+              1 in 10 women of reproductive age, it remains strikingly under-recognized.
             </p>
           </Reveal>
         </div>
@@ -70,11 +75,25 @@ function Burden() {
 
         <Reveal delay={0.1}>
           <p className="mt-12 max-w-2xl text-sm text-muted">
-            That eight-year diagnostic delay is one of the widest in medicine — years of
-            pain, missed work, and uncertainty before a name is put to the disease. Even
-            then, current therapies are largely hormone-based and symptomatic, and do not
-            modify the underlying disease.
+            That eight-year average delay is among the widest in medicine — years of pain,
+            missed work, and uncertainty before the disease is even named. And a diagnosis
+            rarely changes its course: today’s standard of care is largely hormone-based
+            and symptomatic, easing pain while the underlying lesions remain. These
+            therapies suppress symptoms rather than modify the disease, and symptoms often
+            return once treatment stops.
           </p>
+        </Reveal>
+
+        {/* Figure 1 — journal-grade synthesis of the burden numbers */}
+        <Reveal delay={0.1}>
+          <div className="mt-16 md:mt-20">
+            <Figure
+              label="Figure 1"
+              caption="Endometriosis at a glance: an eight-year average delay from first symptom to diagnosis; a prevalence of roughly 1 in 10 reproductive-age women (190M+ worldwide); and an economic scale of $200B annually in the US against a $180–250B global treatment market (McKinsey estimate)."
+            >
+              <DiseaseBurden />
+            </Figure>
+          </div>
         </Reveal>
       </Container>
     </Section>
@@ -86,15 +105,15 @@ function Mission() {
   const points = [
     {
       k: "Modify disease, not mask it",
-      v: "Our lead therapeutic is designed to eliminate lesions and change the course of the disease — rather than manage symptoms and return.",
+      v: "ENDO-205, our lead therapeutic, is an investigational precision peptide designed to eliminate endometriosis lesions and change the course of the disease — not manage symptoms until they return. In preclinical studies it demonstrated elimination of lesions and their associated inflammation.",
     },
     {
       k: "Non-hormonal by design",
-      v: "A precision peptide approach that works without hormones — engineered to act where disease lives and leave healthy tissue untouched.",
+      v: "The platform works through pH-mediated activation and selective uptake by diseased tissue — a mechanism designed to switch on only where disease lives and leave healthy tissue untouched, without relying on hormones.",
     },
     {
       k: "Designed to protect what matters",
-      v: "Developed as a short-course therapy designed to preserve fertility and avoid systemic toxicity, hormones, and surgery.",
+      v: "Developed as a short-course therapy, ENDO-205 is designed to preserve fertility and to avoid the hormones, surgery, and systemic toxicity that define today’s options. In GLP toxicology studies, it showed no dose-limiting toxicities.",
     },
   ];
   return (
@@ -107,8 +126,9 @@ function Mission() {
               Treat the disease at its source.
             </h2>
             <p className="t-lead mt-5">
-              EndoCyclic exists to give women more than symptom management — a therapy
-              built to eliminate lesions and modify disease biology.
+              EndoCyclic exists to give women more than symptom management — a
+              non-hormonal, short-course therapy designed to eliminate lesions and modify
+              the biology of the disease itself.
             </p>
           </Reveal>
         </div>
@@ -126,8 +146,9 @@ function Mission() {
         <Reveal delay={0.1}>
           <p className="mt-12 max-w-2xl text-sm text-muted">
             As a founding member of the Milken Institute’s Women’s Health Network,
-            EndoCyclic is helping build the collaboration and investment that women’s
-            health has long been denied.
+            EndoCyclic is helping build the research collaboration and investment that
+            women’s health has long been denied — the groundwork for turning a
+            historically overlooked disease into a solvable one.
           </p>
         </Reveal>
       </Container>

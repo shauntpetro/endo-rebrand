@@ -5,6 +5,8 @@ import Container from "@/components/site/Container";
 import Eyebrow from "@/components/site/Eyebrow";
 import Button from "@/components/site/Button";
 import Reveal from "@/components/site/Reveal";
+import Figure from "@/components/site/Figure";
+import FemLunaDetection from "@/components/figures/FemLunaDetection";
 
 /* -------------------------------------------------------------------- Hero */
 function Hero() {
@@ -84,13 +86,46 @@ function FemLuna() {
           </Reveal>
           <Reveal delay={0.1} className="self-end md:col-span-6 md:col-start-7">
             <p className="t-body text-muted">
-              A targeted imaging agent developed for accurate, non-invasive detection of
+              FemLUNA™ is a targeted imaging agent developed for accurate, non-invasive detection of
               endometriosis — including the superficial and sub-millimeter lesions that current
-              imaging so often misses. Intended to shorten the eight-year average diagnostic delay
-              and spare patients an invasive procedure.
+              imaging so often misses. It is designed to be the first non-invasive, definitive
+              diagnostic for the disease, and an alternative to laparoscopy, today’s diagnostic gold
+              standard.
             </p>
           </Reveal>
         </div>
+
+        {/* How it works — mechanism depth */}
+        <div className="mt-16 grid gap-10 md:grid-cols-12">
+          <Reveal className="md:col-span-5">
+            <Eyebrow>How it works</Eyebrow>
+            <h3 className="t-h3 mt-4 text-ink">
+              A targeted agent that makes lesions visible.
+            </h3>
+          </Reveal>
+          <Reveal delay={0.1} className="self-end md:col-span-6 md:col-start-7">
+            <p className="t-body text-muted">
+              Built on the same precision peptide platform as our therapeutics, FemLUNA™ is designed
+              to be selectively taken up by diseased tissue and to label endometriosis lesions so
+              they stand out against surrounding anatomy. Because the agent seeks out the disease
+              itself rather than relying on gross anatomical change, it is developed to reveal
+              superficial and sub-millimeter lesions — the subtypes most often overlooked on
+              standard imaging — without cutting into the body. Diagnosis today typically requires
+              laparoscopy, a surgical procedure; a non-invasive read that resolves the same lesions
+              is designed to change when, and for whom, a definitive answer is possible.
+            </p>
+          </Reveal>
+        </div>
+
+        {/* Schematic — Figure 1 */}
+        <Reveal delay={0.05} className="mt-14">
+          <Figure
+            label="Figure 1"
+            caption="FemLUNA™ is designed to detect endometriosis without surgery: a targeted imaging agent binds the lesion and renders it clearly visible, where the same sub-millimeter lesion stays faint on standard imaging — and where the current gold standard, laparoscopy, requires an incision. Schematic."
+          >
+            <FemLunaDetection />
+          </Figure>
+        </Reveal>
 
         {/* Before / after comparison */}
         <Reveal delay={0.05} className="mt-14">
@@ -129,8 +164,18 @@ function FemLuna() {
           </p>
         </Reveal>
 
+        {/* Why it matters */}
+        <Reveal delay={0.05} className="mt-16 max-w-2xl">
+          <p className="t-body text-muted">
+            Endometriosis carries an eight-year average diagnostic delay — years of pain that
+            precede a definitive answer. A radiation-free, non-hormonal, heavy-metal-free read is
+            designed for repeat use across that long arc, and with adolescents and reproductive-age
+            women in mind, where an invasive surgical workup is hardest to justify.
+          </p>
+        </Reveal>
+
         {/* Highlights */}
-        <div className="mt-16 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {FEMLUNA_HIGHLIGHTS.map((h, i) => {
             const Icon = h.icon;
             return (
@@ -179,8 +224,15 @@ function Endo311() {
             </h2>
             <p className="t-body mt-5 text-muted">
               ENDO-311 is an investigational imaging agent for non-invasive detection and monitoring
-              of malignant solid tumors, with an initial focus on colon cancer. It is developed as
-              the companion diagnostic to our oncology therapeutic candidate, ENDO-995.
+              of malignant solid tumors, with an initial focus on colon cancer. It applies the same
+              targeting principles as FemLUNA™ — a radiation-free, non-hormonal, heavy-metal-free
+              agent designed to localize tumor tissue and follow it over the course of treatment.
+            </p>
+            <p className="t-body mt-4 text-muted">
+              ENDO-311 is developed as the diagnostic half of an oncology “detect and treat” pair,
+              matched to our tumor-selective therapeutic candidate ENDO-995. The intent is a single
+              platform that finds the disease and then acts on it — the same imaging agent used to
+              select and monitor patients whom the companion therapeutic is designed to treat.
             </p>
             <div className="mt-8">
               <Button href="/pipeline" variant="quiet">See the oncology pair</Button>

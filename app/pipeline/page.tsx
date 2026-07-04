@@ -3,6 +3,9 @@ import Container from "@/components/site/Container";
 import Eyebrow from "@/components/site/Eyebrow";
 import Button from "@/components/site/Button";
 import Reveal from "@/components/site/Reveal";
+import Figure from "@/components/site/Figure";
+import PhaseTimeline from "@/components/figures/PhaseTimeline";
+import OncologyMechanism from "@/components/figures/OncologyMechanism";
 import { PIPELINE, PHASES, type Candidate } from "@/lib/site";
 
 /* -------------------------------------------------------------- Phase bar */
@@ -79,12 +82,16 @@ function PairGroup({
   label,
   title,
   description,
+  detail,
+  figure,
   candidates,
   tone,
 }: {
   label: string;
   title: string;
   description: string;
+  detail?: React.ReactNode;
+  figure?: React.ReactNode;
   candidates: Candidate[];
   tone: "paper" | "white" | "tint-teal" | "tint-warm";
 }) {
@@ -97,7 +104,19 @@ function PairGroup({
           <p className="t-body mt-4 text-muted">{description}</p>
         </Reveal>
 
-        <div className="mt-14 divide-y divide-line border-y border-line">
+        {detail && (
+          <Reveal delay={0.08} className="mt-6 max-w-2xl space-y-4">
+            {detail}
+          </Reveal>
+        )}
+
+        {figure && (
+          <Reveal delay={0.1} className="mt-16 md:mt-20">
+            {figure}
+          </Reveal>
+        )}
+
+        <div className="mt-16 divide-y divide-line border-y border-line md:mt-20">
           {candidates.map((c, i) => (
             <Reveal key={c.id} delay={i * 0.06} className="py-12 first:pt-0 last:pb-0">
               <CandidateBlock c={c} />
@@ -161,6 +180,16 @@ export default function PipelinePage() {
               ))}
             </ol>
           </div>
+
+          {/* Figure 1 — development-stage overview */}
+          <Reveal delay={0.1} className="mt-16 md:mt-24">
+            <Figure
+              label="Figure 1"
+              caption="Development stage of all four programs across the six clinical phases. ENDO-205 is in Phase 1 following FDA IND Allowance (2026); FemLUNA™ is IND-enabling; ENDO-995 and ENDO-311 remain preclinical. Filled dots mark therapeutics; open rings mark diagnostics."
+            >
+              <PhaseTimeline />
+            </Figure>
+          </Reveal>
         </Container>
       </Section>
 
@@ -179,6 +208,40 @@ export default function PipelinePage() {
         label="Oncology"
         title="The same platform, extended to solid tumors."
         description="An investigational therapeutic-and-diagnostic pair applying the platform's selective peptide engineering to malignant solid tumors — a detect-and-treat approach beginning in colon and endometrial cancers."
+        detail={
+          <>
+            <p className="t-body text-muted">
+              Many solid tumors are &ldquo;cold&rdquo; — biologically quiet and poorly responsive to
+              today&rsquo;s therapies. ENDO-995 is an investigational, non-hormonal cyclic peptide
+              designed to overcome therapeutic resistance and restore responsiveness in these
+              tumors, applying the same selective-uptake principle that lets the platform
+              concentrate inside diseased tissue rather than healthy cells.
+            </p>
+            <p className="t-body text-muted">
+              Its cyclic architecture is engineered to reach intracellular targets that have long
+              been considered undruggable — sites conventional antibodies and small molecules
+              struggle to engage. In preclinical development, EndoCyclic is exploring this selective
+              peptide engineering across malignant solid tumors, beginning with colon and
+              endometrial cancers, with potential applicability across more than a quarter of solid
+              tumor types.
+            </p>
+            <p className="t-body text-muted">
+              ENDO-995 is matched to ENDO-311, a radiation-free, heavy-metal-free imaging agent
+              designed to localize tumors early and monitor disease over time on standard imaging
+              systems. Together they form an oncology &ldquo;detect and treat&rdquo; pair — the same
+              therapeutic-and-diagnostic logic EndoCyclic applies in endometriosis, extended to
+              solid tumors.
+            </p>
+          </>
+        }
+        figure={
+          <Figure
+            label="Figure 2"
+            caption="How ENDO-995 is designed to work: a tumor-selective cyclic peptide crosses the cell membrane to engage a previously undruggable intracellular target, with the goal of restoring responsiveness in &ldquo;cold&rdquo; solid tumors. Investigational; preclinical."
+          >
+            <OncologyMechanism />
+          </Figure>
+        }
         candidates={onco}
       />
 

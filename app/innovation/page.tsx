@@ -3,6 +3,11 @@ import Container from "@/components/site/Container";
 import Eyebrow from "@/components/site/Eyebrow";
 import Button from "@/components/site/Button";
 import Reveal from "@/components/site/Reveal";
+import Figure from "@/components/site/Figure";
+import MechanismFlow from "@/components/figures/MechanismFlow";
+import SelectiveUptake from "@/components/figures/SelectiveUptake";
+import CyclicPeptide from "@/components/figures/CyclicPeptide";
+import PlatformBreadth from "@/components/figures/PlatformBreadth";
 
 /* -------------------------------------------------------------------- Hero */
 function Hero() {
@@ -46,15 +51,15 @@ function Hero() {
 const MECHANISM = [
   {
     k: "pH-mediated activation",
-    v: "The peptide remains inert throughout healthy tissue and switches on only in the acidic microenvironment that surrounds disease — turning a chemical signature into a targeting mechanism.",
+    v: "The peptide is engineered to stay inert throughout healthy tissue, where pH sits near the physiological 7.4. It switches on only in the mildly acidic microenvironment that surrounds disease — turning a chemical signature into a targeting mechanism. Because activity is conditional on local chemistry rather than a systemic dose, its effect is designed to concentrate where disease lives.",
   },
   {
     k: "Selective uptake",
-    v: "A proprietary endocytic pathway concentrates the active peptide inside diseased cells, not healthy ones — so its effect is confined to where it is needed.",
+    v: "Once active, the peptide is drawn into diseased cells through a proprietary endocytic pathway that healthy cells do not engage. This adds a second layer of selectivity: the peptide not only switches on in the right place, it is preferentially internalized by the cells that need to be reached — so its effect stays confined to diseased tissue while neighboring cells are passed over.",
   },
   {
     k: "Non-hormonal",
-    v: "It works without hormones, and is designed to avoid surgery and systemic toxicity — engineered to correct the underlying biology rather than suppress it.",
+    v: "Where today’s endometriosis therapies are largely hormonal and symptomatic, this peptide acts through a non-hormonal mechanism. It is designed to work only in diseased tissue while avoiding hormones, surgery, and systemic toxicity — engineered to correct the underlying biology rather than suppress it.",
   },
 ];
 
@@ -82,6 +87,83 @@ function Mechanism() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal className="mt-20">
+          <Figure
+            label="Figure 1"
+            caption="The precision peptide mechanism in three stages — inert at physiological pH, selectively taken up by diseased cells, then acting to resolve the lesion while surrounding healthy tissue is left intact."
+          >
+            <MechanismFlow />
+          </Figure>
+        </Reveal>
+
+        <div className="mt-20 max-w-2xl">
+          <Reveal>
+            <h3 className="t-h3 text-ink">Selectivity, seen directly.</h3>
+            <p className="t-body mt-4 text-muted">
+              Selectivity is what makes the mechanism specific rather than merely potent. In a
+              mixed tissue field, the active peptide is internalized only by diseased cells,
+              while the healthy cells beside them are passed over — the difference between acting
+              at the source and acting everywhere.
+            </p>
+          </Reveal>
+        </div>
+
+        <Reveal className="mt-10">
+          <Figure
+            label="Figure 2"
+            caption="Selective uptake across a mixed tissue field: the peptide is internalized by diseased cells through a proprietary endocytic pathway, while adjacent healthy cells show no uptake."
+          >
+            <SelectiveUptake />
+          </Figure>
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
+
+/* --------------------------------------------------- How a cyclic peptide works */
+function Cyclic() {
+  return (
+    <Section tone="paper">
+      <Container>
+        <div className="grid gap-10 md:grid-cols-12">
+          <Reveal className="md:col-span-5">
+            <Eyebrow>The molecule</Eyebrow>
+            <h2 className="t-h2 mt-4 text-ink">How a cyclic peptide works.</h2>
+          </Reveal>
+          <Reveal delay={0.1} className="self-end md:col-span-6 md:col-start-7">
+            <p className="t-body text-muted">
+              The platform’s selectivity begins with structure. A conventional linear peptide is a
+              flexible open chain — straightforward to make, but metabolically labile and prone to
+              losing its shape before it reaches a target. EndoCyclic’s peptides are cyclized: the
+              chain is closed into a constrained ring, locking the molecule into a defined
+              three-dimensional shape.
+            </p>
+          </Reveal>
+        </div>
+
+        <Reveal className="mt-16">
+          <Figure
+            label="Figure 3"
+            caption="Cyclization constrains a flexible open chain into a closed ring — engineered for a defined shape, metabolic stability, and access to intracellular targets."
+          >
+            <CyclicPeptide />
+          </Figure>
+        </Reveal>
+
+        <div className="mt-14 max-w-2xl">
+          <Reveal>
+            <p className="t-body text-muted">
+              That constraint is what the platform is engineered around. A defined shape is
+              designed to give more selective binding to the intended target; the closed ring is
+              built to resist the enzymes that degrade linear peptides, improving stability; and the
+              compact, rigid form is intended to help the peptide reach intracellular targets that
+              many larger biologics cannot access. Together, these properties let a single cyclic
+              scaffold be tuned across therapeutic, diagnostic, and oncology programs.
+            </p>
+          </Reveal>
+        </div>
       </Container>
     </Section>
   );
@@ -91,15 +173,15 @@ function Mechanism() {
 const BREADTH = [
   {
     k: "Therapeutics",
-    v: "Precision peptides designed to eliminate disease at the source — led by ENDO-205 for endometriosis.",
+    v: "Non-hormonal precision peptides designed to eliminate disease at the source — led by ENDO-205, a first-in-class, short-course, disease-modifying candidate for endometriosis now in a Phase 1 first-in-human study.",
   },
   {
     k: "Diagnostics",
-    v: "Targeted imaging agents built to detect disease non-invasively, including lesions missed by current methods.",
+    v: "Targeted imaging agents built to detect disease non-invasively — led by FemLUNA™, designed as the first non-invasive diagnostic for endometriosis, capable of detecting superficial and sub-millimeter lesions often missed by current imaging.",
   },
   {
     k: "Oncology",
-    v: "Tumor-selective peptides engineered to reach previously undruggable intracellular targets in solid tumors.",
+    v: "Tumor-selective cyclic peptides engineered to reach previously undruggable intracellular targets in solid tumors — ENDO-995, an investigational non-hormonal candidate paired with the ENDO-311 imaging agent as a detect-and-treat approach.",
   },
 ];
 
@@ -116,9 +198,12 @@ function Breadth() {
           </Reveal>
           <Reveal delay={0.1} className="self-end md:col-span-6 md:col-start-7">
             <p className="t-body text-muted">
-              The same targeting principle spans therapeutics, diagnostics, and oncology — and it
-              is expanding into additional women’s health indications. Selectivity, not a single
-              disease, is the through-line.
+              The same targeting principle — activate in the acidic disease microenvironment, then
+              be selectively taken up by diseased cells — spans therapeutics, diagnostics, and
+              oncology, and is expanding into additional women’s health indications. Selectivity,
+              not a single disease, is the through-line: the same scaffold can be engineered to
+              carry a therapeutic effect or an imaging signal to the very tissue it is designed to
+              find.
             </p>
           </Reveal>
         </div>
@@ -131,6 +216,15 @@ function Breadth() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal className="mt-16">
+          <Figure
+            label="Figure 4"
+            caption="One precision peptide platform branching across therapeutics (ENDO-205), diagnostics (FemLUNA™, ENDO-311), and oncology (ENDO-995, ENDO-311) — with expansion into additional women’s health indications."
+          >
+            <PlatformBreadth />
+          </Figure>
+        </Reveal>
       </Container>
     </Section>
   );
@@ -228,6 +322,7 @@ export default function InnovationPage() {
     <main id="main-content">
       <Hero />
       <Mechanism />
+      <Cyclic />
       <Breadth />
       <Signal />
       <Closing />
