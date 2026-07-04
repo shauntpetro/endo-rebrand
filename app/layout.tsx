@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Fraunces, Hanken_Grotesk } from "next/font/google";
+import { Syne, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import MotionProvider from "@/components/MotionProvider";
 import PostHogProvider from "@/components/PostHogProvider";
 import ScrollManager from "@/components/site/ScrollManager";
 
-const fraunces = Fraunces({
+const syne = Syne({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-syne",
   display: "swap",
-  axes: ["opsz", "SOFT"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const hanken = Hanken_Grotesk({
@@ -112,7 +112,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${fraunces.variable} ${hanken.variable}`}>
+    <html lang="en" className={`${syne.variable} ${hanken.variable}`}>
       <head>
         <script
           type="application/ld+json"
