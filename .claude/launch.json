@@ -7,6 +7,16 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "verify",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /private/tmp/claude-501/-Users-shauntpetrossian-Desktop-endo-rebrand-main/c02db26f-83f0-49ab-ba3d-c7545a2d793d/scratchpad/verify-build && exec npx next start -p 4312"
+      ],
+      "port": 4312,
+      "autoPort": true
     }
   ]
 }

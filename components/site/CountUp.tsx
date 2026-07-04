@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useReducedMotion } from "framer-motion";
 
 const EASE_OUT = (t: number) => 1 - Math.pow(1 - t, 4);
 
-/**
- * Counts from 0 to `value` when scrolled into view. Reduced motion → final value.
- */
+/** Counts up on mount. Reduced motion → final value immediately. */
 export default function CountUp({
   value,
-  duration = 1600,
+  duration = 1400,
   decimals = 0,
   prefix = "",
   suffix = "",
@@ -23,17 +21,15 @@ export default function CountUp({
   suffix?: string;
   className?: string;
 }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
   const reduced = useReducedMotion();
-  const [display, setDisplay] = useState(0);
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
-    if (!inView) return;
     if (reduced) {
       setDisplay(value);
       return;
     }
+    setDisplay(0);
     let raf = 0;
     let start: number | null = null;
     const step = (ts: number) => {
@@ -44,7 +40,7 @@ export default function CountUp({
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [inView, reduced, value, duration]);
+  }, [value, duration, reduced]);
 
   const formatted = display.toLocaleString("en-US", {
     minimumFractionDigits: decimals,
@@ -52,7 +48,7 @@ export default function CountUp({
   });
 
   return (
-    <span ref={ref} className={className}>
+    <span className={className}>
       {prefix}
       {formatted}
       {suffix}

@@ -1,49 +1,24 @@
-"use client";
-
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { clsx } from "clsx";
 
 /**
- * In-view rise + fade. Degrades to a plain visible element when reduced motion
- * is requested (initial opacity/transform are dropped).
+ * Quiet CSS fade-up. Content ALWAYS ends visible (animation fill + the
+ * reduced-motion rule in globals.css collapse it to the final state) — no
+ * IntersectionObserver, no stuck-hidden states. Plays on mount.
  */
 export default function Reveal({
   children,
   delay = 0,
-  y = 26,
-  once = true,
   className,
-  as = "div",
+  as: Tag = "div",
 }: {
   children: React.ReactNode;
   delay?: number;
-  y?: number;
-  once?: boolean;
   className?: string;
   as?: "div" | "li" | "span";
 }) {
-  const reduced = useReducedMotion();
-  const MotionTag = motion[as] as typeof motion.div;
-
-  const variants: Variants = {
-    hidden: reduced ? { opacity: 1 } : { opacity: 0, y },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: EASE, delay },
-    },
-  };
-
   return (
-    <MotionTag
-      className={className}
-      variants={variants}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once, margin: "-10% 0px -10% 0px" }}
-    >
+    <Tag className={clsx("reveal", className)} style={delay ? { animationDelay: `${delay}s` } : undefined}>
       {children}
-    </MotionTag>
+    </Tag>
   );
 }
