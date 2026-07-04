@@ -9,7 +9,7 @@ Read these files for full context before making any changes:
 - `truth.md` — approved scientific facts. **Only modify when explicitly prompted by the user.** All copy must match this file.
 - `program.md` — optimization methodology, editable surface, eval rubric
 
-The repo is a Next.js 16 app (React 19, TypeScript, Tailwind CSS 4, Framer Motion). Dev server runs on port 3000. The site uses the **"Kinetic Editorial"** design system (2026 ground-up redesign): a warm gallery-white ground, oversized Fraunces display type, dossier folios, restrained gold, and deep plum "plates". Mechanism is told in crafted SVG (`components/site/PeptideDiagram.tsx`) — there is no Three.js/WebGL.
+The repo is a Next.js 16 app (React 19, TypeScript, Tailwind CSS 4, Framer Motion). Dev server runs on port 3000. The site is a **single-page cinematic "scroll-film"** in a **"Modernist Color-Block" (Bauhaus-tech)** design system (2026 ground-up redesign): saturated plum/ink/gold/teal/cream color-block panels, oversized **Syne** grotesque display type, geometric shapes, and highlight-marker accents. There is **no top nav and no separate content routes** — a persistent HUD navigates the acts, and deep content (pipeline, team, news, contact, investors, media, imaging) opens as in-place **overlays** (deep-linkable via `#!<id>` hashes). No Three.js/WebGL.
 
 ```bash
 npm install
@@ -18,10 +18,13 @@ npm run dev
 
 ## What you CAN do
 
-Content lives in a few clear places:
-- `lib/site.ts` — the shared content/data source (nav, pipeline candidates, disease-burden stats, milestones, partners, contact constants). Every fact here traces to `truth.md`. Edit copy here to keep it consistent across pages.
-- `app/page.tsx` and `app/*/page.tsx` — page composition and page-specific copy.
-- `components/site/*` — shared, reusable UI (Nav, Footer, Section, Container, Reveal, SplitText, Marquee, CountUp, MagneticButton, Field, PeptideDiagram, FolioHeading, Eyebrow, Rule).
+Content and structure live in a few clear places:
+- `lib/site.ts` — the shared content/data source (pipeline candidates, disease-burden stats, milestones, partners, team bios, news, contact constants). Every fact here traces to `truth.md`. Edit copy here.
+- `app/page.tsx` — the film shell (composes the scenes + HUD + overlay host).
+- `components/film/scenes/*` — the 8 full-viewport acts (Cover, Problem, Platform, Mechanism, Pipeline [horizontal pin], Proof, Team, Ask).
+- `components/film/overlays/*` — the 7 in-place content panels (Pipeline, Team, News, Contact, Invest, Media, Imaging).
+- `components/film/*` — the framework (HUD, Scene/HorizontalPin, OverlayHost + `overlay.tsx` context, FilmCTA).
+- `components/site/*` — reusable primitives still in use (Reveal, SplitText, Marquee, CountUp, Field, ScrollManager).
 
 You can also modify layout files, API routes, and any component for bug fixes, features, or structural improvements.
 
@@ -31,28 +34,28 @@ You can also modify layout files, API routes, and any component for bug fixes, f
 - **Contradict truth.md** — every claim on the site must be traceable to this file
 - **Use prohibited language** — never say "cure" (without "potential"), "guaranteed", "proven", or "safe" (pre-Phase 3). See `truth.md` for full list.
 - **Invent data** — never fabricate efficacy numbers, clearance rates, or claims not in `truth.md`.
-- **Break the design system** — the design tokens live in `app/globals.css` (Tailwind v4 `@theme`); there is no `tailwind.config.ts`. Don't redefine tokens or restyle shared primitives for one-off content experiments — reuse `components/site/*` and the utility classes.
+- **Break the design system** — the design tokens live in `app/globals.css` (Tailwind v4 `@theme`); there is no `tailwind.config.ts`. Don't redefine tokens or restyle the framework (`components/film/*`) for one-off content experiments — reuse the `Scene`/overlay tones, `FilmCTA`, and the utility classes.
 
-## Design system — "Kinetic Editorial"
+## Design system — "Modernist Color-Block" (Bauhaus-tech)
 
-Tokens are defined in `app/globals.css` under `@theme` and consumed as Tailwind utilities (`bg-paper`, `text-ink`, `text-gold-ink`, `bg-plum-deep`, `border-line`, …).
+Tokens are in `app/globals.css` under `@theme`, consumed as Tailwind utilities. Sections/panels are **whole saturated color blocks** (via `Scene` / overlay `tone`), not tinted surfaces.
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| Paper | `#F7F4EC` | Page ground (warm gallery white) |
-| Ink | `#17140F` | Primary text / display headings on paper |
-| Ink muted | `#57503F` | Secondary/body text on paper (AA) |
-| Gold | `#C9A961` | Decor, rules, large display accents |
-| Gold ink | `#7A5E1F` | Gold **text** on paper (AA ~5.5:1) |
-| Gold light | `#E3C77E` | Gold text/accent on dark plates (AA) |
-| Plum deep | `#241E30` | Dark "plate" backgrounds |
-| Plum abyss | `#1A1524` | Deepest plate / footer |
-| Paper-on-dark | `#EDE7DA` | Body text on dark plates |
-| Teal ink | `#2E6E62` | Diagnostic indicator text (AA) |
+| Cream / paper | `#F1EBDD` | Light panel + text on dark |
+| Cream-2 | `#E7DCCB` | Deeper cream panel (rhythm) |
+| Ink | `#17131C` | Near-black panel + text on light |
+| Plum | `#2E263A` | Brand dark panel |
+| Gold | `#C9A961` | Solid gold blocks/shapes/accents |
+| Gold ink | `#6E551C` | Gold **text** on cream (AA) |
+| Gold soft | `#E3C77E` | Gold text/accent on dark (AA) |
+| Teal | `#3E8E82` | Solid teal blocks/shapes |
+| Teal ink | `#2A5F55` | Teal text on cream (AA) |
+| Paper-on-dark | `#F1EBDD` | Text on ink/plum/teal panels |
 
-**Fonts:** Fraunces (display/serif, variable) via `--font-fraunces`; Hanken Grotesk (body/UI, variable) via `--font-hanken`. The wordmark is the `logo.avif` image asset. No Inter/Playfair/Montserrat/monospace.
+**Fonts:** **Syne** (grotesque display, variable) via `--font-syne` (mapped to `font-serif`/`.t-*` headings); **Hanken Grotesk** (body/UI) via `--font-hanken`. The wordmark is the `logo.avif` image. No serif, no italics (Syne has none — `.italic-display` is a no-op; accent with color or `.mark-gold`/`.mark-teal`).
 
-**Type/layout utilities (globals.css):** `.t-display`, `.t-h1`–`.t-h3`, `.t-lead`, `.t-body`, `.t-label`, `.t-num`, `.italic-display`, `.container-editorial`, `.container-reading`, `.section-rhythm`, `.klink` (kinetic underline). Motion easing tokens: `--ease-expo`, `--ease-quart`.
+**Utilities (globals.css):** `.t-display` (hero words, keep to 1–3 words), `.t-h1`–`.t-h3`, `.t-lead`, `.t-body`, `.t-label`, `.t-num` (big figures); `.mark-gold`/`.mark-teal` (highlight markers); `.shape-dot`/`.shape-bar`/`.shape-half-*` (geometry); `.container-editorial`, `.section-rhythm`, `.klink`. Tailwind text-size utilities override `.t-*` sizes when co-applied (use for small elements). Motion easing: `--ease-expo`, `--ease-quart`.
 
 ## Performance & motion constraints
 

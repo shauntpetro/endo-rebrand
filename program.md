@@ -15,11 +15,12 @@ Increase buyer/investor clarity and trust. The site should function as a strateg
 7. Every homepage section should answer one question in 10 seconds
 
 ## Editable Surface
-Modify these for content experiments (post-2026 "Kinetic Editorial" redesign):
-- `lib/site.ts` — shared content/data (nav, pipeline, burden stats, milestones, partners, contacts)
-- `app/page.tsx` — homepage composition + copy
-- `app/*/page.tsx` — per-page composition + copy (innovation, pipeline, imaging, impact, team, news, contact, investors, media)
-- `components/site/*` — shared UI primitives (reuse before inventing)
+Modify these for content experiments (post-2026 "Modernist Color-Block" single-page scroll-film):
+- `lib/site.ts` — shared content/data (pipeline, burden stats, milestones, partners, team bios, news, contacts)
+- `app/page.tsx` — the film shell (scene order)
+- `components/film/scenes/*` — the 8 acts' composition + copy
+- `components/film/overlays/*` — the 7 in-place content panels
+- `components/film/*` — framework (HUD, Scene, OverlayHost, FilmCTA); `components/site/*` — reusable primitives
 
 ## Fixed Surface (Do Not Modify for Content)
 - `app/globals.css` — design tokens (Tailwind v4 `@theme`) and type/layout utilities
