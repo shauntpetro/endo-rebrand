@@ -1,168 +1,283 @@
 @import "tailwindcss";
 
-:root {
-  /* Core Brand Colors - Swiss & Premium */
-  --gold-primary: #C9A961; /* Warm Brand Gold — metallic fills, borders, large display */
-  --gold-light: #E5D4A6;
-  --gold-dark: #A68945;
-  --gold-deep: #806524;   /* Text-safe gold on LIGHT bg — ~4.8:1 on cream (WCAG AA). Use for gold TEXT on cream; on DARK bg use gold-primary/gold-light instead. */
+/* ============================================================================
+   EndoCyclic — "Kinetic Editorial" design system
+   Warm gallery-white ground · Fraunces display · Hanken Grotesk text ·
+   gold ink highlight · plum plates. All tokens live here (Tailwind v4 @theme).
+   ============================================================================ */
 
-  --black-primary: #1A1A1A;
-  --black-soft: #2D2D2D;
+@theme {
+  /* Ground / paper */
+  --color-paper: #f7f4ec;
+  --color-paper-raised: #fcfaf4;
+  --color-paper-sunk: #efe9db;
 
-  --cream-primary: #F5F1E8;
-  --plum-primary: #4A3F5C;
-  --coral-primary: #FF6B6B;
+  /* Ink (text on paper) */
+  --color-ink: #17140f;
+  --color-ink-soft: #2c261d;
+  --color-ink-muted: #57503f;
+  --color-line: #17140f24; /* hairline on paper (~0.14 alpha) */
 
-  /* New Additions */
-  --plum-dark: #2E263A;
-  --pastel-plum: #F3F0F7;
-  --pastel-gold: #FAF7F0;
-  --pastel-rose: #FFF5F5;
+  /* Plum plates */
+  --color-plum: #3b3350;
+  --color-plum-deep: #241e30;
+  --color-plum-abyss: #1a1524;
 
-  --gray-therapeutics: #6B6B6B;
-  --gray-light: #F9F9F9;
-  --gray-mid: #E0E0E0;
+  /* Gold */
+  --color-gold: #c9a961; /* brand gold — decor, rules, large display accents */
+  --color-gold-ink: #7a5e1f; /* gold TEXT on paper (AA ~5.5:1) */
+  --color-gold-light: #e3c77e; /* gold text/accent on dark plates (AA) */
+  --color-gold-deep: #5f4a17;
 
-  /* Medical/Scientific Accents */
-  --clinical-teal: #4A9B8E;
-  --clinical-teal-deep: #2F6E62; /* Text-safe teal on LIGHT bg — ~4.9:1 on cream (WCAG AA) */
-  --warm-rose: #D4A5A5;
+  /* On-dark text */
+  --color-paper-on-dark: #ede7da;
+  --color-muted-on-dark: #b7ae9c;
+  --color-line-on-dark: #ede7da22;
 
-  /* Surface — warm bone ground ("Luminous Editorial") */
-  --surface: #F4EEE1;
-  --bone: #F4EEE1;
-  --bone-raised: #FAF6EC;
+  /* Support accents */
+  --color-teal: #3e8e82;
+  --color-teal-ink: #2e6e62;
+  --color-rose: #c98b84;
+
+  /* Fonts */
+  --font-serif: var(--font-fraunces), "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-hanken), "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  /* Editorial easings + motion */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  --animate-rise: rise-in 0.9s var(--ease-expo) both;
+  --animate-draw: draw 1.4s var(--ease-expo) both;
 }
 
-@theme inline {
-  --color-gold-primary: var(--gold-primary);
-  --color-gold-light: var(--gold-light);
-  --color-gold-dark: var(--gold-dark);
-  --color-gold-deep: var(--gold-deep);
+@keyframes rise-in {
+  from { transform: translateY(24px); }
+  to { transform: none; }
+}
+@keyframes page-enter {
+  from { transform: translateY(10px); opacity: 0.001; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes draw {
+  from { stroke-dashoffset: var(--dash, 1000); }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 
-  --color-black-primary: var(--black-primary);
-  --color-black-soft: var(--black-soft);
-  
-  --color-cream-primary: var(--cream-primary);
-  --color-plum-primary: var(--plum-primary);
-  --color-coral-primary: var(--coral-primary);
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+}
 
-  --color-plum-dark: var(--plum-dark);
-  --color-pastel-plum: var(--pastel-plum);
-  --color-pastel-gold: var(--pastel-gold);
-  --color-pastel-rose: var(--pastel-rose);
-  
-  --color-gray-therapeutics: var(--gray-therapeutics);
-  --color-gray-light: var(--gray-light);
-  --color-gray-mid: var(--gray-mid);
+* {
+  text-underline-offset: 0.18em;
+}
 
-  --color-clinical-teal: var(--clinical-teal);
-  --color-clinical-teal-deep: var(--clinical-teal-deep);
-  --color-warm-rose: var(--warm-rose);
-  --color-surface: var(--surface);
-  --color-bone: var(--bone);
-  --color-bone-raised: var(--bone-raised);
-
-  --font-serif: var(--font-playfair), Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-logo: var(--font-montserrat), sans-serif;
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: var(--surface);
-  color: var(--black-primary);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv01";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Typography Defaults */
+::selection {
+  background-color: var(--color-gold);
+  color: #17140f;
+}
+
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
-  letter-spacing: -0.03em; /* Tighter tracking for Swiss feel */
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  text-wrap: balance;
 }
 
-p {
+p { text-wrap: pretty; }
+
+/* ---------------------------------------------------------------------------
+   Fluid typographic scale
+   --------------------------------------------------------------------------- */
+.t-display {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 10.5vw, 11rem);
+  line-height: 0.9;
+  font-weight: 380;
+  letter-spacing: -0.035em;
+  font-optical-sizing: auto;
+}
+.t-h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+.t-h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.4vw, 3.75rem);
+  line-height: 1.0;
+  letter-spacing: -0.025em;
+}
+.t-h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 2.3vw, 2rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.t-lead {
+  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+  line-height: 1.5;
   letter-spacing: -0.01em;
-  line-height: 1.6;
+  font-weight: 380;
+}
+.t-body {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+.t-label {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+}
+.t-num {
+  font-family: var(--font-serif);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.03em;
+}
+.italic-display { font-style: italic; }
+
+/* ---------------------------------------------------------------------------
+   Layout helpers
+   --------------------------------------------------------------------------- */
+.gutter {
+  padding-inline: clamp(1.5rem, 5vw, 6rem);
+}
+.container-editorial {
+  width: 100%;
+  max-width: 88rem; /* 1408px */
+  margin-inline: auto;
+  padding-inline: clamp(1.5rem, 5vw, 6rem);
+}
+.container-reading {
+  width: 100%;
+  max-width: 52rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.5rem, 5vw, 6rem);
+}
+.section-rhythm {
+  padding-block: clamp(5rem, 12vw, 11rem);
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 97px; /* Match navbar height for anchor links */
+.hairline { height: 1px; background: var(--color-line); border: 0; }
+.hairline-dark { height: 1px; background: var(--color-line-on-dark); border: 0; }
+
+/* Textured grain overlay for plates (very subtle) */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("/noise.svg");
+  opacity: 0.04;
+  mix-blend-mode: overlay;
 }
 
-/* Deterministic entrance reveal. Transform-only on purpose: content stays fully
-   visible in its static state, so if animations are paused/disabled it degrades to
-   a plain (un-shifted-at-worst) but always-readable element — never opacity:0 stuck.
-   The prefers-reduced-motion rule below zeroes the duration → instant final state. */
-@keyframes rise-in {
-  from { transform: translateY(22px); }
-  to   { transform: none; }
-}
+/* ---------------------------------------------------------------------------
+   Reveal primitives (transform-only → always readable if motion can't run)
+   --------------------------------------------------------------------------- */
 .reveal-rise {
-  animation: rise-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-/* Page-transition enter (template.tsx). Transform-only so the page is NEVER
-   hidden if the animation can't run — a blank page is far worse than no transition. */
-@keyframes page-enter {
-  from { transform: translateY(10px); }
-  to   { transform: none; }
+  animation: var(--animate-rise);
 }
 .page-enter {
-  animation: page-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: page-enter 0.5s var(--ease-expo) both;
+}
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em; /* room for descenders under the mask */
 }
 
-/* Custom Selection */
-::selection {
-  background-color: var(--gold-primary);
-  color: #FFFFFF;
+/* Marquee */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
 }
+.marquee:hover .marquee-track { animation-play-state: paused; }
 
-/* Respect reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* Kinetic underline for nav / links */
+.klink {
+  position: relative;
 }
+.klink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.22em;
+  height: 1.5px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-expo);
+}
+.klink:hover::after,
+.klink[data-active="true"]::after { transform: scaleX(1); }
 
-/* Focus-visible base for accessibility */
+/* ---------------------------------------------------------------------------
+   Accessibility
+   --------------------------------------------------------------------------- */
 :focus-visible {
-  outline: 2px solid var(--gold-primary);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
+:focus:not(:focus-visible) { outline: none; }
 
-/* Remove default outline for mouse users */
-:focus:not(:focus-visible) {
-  outline: none;
-}
-
-/* Skip to content link */
 .skip-to-content {
   position: absolute;
   top: -100%;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 1.5rem;
   z-index: 9999;
-  padding: 0.75rem 1.5rem;
-  background: var(--plum-dark);
+  padding: 0.75rem 1.25rem;
+  background: var(--color-plum-deep);
   color: #fff;
+  font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 0.875rem;
-  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  border-radius: 0 0 0.5rem 0.5rem;
+  border-radius: 0 0 0.4rem 0.4rem;
   transition: top 0.2s ease;
 }
+.skip-to-content:focus { top: 0; }
 
-.skip-to-content:focus {
-  top: 0;
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track { animation: none !important; }
 }
