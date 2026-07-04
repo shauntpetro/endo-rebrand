@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Innovation — Cyclic Peptide Platform",
+  title: "Innovation — The Precision Peptide Platform",
   description:
-    "Explore EndoCyclic's proprietary cyclic peptide platform — pH-activated, lesion-selective drug delivery with first-in-class mechanism of action for endometriosis treatment.",
+    "EndoCyclic's proprietary precision peptide platform: pH-mediated activation and selective uptake by diseased tissue via a proprietary endocytic pathway. Non-hormonal, designed to act only where disease lives — spanning therapeutics, diagnostics, and oncology.",
   alternates: {
     canonical: "/innovation",
   },
   openGraph: {
-    title: "Innovation — Cyclic Peptide Platform | EndoCyclic Therapeutics",
+    title: "Innovation — The Precision Peptide Platform | EndoCyclic Therapeutics",
     description:
-      "pH-activated, lesion-selective cyclic peptides. A new class of targeted, non-hormonal therapeutics.",
+      "pH-activated, tissue-selective, non-hormonal precision peptides. A new grammar for medicine — correction, not destruction.",
     url: "/innovation",
   },
 };
@@ -19,9 +19,9 @@ export default function InnovationLayout({ children }: { children: React.ReactNo
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ResearchProject",
-    name: "EndoCyclic Cyclic Peptide Platform",
+    name: "EndoCyclic Precision Peptide Platform",
     description:
-      "Proprietary cyclic peptide platform with pH-activated, lesion-selective drug delivery. First-in-class mechanism of action for endometriosis and oncology.",
+      "Proprietary precision peptide platform with pH-mediated activation and selective uptake by diseased tissue via a proprietary endocytic pathway. Non-hormonal, designed to act only in diseased tissue while avoiding hormones, surgery, and systemic toxicity. Spans therapeutics, diagnostics, and oncology.",
     funder: {
       "@type": "Organization",
       name: "National Institutes of Health (NIH)",

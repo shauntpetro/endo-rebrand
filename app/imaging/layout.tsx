@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Imaging — FemLUNA Diagnostic Platform",
+  title: "Imaging & Diagnostics — FemLUNA™ & ENDO-311",
   description:
-    "FemLUNA: EndoCyclic's non-invasive diagnostic imaging agent for endometriosis. Selective lesion uptake enables earlier, more accurate detection without surgery.",
+    "FemLUNA™ is developed to be the first non-invasive, definitive diagnostic for endometriosis, detecting superficial and sub-millimeter lesions. ENDO-311 is an investigational oncology imaging agent — radiation-free, non-hormonal, and free of heavy metals.",
   alternates: {
     canonical: "/imaging",
   },
   openGraph: {
-    title: "Imaging — FemLUNA Diagnostic Platform | EndoCyclic Therapeutics",
+    title: "Imaging & Diagnostics — FemLUNA™ & ENDO-311 | EndoCyclic Therapeutics",
     description:
-      "Non-invasive endometriosis imaging. Selective lesion uptake for earlier, accurate detection.",
+      "Non-invasive endometriosis imaging with FemLUNA™ and investigational oncology imaging with ENDO-311. See what laparoscopy can’t.",
     url: "/imaging",
   },
 };
@@ -21,7 +21,7 @@ export default function ImagingLayout({ children }: { children: React.ReactNode 
     "@type": "MedicalDevice",
     name: "FemLUNA",
     description:
-      "Non-invasive diagnostic imaging agent for endometriosis. Selective lesion uptake enables earlier, more accurate detection without surgery. Radiation-free, non-hormonal, and free of heavy metals.",
+      "Non-invasive diagnostic imaging agent developed to be the first definitive diagnostic for endometriosis, capable of detecting superficial and sub-millimeter lesions often missed by current imaging. Radiation-free, non-hormonal, and free of heavy metals.",
     manufacturer: {
       "@type": "Organization",
       name: "EndoCyclic Therapeutics",

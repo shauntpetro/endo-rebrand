@@ -2,396 +2,338 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import {
-  MapPin,
-  FlaskConical,
-  Dna,
-  Layers,
-  Users,
-  Award,
-  Download,
-  ArrowRight,
-  Mail,
-  Newspaper,
-} from "lucide-react";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { DotGrid } from "@/components/ui/DotGrid";
+import { ArrowRight, ArrowUpRight, Download } from "lucide-react";
 
-const keyFacts = [
+import Nav from "@/components/site/Nav";
+import Footer from "@/components/site/Footer";
+import Section from "@/components/site/Section";
+import Container from "@/components/site/Container";
+import FolioHeading from "@/components/site/FolioHeading";
+import Eyebrow from "@/components/site/Eyebrow";
+import Reveal from "@/components/site/Reveal";
+import SplitText from "@/components/site/SplitText";
+import MagneticButton from "@/components/site/MagneticButton";
+import { SITE } from "@/lib/site";
+
+/* --------------------------------------------------------------- data */
+
+const KEY_FACTS = [
   {
-    icon: MapPin,
     label: "Founded",
     value: "Irvine, California",
-    description:
-      "Clinical-stage precision medicine company founded by Dr. Tanya Petrossian, PhD",
+    detail: "Clinical-stage precision medicine company founded by Dr. Tanya Petrossian, PhD.",
   },
   {
-    icon: FlaskConical,
     label: "Stage",
-    value: "Clinical-Stage (IND Cleared)",
-    description: "FDA IND Allowance achieved in 2026 for lead therapeutic ENDO-205",
+    value: "Clinical-stage · FDA IND Allowance (2026)",
+    detail: "IND Allowance achieved in 2026 for lead therapeutic ENDO-205.",
   },
   {
-    icon: Dna,
     label: "Platform",
-    value: "Precision Peptide Platform",
-    description:
-      "Proprietary precision peptide platform with pH-mediated activation",
+    value: "Precision peptide platform",
+    detail: "Proprietary precision peptide platform with pH-mediated activation.",
   },
   {
-    icon: Layers,
     label: "Pipeline",
-    value: "4 Candidates",
-    description:
-      "ENDO-205 (Phase 1), FemLUNA (IND-enabling), ENDO-995, ENDO-311",
+    value: "Four candidates",
+    detail: "ENDO-205 (Phase 1), FemLUNA™ (IND-enabling), ENDO-995, ENDO-311.",
   },
   {
-    icon: Users,
     label: "Impact",
-    value: "190M+ Women Affected",
-    description:
-      "Endometriosis affects 10% of reproductive-age women globally",
+    value: "190M+ women affected",
+    detail: "Endometriosis affects roughly 1 in 10 women of reproductive age, worldwide.",
   },
   {
-    icon: Award,
     label: "Recognition",
-    value: 'NIH "Unicorn" Score of 10',
-    description:
-      "Multiple NIH awards, White House recognition, Milken Institute founding member",
+    value: "NIH perfect “10” score",
+    detail: "White House recognition and Milken Institute Women’s Health Network founding member.",
   },
 ];
 
-const logos = [
-  {
-    src: "/logo.avif",
-    alt: "EndoCyclic Therapeutics Logo",
-    filename: "logo.avif",
-    label: "Primary Logo",
-  },
-  {
-    src: "/challenge-logo.svg",
-    alt: "EndoCyclic Therapeutics Challenge Logo",
-    filename: "challenge-logo.svg",
-    label: "Challenge Logo",
-  },
+const LOGOS = [
+  { src: "/logo.avif", filename: "logo.avif", label: "Primary Logo" },
+  { src: "/challenge-logo.svg", filename: "challenge-logo.svg", label: "Challenge Logo" },
 ];
 
-export default function MediaPage() {
+/* --------------------------------------------------------------- hero */
+
+function Hero() {
   return (
-    <main className="min-h-screen bg-surface flex flex-col font-sans selection:bg-gold-primary selection:text-white">
-      <Navbar />
+    <section className="relative overflow-hidden bg-paper pt-32 md:pt-40">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-[5%] top-[38%] select-none font-serif text-[24vw] leading-none text-ink/[0.03]"
+      >
+        press
+      </span>
 
-      {/* Hero Section — cinematic plum-dark beat */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-plum-dark overflow-hidden">
-        {/* One confident luminous accent (static) */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] max-w-[80vw] max-h-[80vw] rounded-full bg-gold-primary/15 blur-[120px]" />
-          <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] max-w-[80vw] max-h-[80vw] rounded-full bg-plum-primary/20 blur-[100px]" />
-        </div>
+      <Container className="relative z-10">
+        <Reveal y={14}>
+          <Eyebrow>Press resources</Eyebrow>
+        </Reveal>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl">
-            <span
-              className="reveal-rise mb-6 block text-gold-primary text-xs font-bold uppercase tracking-[0.2em]"
-              style={{ animationDelay: "0.05s" }}
-            >
-              Press Resources
-            </span>
-            <h1
-              className="reveal-rise font-serif font-medium text-white mb-8 text-[clamp(3rem,8vw,6rem)] leading-[0.95] tracking-tight text-balance"
-              style={{ animationDelay: "0.15s" }}
-            >
-              Media Kit
-            </h1>
-            <p
-              className="reveal-rise text-xl text-white/70 max-w-2xl leading-relaxed font-light"
-              style={{ animationDelay: "0.28s" }}
-            >
-              Resources for press, partners, and stakeholders. Everything you
-              need to cover EndoCyclic Therapeutics accurately.
-            </p>
-          </div>
-        </div>
-      </section>
+        <h1 className="t-display mt-8 text-ink md:mt-10">
+          <SplitText
+            lines={[[{ text: "Media" }], [{ text: "kit.", accent: true, italic: true }]]}
+            accentClass="text-gold-ink"
+          />
+        </h1>
 
-      {/* Company Boilerplate */}
-      <section className="relative py-24 md:py-32 bg-bone border-b border-plum-dark/10 overflow-hidden">
-        <DotGrid />
-        <div className="container mx-auto px-6 max-w-4xl relative z-10">
-          <div
-            className="reveal-rise flex items-center gap-4 mb-10"
-            style={{ animationDelay: "0.05s" }}
-          >
-            <Eyebrow>About the Company</Eyebrow>
-            <div className="h-px flex-1 bg-plum-dark/10" />
-          </div>
-
-          <div
-            className="reveal-rise relative bg-bone-raised p-8 md:p-12 rounded-xl border border-plum-dark/10 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]"
-            style={{ animationDelay: "0.15s" }}
-          >
-            <span className="absolute top-0 left-0 h-[2px] w-16 bg-gold-primary rounded-full" />
-            <p className="text-lg md:text-xl text-black-soft leading-relaxed mb-6">
-              EndoCyclic Therapeutics, Inc. is a clinical-stage precision
-              medicine company headquartered in Irvine, California. Founded by
-              Dr. Tanya Petrossian, PhD, the company is developing a
-              proprietary precision peptide platform with pH-mediated
-              activation designed to act only in diseased tissue while avoiding
-              hormones, surgery, and systemic toxicity.
+        <div className="mt-12 grid gap-10 pb-24 md:mt-16 md:grid-cols-12 md:pb-32">
+          <Reveal delay={0.4} className="md:col-span-6">
+            <p className="t-lead max-w-xl text-ink-soft">
+              Everything the press, partners, and stakeholders need to cover
+              <span className="text-ink"> EndoCyclic</span> accurately — boilerplate, key facts,
+              logos, and leadership.
             </p>
-            <p className="text-lg md:text-xl text-black-soft leading-relaxed mb-6">
-              The company&apos;s lead therapeutic, ENDO-205, is a first-in-class,
-              non-hormonal precision peptide therapeutic for endometriosis that
-              has received FDA IND Allowance and is currently in Phase 1
-              clinical study. Its lead diagnostic candidate, FemLUNA, is
-              designed to be the first non-invasive, definitive diagnostic for
-              endometriosis.
-            </p>
-            <p className="text-base text-black-soft/70 leading-relaxed">
-              Endometriosis affects more than 190 million women and girls
-              worldwide, with an estimated annual economic burden exceeding
-              $200 billion in the United States alone, and an average
-              diagnostic delay of 8 years. The platform spans therapeutics,
-              diagnostics, and oncology.
-            </p>
-            <div className="mt-8 pt-6 border-t border-plum-dark/10">
-              <p className="text-xs text-plum-dark/70 uppercase tracking-[0.2em] font-bold">
-                Boilerplate for press use
-              </p>
+          </Reveal>
+          <Reveal delay={0.5} className="self-end md:col-span-4 md:col-start-9">
+            <div className="flex flex-wrap items-center gap-4">
+              <MagneticButton href="#boilerplate" variant="ghost" arrow>
+                Boilerplate
+              </MagneticButton>
             </div>
-          </div>
+          </Reveal>
         </div>
-      </section>
+      </Container>
+    </section>
+  );
+}
 
-      {/* Key Facts Grid */}
-      <section className="relative py-24 md:py-32 bg-surface border-b border-plum-dark/10 overflow-hidden">
-        <div className="container mx-auto px-6 max-w-6xl relative z-10">
-          <div className="text-center mb-16">
-            <span
-              className="reveal-rise mb-8 block"
-              style={{ animationDelay: "0.05s" }}
-            >
-              <Eyebrow>Fact Sheet</Eyebrow>
-            </span>
-            <SectionHeading className="reveal-rise" >
-              Key Facts
-            </SectionHeading>
-          </div>
+/* -------------------------------------------------------- boilerplate */
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {keyFacts.map((fact, i) => (
-              <div
-                key={fact.label}
-                className="reveal-rise group relative p-8 bg-bone-raised rounded-xl border border-plum-dark/10 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] transition-all duration-500 hover:border-gold-primary/40 hover:-translate-y-1"
-                style={{ animationDelay: `${0.15 + i * 0.08}s` }}
-              >
-                <span className="absolute top-0 left-0 h-[2px] w-12 bg-gold-primary rounded-full transition-all duration-500 group-hover:w-full" />
-                <div className="w-12 h-12 rounded-full bg-surface border border-gold-primary/30 flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110">
-                  <fact.icon className="w-5 h-5 text-gold-deep" aria-hidden="true" />
-                </div>
-
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-plum-dark/70 mb-2 group-hover:text-plum-dark transition-colors">
-                  {fact.label}
-                </p>
-                <h3 className="text-xl font-serif font-bold text-plum-dark mb-3 text-balance">
-                  {fact.value}
-                </h3>
-                <p className="text-sm text-black-soft/80 leading-relaxed">
-                  {fact.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Logo Downloads */}
-      <section className="relative py-24 md:py-32 bg-bone border-b border-plum-dark/10 overflow-hidden">
-        <DotGrid />
-        <div className="container mx-auto px-6 max-w-4xl relative z-10">
-          <div className="text-center mb-16">
-            <span
-              className="reveal-rise mb-8 block"
-              style={{ animationDelay: "0.05s" }}
-            >
-              <Eyebrow>Brand Assets</Eyebrow>
-            </span>
-            <SectionHeading className="reveal-rise mb-6">
-              Logo Downloads
-            </SectionHeading>
-            <p
-              className="reveal-rise text-black-soft/80 max-w-lg mx-auto leading-relaxed"
-              style={{ animationDelay: "0.2s" }}
-            >
-              Download official logos for use in press coverage and
-              publications. Please do not modify or alter the logos.
+function Boilerplate() {
+  return (
+    <Section id="boilerplate" tone="paper">
+      <Container>
+        <FolioHeading index="01" label="Company boilerplate" />
+        <div className="mt-12 grid gap-10 md:grid-cols-12">
+          <Reveal className="md:col-span-4">
+            <h2 className="t-h1 text-ink">
+              For <span className="italic-display text-gold-ink">press use.</span>
+            </h2>
+            <p className="t-body mt-6 max-w-xs text-ink-muted">
+              Approved language. Please quote or condense as needed — every claim traces to our
+              public record.
             </p>
-          </div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {logos.map((logo, i) => (
-              <div
-                key={logo.filename}
-                className="reveal-rise group bg-bone-raised rounded-xl border border-plum-dark/10 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] overflow-hidden transition-all duration-500 hover:border-gold-primary/40 hover:-translate-y-1"
-                style={{ animationDelay: `${0.15 + i * 0.12}s` }}
-              >
-                <div className="relative h-48 md:h-56 bg-surface flex items-center justify-center p-8">
+          <Reveal delay={0.1} className="md:col-span-7 md:col-start-6">
+            <div className="border-l-2 border-gold pl-8">
+              <p className="t-lead text-ink">
+                EndoCyclic Therapeutics, Inc. is a clinical-stage precision medicine company
+                headquartered in Irvine, California. Founded by Dr. Tanya Petrossian, PhD, the
+                company is developing a proprietary precision peptide platform with pH-mediated
+                activation, designed to act only in diseased tissue while avoiding hormones,
+                surgery, and systemic toxicity.
+              </p>
+              <p className="t-body mt-6 text-ink-soft">
+                Its lead therapeutic, ENDO-205, is a first-in-class, non-hormonal precision peptide
+                for endometriosis that has received FDA IND Allowance and is currently in a Phase 1
+                clinical study. Its lead diagnostic candidate, FemLUNA™, is designed to be the first
+                non-invasive, definitive diagnostic for endometriosis.
+              </p>
+              <p className="t-body mt-6 text-ink-muted">
+                Endometriosis affects more than 190 million women and girls worldwide, with an
+                estimated annual economic burden exceeding $200 billion in the United States alone,
+                and an average diagnostic delay of eight years. The platform spans therapeutics,
+                diagnostics, and oncology.
+              </p>
+              <p className="t-label mt-10 text-ink-muted">Boilerplate for press use</p>
+            </div>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* ---------------------------------------------------------- key facts */
+
+function KeyFacts() {
+  return (
+    <Section id="facts" tone="paper-sunk">
+      <Container>
+        <FolioHeading index="02" label="Fact sheet" />
+        <div className="mt-12 max-w-2xl">
+          <Reveal>
+            <h2 className="t-h1 text-ink">
+              The essentials, <span className="italic-display text-gold-ink">at a glance.</span>
+            </h2>
+          </Reveal>
+        </div>
+
+        <div className="mt-16">
+          {KEY_FACTS.map((f, i) => (
+            <Reveal
+              as="div"
+              key={f.label}
+              delay={i * 0.06}
+              className="grid gap-4 border-t border-line py-8 md:grid-cols-12 md:items-baseline md:gap-8"
+            >
+              <span className="t-label text-gold-ink md:col-span-3">{f.label}</span>
+              <h3 className="font-serif text-2xl leading-tight text-ink md:col-span-5">{f.value}</h3>
+              <p className="t-body text-ink-muted md:col-span-4">{f.detail}</p>
+            </Reveal>
+          ))}
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* --------------------------------------------------------------- logos */
+
+function Logos() {
+  return (
+    <Section id="logos" tone="paper">
+      <Container>
+        <FolioHeading index="03" label="Brand assets" />
+        <div className="mt-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <Reveal>
+            <h2 className="t-h1 max-w-xl text-ink">
+              Logo <span className="italic-display text-gold-ink">downloads.</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="t-body max-w-sm text-ink-muted">
+              Official logos for press coverage and publications. Please do not modify or alter the
+              marks.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="mt-16 grid gap-8 md:grid-cols-2">
+          {LOGOS.map((logo, i) => (
+            <Reveal as="div" key={logo.filename} delay={i * 0.1}>
+              <div className="group overflow-hidden rounded-2xl border border-line bg-paper-raised">
+                <div className="relative flex h-56 items-center justify-center bg-paper-sunk p-10">
                   <Image
                     src={logo.src}
-                    alt={logo.alt}
+                    alt={`EndoCyclic Therapeutics — ${logo.label}`}
                     width={280}
                     height={140}
                     style={{ width: "auto", height: "auto" }}
-                    className="max-w-full max-h-full object-contain"
+                    className="max-h-full max-w-full object-contain"
                   />
                 </div>
-                <div className="p-6 flex items-center justify-between border-t border-plum-dark/10">
+                <div className="flex items-center justify-between gap-4 border-t border-line p-6">
                   <div>
-                    <p className="font-bold text-plum-dark text-sm">
-                      {logo.label}
-                    </p>
-                    <p className="text-xs text-plum-dark/70 mt-0.5 tabular-nums">
-                      {logo.filename}
-                    </p>
+                    <p className="font-serif text-lg text-ink">{logo.label}</p>
+                    <p className="t-num mt-1 text-sm text-ink-muted">{logo.filename}</p>
                   </div>
                   <a
                     href={logo.src}
                     download={logo.filename}
                     aria-label={`Download ${logo.label} (${logo.filename})`}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-plum-dark text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-gold-primary hover:text-plum-dark transition-colors"
+                    className="inline-flex items-center gap-2 rounded-full bg-plum-deep px-5 py-3 t-label text-paper-on-dark transition-colors duration-300 hover:bg-gold-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
                   >
-                    <Download size={14} aria-hidden="true" />
+                    <Download size={14} aria-hidden />
                     Download
                   </a>
                 </div>
               </div>
-            ))}
-          </div>
+            </Reveal>
+          ))}
         </div>
-      </section>
+      </Container>
+    </Section>
+  );
+}
 
-      {/* Leadership */}
-      <section className="relative py-24 md:py-32 bg-surface border-b border-plum-dark/10 overflow-hidden">
-        <div className="container mx-auto px-6 max-w-4xl relative z-10">
-          <div
-            className="reveal-rise flex items-center gap-4 mb-10"
-            style={{ animationDelay: "0.05s" }}
-          >
-            <Eyebrow>Leadership</Eyebrow>
-            <div className="h-px flex-1 bg-plum-dark/10" />
-          </div>
+/* ---------------------------------------------------------- leadership */
 
-          <div
-            className="reveal-rise relative bg-bone-raised rounded-xl border border-plum-dark/10 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] p-8 md:p-12 flex flex-col md:flex-row items-center gap-8"
-            style={{ animationDelay: "0.15s" }}
-          >
-            <span className="absolute top-0 left-0 h-[2px] w-16 bg-gold-primary rounded-full" />
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden relative flex-shrink-0 ring-1 ring-gold-primary/30">
+function Leadership() {
+  return (
+    <Section id="leadership" tone="paper-sunk">
+      <Container>
+        <FolioHeading index="04" label="Leadership" />
+        <div className="mt-12 grid gap-12 md:grid-cols-12 md:items-center">
+          <Reveal className="md:col-span-4">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-line">
               <Image
                 src="/team/tanya-petrossian.avif"
-                alt="Dr. Tanya Petrossian"
+                alt="Portrait of Dr. Tanya Petrossian, Founder and CEO of EndoCyclic Therapeutics"
                 fill
-                sizes="160px"
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover"
               />
             </div>
-            <div>
-              <Eyebrow className="mb-2 block">Founder &amp; CEO</Eyebrow>
-              <h3 className="text-2xl md:text-3xl font-serif font-bold text-plum-dark mb-4 text-balance">
-                Dr. Tanya Petrossian, PhD
-              </h3>
-              <p className="text-black-soft leading-relaxed mb-6">
-                Dr. Tanya Petrossian, PhD, is Founder and CEO of EndoCyclic
-                Therapeutics and a founding member of the Milken Institute
-                Women&apos;s Health Network. She leads the company&apos;s
-                development of a non-hormonal precision peptide platform
-                spanning therapeutics, diagnostics, and oncology.
-              </p>
+          </Reveal>
+
+          <Reveal delay={0.1} className="md:col-span-7 md:col-start-6">
+            <Eyebrow>Founder &amp; CEO</Eyebrow>
+            <h2 className="t-h1 mt-6 text-ink">Dr. Tanya Petrossian, PhD</h2>
+            <p className="t-lead mt-8 max-w-lg text-ink-soft">
+              Dr. Petrossian is Founder and CEO of EndoCyclic Therapeutics and a founding member of
+              the Milken Institute Women’s Health Network. She leads the company’s development of a
+              non-hormonal precision peptide platform spanning
+              <span className="text-ink"> therapeutics, diagnostics, and oncology.</span>
+            </p>
+            <div className="mt-10">
               <Link
                 href="/team"
-                className="inline-flex items-center gap-2 text-sm font-bold text-plum-dark hover:text-gold-deep transition-colors group uppercase tracking-wider"
+                className="klink t-label inline-flex items-center gap-2 text-gold-ink"
               >
-                View Full Team
-                <ArrowRight
-                  size={14}
-                  aria-hidden="true"
-                  className="group-hover:translate-x-1 transition-transform"
-                />
+                View full team <ArrowRight size={15} aria-hidden />
               </Link>
             </div>
-          </div>
+          </Reveal>
         </div>
-      </section>
+      </Container>
+    </Section>
+  );
+}
 
-      {/* Media Contact — cinematic plum-dark beat */}
-      <section className="py-24 md:py-32 bg-plum-dark text-white relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[-20%] right-[-5%] w-[500px] h-[500px] max-w-[70vw] max-h-[70vw] rounded-full bg-gold-primary/12 blur-[120px]" />
-        </div>
+/* ------------------------------------------------------------- closing */
 
-        <div className="container mx-auto px-6 max-w-4xl relative z-10">
-          <div className="text-center">
-            <span
-              className="reveal-rise mb-6 block text-gold-primary text-xs font-bold uppercase tracking-[0.2em]"
-              style={{ animationDelay: "0.05s" }}
-            >
-              Get In Touch
-            </span>
-            <h2
-              className="reveal-rise text-5xl md:text-7xl font-serif font-bold mb-6 tracking-tighter leading-[0.9] text-balance"
-              style={{ animationDelay: "0.15s" }}
-            >
-              Media Contact
-            </h2>
-            <p
-              className="reveal-rise text-xl text-white/70 max-w-lg mx-auto mb-12 font-light leading-relaxed"
-              style={{ animationDelay: "0.28s" }}
-            >
-              For press inquiries, interview requests, or additional information,
-              please reach out to our communications team.
-            </p>
+function Closing() {
+  return (
+    <Section tone="abyss" grain>
+      <Container>
+        <Reveal>
+          <p className="t-label text-gold-light">Media contact</p>
+        </Reveal>
+        <Reveal className="mt-8">
+          <h2 className="t-display max-w-5xl text-paper-on-dark">
+            Let’s get the story <span className="italic-display text-gold-light">right.</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={0.1} className="mt-10">
+          <a
+            href={`mailto:${SITE.email}`}
+            className="klink t-h3 inline-flex items-center gap-2 text-paper-on-dark"
+          >
+            {SITE.email}
+            <ArrowUpRight size={22} aria-hidden />
+          </a>
+        </Reveal>
+        <Reveal delay={0.15} className="mt-12 flex flex-wrap items-center gap-4">
+          <MagneticButton href="/contact?subject=media" variant="primary-on-dark">
+            Contact us
+          </MagneticButton>
+          <MagneticButton href="/news" variant="ghost-on-dark">
+            Latest coverage
+          </MagneticButton>
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
 
-            <div
-              className="reveal-rise bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 md:p-12 max-w-2xl mx-auto"
-              style={{ animationDelay: "0.38s" }}
-            >
-              <div className="flex flex-col gap-6">
-                <a
-                  href="mailto:info@endocyclic.com"
-                  className="inline-flex items-center justify-center gap-3 text-lg text-white hover:text-gold-primary transition-colors group"
-                >
-                  <Mail size={20} className="text-gold-primary" aria-hidden="true" />
-                  <span className="font-medium">info@endocyclic.com</span>
-                </a>
-
-                <div className="h-px bg-white/10" />
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gold-primary text-plum-dark font-bold uppercase tracking-wider text-xs rounded-lg hover:bg-white transition-colors"
-                  >
-                    <Mail size={16} aria-hidden="true" />
-                    Contact Us
-                  </Link>
-                  <Link
-                    href="/news"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 border border-white/20 text-white font-bold uppercase tracking-wider text-xs rounded-lg hover:border-gold-primary hover:text-gold-primary transition-colors"
-                  >
-                    <Newspaper size={16} aria-hidden="true" />
-                    Latest Coverage
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+export default function MediaPage() {
+  return (
+    <>
+      <Nav />
+      <main id="main-content">
+        <Hero />
+        <Boilerplate />
+        <KeyFacts />
+        <Logos />
+        <Leadership />
+        <Closing />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }

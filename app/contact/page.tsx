@@ -1,583 +1,411 @@
 "use client";
 
-import { useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Mail, MapPin, Linkedin, Twitter, Send, CheckCircle2, AlertCircle } from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, Mail, MapPin, Check } from "lucide-react";
 
+import Nav from "@/components/site/Nav";
+import Footer from "@/components/site/Footer";
+import Section from "@/components/site/Section";
+import Container from "@/components/site/Container";
+import Eyebrow from "@/components/site/Eyebrow";
+import Reveal from "@/components/site/Reveal";
+import SplitText from "@/components/site/SplitText";
+import MagneticButton from "@/components/site/MagneticButton";
+import { TextField, TextArea, SelectField, Honeypot } from "@/components/site/Field";
+import { SITE, CONTACT_SUBJECTS } from "@/lib/site";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const VALID_SUBJECTS = CONTACT_SUBJECTS.map((s) => s.value) as readonly string[];
 
-export default function ContactPage() {
-  const [formData, setFormData] = useState({
+type Fields = {
+  name: string;
+  email: string;
+  company: string;
+  subject: string;
+  message: string;
+};
+
+type Errors = Partial<Record<keyof Fields, string>>;
+
+/* ------------------------------------------------------------ Subject reader */
+function SubjectSync({ onResolve }: { onResolve: (v: string) => void }) {
+  const params = useSearchParams();
+  useEffect(() => {
+    const raw = params.get("subject");
+    onResolve(raw && VALID_SUBJECTS.includes(raw) ? raw : "general");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
+  return null;
+}
+
+/* ------------------------------------------------------------------ The form */
+function ContactForm({ initialSubject = "general" }: { initialSubject?: string }) {
+  const [fields, setFields] = useState<Fields>({
     name: "",
     email: "",
     company: "",
-    subject: "",
+    subject: initialSubject,
     message: "",
   });
   const [honeypot, setHoneypot] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  // Newsletter state
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [newsletterHoneypot, setNewsletterHoneypot] = useState("");
-  const [newsletterSubmitting, setNewsletterSubmitting] = useState(false);
-  const [newsletterSuccess, setNewsletterSuccess] = useState(false);
-  const [newsletterError, setNewsletterError] = useState("");
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear field error on change
-    if (fieldErrors[name]) {
-      setFieldErrors((prev) => {
-        const next = { ...prev };
-        delete next[name];
-        return next;
-      });
-    }
+  const set = <K extends keyof Fields>(key: K) => (value: string) => {
+    setFields((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => {
+      if (!prev[key]) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
     if (formError) setFormError("");
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name } = e.target;
-    setTouchedFields((prev) => ({ ...prev, [name]: true }));
-    validateField(name, formData[name as keyof typeof formData]);
+  const validate = (): boolean => {
+    const next: Errors = {};
+    if (!fields.name.trim()) next.name = "Name is required.";
+    if (!fields.email.trim()) next.email = "Email is required.";
+    else if (!EMAIL_REGEX.test(fields.email.trim()))
+      next.email = "Please enter a valid email address.";
+    if (!VALID_SUBJECTS.includes(fields.subject)) next.subject = "Please select a subject.";
+    if (!fields.message.trim()) next.message = "Message is required.";
+    else if (fields.message.trim().length < 10)
+      next.message = "Message must be at least 10 characters.";
+    setErrors(next);
+    return Object.keys(next).length === 0;
   };
 
-  const validateField = (name: string, value: string): boolean => {
-    let error = "";
-    switch (name) {
-      case "name":
-        if (!value.trim()) error = "Name is required.";
-        break;
-      case "email":
-        if (!value.trim()) error = "Email is required.";
-        else if (!EMAIL_REGEX.test(value.trim())) error = "Please enter a valid email address.";
-        break;
-      case "subject":
-        if (!value.trim()) error = "Please select a subject.";
-        break;
-      case "message":
-        if (!value.trim()) error = "Message is required.";
-        else if (value.trim().length < 10) error = "Message must be at least 10 characters.";
-        break;
-    }
-    if (error) {
-      setFieldErrors((prev) => ({ ...prev, [name]: error }));
-      return false;
-    }
-    setFieldErrors((prev) => {
-      const next = { ...prev };
-      delete next[name];
-      return next;
-    });
-    return true;
-  };
-
-  const validateForm = (): boolean => {
-    const nameValid = validateField("name", formData.name);
-    const emailValid = validateField("email", formData.email);
-    const subjectValid = validateField("subject", formData.subject);
-    const messageValid = validateField("message", formData.message);
-    // Mark all as touched
-    setTouchedFields({ name: true, email: true, subject: true, message: true });
-    return nameValid && emailValid && subjectValid && messageValid;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
-
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
+    if (!validate()) return;
+    setSubmitting(true);
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          _honeypot: honeypot,
-        }),
+        body: JSON.stringify({ ...fields, _honeypot: honeypot }),
       });
-
-      const data = await res.json();
-
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 429) {
+        setFormError(
+          data.error || "Too many requests. Please wait a moment and try again.",
+        );
+        setSubmitting(false);
+        return;
+      }
       if (!res.ok || !data.success) {
         setFormError(data.error || "Something went wrong. Please try again.");
-        setIsSubmitting(false);
+        setSubmitting(false);
         return;
       }
-
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-
-      // Reset form after showing success message
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({ name: "", email: "", company: "", subject: "", message: "" });
-        setTouchedFields({});
-        setFieldErrors({});
-      }, 4000);
+      setSubmitting(false);
+      setSubmitted(true);
     } catch {
       setFormError("Network error. Please check your connection and try again.");
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setNewsletterError("");
-
-    if (!newsletterEmail.trim()) {
-      setNewsletterError("Email is required.");
-      return;
-    }
-    if (!EMAIL_REGEX.test(newsletterEmail.trim())) {
-      setNewsletterError("Please enter a valid email address.");
-      return;
-    }
-
-    setNewsletterSubmitting(true);
-
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: newsletterEmail.trim(),
-          _honeypot: newsletterHoneypot,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        setNewsletterError(data.error || "Something went wrong. Please try again.");
-        setNewsletterSubmitting(false);
-        return;
-      }
-
-      setNewsletterSubmitting(false);
-      setNewsletterSuccess(true);
-
-      setTimeout(() => {
-        setNewsletterSuccess(false);
-        setNewsletterEmail("");
-      }, 4000);
-    } catch {
-      setNewsletterError("Network error. Please check your connection and try again.");
-      setNewsletterSubmitting(false);
-    }
-  };
-
-  const getFieldClassName = (fieldName: string, baseClass: string) => {
-    const hasError = touchedFields[fieldName] && fieldErrors[fieldName];
-    return `${baseClass} ${hasError ? "border-red-500 focus:border-red-500 focus:ring-red-500 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]" : "border-plum-dark/15 focus:border-gold-primary focus:ring-gold-primary focus:shadow-[0_0_0_3px_rgba(201,169,97,0.12)]"}`;
-  };
+  if (submitted) {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        className="flex flex-col items-start border-t border-line pt-10"
+      >
+        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-gold-ink/40 text-gold-ink">
+          <Check size={22} aria-hidden />
+        </span>
+        <h2 className="t-h3 mt-6 text-ink">Message received.</h2>
+        <p className="t-body mt-3 max-w-md text-ink-muted">
+          Thank you for reaching out. A member of our team will be in touch shortly. For
+          time-sensitive matters, you can also write to us directly at{" "}
+          <a
+            href={`mailto:${SITE.email}`}
+            className="klink text-gold-ink"
+          >
+            {SITE.email}
+          </a>
+          .
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <main
-      className="min-h-screen flex flex-col font-sans selection:bg-gold-primary selection:text-white"
-      style={{
-        background:
-          "radial-gradient(70% 50% at 78% 8%, rgba(201,169,97,0.14), transparent 60%), linear-gradient(180deg, #FAF6EC, #F4EEE1 55%)",
-      }}
-    >
-      <Navbar />
+    <form onSubmit={onSubmit} noValidate className="relative">
+      <Honeypot value={honeypot} onChange={setHoneypot} />
 
-      <div className="pt-24 md:pt-32 pb-12 md:pb-20 container mx-auto px-6 flex-grow max-w-7xl">
-        {/* Header — monumental serif, deterministic CSS reveal (visible in static state) */}
-        <div className="mb-16 md:mb-20 max-w-4xl pt-8 border-t border-plum-dark/15">
-          <span className="reveal-rise block mb-6" style={{ animationDelay: "0.05s" }}>
-            <Eyebrow>Contact</Eyebrow>
-          </span>
-          <h1
-            className="reveal-rise text-[clamp(2.8rem,8vw,5.5rem)] leading-[0.95] font-serif font-bold mb-8 tracking-tight text-plum-dark text-balance"
-            style={{ animationDelay: "0.12s" }}
-          >
-            Get in <span className="italic text-gold-deep">Touch</span>
-          </h1>
-          <p
-            className="reveal-rise text-xl md:text-2xl text-black-soft leading-relaxed font-light max-w-2xl"
-            style={{ animationDelay: "0.24s" }}
-          >
-            We&apos;re here to answer your questions and explore opportunities for collaboration.
-            Reach out to learn more about our precision peptide platform, therapeutics, and diagnostics.
-          </p>
-        </div>
+      {formError && (
+        <p
+          role="alert"
+          className="mb-8 border-l-2 border-rose bg-rose/10 px-4 py-3 text-sm text-rose"
+        >
+          {formError}
+        </p>
+      )}
 
-        <div className="grid lg:grid-cols-3 gap-12">
-          {/* Contact Information Sidebar */}
-          <div className="lg:col-span-1 lg:border-r lg:border-plum-dark/10 lg:pr-10">
-            <div className="space-y-10">
-              {/* Office Location */}
-              <div className="reveal-rise" style={{ animationDelay: "0.3s" }}>
-                <div className="flex items-start gap-4 group">
-                  <div className="w-11 h-11 rounded-full bg-gold-primary/12 border border-gold-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-gold-primary/20 transition-colors duration-300">
-                    <MapPin className="text-gold-deep" size={18} aria-hidden="true" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-serif font-bold text-plum-dark mb-2">Office</h2>
-                    <p className="text-black-soft leading-relaxed">
-                      Irvine, California<br />
-                      United States
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="reveal-rise" style={{ animationDelay: "0.4s" }}>
-                <div className="flex items-start gap-4 group">
-                  <div className="w-11 h-11 rounded-full bg-gold-primary/12 border border-gold-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-gold-primary/20 transition-colors duration-300">
-                    <Mail className="text-gold-deep" size={18} aria-hidden="true" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-serif font-bold text-plum-dark mb-2">Email</h2>
-                    <a
-                      href="mailto:info@endocyclic.com"
-                      className="text-black-soft hover:text-gold-deep underline decoration-gold-primary/40 underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
-                    >
-                      info@endocyclic.com
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Social Links */}
-              <div className="reveal-rise" style={{ animationDelay: "0.5s" }}>
-                <div className="flex items-start gap-4 group">
-                  <div className="w-11 h-11 rounded-full bg-gold-primary/12 border border-gold-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-gold-primary/20 transition-colors duration-300">
-                    <Linkedin className="text-gold-deep" size={18} aria-hidden="true" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-serif font-bold text-plum-dark mb-2">Connect</h2>
-                    <div className="flex gap-4">
-                      <a
-                        href="https://www.linkedin.com/company/endocyclic-therapeutics"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-11 h-11 rounded-full bg-bone-raised border border-plum-dark/10 hover:border-gold-primary/40 hover:bg-gold-primary/10 flex items-center justify-center transition-colors group/link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
-                        aria-label="EndoCyclic Therapeutics on LinkedIn (opens in new tab)"
-                      >
-                        <Linkedin className="text-black-soft group-hover/link:text-gold-deep transition-colors" size={18} aria-hidden="true" />
-                      </a>
-                      <a
-                        href="https://twitter.com/EndoCyclic"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-11 h-11 rounded-full bg-bone-raised border border-plum-dark/10 hover:border-gold-primary/40 hover:bg-gold-primary/10 flex items-center justify-center transition-colors group/link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
-                        aria-label="EndoCyclic Therapeutics on Twitter (opens in new tab)"
-                      >
-                        <Twitter className="text-black-soft group-hover/link:text-gold-deep transition-colors" size={18} aria-hidden="true" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Additional Info */}
-              <div className="reveal-rise pt-8 border-t border-plum-dark/10" style={{ animationDelay: "0.6s" }}>
-                <p className="text-sm text-black-soft/80 leading-relaxed">
-                  For media inquiries, partnership opportunities, or general questions, please use the contact form or reach out directly via email.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Form — raised bone card with a single warm gold accent rule */}
-          <div className="reveal-rise lg:col-span-2" style={{ animationDelay: "0.35s" }}>
-            <div className="relative bg-bone-raised border border-plum-dark/10 rounded-xl p-8 md:p-12 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] overflow-hidden">
-              {/* The one confident luminous accent for this section */}
-              <span className="absolute top-0 left-0 h-[2px] w-24 bg-gold-primary" aria-hidden="true" />
-              <div
-                className="absolute -top-24 -right-24 w-72 h-72 rounded-full pointer-events-none"
-                style={{ background: "radial-gradient(circle, rgba(201,169,97,0.14) 0%, transparent 70%)" }}
-                aria-hidden="true"
-              />
-
-              {isSubmitted ? (
-                <div className="relative text-center py-12" role="status" aria-live="polite">
-                  <div className="w-16 h-16 rounded-full bg-gold-primary/12 border border-gold-primary/30 flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle2 className="text-gold-deep" size={32} aria-hidden="true" />
-                  </div>
-                  <h2 className="text-3xl font-serif font-bold text-plum-dark mb-3">
-                    Thank You
-                  </h2>
-                  <p className="text-black-soft">
-                    Your message has been sent. We&apos;ll get back to you soon.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="relative space-y-6">
-                  {/* Honeypot field - hidden from humans, bots will fill it */}
-                  <div className="absolute opacity-0 -z-10" aria-hidden="true">
-                    <label htmlFor="contact_website">Website</label>
-                    <input
-                      type="text"
-                      id="contact_website"
-                      name="_honeypot"
-                      value={honeypot}
-                      onChange={(e) => setHoneypot(e.target.value)}
-                      tabIndex={-1}
-                      autoComplete="off"
-                    />
-                  </div>
-
-                  {/* Form-level error */}
-                  {formError && (
-                    <div role="alert" className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-                      <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={18} aria-hidden="true" />
-                      <p className="text-sm text-red-700">{formError}</p>
-                    </div>
-                  )}
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="name" className="block text-xs font-bold text-plum-dark mb-2 uppercase tracking-[0.15em]">
-                        Name *
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        required
-                        autoComplete="name"
-                        aria-describedby={touchedFields.name && fieldErrors.name ? "name-error" : undefined}
-                        aria-invalid={touchedFields.name && !!fieldErrors.name}
-                        value={formData.name}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={getFieldClassName(
-                          "name",
-                          "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary placeholder:text-black-soft/70"
-                        )}
-                        placeholder="Your name"
-                      />
-                      {touchedFields.name && fieldErrors.name && (
-                        <p id="name-error" role="alert" className="mt-1.5 text-sm text-red-700">{fieldErrors.name}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-xs font-bold text-plum-dark mb-2 uppercase tracking-[0.15em]">
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        autoComplete="email"
-                        aria-describedby={touchedFields.email && fieldErrors.email ? "email-error" : undefined}
-                        aria-invalid={touchedFields.email && !!fieldErrors.email}
-                        value={formData.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={getFieldClassName(
-                          "email",
-                          "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary placeholder:text-black-soft/70"
-                        )}
-                        placeholder="your.email@example.com"
-                      />
-                      {touchedFields.email && fieldErrors.email && (
-                        <p id="email-error" role="alert" className="mt-1.5 text-sm text-red-700">{fieldErrors.email}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="company" className="block text-xs font-bold text-plum-dark mb-2 uppercase tracking-[0.15em]">
-                      Company / Organization
-                    </label>
-                    <input
-                      type="text"
-                      id="company"
-                      name="company"
-                      autoComplete="organization"
-                      value={formData.company}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white border border-plum-dark/15 rounded-lg focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-colors text-black-primary placeholder:text-black-soft/70"
-                      placeholder="Your company or organization"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="subject" className="block text-xs font-bold text-plum-dark mb-2 uppercase tracking-[0.15em]">
-                      Subject *
-                    </label>
-                    <select
-                      id="subject"
-                      name="subject"
-                      required
-                      aria-describedby={touchedFields.subject && fieldErrors.subject ? "subject-error" : undefined}
-                      aria-invalid={touchedFields.subject && !!fieldErrors.subject}
-                      value={formData.subject}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={getFieldClassName(
-                        "subject",
-                        "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary"
-                      )}
-                    >
-                      <option value="">Select a subject</option>
-                      <option value="partnership">Partnership Opportunities</option>
-                      <option value="media">Media Inquiry</option>
-                      <option value="investor">Investor Relations</option>
-                      <option value="career">Career Opportunities</option>
-                      <option value="general">General Inquiry</option>
-                      <option value="other">Other</option>
-                    </select>
-                    {touchedFields.subject && fieldErrors.subject && (
-                      <p id="subject-error" role="alert" className="text-red-700 text-xs mt-1.5 font-medium">{fieldErrors.subject}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-xs font-bold text-plum-dark mb-2 uppercase tracking-[0.15em]">
-                      Message *
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      required
-                      rows={6}
-                      aria-describedby={touchedFields.message && fieldErrors.message ? "message-error" : undefined}
-                      aria-invalid={touchedFields.message && !!fieldErrors.message}
-                      value={formData.message}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={getFieldClassName(
-                        "message",
-                        "w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-1 transition-colors text-black-primary placeholder:text-black-soft/70 resize-none"
-                      )}
-                      placeholder="Tell us how we can help... (minimum 10 characters)"
-                    />
-                    {touchedFields.message && fieldErrors.message && (
-                      <p id="message-error" role="alert" className="mt-1.5 text-sm text-red-700">{fieldErrors.message}</p>
-                    )}
-                  </div>
-
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full md:w-auto px-8 py-4 bg-plum-primary text-white font-bold uppercase tracking-widest text-xs rounded-lg hover:bg-gold-primary hover:shadow-[0_0_20px_rgba(201,169,97,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-primary focus-visible:ring-offset-2"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          Send Message
-                          <Send size={16} className="group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
+      <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2">
+        <TextField
+          label="Name"
+          name="name"
+          value={fields.name}
+          onChange={set("name")}
+          required
+          autoComplete="name"
+          placeholder="Your name"
+          error={errors.name}
+        />
+        <TextField
+          label="Email"
+          name="email"
+          type="email"
+          value={fields.email}
+          onChange={set("email")}
+          required
+          autoComplete="email"
+          placeholder="you@company.com"
+          error={errors.email}
+        />
+        <TextField
+          label="Company / Organization"
+          name="company"
+          value={fields.company}
+          onChange={set("company")}
+          autoComplete="organization"
+          placeholder="Optional"
+          className="sm:col-span-2"
+        />
+        <SelectField
+          label="Subject"
+          name="subject"
+          value={fields.subject}
+          onChange={set("subject")}
+          options={CONTACT_SUBJECTS}
+          required
+          error={errors.subject}
+          className="sm:col-span-2"
+        />
+        <TextArea
+          label="Message"
+          name="message"
+          value={fields.message}
+          onChange={set("message")}
+          required
+          rows={5}
+          placeholder="Tell us how we can help. (Minimum 10 characters.)"
+          error={errors.message}
+          className="sm:col-span-2"
+        />
       </div>
 
-      {/* Newsletter Section — plum-dark cinematic beat with one warm luminous accent */}
-      <section
-        className="relative bg-plum-dark py-20 md:py-24 text-white overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(60% 80% at 20% 50%, rgba(201,169,97,0.12), transparent 65%), #2E263A",
-        }}
+      <div className="mt-10 flex items-center gap-5">
+        <button
+          type="submit"
+          disabled={submitting}
+          className="group relative inline-flex items-center justify-center gap-2.5 rounded-full bg-plum-deep px-7 py-3.5 t-label text-paper-on-dark transition-colors duration-300 hover:bg-gold-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {submitting ? (
+            <>
+              <span
+                aria-hidden
+                className="h-4 w-4 animate-spin rounded-full border-2 border-paper-on-dark/30 border-t-paper-on-dark"
+              />
+              Sending
+            </>
+          ) : (
+            <>
+              Send message
+              <ArrowUpRight
+                size={15}
+                strokeWidth={2}
+                aria-hidden
+                className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              />
+            </>
+          )}
+        </button>
+        <span className="t-label hidden text-ink-muted sm:inline">
+          We reply within two business days
+        </span>
+      </div>
+    </form>
+  );
+}
+
+/* ---------------------------------------------------------------------- Hero */
+function Hero() {
+  const reduced = useReducedMotion();
+  const [subject, setSubject] = useState("general");
+
+  return (
+    <Section tone="paper" className="relative overflow-hidden pt-32 md:pt-40" rhythm={false}>
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-[4%] top-[42%] select-none font-serif text-[24vw] leading-none text-ink/[0.03]"
       >
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold-primary/50 to-transparent" aria-hidden="true" />
-        <div className="container mx-auto px-6 max-w-7xl relative">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="reveal-rise" style={{ animationDelay: "0.1s" }}>
-              <Eyebrow tone="gold-on-dark" className="block mb-4">Newsletter</Eyebrow>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4 tracking-tight text-balance">
-                Stay <span className="italic text-gold-primary">Informed</span>
-              </h2>
-              <p className="text-white/70 text-lg leading-relaxed">
-                Subscribe to receive updates on our clinical progress, scientific publications, and company news.
-              </p>
-            </div>
-            <div className="reveal-rise" style={{ animationDelay: "0.22s" }}>
-              {newsletterSuccess ? (
-                <div
-                  className="flex items-center gap-3 p-6 bg-white/10 border border-gold-primary/30 rounded-lg"
-                  role="status"
-                  aria-live="polite"
-                >
-                  <CheckCircle2 className="text-gold-primary flex-shrink-0" size={24} aria-hidden="true" />
-                  <p className="text-white">Thank you for subscribing! We&apos;ll keep you updated.</p>
-                </div>
-              ) : (
-                <form onSubmit={handleNewsletterSubmit} className="space-y-4">
-                  {/* Honeypot */}
-                  <div className="absolute opacity-0 -z-10" aria-hidden="true">
-                    <label htmlFor="nl_contact_website">Website</label>
-                    <input
-                      type="text"
-                      id="nl_contact_website"
-                      name="_honeypot"
-                      value={newsletterHoneypot}
-                      onChange={(e) => setNewsletterHoneypot(e.target.value)}
-                      tabIndex={-1}
-                      autoComplete="off"
-                    />
-                  </div>
+        @
+      </span>
 
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <input
-                      type="email"
-                      placeholder="your.email@example.com"
-                      aria-label="Newsletter email address"
-                      autoComplete="email"
-                      value={newsletterEmail}
-                      onChange={(e) => {
-                        setNewsletterEmail(e.target.value);
-                        if (newsletterError) setNewsletterError("");
-                      }}
-                      className={`flex-1 px-4 py-3 bg-white/10 border rounded-lg text-white placeholder:text-white/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-primary focus-visible:ring-offset-2 focus-visible:ring-offset-plum-dark transition-colors ${
-                        newsletterError ? "border-red-400 focus:border-red-400" : "border-white/20 focus:border-gold-primary"
-                      }`}
-                    />
-                    <button
-                      type="submit"
-                      disabled={newsletterSubmitting}
-                      className="px-6 py-3 bg-gold-primary text-plum-dark font-bold uppercase tracking-widest text-xs rounded-lg hover:bg-gold-light hover:shadow-[0_0_20px_rgba(201,169,97,0.35)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-primary focus-visible:ring-offset-2 focus-visible:ring-offset-plum-dark"
-                    >
-                      {newsletterSubmitting ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-plum-dark/30 border-t-plum-dark rounded-full animate-spin" aria-hidden="true" />
-                          Subscribing...
-                        </>
-                      ) : (
-                        "Subscribe"
-                      )}
-                    </button>
-                  </div>
-                  {newsletterError && (
-                    <p role="alert" className="text-sm text-red-400">{newsletterError}</p>
-                  )}
-                </form>
-              )}
-            </div>
+      <Suspense fallback={null}>
+        <SubjectSync onResolve={setSubject} />
+      </Suspense>
+
+      <Container className="relative z-10">
+        <Reveal y={14}>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-line pb-5">
+            <span className="t-label text-ink">EndoCyclic Therapeutics</span>
+            <span className="t-label text-ink-muted">Irvine, California</span>
+            <span className="t-label ml-auto text-gold-ink">Get in touch</span>
           </div>
-        </div>
-      </section>
+        </Reveal>
 
+        <div className="mt-14 grid gap-x-8 gap-y-16 pb-24 md:grid-cols-12 md:pb-32">
+          {/* Left — invitation + direct channels */}
+          <div className="md:col-span-5">
+            <Reveal>
+              <Eyebrow>Contact</Eyebrow>
+            </Reveal>
+            <h1 className="t-display mt-6 text-ink">
+              <SplitText
+                lines={[[{ text: "Let’s" }], [{ text: "talk.", accent: true, italic: true }]]}
+                accentClass="text-gold-ink"
+              />
+            </h1>
+
+            <motion.div
+              className="mt-10 h-px w-full origin-left bg-line"
+              initial={{ scaleX: reduced ? 1 : 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1.1, ease: EASE, delay: 0.5 }}
+            />
+
+            <Reveal delay={0.15}>
+              <p className="t-lead mt-10 max-w-md text-ink-soft">
+                Whether you’re exploring a partnership, evaluating an investment, or writing
+                a story — we’d like to hear from you. Tell us what brings you here and the
+                right person will follow up.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.25}>
+              <dl className="mt-12 space-y-8">
+                <div className="flex items-start gap-4 border-t border-line pt-6">
+                  <Mail size={18} className="mt-1 shrink-0 text-gold-ink" aria-hidden />
+                  <div>
+                    <dt className="t-label text-ink-muted">Direct email</dt>
+                    <dd className="mt-1">
+                      <a
+                        href={`mailto:${SITE.email}`}
+                        className="klink font-serif text-2xl text-ink"
+                      >
+                        {SITE.email}
+                      </a>
+                    </dd>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 border-t border-line pt-6">
+                  <ArrowUpRight
+                    size={18}
+                    className="mt-1 shrink-0 text-gold-ink"
+                    aria-hidden
+                  />
+                  <div>
+                    <dt className="t-label text-ink-muted">On LinkedIn</dt>
+                    <dd className="mt-1">
+                      <a
+                        href={SITE.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="klink font-serif text-2xl text-ink"
+                      >
+                        EndoCyclic Therapeutics
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    </dd>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 border-t border-line pt-6">
+                  <MapPin size={18} className="mt-1 shrink-0 text-gold-ink" aria-hidden />
+                  <div>
+                    <dt className="t-label text-ink-muted">Headquarters</dt>
+                    <dd className="mt-1 font-serif text-2xl text-ink">Irvine, California</dd>
+                  </div>
+                </div>
+              </dl>
+            </Reveal>
+          </div>
+
+          {/* Right — the form */}
+          <Reveal delay={0.2} className="md:col-span-6 md:col-start-7">
+            <div className="rounded-2xl border border-line bg-paper-raised p-8 md:p-10">
+              <span aria-hidden className="mb-8 block h-[3px] w-16 rounded-full bg-gold" />
+              <FormWithSubject subject={subject} />
+            </div>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/**
+ * Bridges the resolved ?subject= value into the form's initial subject.
+ * Remounts when the resolved subject changes so preselection is reliable.
+ */
+function FormWithSubject({ subject }: { subject: string }) {
+  return <ContactForm key={subject} initialSubject={subject} />;
+}
+
+/* -------------------------------------------------------------- Closing plate */
+function Closing() {
+  return (
+    <Section tone="abyss" grain>
+      <Container>
+        <p className="t-label text-gold-light">Irvine, California · Clinical-stage</p>
+        <Reveal className="mt-8">
+          <h2 className="t-h1 max-w-4xl text-paper-on-dark">
+            Building the diligence front door for{" "}
+            <span className="italic-display text-gold-light">women’s health.</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <p className="t-lead mt-8 max-w-xl text-muted-on-dark">
+            For partnership and business development inquiries, we’re glad to open the
+            conversation.
+          </p>
+        </Reveal>
+        <Reveal delay={0.15} className="mt-12 flex flex-wrap items-center gap-4">
+          <MagneticButton href="/contact?subject=partnership" variant="primary-on-dark">
+            Partner with us
+          </MagneticButton>
+          <MagneticButton href="/investors" variant="ghost-on-dark">
+            For investors
+          </MagneticButton>
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <>
+      <Nav />
+      <main id="main-content">
+        <Hero />
+        <Closing />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }

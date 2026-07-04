@@ -1,19 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { ArrowUpRight, Download, Calendar, Search, Mail, CheckCircle2 } from "lucide-react";
-import clsx from "clsx";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { ArrowUpRight, Search, CheckCircle2 } from "lucide-react";
+import { clsx } from "clsx";
 
+import Nav from "@/components/site/Nav";
+import Footer from "@/components/site/Footer";
+import Section from "@/components/site/Section";
+import Container from "@/components/site/Container";
+import FolioHeading from "@/components/site/FolioHeading";
+import Reveal from "@/components/site/Reveal";
+import SplitText from "@/components/site/SplitText";
+import Eyebrow from "@/components/site/Eyebrow";
+import MagneticButton from "@/components/site/MagneticButton";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Types
+/* ------------------------------------------------------------------ Data */
 type ArticleType = "All" | "Press Release" | "Award" | "Interview";
 
 interface Article {
@@ -28,7 +35,7 @@ interface Article {
   featured?: boolean;
 }
 
-// Data - Real articles and press releases
+// Real press — titles, sources, dates, and links preserved verbatim.
 const articles: Article[] = [
   {
     id: 1,
@@ -133,443 +140,479 @@ const articles: Article[] = [
 
 const categories: ArticleType[] = ["All", "Press Release", "Award", "Interview"];
 
-export default function NewsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<ArticleType>("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const reduced = usePrefersReducedMotion();
+const isExternal = (link: string) => link.startsWith("http");
+const isSvg = (src: string) => src.endsWith(".svg");
 
-  // Newsletter state
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [newsletterHoneypot, setNewsletterHoneypot] = useState("");
-  const [newsletterSubmitting, setNewsletterSubmitting] = useState(false);
-  const [newsletterSuccess, setNewsletterSuccess] = useState(false);
-  const [newsletterError, setNewsletterError] = useState("");
+/* --------------------------------------------------------------- Hero */
+function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-paper pt-32 md:pt-40">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-[5%] top-[36%] select-none font-serif text-[24vw] leading-none text-ink/[0.03]"
+      >
+        Press
+      </span>
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+      <Container className="relative z-10">
+        <Reveal y={14}>
+          <div className="border-b border-line pb-6">
+            <Eyebrow>Newsroom</Eyebrow>
+          </div>
+        </Reveal>
+
+        <h1 className="t-display mt-10 text-ink md:mt-14">
+          <SplitText
+            lines={[
+              [{ text: "Pioneering progress in" }],
+              [{ text: "women’s health.", accent: true, italic: true }],
+            ]}
+            accentClass="text-gold-ink"
+          />
+        </h1>
+
+        <div className="mt-12 grid gap-10 pb-20 md:grid-cols-12 md:pb-28">
+          <Reveal delay={0.5} className="md:col-span-6">
+            <p className="t-lead max-w-xl text-ink-soft">
+              The latest breakthroughs, clinical milestones, and corporate announcements as we work
+              to redefine the standard of care in <span className="text-ink">women’s health</span>.
+            </p>
+          </Reveal>
+          <Reveal delay={0.6} className="flex flex-wrap items-center gap-4 self-end md:col-span-5 md:col-start-8">
+            <MagneticButton href="#newsletter" variant="primary">
+              Subscribe
+            </MagneticButton>
+            <MagneticButton href="/media" variant="ghost" arrow={false}>
+              Media kit
+            </MagneticButton>
+          </Reveal>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+/* --------------------------------------------------------------- Article card */
+function ArticleImage({
+  article,
+  className,
+  sizes,
+  priority,
+}: {
+  article: Article;
+  className?: string;
+  sizes: string;
+  priority?: boolean;
+}) {
+  if (isSvg(article.image)) {
+    return (
+      <div className={clsx("flex items-center justify-center bg-paper-sunk p-10", className)}>
+        <Image
+          src={article.image}
+          alt={article.title}
+          width={360}
+          height={240}
+          style={{ width: "auto", height: "auto" }}
+          className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
+        />
+      </div>
+    );
+  }
+  return (
+    <div className={clsx("relative overflow-hidden bg-paper-sunk", className)}>
+      <Image
+        src={article.image}
+        alt={article.title}
+        fill
+        sizes={sizes}
+        priority={priority}
+        className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+      />
+    </div>
+  );
+}
+
+function FeaturedCard({ article }: { article: Article }) {
+  const external = isExternal(article.link);
+  return (
+    <motion.a
+      key="featured"
+      href={article.link}
+      target={external ? "_blank" : "_self"}
+      rel={external ? "noopener noreferrer" : undefined}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6, ease: EASE }}
+      className="group relative mb-20 grid overflow-hidden rounded-2xl border border-line bg-paper-raised transition-colors duration-500 hover:border-gold-ink/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold md:grid-cols-12"
+    >
+      <span
+        aria-hidden
+        className="absolute left-0 top-0 z-10 h-[3px] w-24 bg-gold transition-all duration-500 group-hover:w-full"
+      />
+      <ArticleImage
+        article={article}
+        sizes="(max-width: 768px) 100vw, 58vw"
+        priority
+        className="h-64 md:col-span-7 md:h-auto md:min-h-[26rem]"
+      />
+      <div className="flex flex-col justify-center p-9 md:col-span-5 md:p-12 lg:p-14">
+        <div className="flex items-center gap-3">
+          <span className="t-label text-gold-ink">{article.type}</span>
+          <span aria-hidden className="h-1 w-1 rounded-full bg-line" />
+          <time className="t-label text-ink-muted" dateTime={article.date}>
+            {article.date}
+          </time>
+        </div>
+        <h2 className="mt-6 font-serif text-[clamp(1.9rem,3.2vw,2.75rem)] leading-[1.02] text-ink transition-colors group-hover:text-gold-ink">
+          {article.title}
+        </h2>
+        {article.excerpt && (
+          <p className="t-body mt-6 text-ink-muted">{article.excerpt}</p>
+        )}
+        <span className="mt-8 inline-flex items-center gap-2 t-label text-ink transition-transform group-hover:translate-x-1">
+          Read story <ArrowUpRight size={16} aria-hidden />
+        </span>
+      </div>
+    </motion.a>
+  );
+}
+
+function ArticleCard({ article }: { article: Article }) {
+  const external = isExternal(article.link);
+  return (
+    <motion.a
+      layout
+      href={article.link}
+      target={external ? "_blank" : "_self"}
+      rel={external ? "noopener noreferrer" : undefined}
+      variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+      exit={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.5, ease: EASE }}
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper-raised transition-colors duration-500 hover:border-gold-ink/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+    >
+      <span
+        aria-hidden
+        className="absolute left-0 top-0 z-10 h-[2px] w-14 bg-gold transition-all duration-500 group-hover:w-full"
+      />
+      <ArticleImage
+        article={article}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        className="h-52"
+      />
+      <div className="flex flex-1 flex-col p-8">
+        <div className="flex items-center gap-3">
+          <span className="t-label text-gold-ink">{article.type}</span>
+          <span aria-hidden className="h-1 w-1 rounded-full bg-line" />
+          <time className="t-label text-ink-muted" dateTime={article.date}>
+            {article.date}
+          </time>
+        </div>
+        <h3 className="mt-5 font-serif text-2xl leading-[1.08] text-ink transition-colors group-hover:text-gold-ink">
+          {article.title}
+        </h3>
+        {article.excerpt && (
+          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-ink-muted">{article.excerpt}</p>
+        )}
+        <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
+          <span className="t-label text-ink-muted">{article.source}</span>
+          <span className="inline-flex items-center gap-1 t-label text-gold-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+            Read <ArrowUpRight size={14} aria-hidden />
+          </span>
+        </div>
+      </div>
+    </motion.a>
+  );
+}
+
+/* --------------------------------------------------------------- Newsletter */
+function Newsletter() {
+  const reduced = useReducedMotion();
+  const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setNewsletterError("");
+    setError("");
 
-    if (!newsletterEmail.trim()) {
-      setNewsletterError("Email is required.");
+    if (!email.trim()) {
+      setError("Email is required.");
       return;
     }
-    if (!EMAIL_REGEX.test(newsletterEmail.trim())) {
-      setNewsletterError("Please enter a valid email address.");
+    if (!EMAIL_REGEX.test(email.trim())) {
+      setError("Please enter a valid email address.");
       return;
     }
 
-    setNewsletterSubmitting(true);
-
+    setSubmitting(true);
     try {
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: newsletterEmail.trim(),
-          _honeypot: newsletterHoneypot,
-        }),
+        body: JSON.stringify({ email: email.trim(), _honeypot: honeypot }),
       });
-
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setNewsletterError(data.error || "Something went wrong. Please try again.");
-        setNewsletterSubmitting(false);
+        setError(data.error || "Something went wrong. Please try again.");
+        setSubmitting(false);
         return;
       }
 
-      setNewsletterSubmitting(false);
-      setNewsletterSuccess(true);
-
+      setSubmitting(false);
+      setSuccess(true);
       setTimeout(() => {
-        setNewsletterSuccess(false);
-        setNewsletterEmail("");
+        setSuccess(false);
+        setEmail("");
       }, 4000);
     } catch {
-      setNewsletterError("Network error. Please check your connection and try again.");
-      setNewsletterSubmitting(false);
+      setError("Network error. Please check your connection and try again.");
+      setSubmitting(false);
     }
   };
 
-  const filteredArticles = articles.filter(article => {
-    const matchesCategory = selectedCategory === "All" || article.type === selectedCategory;
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         article.source.toLowerCase().includes(searchQuery.toLowerCase());
+  const errId = "newsletter-email-error";
+
+  return (
+    <Section id="newsletter" tone="abyss" grain>
+      <Container>
+        <FolioHeading index="02" label="Stay Connected" tone="dark" />
+        <div className="mt-12 grid gap-12 md:grid-cols-12">
+          <Reveal className="md:col-span-6">
+            <h2 className="t-h1 text-paper-on-dark">
+              Milestones, as they <span className="italic-display text-gold-light">happen.</span>
+            </h2>
+            <p className="t-lead mt-8 max-w-md text-muted-on-dark">
+              Join our newsletter for clinical progress, scientific publications, and company news —
+              key milestones only, no noise.
+            </p>
+            <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
+              {["Quarterly updates", "Key milestones only", "No spam"].map((item) => (
+                <li key={item} className="flex items-center gap-2 t-label text-muted-on-dark">
+                  <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-light" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal delay={0.1} className="md:col-span-5 md:col-start-8">
+            {success ? (
+              <motion.div
+                initial={reduced ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                role="status"
+                className="flex flex-col items-start gap-5 border-t border-gold-light/50 pt-10"
+              >
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gold-light/15">
+                  <CheckCircle2 size={28} className="text-gold-light" aria-hidden />
+                </span>
+                <div>
+                  <h3 className="font-serif text-2xl text-paper-on-dark">You’re subscribed.</h3>
+                  <p className="mt-2 text-muted-on-dark">
+                    Thank you. We’ll keep you posted on our progress.
+                  </p>
+                </div>
+              </motion.div>
+            ) : (
+              <form onSubmit={submit} noValidate className="border-t border-line-on-dark pt-10">
+                {/* Honeypot — off-screen, not tab-reachable */}
+                <div className="absolute left-[-9999px] top-0 h-0 w-0 overflow-hidden" aria-hidden>
+                  <label htmlFor="news-hp">Leave this field empty</label>
+                  <input
+                    id="news-hp"
+                    name="_honeypot"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                </div>
+
+                <label htmlFor="newsletter-email" className="t-label mb-1 block text-gold-light">
+                  Email address
+                </label>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+                  <input
+                    id="newsletter-email"
+                    name="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="name@company.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (error) setError("");
+                    }}
+                    aria-required="true"
+                    aria-invalid={error ? true : undefined}
+                    aria-describedby={error ? errId : undefined}
+                    className={clsx(
+                      "w-full bg-transparent border-b px-0 py-3 text-paper-on-dark placeholder:text-muted-on-dark/60 focus:outline-none transition-colors",
+                      error ? "border-rose" : "border-line-on-dark focus:border-gold-light",
+                    )}
+                  />
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-gold px-7 py-3.5 t-label text-plum-abyss transition-colors duration-300 hover:bg-paper-on-dark disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {submitting ? (
+                      <>
+                        <span
+                          aria-hidden
+                          className="h-4 w-4 animate-spin rounded-full border-2 border-plum-abyss/30 border-t-plum-abyss motion-reduce:animate-none"
+                        />
+                        Subscribing
+                      </>
+                    ) : (
+                      "Subscribe"
+                    )}
+                  </button>
+                </div>
+                {error && (
+                  <p id={errId} role="alert" className="mt-2 text-sm text-rose">
+                    {error}
+                  </p>
+                )}
+                <p className="mt-4 text-xs text-muted-on-dark">
+                  By subscribing, you agree to our privacy policy.
+                </p>
+              </form>
+            )}
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* --------------------------------------------------------------- Page */
+export default function NewsPage() {
+  const [selectedCategory, setSelectedCategory] = useState<ArticleType>("All");
+  const [query, setQuery] = useState("");
+
+  const filtered = articles.filter((a) => {
+    const matchesCategory = selectedCategory === "All" || a.type === selectedCategory;
+    const q = query.trim().toLowerCase();
+    const matchesSearch =
+      !q || a.title.toLowerCase().includes(q) || a.source.toLowerCase().includes(q);
     return matchesCategory && matchesSearch;
   });
 
-  const featuredArticle = articles.find(a => a.featured) || articles[0];
-  // Don't show featured article in the grid if we are on "All" view and no search,
-  // but if we filter, we might want to just show everything in a grid.
-  // Let's keep it simple: If "All" and no search, show featured separately.
-  // Otherwise just show grid.
-  const showFeaturedLayout = selectedCategory === "All" && !searchQuery;
-
+  const showFeaturedLayout = selectedCategory === "All" && !query.trim();
+  const featured = articles.find((a) => a.featured) ?? articles[0];
   const gridArticles = showFeaturedLayout
-    ? filteredArticles.filter(a => a.id !== featuredArticle.id)
-    : filteredArticles;
-
-  // Transform-only entrance variants — content stays visible if motion can't run.
-  const cardVariants = {
-    hidden: { y: reduced ? 0 : 20 },
-    visible: { y: 0 },
-  };
+    ? filtered.filter((a) => a.id !== featured.id)
+    : filtered;
 
   return (
-    <main className="min-h-screen bg-bone flex flex-col selection:bg-gold-primary/30">
-      <Navbar />
+    <>
+      <Nav />
+      <main id="main-content">
+        <Hero />
 
-      {/* Hero Section — luminous cream with a warm gold beat */}
-      <section
-        className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden border-b border-plum-dark/10"
-        style={{
-          background:
-            "radial-gradient(75% 55% at 70% 28%, rgba(201,169,97,0.15), transparent 60%), linear-gradient(180deg, #FAF6EC, #F4EEE1 62%)",
-        }}
-      >
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] max-w-[80vw] max-h-[80vw] rounded-full bg-gold-primary/15 blur-[120px]" />
-          <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] max-w-[80vw] max-h-[80vw] rounded-full bg-plum-primary/[0.08] blur-[90px]" />
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl border-t border-plum-dark/15 pt-10">
-            <span className="reveal-rise block mb-5" style={{ animationDelay: "0.05s" }}>
-              <Eyebrow>Newsroom</Eyebrow>
-            </span>
-            <h1
-              className="reveal-rise font-serif font-bold text-plum-dark mb-8 text-[clamp(2.6rem,8vw,5.5rem)] leading-[0.95] tracking-tight text-balance"
-              style={{ animationDelay: "0.12s" }}
+        {/* Filter + search — sticky editorial control bar */}
+        <div className="sticky top-0 z-30 border-y border-line bg-paper/85 backdrop-blur-xl">
+          <Container className="flex flex-col gap-4 py-5 md:flex-row md:items-center md:justify-between">
+            <div
+              role="group"
+              aria-label="Filter articles by category"
+              className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1"
             >
-              Pioneering progress in <br />
-              <span className="italic text-gold-deep">women&apos;s health</span>
-            </h1>
-            <p
-              className="reveal-rise text-xl text-black-soft max-w-2xl leading-relaxed mb-10"
-              style={{ animationDelay: "0.24s" }}
-            >
-              Stay up to date with our latest breakthroughs, clinical milestones, and corporate announcements as we work to redefine standard of care.
-            </p>
-
-            <div className="reveal-rise flex flex-wrap gap-4" style={{ animationDelay: "0.34s" }}>
-              <a href="#newsletter" className="flex items-center gap-2 px-6 py-3 bg-plum-dark text-bone rounded-lg font-bold uppercase tracking-wider text-xs hover:bg-gold-primary hover:text-plum-dark transition-colors shadow-lg shadow-plum-dark/20">
-                <Mail size={16} aria-hidden="true" /> Subscribe to Updates
-              </a>
-              <Link href="/media" className="flex items-center gap-2 px-6 py-3 bg-bone-raised border border-plum-dark/15 rounded-lg text-plum-dark font-bold uppercase tracking-wider text-xs hover:border-gold-primary hover:text-gold-deep transition-colors shadow-sm">
-                <Download size={16} aria-hidden="true" /> Media Kit
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Filters & Search */}
-      <section className="py-8 border-b border-plum-dark/10 sticky top-[88px] bg-bone/90 backdrop-blur-md z-30">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-
-          {/* Categories */}
-          <div role="group" aria-label="Filter articles by category" className="flex overflow-x-auto pb-2 md:pb-0 gap-2 w-full md:w-auto no-scrollbar">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                aria-pressed={selectedCategory === category}
-                className={clsx(
-                  "px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary",
-                  selectedCategory === category
-                    ? "bg-plum-dark text-bone shadow-md"
-                    : "bg-bone-raised text-gray-therapeutics border border-plum-dark/10 hover:border-gold-primary/40 hover:text-plum-dark"
-                )}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          {/* Search */}
-          <div className="relative w-full md:w-72 group">
-            <input
-              type="text"
-              placeholder="Search articles..."
-              aria-label="Search articles"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-full bg-bone-raised border border-plum-dark/10 focus:bg-white focus:border-gold-primary focus:outline-none transition-all text-sm text-black-soft placeholder:text-gray-therapeutics"
-            />
-            <Search size={16} aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-therapeutics/70 group-focus-within:text-gold-deep transition-colors" />
-          </div>
-        </div>
-      </section>
-
-      <section aria-label="News articles" className="flex-grow pb-24 pt-12">
-        <div className="container mx-auto px-6">
-          <h2 className="sr-only">News articles</h2>
-
-          {/* Featured Article */}
-          <AnimatePresence mode="wait">
-            {showFeaturedLayout && (
-              <motion.a
-                key="featured"
-                href={featuredArticle.link}
-                target={featuredArticle.link.startsWith('http') ? '_blank' : '_self'}
-                rel={featuredArticle.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                initial={reduced ? false : { y: 20 }}
-                animate={{ y: 0 }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-16 block"
-              >
-                 <div className="group relative rounded-2xl overflow-hidden bg-bone-raised border border-plum-dark/10 grid grid-cols-1 lg:grid-cols-12 hover:border-gold-primary/40 hover:shadow-[0_20px_60px_rgba(46,38,58,0.10)] transition-all duration-500">
-                    {/* Luminous hairline accent */}
-                    <span className="absolute top-0 left-0 h-[3px] w-24 bg-gold-primary transition-all duration-500 group-hover:w-full z-10" />
-                    <div className="lg:col-span-7 relative h-64 md:h-96 lg:h-auto overflow-hidden bg-bone">
-                        {featuredArticle.image.endsWith('.svg') ? (
-                            <div className="absolute inset-0 flex items-center justify-center p-12 bg-gradient-to-br from-plum-primary/5 to-gold-primary/[0.08]">
-                                <Image
-                                    src={featuredArticle.image}
-                                    alt={featuredArticle.title}
-                                    width={400}
-                                    height={300}
-                                    style={{ width: "auto", height: "auto" }}
-                                    className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                                />
-                            </div>
-                        ) : (
-                            <>
-                                <Image
-                                    src={featuredArticle.image}
-                                    alt={featuredArticle.title}
-                                    fill
-                                    sizes="(max-width: 1024px) 100vw, 58vw"
-                                    priority
-                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-plum-dark/50 to-transparent lg:hidden" />
-                            </>
-                        )}
-                    </div>
-                    <div className="lg:col-span-5 p-10 lg:p-14 flex flex-col justify-center relative bg-bone-raised">
-                        <div className="flex items-center gap-3 mb-6">
-                             <span className="px-3 py-1 rounded-full bg-gold-primary/12 border border-gold-primary/30 text-gold-deep font-bold uppercase tracking-wider text-xs">
-                                {featuredArticle.type}
-                             </span>
-                             <time className="text-gray-therapeutics text-sm flex items-center gap-1" dateTime={featuredArticle.date}>
-                                <Calendar size={14} aria-hidden="true" /> {featuredArticle.date}
-                             </time>
-                        </div>
-
-                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-plum-dark mb-6 group-hover:text-gold-deep transition-colors leading-tight text-balance">
-                            {featuredArticle.title}
-                        </h2>
-
-                        {featuredArticle.excerpt && (
-                            <p className="text-black-soft mb-8 leading-relaxed">
-                                {featuredArticle.excerpt}
-                            </p>
-                        )}
-
-                        <div className="flex items-center gap-2 text-plum-dark font-bold uppercase tracking-widest text-xs group-hover:translate-x-2 transition-transform mt-auto">
-                            Read Story <ArrowUpRight size={16} aria-hidden="true" />
-                        </div>
-                    </div>
-                 </div>
-              </motion.a>
-            )}
-          </AnimatePresence>
-
-          {/* Articles Grid */}
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            initial="hidden"
-            animate="visible"
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-          >
-            <AnimatePresence>
-                {gridArticles.map((article) => (
-                    <motion.a
-                        key={article.id}
-                        layout
-                        href={article.link}
-                        target={article.link.startsWith('http') ? '_blank' : '_self'}
-                        rel={article.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        variants={cardVariants}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.4 }}
-                        className="group relative bg-bone-raised rounded-2xl overflow-hidden border border-plum-dark/10 hover:border-gold-primary/40 hover:shadow-[0_12px_40px_rgba(46,38,58,0.10)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
-                    >
-                        {/* Luminous hairline accent */}
-                        <span className="absolute top-0 left-0 h-[2px] w-16 bg-gold-primary transition-all duration-500 group-hover:w-full z-10" />
-                        <div className="relative h-60 overflow-hidden bg-bone">
-                            {article.image.endsWith('.svg') ? (
-                                <div className="absolute inset-0 flex items-center justify-center p-8 bg-gradient-to-br from-plum-primary/5 to-gold-primary/[0.08]">
-                                    <Image
-                                        src={article.image}
-                                        alt={article.title}
-                                        width={300}
-                                        height={200}
-                                        style={{ width: "auto", height: "auto" }}
-                                        className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                                    />
-                                </div>
-                            ) : (
-                                <Image
-                                    src={article.image}
-                                    alt={article.title}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                />
-                            )}
-                            <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-bone/95 backdrop-blur text-[10px] font-bold uppercase tracking-wider text-plum-dark shadow-sm">
-                                {article.source}
-                            </div>
-                        </div>
-                        <div className="p-8 flex flex-col flex-grow">
-                             <div className="flex items-center gap-3 mb-4 text-xs text-gray-therapeutics font-medium uppercase tracking-widest">
-                                 <span className="text-gold-deep">{article.type}</span>
-                                 <span aria-hidden="true">•</span>
-                                 <time dateTime={article.date}>{article.date}</time>
-                             </div>
-                             <h3 className="text-xl font-serif font-bold text-plum-dark mb-3 group-hover:text-gold-deep transition-colors line-clamp-3 text-balance">
-                                 {article.title}
-                             </h3>
-                             {article.excerpt && (
-                                <p className="text-gray-therapeutics text-sm leading-relaxed line-clamp-3 mb-4">
-                                    {article.excerpt}
-                                </p>
-                             )}
-                             <div className="mt-auto pt-4 border-t border-plum-dark/10 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-plum-dark">
-                                 <span className="opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 group-focus-visible:translate-x-0 duration-300 flex items-center">
-                                    Read More <ArrowUpRight size={14} aria-hidden="true" className="ml-1" />
-                                 </span>
-                                 <span className="text-[10px] text-gray-therapeutics font-normal normal-case tracking-normal">{article.source}</span>
-                             </div>
-                        </div>
-                    </motion.a>
-                ))}
-            </AnimatePresence>
-          </motion.div>
-
-          {filteredArticles.length === 0 && (
-            <div role="status" className="text-center py-20">
-                <div className="bg-bone-raised border border-plum-dark/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Search size={24} aria-hidden="true" className="text-gray-therapeutics" />
-                </div>
-                <h3 className="text-xl font-serif font-bold text-plum-dark mb-2">No articles found</h3>
-                <p className="text-gray-therapeutics">Try adjusting your search or filter criteria.</p>
-                <button
-                    onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}
-                    className="mt-6 text-gold-deep font-bold hover:underline"
-                >
-                    Clear filters
-                </button>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Newsletter Section — cinematic plum-dark beat */}
-      <section id="newsletter" className="bg-plum-dark py-20 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-gold-primary/[0.06] to-transparent pointer-events-none" />
-        <div className="container mx-auto px-6 relative z-10">
-            <motion.div
-                initial={reduced ? false : { y: 30 }}
-                whileInView={{ y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-                className="grid md:grid-cols-2 gap-12 items-center"
-            >
-                <div>
-                    <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6 text-balance">Stay connected with our journey</h2>
-                    <p className="text-white/70 text-lg mb-8 max-w-md">
-                        Join our newsletter to receive the latest updates on our clinical progress, scientific publications, and company news.
-                    </p>
-                    <div className="flex flex-col gap-4">
-                        <div className="flex items-center gap-4 text-sm text-white/60">
-                            <span className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold-primary" /> Quarterly Updates</span>
-                            <span className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold-primary" /> Key Milestones Only</span>
-                            <span className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-gold-primary" /> No Spam</span>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white/5 backdrop-blur-sm p-8 rounded-lg border border-white/10">
-                    {newsletterSuccess ? (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          role="status"
-                          className="flex flex-col items-center gap-4 py-8 text-center"
-                        >
-                          <div className="w-14 h-14 rounded-full bg-gold-primary/20 flex items-center justify-center">
-                            <CheckCircle2 className="text-gold-primary" size={28} aria-hidden="true" />
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold mb-2">You&apos;re Subscribed!</h3>
-                            <p className="text-white/70">Thank you for subscribing. We&apos;ll keep you updated on our progress.</p>
-                          </div>
-                        </motion.div>
-                    ) : (
-                    <form onSubmit={handleNewsletterSubmit} className="space-y-4">
-                        {/* Honeypot field - hidden from humans */}
-                        <div className="absolute opacity-0 -z-10" aria-hidden="true">
-                            <label htmlFor="news_website_field">Website</label>
-                            <input
-                                type="text"
-                                id="news_website_field"
-                                name="_honeypot"
-                                value={newsletterHoneypot}
-                                onChange={(e) => setNewsletterHoneypot(e.target.value)}
-                                tabIndex={-1}
-                                autoComplete="off"
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="newsletter_email" className="block text-xs font-bold uppercase tracking-widest mb-2 text-gold-primary">Email Address</label>
-                            <input
-                                type="email"
-                                id="newsletter_email"
-                                placeholder="name@company.com"
-                                value={newsletterEmail}
-                                onChange={(e) => {
-                                    setNewsletterEmail(e.target.value);
-                                    if (newsletterError) setNewsletterError("");
-                                }}
-                                aria-required="true"
-                                aria-invalid={newsletterError ? true : undefined}
-                                aria-describedby={newsletterError ? "newsletter_email_error" : undefined}
-                                className={`w-full px-4 py-3 rounded bg-white/10 border text-white placeholder:text-white/30 focus:outline-none transition-colors ${
-                                    newsletterError ? "border-red-400 focus:border-red-400" : "border-white/20 focus:border-gold-primary"
-                                }`}
-                            />
-                            {newsletterError && (
-                                <p id="newsletter_email_error" role="alert" className="mt-1.5 text-sm text-red-400">{newsletterError}</p>
-                            )}
-                        </div>
-                        <button
-                            type="submit"
-                            disabled={newsletterSubmitting}
-                            className="w-full py-4 bg-gold-primary text-plum-dark font-bold uppercase tracking-widest rounded hover:bg-white transition-colors mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                        >
-                            {newsletterSubmitting ? (
-                                <>
-                                    <div aria-hidden="true" className="w-4 h-4 border-2 border-plum-dark/30 border-t-plum-dark rounded-full animate-spin motion-reduce:animate-none" />
-                                    Subscribing...
-                                </>
-                            ) : (
-                                "Subscribe"
-                            )}
-                        </button>
-                        <p className="text-xs text-white/60 text-center">
-                            By subscribing, you agree to our Privacy Policy.
-                        </p>
-                    </form>
+              {categories.map((category) => {
+                const active = selectedCategory === category;
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => setSelectedCategory(category)}
+                    aria-pressed={active}
+                    className={clsx(
+                      "t-label whitespace-nowrap rounded-full px-5 py-2.5 transition-colors duration-300",
+                      active
+                        ? "bg-plum-deep text-paper-on-dark"
+                        : "border border-line text-ink-muted hover:border-gold-ink hover:text-gold-ink",
                     )}
-                </div>
-            </motion.div>
-        </div>
-      </section>
+                  >
+                    {category}
+                  </button>
+                );
+              })}
+            </div>
 
+            <div className="relative w-full md:w-72">
+              <Search
+                size={16}
+                aria-hidden
+                className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-ink-muted"
+              />
+              <input
+                type="search"
+                aria-label="Search articles by title or source"
+                placeholder="Search articles…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full border-b border-line bg-transparent py-2.5 pl-7 pr-2 text-ink placeholder:text-ink-muted/60 focus:border-gold-ink focus:outline-none transition-colors"
+              />
+            </div>
+          </Container>
+        </div>
+
+        {/* Articles */}
+        <Section tone="paper" aria-label="News articles">
+          <Container>
+            <FolioHeading index="01" label="Press & Recognition" />
+            <h2 className="sr-only">News articles</h2>
+
+            <div className="mt-14">
+              <AnimatePresence mode="wait">
+                {showFeaturedLayout && <FeaturedCard key="featured" article={featured} />}
+              </AnimatePresence>
+
+              {gridArticles.length > 0 ? (
+                <motion.div
+                  className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
+                  initial="hidden"
+                  animate="show"
+                  variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
+                >
+                  <AnimatePresence>
+                    {gridArticles.map((article) => (
+                      <ArticleCard key={article.id} article={article} />
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
+              ) : (
+                <div role="status" className="border-t border-line py-20 text-center">
+                  <h3 className="font-serif text-3xl text-ink">No articles found.</h3>
+                  <p className="mt-3 text-ink-muted">
+                    Try adjusting your search or filter criteria.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setQuery("");
+                      setSelectedCategory("All");
+                    }}
+                    className="klink mt-8 t-label text-gold-ink"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+              )}
+            </div>
+          </Container>
+        </Section>
+
+        <Newsletter />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }

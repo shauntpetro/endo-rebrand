@@ -3,14 +3,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Investors",
   description:
-    "Investor relations for EndoCyclic Therapeutics. Access pipeline data, clinical milestones, and partnership opportunities in precision medicine for endometriosis.",
+    "The diligence front door for EndoCyclic Therapeutics. Investment highlights, an FDA IND Allowance (2026) lead program, and a confidential data room request for qualified investors and partners.",
   alternates: {
     canonical: "/investors",
   },
   openGraph: {
     title: "Investors | EndoCyclic Therapeutics",
     description:
-      "Pipeline data, clinical milestones, and partnership opportunities in precision medicine for endometriosis.",
+      "Investment highlights and a confidential data room request for qualified investors and partners in non-hormonal precision medicine.",
     url: "/investors",
   },
 };
@@ -21,7 +21,7 @@ export default function InvestorsLayout({ children }: { children: React.ReactNod
     "@type": "WebPage",
     name: "Investor Relations — EndoCyclic Therapeutics",
     description:
-      "Access pipeline data, clinical milestones, and investor materials for EndoCyclic Therapeutics.",
+      "Investment highlights, clinical milestones, and a confidential data room request for EndoCyclic Therapeutics.",
     mainEntity: {
       "@type": "Organization",
       name: "EndoCyclic Therapeutics",

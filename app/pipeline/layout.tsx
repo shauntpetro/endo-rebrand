@@ -3,14 +3,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Pipeline — Therapeutic & Diagnostic Programs",
   description:
-    "EndoCyclic's clinical and preclinical pipeline: ENDO-205 (IND cleared, Phase 1 for endometriosis), ENDO-995 (oncology), and FemLUNA diagnostic imaging agent.",
+    "EndoCyclic's pipeline: two therapeutic and diagnostic pairs on one non-hormonal precision peptide platform. ENDO-205 (FDA IND Allowance, Phase 1) and FemLUNA™ in endometriosis; ENDO-995 and ENDO-311 in oncology.",
   alternates: {
     canonical: "/pipeline",
   },
   openGraph: {
     title: "Pipeline — Therapeutic & Diagnostic Programs | EndoCyclic Therapeutics",
     description:
-      "ENDO-205: IND cleared, first-in-class non-hormonal endometriosis therapy. ENDO-995: targeted oncology. FemLUNA: diagnostic imaging.",
+      "Four programs, one platform. ENDO-205 (FDA IND Allowance · Phase 1) and FemLUNA™ in endometriosis; ENDO-995 and ENDO-311 in oncology.",
     url: "/pipeline",
   },
 };
@@ -23,13 +23,13 @@ export default function PipelineLayout({ children }: { children: React.ReactNode
         "@type": "Drug",
         name: "ENDO-205",
         description:
-          "First-in-class non-hormonal therapeutic targeting the root cause of endometriosis lesions. IND cleared by the FDA.",
+          "First-in-class, non-hormonal precision peptide designed to eliminate endometriosis lesions and resolve associated symptoms. FDA IND Allowance (2026); Phase 1.",
         mechanismOfAction:
-          "Intracellular Peptide Inhibitor — pH-activated cyclic peptide selectively absorbed by diseased tissue",
+          "Non-hormonal precision peptide — pH-activated and selectively taken up by diseased tissue",
         drugClass: "Cyclic Peptide Therapeutic",
         clinicalPharmacology:
           "Selective uptake by endometriotic lesions via pH-responsive mechanism",
-        legalStatus: "Investigational New Drug (IND cleared)",
+        legalStatus: "Investigational New Drug (FDA IND Allowance, 2026)",
         manufacturer: {
           "@type": "Organization",
           name: "EndoCyclic Therapeutics",
@@ -54,6 +54,18 @@ export default function PipelineLayout({ children }: { children: React.ReactNode
           "Novel non-hormonal therapeutic peptide for malignant solid tumors, with initial focus on colon and endometrial cancers.",
         mechanismOfAction: "Tumor-Selective Cyclic Peptide",
         drugClass: "Cyclic Peptide Therapeutic",
+        legalStatus: "Investigational",
+        manufacturer: {
+          "@type": "Organization",
+          name: "EndoCyclic Therapeutics",
+        },
+      },
+      {
+        "@type": "Drug",
+        name: "ENDO-311",
+        description:
+          "Investigational imaging agent for non-invasive detection and monitoring of malignant solid tumors. Radiation-free, non-hormonal, and free of heavy metals. Companion diagnostic to ENDO-995.",
+        drugClass: "Targeted Imaging Agent",
         legalStatus: "Investigational",
         manufacturer: {
           "@type": "Organization",
