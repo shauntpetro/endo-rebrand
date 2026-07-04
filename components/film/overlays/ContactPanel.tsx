@@ -110,7 +110,7 @@ export default function ContactPanel({ param }: { param?: string }) {
             initial={reduced ? { opacity: 0 } : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE, delay: 0.05 }}
-            className="t-h1 mt-8 max-w-[10ch] uppercase text-cream"
+            className="t-h2 mt-8 max-w-[14ch] uppercase text-cream"
           >
             Let&rsquo;s change what a diagnosis{" "}
             <span className="text-gold-soft">can mean.</span>
