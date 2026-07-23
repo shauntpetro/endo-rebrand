@@ -12,6 +12,17 @@ const hanken = Hanken_Grotesk({
   display: "swap",
 });
 
+const socialImageOrigin = (
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  process.env.RAILWAY_PUBLIC_DOMAIN ??
+  "https://endocyclic.com"
+).replace(/\/$/, "");
+const socialImageUrl = `${
+  socialImageOrigin.startsWith("http")
+    ? socialImageOrigin
+    : `https://${socialImageOrigin}`
+}/endocyclic-social-card.jpg`;
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://endocyclic.com"),
   alternates: { canonical: "/" },
@@ -44,12 +55,28 @@ export const metadata: Metadata = {
     title: "EndoCyclic Therapeutics | Clinical-Stage Precision Medicine",
     description:
       "Non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology. ENDO-205 has FDA IND Allowance.",
+    images: [
+      {
+        url: socialImageUrl,
+        width: 1200,
+        height: 630,
+        alt: "EndoCyclic Therapeutics precision peptide platform illustration with company logo.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "EndoCyclic Therapeutics | Clinical-Stage Precision Medicine",
     description:
       "Non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology.",
+    images: [
+      {
+        url: socialImageUrl,
+        width: 1200,
+        height: 630,
+        alt: "EndoCyclic Therapeutics precision peptide platform illustration with company logo.",
+      },
+    ],
   },
   robots: {
     index: true,
