@@ -1,37 +1,42 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Impact — The Endometriosis Crisis",
+  title: "Impact",
   description:
-    "Over 190 million women and girls worldwide live with endometriosis. Learn about the unmet medical need driving EndoCyclic's mission for non-hormonal solutions.",
-  alternates: {
-    canonical: "/impact",
-  },
+    "Endometriosis affects 190M+ women worldwide, carries a $200B annual US burden, and takes an average of eight years to diagnose. ENDO-205 is designed to eliminate lesions and modify disease biology.",
+  alternates: { canonical: "/impact" },
   openGraph: {
-    title: "Impact — The Endometriosis Crisis | EndoCyclic Therapeutics",
+    title: "Impact | EndoCyclic Therapeutics",
     description:
-      "190M+ affected worldwide. 7+ year average diagnosis delay. Zero non-hormonal FDA-approved treatments. Until now.",
-    url: "/impact",
+      "The scale of endometriosis — and a non-hormonal, disease-modifying approach designed to change what a diagnosis can mean.",
+    url: "https://endocyclic.com/impact",
+    type: "website",
   },
 };
 
-export default function ImpactLayout({ children }: { children: React.ReactNode }) {
+export default function ImpactLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "MedicalCondition",
-    name: "Endometriosis",
-    alternateName: "Endometriotic Disease",
+    "@type": "MedicalWebPage",
+    name: "Impact — EndoCyclic Therapeutics",
+    url: "https://endocyclic.com/impact",
     description:
-      "A chronic condition affecting over 190 million women and girls worldwide, characterized by tissue similar to the uterine lining growing outside the uterus.",
-    epidemiology:
-      "Affects approximately 1 in 10 women of reproductive age worldwide. Over 7.5 million affected in the United States alone.",
-    possibleComplication: [
-      "Infertility",
-      "Chronic pelvic pain",
-      "Autoimmune conditions",
-      "Cardiovascular risks",
-    ],
-    typicalTest: "Laparoscopic surgery (current standard), FemLUNA imaging (investigational)",
+      "The disease burden of endometriosis and ENDO-205, a non-hormonal precision therapeutic designed to eliminate lesions and modify disease biology.",
+    about: {
+      "@type": "MedicalCondition",
+      name: "Endometriosis",
+      description:
+        "A chronic disease in which endometrial-like tissue grows outside the uterus — a leading cause of infertility and chronic pelvic pain.",
+    },
+    isPartOf: {
+      "@type": "MedicalOrganization",
+      name: "EndoCyclic Therapeutics",
+      url: "https://endocyclic.com",
+    },
   };
 
   return (

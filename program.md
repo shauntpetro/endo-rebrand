@@ -15,20 +15,16 @@ Increase buyer/investor clarity and trust. The site should function as a strateg
 7. Every homepage section should answer one question in 10 seconds
 
 ## Editable Surface
-Only these files should be modified for content experiments:
-- `components/Hero.tsx` — headline, subheadline, badge
-- `components/MilestoneProofBar.tsx` — milestone labels and sublabels
-- `components/WhyNowSection.tsx` — card content
-- `components/MissionPillars.tsx` — pillar descriptions
-- `components/PipelinePreview.tsx` — pipeline items and descriptions
-- `components/ImpactSection.tsx` — stats and impact copy
+Modify these for content experiments (post-2026 "Calm Clinical" multi-page site):
+- `lib/site.ts` — shared content/data (nav, pipeline, burden stats, milestones, partners, team bios, news, contacts)
+- `app/page.tsx` — homepage (calm reference)
+- `app/<route>/page.tsx` + `app/<route>/layout.tsx` — the 9 pages (page = content; layout = metadata)
+- `components/site/*` — shared UI (Nav, Footer, Section, Container, Eyebrow, Button, Reveal, CountUp, Field)
 
 ## Fixed Surface (Do Not Modify for Content)
-- `app/globals.css` — design tokens
-- `tailwind.config.ts` — color palette
-- `components/PeptideCanvas.tsx` — 3D visualization
-- `components/mechanism/*` — scientific visualizations
+- `app/globals.css` — design tokens (Tailwind v4 `@theme`) and type/layout utilities
 - `truth.md` — approved facts
+- API routes `app/api/*` — form contracts (contact/newsletter/investor); keep field names stable
 
 ## Eval Criteria (Score 1-5 each)
 1. **Factual accuracy** — Does it match truth.md?

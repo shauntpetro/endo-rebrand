@@ -1,339 +1,423 @@
-"use client";
-
-import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { X, Linkedin, ArrowRight } from "lucide-react";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import Button from "@/components/site/Button";
+import Container from "@/components/site/Container";
+import Eyebrow from "@/components/site/Eyebrow";
+import NextChapter from "@/components/site/NextChapter";
+import PageHero from "@/components/site/PageHero";
+import Reveal from "@/components/site/Reveal";
+import Section from "@/components/site/Section";
+import { TEAM, type Member } from "@/lib/site";
 
-const team = [
-  {
-    id: "tanya",
-    name: "Tanya Petrossian, Ph.D.",
-    role: "CEO, Founder, and Inventor",
-    bio: "Dr. Petrossian is a biochemist and entrepreneur with over 15 years of experience in peptide therapeutics and targeted drug delivery. She holds a B.S. and Ph.D. in Biochemistry & Molecular Biology from UCLA, where she trained under Distinguished Professor Steven Clarke. Named City of Los Angeles Entrepreneur in Residence and a Biocom California Life Science Catalyst Award winner, she has led EndoCyclic from discovery through FDA IND clearance.",
-    image: "/team/tanya-petrossian.avif",
-    quote: "Our peptides help restore the body's natural surveillance system.",
-    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics"
-  },
-  {
-    id: "melanie",
-    name: "Melanie Hartsough, Ph.D.",
-    role: "Nonclinical Toxicology",
-    bio: "Dr. Hartsough holds a Ph.D. in Pharmacology from Penn State College of Medicine and completed a postdoctoral fellowship at the NIH. A former FDA reviewer in both CBER and CDER, she brings over two decades of experience in pharmacology and toxicology assessment. She is the first recipient of the ACT Mildred Christian Women's Leadership in Toxicology Award and a former President of the American Board of Toxicology.",
-    image: "/team/melanie-hartsough.avif",
-    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics"
-  },
-  {
-    id: "david",
-    name: "David Lin, Ph.D.",
-    role: "CMC",
-    bio: "Dr. Lin brings over 27 years of pharmaceutical regulatory experience in Chemistry, Manufacturing, and Controls (CMC). He holds a Ph.D. in organic chemistry and an MBA, and previously served as a CMC reviewer and acting Division Director at the FDA's Office of New Drug Chemistry (CDER).",
-    image: "/team/david-lin.avif",
-    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics"
-  },
-  {
-    id: "frank",
-    name: "Frank Fernandez",
-    role: "CFO",
-    bio: "Frank brings decades of financial leadership experience in the life sciences sector, guiding strategic financial planning and investor relations.",
-    image: "/team/frank-fernandez.avif",
-    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics"
-  },
-  {
-    id: "andrea",
-    name: "Andrea Lukes, MD",
-    role: "Clinical Affairs",
-    bio: "Dr. Lukes is a board-certified OB/GYN and Fellow of ACOG with over 30 years of clinical experience. She has conducted or overseen more than 90 clinical trials of investigational women's health products, spanning endometriosis, uterine fibroids, contraception, and menopause. She is the founder of Carolina Women's Research & Wellness Center.",
-    image: "/team/andrea-lukes.avif",
-    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics"
-  },
-  {
-    id: "aileen",
-    name: "Aileen Ryan",
-    role: "Regulatory Affairs",
-    bio: "Aileen brings over 40 years of pharmaceutical regulatory experience, including leadership roles at Ludwig Institute for Cancer Research and Bayer Pharmaceuticals. She holds an M.S. in Basic Medical Sciences and has guided IND, NDA, BLA, and MAA submissions across oncology, women's health, and rare diseases.",
-    image: "/team/aileen-ryan.avif",
-    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics"
-  },
-  {
-    id: "miganush",
-    name: "Miganush Stepanians, Ph.D.",
-    role: "Biostatistics",
-    bio: "Dr. Stepanians holds a Ph.D. in Statistics from Boston University and an M.S. in Mathematics from MIT. With over 30 years in drug development, she has designed analyses for more than 20 successful marketing applications (NDAs/MAAs) and has presented on behalf of sponsors in meetings with the FDA.",
-    image: "/team/miganush-stepanians.avif",
-    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics"
-  }
-];
+const [FOUNDER, ...DEVELOPMENT_TEAM] = TEAM;
 
-export default function TeamPage() {
-  const [selectedMember, setSelectedMember] = useState<typeof team[0] | null>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const lastFocusedRef = useRef<HTMLElement | null>(null);
+const PORTRAIT_PLACEMENTS: Record<string, string> = {
+  tanya:
+    "col-span-3 col-start-1 row-span-1 row-start-1 sm:col-span-2 sm:row-span-3 sm:row-start-1",
+  melanie:
+    "col-span-1 col-start-1 row-start-2 sm:col-start-3 sm:row-start-1",
+  david:
+    "col-span-1 col-start-2 row-start-2 sm:col-start-4 sm:row-start-1",
+  frank:
+    "col-span-1 col-start-3 row-start-2 sm:col-start-3 sm:row-start-2",
+  andrea:
+    "col-span-1 col-start-1 row-start-3 sm:col-start-4 sm:row-start-2",
+  aileen:
+    "col-span-1 col-start-2 row-start-3 sm:col-start-3 sm:row-start-3",
+  miganush:
+    "col-span-1 col-start-3 row-start-3 sm:col-start-4 sm:row-start-3",
+};
 
-  // Close modal on Escape key + trap Tab focus inside the dialog
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      setSelectedMember(null);
-      return;
-    }
-    if (e.key === "Tab" && modalRef.current) {
-      const focusables = modalRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
-      if (focusables.length === 0) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      const active = document.activeElement as HTMLElement | null;
-      const inside = active ? modalRef.current.contains(active) : false;
-      if (e.shiftKey) {
-        if (!inside || active === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else if (!inside || active === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-  }, []);
+const PORTRAIT_TONES: Record<string, string> = {
+  tanya: "bg-peony",
+  melanie: "bg-tint-teal",
+  david: "bg-tint-warm",
+  frank: "bg-tint-plum",
+  andrea: "bg-tint-plum",
+  aileen: "bg-tint-warm",
+  miganush: "bg-tint-teal",
+};
 
-  useEffect(() => {
-    if (selectedMember) {
-      lastFocusedRef.current = document.activeElement as HTMLElement | null;
-      document.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-      // Move focus into the dialog once it mounts
-      requestAnimationFrame(() => closeButtonRef.current?.focus());
-    } else {
-      document.body.style.overflow = "";
-      // Restore focus to the element that opened the dialog
-      if (lastFocusedRef.current) {
-        lastFocusedRef.current.focus();
-        lastFocusedRef.current = null;
-      }
-    }
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [selectedMember, handleKeyDown]);
+const PORTRAIT_FOCAL_POINTS: Record<string, string> = {
+  tanya: "object-[50%_12%]",
+  melanie: "object-[50%_18%]",
+  david: "object-[50%_15%]",
+  frank: "object-[50%_22%]",
+  andrea: "object-[50%_16%]",
+  aileen: "object-[50%_18%]",
+  miganush: "object-[50%_14%]",
+};
 
+const FOUNDER_PROOF = [
+  {
+    label: "Company role",
+    value: "Founder & CEO",
+    detail: "EndoCyclic Therapeutics, Inc.",
+  },
+  {
+    label: "Platform",
+    value: "Precision peptide",
+    detail: "pH-mediated activation · Selective uptake",
+  },
+  {
+    label: "Clinical transition",
+    value: "Phase 1",
+    detail: "ENDO-205 · FDA IND Allowance (2026)",
+  },
+  {
+    label: "Portfolio reach",
+    value: "Three paths",
+    detail: "Therapeutics · Diagnostics · Oncology",
+  },
+  {
+    label: "Women’s health network",
+    value: "Founding member",
+    detail: "Milken Institute Women’s Health Network",
+  },
+] as const;
+
+const DEVELOPMENT_CHAPTERS = [
+  {
+    index: "01",
+    verb: "Prepare",
+    title: "Nonclinical toxicology · CMC · Regulatory affairs",
+    memberIds: ["melanie", "david", "aileen"],
+  },
+  {
+    index: "02",
+    verb: "Evaluate",
+    title: "Clinical affairs · Biostatistics",
+    memberIds: ["andrea", "miganush"],
+  },
+  {
+    index: "03",
+    verb: "Steward",
+    title: "Financial leadership",
+    memberIds: ["frank"],
+  },
+] as const;
+
+function getChapterMembers(memberIds: readonly string[]) {
+  return memberIds.flatMap((memberId) => {
+    const member = DEVELOPMENT_TEAM.find((candidate) => candidate.id === memberId);
+    return member ? [member] : [];
+  });
+}
+
+function TeamPortraitField() {
   return (
-    <main className="min-h-screen bg-bone flex flex-col font-sans selection:bg-gold-primary selection:text-white">
-      <Navbar />
-
-      <div
-        className="pt-24 md:pt-32 pb-12 md:pb-20 flex-grow relative"
-        style={{
-          background:
-            "radial-gradient(60% 40% at 78% 8%, rgba(201,169,97,0.10), transparent 60%)",
-        }}
-      >
-        <div className="container mx-auto px-6 max-w-7xl relative z-10">
-          {/* Header Section — deterministic CSS reveal (visible in static state) */}
-          <div className="mb-16 md:mb-20 max-w-4xl">
-            <span
-              className="reveal-rise mb-6 block"
-              style={{ animationDelay: "0.05s" }}
-            >
-              <Eyebrow>The People Behind the Platform</Eyebrow>
-            </span>
-            <h1
-              className="reveal-rise font-serif font-bold tracking-tighter text-plum-dark text-[clamp(2.75rem,8vw,6rem)] leading-[0.9] text-balance mb-6"
-              style={{ animationDelay: "0.15s" }}
-            >
-              Our Team
-            </h1>
-            <div className="reveal-rise w-16 h-0.5 bg-gold-primary mb-6" style={{ animationDelay: "0.25s" }} />
-            <p
-              className="reveal-rise text-xl md:text-2xl text-black-soft leading-relaxed font-light max-w-2xl text-balance"
-              style={{ animationDelay: "0.35s" }}
-            >
-              Led by Dr. Tanya Petrossian, we combine world-class expertise in peptide chemistry, oncology, and women&apos;s health to advance a precision medicine platform.
-            </p>
-          </div>
-
-          {/* Founder Spotlight — cinematic plum-dark beat */}
-          <div
-            className="reveal-rise mb-24 md:mb-28 rounded-2xl overflow-hidden bg-plum-dark text-cream-primary relative"
-            style={{ animationDelay: "0.15s" }}
-          >
-            {/* Warm luminous accent — single confident glow */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(45% 60% at 24% 40%, rgba(201,169,97,0.18), transparent 65%)",
-              }}
-            />
-            <div className="flex flex-col md:flex-row items-stretch gap-0 relative z-10">
-              <div className="w-full md:w-5/12 lg:w-4/12">
-                <div className="relative aspect-[3/4] md:h-full overflow-hidden group">
-                  <Image
-                    src={team[0].image}
-                    alt={team[0].name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    priority
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-              </div>
-
-              <div className="w-full md:w-7/12 lg:w-8/12 flex items-center">
-                <div className="border-l-2 border-gold-primary pl-8 md:pl-10 py-10 md:py-12 pr-8">
-                  <Eyebrow tone="gold-on-dark" className="mb-3 block">Founder &amp; CEO</Eyebrow>
-                  <h2 className="text-3xl md:text-5xl font-serif font-bold text-cream-primary mb-5 tracking-tight text-balance">
-                    {team[0].name}
-                  </h2>
-                  <blockquote className="text-xl md:text-2xl font-light italic text-gold-light mb-6 font-serif leading-relaxed text-balance">
-                    &ldquo;{team[0].quote}&rdquo;
-                  </blockquote>
-                  <p className="text-cream-primary/75 leading-relaxed mb-8 text-base md:text-lg max-w-2xl font-light">
-                    {team[0].bio}
-                  </p>
-                  <a
-                    href={team[0].linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-cream-primary hover:text-gold-light transition-colors group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary rounded-sm"
-                  >
-                    <Linkedin size={16} />
-                    <span>Connect on LinkedIn</span>
-                    <ArrowRight size={14} className="transform group-hover:translate-x-1 transition-transform" />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Team Grid — CSS reveal, content visible in static state */}
-          <div className="mb-6">
-            <Eyebrow tone="plum">The Full Bench</Eyebrow>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {team.slice(1).map((member, index) => (
-              <div
-                key={member.id}
-                className="reveal-rise group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary rounded-lg"
-                style={{ animationDelay: `${0.1 + index * 0.08}s` }}
-                tabIndex={0}
-                role="button"
-                aria-haspopup="dialog"
-                aria-label={`View bio for ${member.name}`}
-                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedMember(member); } }}
-                onClick={() => setSelectedMember(member)}
-              >
-                <div className="relative aspect-[3/4] overflow-hidden bg-bone-raised mb-4 rounded-lg border border-plum-dark/10 transition-all duration-500 group-hover:border-gold-primary/40 group-hover:-translate-y-1">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    className="object-cover transition-all duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-plum-dark/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 flex items-end justify-start p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="px-3 py-1.5 rounded-full bg-bone-raised/95 backdrop-blur-sm flex items-center gap-1.5 shadow-sm translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-plum-dark">View Bio</span>
-                      <ArrowRight className="text-gold-deep" size={12} />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-gold-deep text-[10px] font-bold uppercase tracking-widest mb-1.5">{member.role}</p>
-                  <h3 className="text-lg font-serif font-bold text-plum-dark group-hover:text-gold-deep transition-colors leading-tight text-balance">
-                    {member.name}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
+    <div
+      role="img"
+      aria-label="Portraits of Dr. Tanya Petrossian and the EndoCyclic development team."
+      className="absolute inset-0 grid grid-cols-3 grid-rows-[2.2fr_1fr_1fr] gap-2 bg-tint-warm p-2 sm:grid-cols-4 sm:grid-rows-3 sm:gap-3 sm:p-3"
+    >
+      {TEAM.map((member, index) => (
+        <div
+          key={member.id}
+          className={`relative min-h-0 overflow-hidden border border-line-soft ${
+            member.id === "tanya"
+              ? "rounded-bl-[2.75rem] rounded-tr-[5.5rem]"
+              : "rounded-bl-2xl rounded-tr-[3rem]"
+          } ${PORTRAIT_PLACEMENTS[member.id]} ${PORTRAIT_TONES[member.id]}`}
+        >
+          <Image
+            src={member.image}
+            alt=""
+            fill
+            priority={index === 0}
+            sizes={
+              member.id === "tanya"
+                ? "(min-width: 1184px) 240px, (min-width: 640px) 23vw, 88vw"
+                : "(min-width: 1184px) 100px, (min-width: 640px) 9vw, 30vw"
+            }
+            className={`object-cover saturate-[0.9] ${PORTRAIT_FOCAL_POINTS[member.id]}`}
+          />
         </div>
-      </div>
+      ))}
+    </div>
+  );
+}
 
-      {/* Bio Modal — Luminous Editorial */}
-      <AnimatePresence>
-        {selectedMember && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-plum-dark/60 backdrop-blur-sm"
-            onClick={() => setSelectedMember(null)}
-          >
-            <motion.div
-              ref={modalRef}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="bio-modal-name"
-              initial={{ scale: 0.97, opacity: 0, y: 16 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.97, opacity: 0, y: 16 }}
-              className="bg-bone-raised w-full max-w-4xl max-h-[85svh] overflow-y-auto shadow-2xl relative flex flex-col md:flex-row rounded-2xl border border-plum-dark/10"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                ref={closeButtonRef}
-                onClick={() => setSelectedMember(null)}
-                aria-label="Close dialog"
-                className="absolute top-4 right-4 p-2 bg-bone-raised/85 backdrop-blur rounded-full text-plum-dark hover:bg-gold-primary/15 hover:rotate-90 transition-all duration-300 z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary"
-              >
-                <X size={20} />
-              </button>
+function Hero() {
+  return (
+    <PageHero
+      eyebrow="Development leadership"
+      title="A team carrying precision peptide science into the clinic."
+      titleClassName="max-w-[18ch]"
+      intro="Founder and CEO Dr. Tanya Petrossian leads a team spanning nonclinical toxicology, CMC, clinical affairs, regulatory affairs, biostatistics, and finance."
+      actions={
+        <>
+          <Button href="/pipeline">Review the pipeline</Button>
+          <Button href="#development-team" variant="ghost">Meet the team</Button>
+        </>
+      }
+      proof="ENDO-205 · FDA IND Allowance (2026) · Phase 1"
+      caption="Founder and development team"
+      tone="tint-plum"
+      layout="evidence"
+      frame="line"
+      visualAspect="auto"
+      visualClassName="min-h-[34rem] bg-tint-warm sm:min-h-[30rem]"
+    >
+      <TeamPortraitField />
+    </PageHero>
+  );
+}
 
-              <div className="md:w-5/12 min-h-[180px] md:min-h-full relative">
-                <Image
-                  src={selectedMember.image}
-                  alt={selectedMember.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                  className="object-cover"
+function FounderStory() {
+  return (
+    <Section tone="tint-warm" size="chapter" className="overflow-hidden">
+      <Container>
+        <div className="grid gap-12 md:grid-cols-12 md:gap-x-10 lg:gap-x-16">
+          <div className="md:col-span-7">
+            <Reveal>
+              <Eyebrow>Founder & CEO</Eyebrow>
+              <h2 className="t-h2 mt-5 max-w-2xl text-ink">
+                Dr. Tanya Petrossian, PhD
+              </h2>
+              <p className="t-lead mt-6 max-w-2xl">
+                Leadership from platform science into Phase 1.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.04}>
+              <div className="mt-10 max-w-3xl border-y border-line py-7 sm:py-8">
+                <div className="flex items-center gap-3">
+                  <span aria-hidden className="h-2 w-2 rounded-full bg-teal" />
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
+                    Leadership brief
+                  </p>
+                </div>
+                <p className="mt-6 text-[clamp(1.3rem,2.1vw,1.75rem)] font-medium leading-[1.3] tracking-[-0.02em] text-ink">
+                  As Founder and CEO, she leads EndoCyclic Therapeutics, a
+                  clinical-stage precision medicine company in Irvine,
+                  California.
+                </p>
+                <p className="mt-5 max-w-2xl text-[0.98rem] leading-[1.75] text-muted">
+                  The company&apos;s proprietary precision peptide platform spans
+                  therapeutics, diagnostics, and oncology.
+                  ENDO-205 received FDA IND Allowance in 2026 and is in Phase
+                  1. EndoCyclic is a founding member of the Milken Institute
+                  Women&apos;s Health Network.
+                </p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.08} className="mt-8">
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  href="/contact?subject=partnership"
+                >
+                  Discuss a partnership
+                </Button>
+                <Button
+                  href="/pipeline#endo-205"
+                  variant="ghost"
+                >
+                  Explore ENDO-205
+                </Button>
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal delay={0.06} className="md:col-span-4 md:col-start-9">
+            <figure className="mx-auto w-full max-w-[18rem] md:mx-0 md:max-w-none lg:max-w-[17rem]">
+              <div className="relative">
+                <div
+                  aria-hidden
+                  className="absolute -bottom-3 -left-3 h-full w-full rounded-bl-[4rem] rounded-tr-[7rem] border border-rose/40"
+                />
+                <div className="relative aspect-[4/5] overflow-hidden rounded-bl-[4rem] rounded-tr-[7rem] border border-line bg-peony editorial-shadow">
+                  <Image
+                    src={FOUNDER.image}
+                    alt={`Portrait of ${FOUNDER.name}`}
+                    fill
+                    sizes="(min-width: 1024px) 272px, (min-width: 768px) 26vw, 288px"
+                    className={`object-cover saturate-[0.9] ${PORTRAIT_FOCAL_POINTS[FOUNDER.id]}`}
+                  />
+                </div>
+                <span
+                  aria-hidden
+                  className="absolute -right-4 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border-4 border-tint-warm bg-teal"
                 />
               </div>
-
-              <div className="md:w-7/12 p-8 md:p-10 flex flex-col justify-center">
-                <Eyebrow className="mb-3 block">{selectedMember.role}</Eyebrow>
-                <h3
-                  id="bio-modal-name"
-                  className="text-3xl md:text-4xl font-serif font-bold text-plum-dark mb-6 tracking-tight text-balance"
-                >
-                  {selectedMember.name}
+              <figcaption className="mt-6 border-t border-line pt-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
+                  Founder & CEO
+                </p>
+                <h3 className="t-h3 mt-2 text-ink">
+                  Dr. Tanya Petrossian, PhD
                 </h3>
+              </figcaption>
+            </figure>
+          </Reveal>
+        </div>
 
-                {selectedMember.quote && (
-                  <blockquote className="text-lg font-light italic text-black-soft mb-6 border-l-2 border-gold-primary pl-4 leading-relaxed">
-                    &ldquo;{selectedMember.quote}&rdquo;
-                  </blockquote>
-                )}
-
-                <div className="text-black-soft/85 font-light leading-relaxed mb-8 text-sm md:text-base">
-                  <p>{selectedMember.bio}</p>
-                </div>
-
-                <a
-                  href={selectedMember.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-plum-dark hover:text-gold-deep transition-colors font-medium uppercase tracking-wider text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary rounded-sm"
-                >
-                  <Linkedin size={16} />
-                  LinkedIn Profile
-                </a>
+        <Reveal delay={0.1} className="mt-16 md:mt-20">
+          <div className="mb-5 flex items-center gap-4">
+            <span aria-hidden className="chapter-thread-mark"><span /></span>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
+              Founder continuity
+            </p>
+          </div>
+          <dl className="grid gap-px border-y border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
+            {FOUNDER_PROOF.map((item, index) => (
+              <div
+                key={item.label}
+                className="min-h-44 bg-tint-warm px-5 py-6 sm:px-6 sm:py-7"
+              >
+                <dt className="flex items-start justify-between gap-3">
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
+                    {item.label}
+                  </span>
+                  <span className="text-xs font-semibold tracking-[0.14em] text-muted">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </dt>
+                <dd className="mt-3">
+                  <span className="block text-xl font-medium tracking-[-0.02em] text-ink">
+                    {item.value}
+                  </span>
+                  <span className="mt-1.5 block text-sm leading-relaxed text-muted">
+                    {item.detail}
+                  </span>
+                </dd>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+          </dl>
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
 
-      <Footer />
+function Portrait({ member }: { member: Member }) {
+  return (
+    <div className="relative aspect-[4/5] w-20 shrink-0 overflow-hidden rounded-b-2xl rounded-t-[4.75rem] bg-peony sm:w-24 lg:w-20 xl:w-24">
+      <Image
+        src={member.image}
+        alt={`Portrait of ${member.name}`}
+        fill
+        sizes="(min-width: 1280px) 96px, (min-width: 1024px) 80px, (min-width: 640px) 96px, 80px"
+        className={`object-cover saturate-[0.88] ${PORTRAIT_FOCAL_POINTS[member.id]}`}
+      />
+    </div>
+  );
+}
+
+function DevelopmentProfile({ member, index }: { member: Member; index: number }) {
+  return (
+    <Reveal as="li" delay={Math.min(index * 0.035, 0.1)} className="border-t border-line pt-6">
+      <article>
+        <div className="flex items-start gap-5">
+          <Portrait member={member} />
+          <div className="min-w-0 pt-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-teal-ink">
+              {member.role}
+            </p>
+            <h4 className="t-h3 mt-2 text-ink">{member.name}</h4>
+          </div>
+        </div>
+        <p className="mt-6 text-[0.95rem] leading-relaxed text-muted">{member.bio}</p>
+      </article>
+    </Reveal>
+  );
+}
+
+function DevelopmentLedger() {
+  return (
+    <Section
+      tone="paper"
+      size="chapter"
+      id="development-team"
+      className="scroll-mt-24 overflow-hidden"
+    >
+      <Container>
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-8">
+            <Eyebrow>Development team</Eyebrow>
+            <h2 className="t-h2 mt-5 max-w-2xl text-ink">
+              The work around the molecule.
+            </h2>
+          </div>
+          <div className="lg:col-span-4 lg:col-start-9">
+            <p className="max-w-lg text-muted">
+              Nonclinical toxicology, CMC, clinical affairs, regulatory affairs,
+              biostatistics, and finance.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-16 border-b border-line md:mt-20">
+          {DEVELOPMENT_CHAPTERS.map((chapter) => {
+            const members = getChapterMembers(chapter.memberIds);
+            const columns =
+              members.length === 3
+                ? "md:grid-cols-2 2xl:grid-cols-3"
+                : members.length === 2
+                  ? "md:grid-cols-2"
+                  : "md:grid-cols-1";
+
+            return (
+              <section
+                key={chapter.index}
+                aria-labelledby={`development-chapter-${chapter.index}`}
+                className="grid gap-9 border-t border-line py-12 lg:grid-cols-12 lg:gap-12 lg:py-16"
+              >
+                <header className="lg:col-span-3">
+                  <div className="flex items-center gap-3">
+                    <span aria-hidden className="chapter-thread-mark"><span /></span>
+                    <span className="text-xs font-semibold tracking-[0.16em] text-rose-ink">
+                      {chapter.index}
+                    </span>
+                  </div>
+                  <p className="mt-6 text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
+                    {chapter.verb}
+                  </p>
+                  <h3
+                    id={`development-chapter-${chapter.index}`}
+                    className="mt-3 max-w-xs text-xl font-medium leading-snug tracking-[-0.02em] text-ink"
+                  >
+                    {chapter.title}
+                  </h3>
+                </header>
+
+                <ol className={`grid list-none gap-x-8 gap-y-10 lg:col-span-9 ${columns}`}>
+                  {members.map((member, memberIndex) => (
+                    <DevelopmentProfile
+                      key={member.id}
+                      member={member}
+                      index={memberIndex}
+                    />
+                  ))}
+                </ol>
+              </section>
+            );
+          })}
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+export default function TeamPage() {
+  return (
+    <main id="main-content">
+      <Hero />
+      <FounderStory />
+      <DevelopmentLedger />
+      <NextChapter
+        eyebrow="Partnership"
+        title="Bring the development team into the diligence conversation."
+        tone="teal"
+        actions={
+          <>
+            <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+            <Button href="/pipeline" variant="ghost">Explore the pipeline</Button>
+          </>
+        }
+      >
+        Review the four-program portfolio or contact EndoCyclic directly to discuss strategic fit.
+      </NextChapter>
     </main>
   );
 }

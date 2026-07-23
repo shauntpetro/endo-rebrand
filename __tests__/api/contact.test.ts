@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 
 // Test the validation patterns used in the contact API
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

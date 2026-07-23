@@ -2,17 +2,23 @@ import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://endocyclic.com";
-
-  return [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
-    { url: `${baseUrl}/innovation`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
-    { url: `${baseUrl}/pipeline`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
-    { url: `${baseUrl}/imaging`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/impact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/team`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/news`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.6 },
-    { url: `${baseUrl}/investors`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/media`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+  const now = new Date();
+  const routes = [
+    { path: "", priority: 1, freq: "weekly" as const },
+    { path: "/innovation", priority: 0.9, freq: "monthly" as const },
+    { path: "/pipeline", priority: 0.9, freq: "monthly" as const },
+    { path: "/imaging", priority: 0.8, freq: "monthly" as const },
+    { path: "/impact", priority: 0.8, freq: "monthly" as const },
+    { path: "/team", priority: 0.7, freq: "monthly" as const },
+    { path: "/news", priority: 0.7, freq: "weekly" as const },
+    { path: "/investors", priority: 0.8, freq: "monthly" as const },
+    { path: "/contact", priority: 0.6, freq: "yearly" as const },
+    { path: "/media", priority: 0.6, freq: "monthly" as const },
   ];
+  return routes.map((r) => ({
+    url: `${baseUrl}${r.path}`,
+    lastModified: now,
+    changeFrequency: r.freq,
+    priority: r.priority,
+  }));
 }

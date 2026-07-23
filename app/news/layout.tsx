@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
+import { NEWS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "News & Media",
+  title: "News & Recognition",
   description:
-    "Latest press releases, publications, awards, and media coverage from EndoCyclic Therapeutics. Stay updated on our clinical progress and milestones.",
-  alternates: {
-    canonical: "/news",
-  },
+    "Selected awards, external coverage, and interviews from EndoCyclic Therapeutics — including the rare NIH 'Perfect 10' grant for ENDO-205.",
+  alternates: { canonical: "/news" },
   openGraph: {
-    title: "News & Media | EndoCyclic Therapeutics",
+    title: "News & Recognition | EndoCyclic Therapeutics",
     description:
-      "Press releases, publications, and awards from EndoCyclic Therapeutics.",
-    url: "/news",
+      "Selected awards, external coverage, and interviews from EndoCyclic Therapeutics.",
+    url: "https://endocyclic.com/news",
   },
 };
 
@@ -19,13 +18,34 @@ export default function NewsLayout({ children }: { children: React.ReactNode }) 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "EndoCyclic Therapeutics News & Media",
+    name: "News & Recognition — EndoCyclic Therapeutics",
+    url: "https://endocyclic.com/news",
     description:
-      "Latest press releases, publications, awards, and media coverage from EndoCyclic Therapeutics.",
-    publisher: {
-      "@type": "Organization",
-      name: "EndoCyclic Therapeutics",
-      url: "https://endocyclic.com",
+      "Selected awards, external coverage, and interviews from EndoCyclic Therapeutics.",
+    mainEntity: {
+      "@type": "ItemList",
+      name: "Selected EndoCyclic Therapeutics news and recognition",
+      numberOfItems: NEWS.length,
+      itemListOrder: "https://schema.org/ItemListOrderDescending",
+      itemListElement: NEWS.map((article, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Article",
+          headline: article.title,
+          datePublished: article.dateTime,
+          url: article.link,
+          publisher: {
+            "@type": "Organization",
+            name: article.source,
+          },
+          about: {
+            "@type": "Organization",
+            name: SITE.legalName,
+            url: "https://endocyclic.com",
+          },
+        },
+      })),
     },
   };
 

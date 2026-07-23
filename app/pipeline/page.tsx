@@ -1,387 +1,551 @@
-"use client";
+import Image from "next/image";
+import Button from "@/components/site/Button";
+import ChapterIntro from "@/components/site/ChapterIntro";
+import Container from "@/components/site/Container";
+import Eyebrow from "@/components/site/Eyebrow";
+import NextChapter from "@/components/site/NextChapter";
+import PipelineChapterNav from "@/components/site/PipelineChapterNav";
+import {
+  PipelineAtlasMotion,
+  PipelineScaleFade,
+  PipelineThesis,
+} from "@/components/site/PipelineMotion";
+import Reveal from "@/components/site/Reveal";
+import SciencePlate from "@/components/site/SciencePlate";
+import Section from "@/components/site/Section";
+import PipelineStageAtlas from "@/components/figures/PipelineStageAtlas";
+import { PIPELINE } from "@/lib/site";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { ArrowRight, Microscope, Activity, Pill, ChevronDown, Sparkles, FlaskConical, Eye, Target } from "lucide-react";
-import { useState } from "react";
-import { pipeline, PHASES as phases } from "@/components/pipeline/pipelineData";
-import PortfolioMatrix from "@/components/PortfolioMatrix";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { useVisibility } from "@/hooks/useVisibility";
+const FEMLUNA = PIPELINE[1];
+const ENDO_995 = PIPELINE[2];
+const ENDO_311 = PIPELINE[3];
 
-/** Static, always-visible phase visualization — fills render in the resting state
-    (no width-from-0 reveal that could leave the bar blank if JS is paused). */
-function PhaseBar({ activePhase, progress, color }: { activePhase: number; progress: number; color: string }) {
+function Hero() {
   return (
-    <div
-      className="w-full relative h-8 flex items-center"
-      role="img"
-      aria-label={`Development progress: currently in ${phases[activePhase]}`}
-    >
-      <div className="absolute inset-0 grid grid-cols-6 gap-1.5">
-        {phases.map((_, i) => {
-          const filled = i < activePhase;
-          const current = i === activePhase;
-          const width = filled ? "100%" : current ? `${Math.max(progress * 100, 6)}%` : "0%";
-          return (
-            <div key={i} className="relative h-2 rounded-full bg-plum-dark/[0.07]">
-              <div
-                className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-500"
-                style={{ width, backgroundColor: color }}
-              />
-              {current && (
-                <span
-                  className="absolute top-1/2 w-3 h-3 rounded-full border-2 z-10 bg-bone-raised"
-                  style={{
-                    left: `${Math.max(progress * 100, 6)}%`,
-                    transform: "translate(-50%, -50%)",
-                    borderColor: color,
-                    boxShadow: `0 0 8px ${color}55`,
-                  }}
-                />
-              )}
+    <section className="relative isolate overflow-hidden bg-paper pb-16 pt-28 md:pb-20 md:pt-32">
+      <svg
+        aria-hidden
+        viewBox="0 0 1200 420"
+        preserveAspectRatio="none"
+        className="pipeline-hero-thread pointer-events-none absolute inset-x-0 top-20 h-72 w-full opacity-25"
+      >
+        <path
+          d="M-80 328C165 360 262 190 476 244c192 48 280-126 441-42 133 70 203 15 363-111"
+          fill="none"
+          stroke="url(#pipeline-hero-thread)"
+          strokeLinecap="round"
+          strokeWidth="1.5"
+        />
+        <defs>
+          <linearGradient id="pipeline-hero-thread" x1="0" x2="1">
+            <stop stopColor="#c9798a" />
+            <stop offset="0.5" stopColor="#d8b850" />
+            <stop offset="1" stopColor="#43877d" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <Container className="relative z-10">
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12 xl:gap-16">
+          <div className="hero-copy-enter lg:col-span-6 xl:col-span-5">
+            <div data-hero-step="eyebrow">
+              <Eyebrow>Development portfolio</Eyebrow>
             </div>
-          );
-        })}
-      </div>
-    </div>
+            <h1
+              data-hero-step="title"
+              className="mt-6 max-w-2xl text-[clamp(2.45rem,5vw,4.5rem)] font-medium leading-[1.01] tracking-[-0.045em] text-ink"
+            >
+              One precision platform. Four programs.
+            </h1>
+            <p data-hero-step="intro" className="t-lead mt-7 max-w-xl">
+              EndoCyclic is advancing therapeutic and diagnostic programs
+              across endometriosis and oncology, led by ENDO-205 now in Phase
+              1.
+            </p>
+            <div data-hero-step="actions" className="mt-8 flex flex-wrap gap-3">
+              <Button href="/contact?subject=partnership">
+                Discuss a partnership
+              </Button>
+              <Button href="#development" variant="ghost">
+                View development stages
+              </Button>
+            </div>
+          </div>
+
+          <Reveal delay={0.06} className="lg:col-span-6 xl:col-span-7">
+            <figure>
+              <div className="hero-visual-frame relative aspect-[2/1] overflow-hidden rounded-bl-[2rem] rounded-tr-[4rem] border border-line bg-tint-warm md:rounded-bl-[3rem] md:rounded-tr-[6rem]">
+                <Image
+                  src="/illustrations/pipeline-portfolio-wide-v1.avif"
+                  alt="Conceptual editorial illustration of one precision peptide platform branching toward four therapeutic and diagnostic program paths."
+                  fill
+                  priority
+                  sizes="(min-width: 1280px) 640px, (min-width: 1024px) 50vw, 94vw"
+                  className="object-cover object-center"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-plum/30 via-transparent to-paper/5"
+                />
+                <p className="absolute inset-x-0 bottom-0 max-w-md p-5 text-sm font-medium leading-relaxed text-on-dark sm:p-7">
+                  A common logic of pH-mediated activation and selective uptake.
+                </p>
+              </div>
+              <figcaption className="mt-3 max-w-2xl text-xs leading-relaxed text-muted">
+                Conceptual portfolio architecture; not clinical imagery or
+                development-performance data.
+              </figcaption>
+            </figure>
+          </Reveal>
+        </div>
+
+        <Reveal className="mt-10 md:mt-12">
+          <div className="grid grid-cols-2 gap-px overflow-hidden border-y border-line bg-line lg:grid-cols-4">
+            {PIPELINE.map((candidate, index) => (
+              <a
+                key={candidate.id}
+                href={
+                  candidate.area === "Oncology"
+                    ? "#oncology"
+                    : `#${candidate.id.toLowerCase()}`
+                }
+                className="group flex min-h-40 flex-col bg-paper px-4 py-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-teal-ink sm:px-5"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span className="text-xs font-semibold tracking-[0.16em] text-muted">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    className={`text-[0.68rem] font-semibold uppercase tracking-[0.12em] ${
+                      candidate.area === "Endometriosis"
+                        ? "text-rose-ink"
+                        : "text-teal-ink"
+                    }`}
+                  >
+                    {candidate.area}
+                  </span>
+                </div>
+                <p className="mt-5 text-lg font-medium leading-tight text-ink">
+                  {candidate.name}
+                </p>
+                <p className="mt-1 text-xs font-medium text-muted">
+                  {candidate.modality}
+                </p>
+                <div className="mt-auto flex items-end justify-between gap-3 border-t border-line pt-3">
+                  <p className="text-xs font-medium leading-snug text-ink-body">
+                    {candidate.stage}
+                  </p>
+                  <span
+                    aria-hidden
+                    className="shrink-0 text-base text-teal-ink transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-visible:translate-x-1"
+                  >
+                    →
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </Reveal>
+      </Container>
+    </section>
   );
 }
 
-function GridPattern() {
+function DevelopmentOverview() {
   return (
-    <svg aria-hidden="true" className="absolute inset-0 w-full h-full opacity-[0.035] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#grid)" />
-    </svg>
+    <Section
+      tone="tint-plum"
+      size="chapter"
+      className="overflow-hidden"
+    >
+      <Container id="development" className="scroll-mt-32">
+        <ChapterIntro
+          eyebrow="Current development"
+          title="The lead program has crossed into the clinic."
+        >
+          ENDO-205 is in Phase 1 following FDA IND Allowance in 2026. FemLUNA™ is IND-enabling, with two paired oncology programs in preclinical development.
+        </ChapterIntro>
+
+        <Reveal className="mt-14 md:mt-16">
+          <PipelineAtlasMotion>
+            <PipelineStageAtlas />
+          </PipelineAtlasMotion>
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
+
+function PlatformThesis() {
+  return (
+    <section data-tone="dark" className="relative overflow-hidden bg-plum py-24 text-on-dark md:py-36">
+      <div
+        aria-hidden
+        className="absolute -right-28 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full border border-line-on-dark"
+      />
+      <Container className="relative">
+        <div className="flex items-center gap-3">
+          <span aria-hidden className="h-px w-12 bg-gradient-to-r from-rose via-gold to-teal" />
+          <Eyebrow tone="dark">The selective thread</Eyebrow>
+        </div>
+        <PipelineThesis className="mt-8 max-w-5xl text-[clamp(2rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-[-0.035em] text-on-dark">
+          A single precision peptide platform extends into therapeutics and diagnostics across endometriosis and oncology.
+        </PipelineThesis>
+      </Container>
+    </section>
+  );
+}
+
+function LeadProgram() {
+  const dossier = [
+    {
+      label: "Current status",
+      value: "FDA IND Allowance (2026) · Phase 1",
+    },
+    {
+      label: "First-in-human study",
+      value: "Healthy pre-menopausal women of reproductive age",
+    },
+    {
+      label: "Treatment design",
+      value: "Short-course, disease-modifying, and non-hormonal",
+    },
+    {
+      label: "Preclinical evidence",
+      value:
+        "Demonstrated elimination of lesions and associated inflammation; no dose-limiting toxicities in GLP toxicology studies.",
+    },
+  ] as const;
+
+  return (
+    <Section
+      tone="tint-teal"
+      size="chapter"
+      className="overflow-hidden"
+    >
+      <Container id="endo-205" className="scroll-mt-32">
+        <ChapterIntro
+          eyebrow="Clinical lead · ENDO-205"
+          title="A non-hormonal approach now in Phase 1."
+        >
+          ENDO-205 is a first-in-class precision peptide therapeutic designed to eliminate endometriosis lesions and resolve associated symptoms, including pain.
+        </ChapterIntro>
+
+        <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
+          <PipelineScaleFade className="lg:col-span-7">
+            <SciencePlate
+              src="/illustrations/endo-205-translation-v1.avif"
+              alt="Conceptual editorial illustration of a precision peptide activating at an endometriosis lesion boundary and undergoing selective uptake."
+              aspect="landscape"
+              frame="bleed"
+              sizes="(min-width: 1184px) 650px, (min-width: 1024px) 57vw, 94vw"
+              imageClassName="object-center"
+              caption="ENDO-205 applies the platform's pH-mediated activation and selective-uptake logic to a non-hormonal endometriosis therapeutic."
+              disclosure="Conceptual representation; not clinical imagery or efficacy data."
+            />
+          </PipelineScaleFade>
+
+          <Reveal delay={0.06} className="lg:col-span-5">
+            <p className="eyebrow">Clinical dossier</p>
+            <dl className="mt-5 divide-y divide-line border-y border-line">
+              {dossier.map((item) => (
+                <div key={item.label} className="grid gap-2 py-5 sm:grid-cols-[9rem_1fr] lg:grid-cols-1 xl:grid-cols-[9rem_1fr]">
+                  <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-rose-ink">
+                    {item.label}
+                  </dt>
+                  <dd className="text-sm font-medium leading-relaxed text-ink">
+                    {item.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-7">
+              <Button href="/innovation" variant="quiet">
+                Review the platform mechanism
+              </Button>
+            </div>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+function EndometriosisImaging() {
+  const diagnosticProfile = [
+    ["Stage", FEMLUNA.stage],
+    ["Detection", "Superficial and sub-millimeter lesions"],
+    ["Clinical intent", "A non-invasive alternative to laparoscopy"],
+  ] as const;
+
+  return (
+    <Section
+      tone="tint-warm"
+      size="chapter"
+      className="overflow-hidden"
+    >
+      <Container id="femluna" className="scroll-mt-32">
+        <ChapterIntro
+          eyebrow="Endometriosis imaging · FemLUNA™"
+          title="Designed to find lesions current imaging can miss."
+        >
+          FemLUNA™ is a targeted imaging agent in IND-enabling development for accurate, non-invasive detection of endometriosis.
+        </ChapterIntro>
+
+        <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
+          <PipelineScaleFade className="lg:col-span-7">
+            <SciencePlate
+              src="/illustrations/femluna-targeting-v2.avif"
+              alt="Conceptual editorial illustration of a targeted peptide localizing at a small endometriosis lesion within simplified pelvic anatomy."
+              aspect="landscape"
+              frame="soft"
+              sizes="(min-width: 1184px) 650px, (min-width: 1024px) 57vw, 94vw"
+              imageClassName="object-[58%_center]"
+              caption="FemLUNA™ is capable of detecting superficial and sub-millimeter lesions often missed by current imaging."
+              disclosure="Conceptual representation; FemLUNA™ is IND-enabling. Not clinical imaging or performance data."
+            />
+          </PipelineScaleFade>
+
+          <Reveal delay={0.06} className="lg:col-span-4 lg:col-start-9">
+            <p className="t-lead">
+              The first non-invasive, definitive diagnostic for endometriosis in development as an alternative to the current diagnostic gold standard of laparoscopy.
+            </p>
+            <dl className="mt-8 border-y border-line">
+              {diagnosticProfile.map(([label, value]) => (
+                <div key={label} className="border-b border-line py-5 last:border-b-0">
+                  <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-rose-ink">
+                    {label}
+                  </dt>
+                  <dd className="mt-2 text-sm font-medium leading-relaxed text-ink">
+                    {value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-7">
+              <Button href="/imaging" variant="ghost">
+                Explore the imaging strategy
+              </Button>
+            </div>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+function OncologyPairFigure() {
+  return (
+    <>
+      <figure className="sm:hidden">
+        <div className="space-y-5">
+          <div>
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">ENDO-311</p>
+              <p className="text-xs font-medium text-muted">Targeted localization</p>
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-bl-[1.75rem] rounded-tr-[1.75rem] border border-line bg-surface">
+              <Image
+                src="/illustrations/oncology-pair-v2.avif"
+                alt="Conceptual illustration of a targeted imaging agent localizing a solid-tumor cluster."
+                fill
+                sizes="94vw"
+                className="object-cover object-left"
+              />
+            </div>
+          </div>
+          <div>
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">ENDO-995</p>
+              <p className="text-xs font-medium text-muted">Intracellular target</p>
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-bl-[1.75rem] rounded-tr-[1.75rem] border border-line bg-surface">
+              <Image
+                src="/illustrations/oncology-pair-v2.avif"
+                alt="Conceptual illustration of a cyclic peptide undergoing uptake into a tumor cell toward an intracellular target."
+                fill
+                sizes="94vw"
+                className="object-cover object-right"
+              />
+            </div>
+          </div>
+        </div>
+        <figcaption className="mt-4 text-xs leading-relaxed text-muted">
+          Conceptual representation of investigational preclinical programs; not efficacy or imaging-performance data.
+        </figcaption>
+      </figure>
+
+      <div className="hidden sm:block">
+        <SciencePlate
+          src="/illustrations/oncology-pair-v2.avif"
+          alt="Conceptual paired illustration of a targeted imaging agent localizing a solid tumor and a cyclic peptide undergoing uptake into a tumor cell toward an intracellular target."
+          frame="line"
+          caption="ENDO-311 is designed for tumor localization and monitoring; ENDO-995 is designed to reach previously undruggable intracellular targets."
+          disclosure="Conceptual representation of investigational preclinical programs; not efficacy or imaging-performance data."
+        >
+          <div className="pointer-events-none absolute inset-x-0 top-0 grid grid-cols-2 gap-4 p-7 md:p-9">
+            <div className="border-l border-rose/50 pl-3">
+              <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">ENDO-311</span>
+              <strong className="mt-1 block text-sm font-semibold text-ink md:text-base">Targeted localization</strong>
+            </div>
+            <div className="justify-self-end border-r border-teal/50 pr-3 text-right">
+              <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">ENDO-995</span>
+              <strong className="mt-1 block text-sm font-semibold text-ink md:text-base">Intracellular target</strong>
+            </div>
+          </div>
+        </SciencePlate>
+      </div>
+    </>
+  );
+}
+
+function OncologyPair() {
+  const programs = [
+    {
+      program: ENDO_311,
+      label: "Diagnostic",
+      body: "An investigational imaging agent for non-invasive detection and monitoring of malignant solid tumors, initially focused on colon cancer. It is radiation-free, non-hormonal, free of heavy metals, and compatible with standard imaging systems.",
+      note: "Designed for early-stage tumor localization and disease monitoring.",
+    },
+    {
+      program: ENDO_995,
+      label: "Therapeutic",
+      body: "A tumor-selective, non-hormonal cyclic peptide for malignant solid tumors, initially focused on colon and endometrial cancers. It is designed to overcome therapeutic resistance and restore responsiveness in cold tumors.",
+      note: "Potential applicability across 25%+ of solid tumor types.",
+    },
+  ] as const;
+
+  return (
+    <Section
+      tone="paper"
+      size="chapter"
+      className="overflow-hidden"
+    >
+      <Container id="oncology" className="scroll-mt-32">
+        <ChapterIntro
+          eyebrow="Oncology · Preclinical"
+          title="Detection and treatment designed as a matched pair."
+        >
+          ENDO-995 and ENDO-311 extend the platform into malignant solid tumors through a therapeutic and companion-diagnostic strategy.
+        </ChapterIntro>
+
+        <PipelineScaleFade className="mt-14 md:mt-16">
+          <OncologyPairFigure />
+        </PipelineScaleFade>
+
+        <div className="mt-12 grid-flow-dense border-y border-line md:grid md:grid-cols-12">
+          {programs.map(({ program, label, body, note }, index) => (
+            <Reveal
+              key={program.id}
+              delay={index * 0.06}
+              className={index === 0 ? "py-8 md:col-span-5 md:pr-10" : "border-t border-line py-8 md:col-span-7 md:border-l md:border-t-0 md:pl-10"}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">{label}</p>
+                <span className="text-xs font-medium text-muted">{program.stage}</span>
+              </div>
+              <h3 className="mt-6 text-[clamp(2.2rem,5vw,4.5rem)] font-medium leading-none tracking-[-0.045em] text-ink">
+                {program.name}
+              </h3>
+              <p className="mt-5 text-sm leading-relaxed text-muted">{body}</p>
+              <p className="mt-5 border-t border-line pt-4 text-sm font-medium text-ink">{note}</p>
+            </Reveal>
+          ))}
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+function DiligenceSignals() {
+  const signals = [
+    {
+      type: "Regulatory",
+      value: "2026",
+      title: "FDA IND Allowance",
+      body: "Achieved for lead therapeutic ENDO-205.",
+    },
+    {
+      type: "Clinical",
+      value: "Phase 1",
+      title: "First-in-human study",
+      body: "ENDO-205 is now in Phase 1.",
+    },
+    {
+      type: "External validation",
+      value: "10",
+      title: "NIH perfect “unicorn” score",
+      body: "NIH Commercialization Readiness Pilot grant.",
+    },
+    {
+      type: "Regulatory path",
+      value: "Underway",
+      title: "Fast Track filing",
+      body: "Filing underway for the lead program.",
+    },
+  ] as const;
+
+  return (
+    <Section tone="tint-plum" size="chapter">
+      <Container id="evidence" className="scroll-mt-32">
+        <ChapterIntro
+          eyebrow="Diligence signals"
+          title="Evidence at the transitions that matter."
+        >
+          Regulatory progress, clinical entry, and NIH backing mark the portfolio&apos;s path from platform science toward clinical-stage development.
+        </ChapterIntro>
+
+        <div className="mt-14 grid-flow-dense border-y border-line sm:grid sm:grid-cols-2 lg:grid-cols-4">
+          {signals.map((signal, index) => (
+            <Reveal
+              key={signal.title}
+              delay={index * 0.04}
+              className="border-b border-line py-7 last:border-b-0 sm:border-r sm:px-6 sm:last:border-r-0 lg:border-b-0 first:sm:pl-0 last:sm:pr-0"
+            >
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-rose-ink">{signal.type}</p>
+              <p className="mt-7 text-[clamp(1.8rem,3.2vw,3.1rem)] font-medium leading-none tracking-[-0.04em] text-ink">{signal.value}</p>
+              <h3 className="t-h3 mt-5 text-ink">{signal.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{signal.body}</p>
+            </Reveal>
+          ))}
+        </div>
+
+        <div className="mt-8">
+          <Button href="/downloads/endocyclic-investor-summary.pdf" variant="ghost">
+            Download investor summary
+          </Button>
+        </div>
+      </Container>
+    </Section>
   );
 }
 
 export default function PipelinePage() {
-  const [filter, setFilter] = useState<"All" | "Therapeutic" | "Diagnostic">("All");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const reduced = usePrefersReducedMotion();
-  const { setRef: setVisRef, isVisible } = useVisibility();
-
-  const animateOrb = isVisible && !reduced;
-
-  const filteredPipeline = pipeline.filter((item) => filter === "All" || item.type === filter);
-
-  const getColor = (type: string) => (type === "Diagnostic" ? "#4A9B8E" : "#C9A961");
-
   return (
-    <main
-      ref={(node) => setVisRef(node)}
-      className="min-h-screen bg-surface flex flex-col font-sans relative overflow-hidden"
-      style={{
-        background:
-          "radial-gradient(70% 45% at 78% 8%, rgba(201,169,97,0.12), transparent 60%), #F4EEE1",
-      }}
-    >
-      <Navbar />
-
-      {/* Background elements — static luminous field (visible without JS) */}
-      <div className="absolute inset-0 text-plum-dark">
-        <GridPattern />
-      </div>
-
-      {/* One confident warm accent — frozen static under reduced motion */}
-      <motion.div
-        className="absolute top-[6%] right-0 w-[42rem] h-[42rem] rounded-full pointer-events-none will-change-transform"
-        style={{ background: "radial-gradient(circle, rgba(201,169,97,0.16) 0%, transparent 70%)" }}
-        animate={animateOrb ? { scale: [1, 1.1, 1], opacity: [0.75, 1, 0.75] } : undefined}
-        transition={animateOrb ? { duration: 20, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
-      />
-      <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-gradient-to-t from-plum-primary/10 to-transparent blur-3xl rounded-full translate-y-1/3 -translate-x-1/4 pointer-events-none" />
-
-      <div className="pt-40 pb-24 container mx-auto px-6 relative z-10">
-        {/* Header — deterministic CSS reveal, fully visible in static state */}
-        <div className="max-w-4xl mb-20">
-          <span className="reveal-rise mb-8 block" style={{ animationDelay: "0.05s" }}>
-            <Eyebrow>Investigational Pipeline</Eyebrow>
-          </span>
-          <h1
-            className="reveal-rise text-6xl md:text-[80px] font-serif font-bold mb-8 text-plum-dark leading-[0.9] tracking-tight text-balance"
-            style={{ animationDelay: "0.15s" }}
-          >
-            Precision <br />
-            <span className="text-gold-deep italic">Pipeline</span>
-          </h1>
-          <p
-            className="reveal-rise text-xl md:text-2xl text-black-soft font-light leading-relaxed max-w-2xl border-l-2 border-gold-primary pl-6"
-            style={{ animationDelay: "0.25s" }}
-          >
-            A proprietary peptide platform designed to act only where it matters. Our investigational
-            pipeline advances first-in-class agents for endometriosis and oncology, with continued
-            exploration of fibrosis and other chronic conditions.
-          </p>
-        </div>
-
-        {/* Portfolio overview diagram + matched-pair thesis */}
-        <div className="reveal-rise mb-16" style={{ animationDelay: "0.32s" }}>
-          <div className="mb-6 max-w-3xl">
-            <p className="text-sm md:text-base text-black-soft font-light leading-relaxed">
-              Every program is a{" "}
-              <span className="font-semibold text-gold-deep">matched pair</span> — a precision
-              therapeutic developed alongside its companion diagnostic.{" "}
-              <span className="font-semibold text-plum-dark">ENDO-205</span> with{" "}
-              <span className="font-semibold text-plum-dark">FemLUNA&trade;</span> in endometriosis;{" "}
-              <span className="font-semibold text-plum-dark">ENDO-995</span> with{" "}
-              <span className="font-semibold text-plum-dark">ENDO-311</span> in oncology.
-            </p>
-          </div>
-          <PortfolioMatrix variant="full" />
-        </div>
-
-        {/* Controls */}
-        <div
-          className="reveal-rise flex flex-col md:flex-row justify-between items-end gap-8 mb-12"
-          style={{ animationDelay: "0.4s" }}
-        >
-          <div
-            role="group"
-            aria-label="Filter pipeline by program type"
-            className="flex gap-1.5 sm:gap-2 bg-bone-raised p-1.5 rounded-full shadow-sm border border-plum-dark/10"
-          >
-            {(["All", "Therapeutic", "Diagnostic"] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setFilter(type)}
-                aria-pressed={filter === type}
-                className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all duration-300 whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-primary ${
-                  filter === type
-                    ? "bg-plum-dark text-white shadow-md"
-                    : "text-plum-primary/80 hover:text-plum-primary hover:bg-plum-dark/[0.04]"
-                }`}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-
-          <div className="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-plum-primary/80">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gold-primary"></div> Therapeutic
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-clinical-teal"></div> Diagnostic
-            </div>
-          </div>
-        </div>
-
-        {/* Pipeline Table Header - Desktop */}
-        <div className="hidden md:grid grid-cols-12 gap-8 mb-6 px-8 text-[11px] font-bold uppercase tracking-[0.2em] text-plum-primary/80">
-          <div className="col-span-4">Candidate Profile</div>
-          <div className="col-span-8 grid grid-cols-6 gap-1 text-center">
-            {phases.map((phase) => (
-              <div key={phase}>{phase}</div>
-            ))}
-          </div>
-        </div>
-
-        {/* Pipeline List */}
-        <div className="space-y-4 min-h-[250px] md:min-h-[400px]">
-          {filteredPipeline.map((candidate, index) => (
-            <div
-              key={candidate.id}
-              className={`reveal-rise group bg-bone-raised rounded-xl border border-plum-dark/10 hover:border-gold-primary/40 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] hover:shadow-[0_8px_40px_rgba(201,169,97,0.14)] transition-all duration-500 overflow-hidden ${
-                expandedId === candidate.id ? "ring-1 ring-gold-primary/30 shadow-[0_8px_40px_rgba(201,169,97,0.14)]" : ""
-              }`}
-              style={{ animationDelay: `${0.1 + index * 0.08}s` }}
-            >
-              <div
-                role="button"
-                tabIndex={0}
-                aria-expanded={expandedId === candidate.id}
-                aria-controls={`candidate-details-${candidate.id}`}
-                className="px-8 py-8 cursor-pointer relative"
-                onClick={() => setExpandedId(expandedId === candidate.id ? null : candidate.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setExpandedId(expandedId === candidate.id ? null : candidate.id);
-                  }
-                }}
-              >
-                {/* Warm accent rule on the left edge — widens on hover */}
-                <div
-                  className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl transition-opacity duration-500 opacity-0 group-hover:opacity-100"
-                  style={{ background: `linear-gradient(to bottom, ${getColor(candidate.type)}, ${getColor(candidate.type)}40)` }}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-                  {/* Candidate Info */}
-                  <div className="col-span-1 md:col-span-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      {candidate.type === "Therapeutic" ? (
-                        <div className="w-9 h-9 rounded-lg bg-gold-primary/12 flex items-center justify-center text-gold-deep shrink-0 group-hover:bg-gold-primary/20 transition-colors duration-300">
-                          <Pill size={15} aria-hidden="true" />
-                        </div>
-                      ) : (
-                        <div className="w-9 h-9 rounded-lg bg-clinical-teal/12 flex items-center justify-center text-clinical-teal shrink-0 group-hover:bg-clinical-teal/20 transition-colors duration-300">
-                          <Microscope size={15} aria-hidden="true" />
-                        </div>
-                      )}
-                      <div>
-                        <h2 className="text-2xl font-serif font-bold text-plum-dark group-hover:text-gold-deep transition-colors leading-tight">
-                          {candidate.name}
-                        </h2>
-                      </div>
-                      {/* Status Badge */}
-                      <span
-                        className="ml-auto md:ml-2 shrink-0 text-[9px] font-bold uppercase tracking-[0.15em] px-2.5 py-1 rounded-full border"
-                        style={{
-                          color: getColor(candidate.type) === "#C9A961" ? "#806524" : "#2F6E62",
-                          borderColor: `${getColor(candidate.type)}30`,
-                          backgroundColor: `${getColor(candidate.type)}0F`,
-                        }}
-                      >
-                        {candidate.status}
-                      </span>
-                    </div>
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-plum-primary/80 mb-1 pl-12">
-                      {candidate.mechanism}
-                    </p>
-                    <p className="text-sm text-black-soft pl-12 font-light">{candidate.indication}</p>
-                  </div>
-
-                  {/* Phase Visualization */}
-                  <div className="col-span-1 md:col-span-8 w-full">
-                    <div className="md:hidden flex justify-between items-center mb-4">
-                      <span className="text-xs font-bold uppercase tracking-widest text-plum-primary/80">Current Phase</span>
-                      <span className="text-xs font-bold text-plum-dark">{phases[candidate.phase]}</span>
-                    </div>
-                    <PhaseBar activePhase={candidate.phase} progress={candidate.progress} color={getColor(candidate.type)} />
-                  </div>
-                </div>
-
-                {/* Expand / Collapse Indicator */}
-                <div className="absolute bottom-4 right-8 flex items-center gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-gold-deep flex items-center gap-1.5 bg-bone-raised/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm border border-plum-dark/10 hover:bg-gold-primary hover:text-white hover:border-transparent transition-colors">
-                    {expandedId === candidate.id ? "Collapse" : "Learn More"}
-                    <ChevronDown size={12} aria-hidden="true" className={`transition-transform duration-300 ${expandedId === candidate.id ? "rotate-180" : ""}`} />
-                  </span>
-                </div>
-              </div>
-
-              {/* Expanded Details — user-triggered disclosure (accordion) */}
-              <motion.div
-                id={`candidate-details-${candidate.id}`}
-                role="region"
-                aria-label={`${candidate.name} details`}
-                initial={false}
-                animate={{ height: expandedId === candidate.id ? "auto" : 0 }}
-                transition={{ duration: reduced ? 0 : 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="overflow-hidden"
-                inert={expandedId !== candidate.id}
-              >
-                <div className="px-8 py-8 md:pl-[calc(33.33%+2rem)] border-t border-plum-dark/10 bg-gradient-to-br from-bone to-bone-raised">
-                  <p className="text-black-soft font-light leading-relaxed max-w-2xl text-sm mb-6">
-                    {candidate.description}
-                  </p>
-                  {candidate.highlights && candidate.highlights.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-                      {candidate.highlights.map((h, i) => (
-                        <div
-                          key={i}
-                          className="flex items-start gap-3 text-sm text-black-soft p-3 bg-bone-raised rounded-lg border border-plum-dark/10 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 text-black-primary text-[10px] font-bold tabular-nums"
-                            style={{ backgroundColor: getColor(candidate.type) }}
-                          >
-                            {i + 1}
-                          </span>
-                          <span className="leading-relaxed">{h}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div className="flex items-center gap-4">
-                    <Link
-                      href="/contact?subject=data"
-                      className="flex items-center gap-2 px-5 py-2.5 bg-plum-dark text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-gold-primary transition-colors whitespace-nowrap group/btn shadow-sm"
-                    >
-                      View Data <ArrowRight size={14} aria-hidden="true" className="group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
-                    <span className="text-[10px] text-plum-primary/80 uppercase tracking-widest font-bold">
-                      {phases[candidate.phase]} &middot; {candidate.type}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          ))}
-
-          {filteredPipeline.length === 0 && (
-            <div className="py-32 text-center">
-              <div className="w-16 h-16 bg-plum-dark/[0.05] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Activity aria-hidden="true" className="w-8 h-8 text-plum-primary/30" />
-              </div>
-              <p className="text-plum-primary/80 font-light">No candidates found matching this criteria.</p>
-            </div>
-          )}
-        </div>
-
-        {/* Future Applications — plum-dark cinematic beat */}
-        <motion.div
-          initial={false}
-          className="reveal-rise mt-20 bg-plum-dark rounded-xl p-8 md:p-12 relative overflow-hidden"
-          style={{ animationDelay: "0.15s" }}
-        >
-          <div
-            className="absolute top-0 right-0 w-[30rem] h-[30rem] rounded-full pointer-events-none"
-            style={{ background: "radial-gradient(circle, rgba(201,169,97,0.14) 0%, transparent 70%)" }}
-          />
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-full bg-gold-primary/15 flex items-center justify-center text-gold-primary shrink-0">
-                <Activity size={14} aria-hidden="true" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-serif font-bold text-cream-primary">Future Applications</h2>
-            </div>
-            <p className="text-cream-primary/70 font-light leading-relaxed max-w-3xl mb-8">
-              Building on the versatility of our platform, we are actively exploring additional
-              indications where non-hormonal, tissue-specific targeting is essential.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                { label: "Fibrosis", desc: "Tissue-specific targeting for fibrotic conditions", icon: Target },
-                { label: "PCOS", desc: "Polycystic ovary syndrome therapeutic approaches", icon: Sparkles },
-                { label: "Uterine Fibroids", desc: "Non-surgical alternatives for fibroid management", icon: Pill },
-                { label: "Image-Guided Surgery", desc: "Real-time visualization during minimally invasive procedures", icon: Eye },
-                { label: "Blood-Based Diagnostics", desc: "Biomarker-driven patient stratification", icon: FlaskConical },
-                { label: "Treatment Monitoring", desc: "Track response and disease progression non-invasively", icon: Activity },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.label}
-                    className="flex items-start gap-3 p-5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-gold-primary/40 hover:bg-white/[0.07] transition-all duration-300 group/future cursor-default"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center shrink-0 group-hover/future:bg-gold-primary/15 transition-colors duration-300">
-                      <Icon size={14} aria-hidden="true" className="text-cream-primary/60 group-hover/future:text-gold-primary transition-colors duration-300" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-cream-primary group-hover/future:text-gold-primary transition-colors duration-300">{item.label}</p>
-                      <p className="text-xs text-cream-primary/70 mt-0.5 leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </motion.div>
-      </div>
-      <Footer />
+    <main id="main-content">
+      <Hero />
+      <PipelineChapterNav />
+      <DevelopmentOverview />
+      <PlatformThesis />
+      <LeadProgram />
+      <EndometriosisImaging />
+      <OncologyPair />
+      <DiligenceSignals />
+      <NextChapter
+        eyebrow="Partnership and diligence"
+        title="Open the next diligence conversation."
+        tone="plum"
+        actions={
+          <>
+            <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+            <Button href="/investors" variant="ghost-on-dark">
+              Investor overview
+            </Button>
+          </>
+        }
+      >
+        Connect with EndoCyclic about the clinical-stage lead program, strategic partnerships, or the broader development portfolio.
+      </NextChapter>
     </main>
   );
 }

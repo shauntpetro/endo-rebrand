@@ -1,34 +1,35 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Innovation — Cyclic Peptide Platform",
+  title: "Platform",
   description:
-    "Explore EndoCyclic's proprietary cyclic peptide platform — pH-activated, lesion-selective drug delivery with first-in-class mechanism of action for endometriosis treatment.",
-  alternates: {
-    canonical: "/innovation",
-  },
+    "A non-hormonal precision peptide platform with pH-mediated activation and selective uptake by diseased tissue — spanning therapeutics, diagnostics, and oncology. Correction, not destruction.",
+  alternates: { canonical: "/innovation" },
   openGraph: {
-    title: "Innovation — Cyclic Peptide Platform | EndoCyclic Therapeutics",
+    title: "Platform | EndoCyclic Therapeutics",
     description:
-      "pH-activated, lesion-selective cyclic peptides. A new class of targeted, non-hormonal therapeutics.",
-    url: "/innovation",
+      "A non-hormonal precision peptide platform with pH-mediated activation and selective uptake by diseased tissue — designed for correction, not destruction.",
+    url: "https://endocyclic.com/innovation",
   },
 };
 
-export default function InnovationLayout({ children }: { children: React.ReactNode }) {
+export default function InnovationLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "ResearchProject",
-    name: "EndoCyclic Cyclic Peptide Platform",
+    "@type": "WebPage",
+    name: "Platform — EndoCyclic Therapeutics",
+    url: "https://endocyclic.com/innovation",
     description:
-      "Proprietary cyclic peptide platform with pH-activated, lesion-selective drug delivery. First-in-class mechanism of action for endometriosis and oncology.",
-    funder: {
-      "@type": "Organization",
-      name: "National Institutes of Health (NIH)",
-    },
-    sponsor: {
-      "@type": "Organization",
-      name: "EndoCyclic Therapeutics",
+      "A non-hormonal precision peptide platform with pH-mediated activation and selective uptake by diseased tissue, spanning therapeutics, diagnostics, and oncology.",
+    about: {
+      "@type": "MedicalTherapy",
+      name: "Precision peptide platform",
+      description:
+        "Proprietary precision peptides with pH-mediated activation and selective uptake by diseased tissue via a proprietary endocytic pathway. Non-hormonal mechanism of action.",
     },
   };
 

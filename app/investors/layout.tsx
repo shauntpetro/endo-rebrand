@@ -1,37 +1,33 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Investors",
+  title: "Investor Relations",
   description:
-    "Investor relations for EndoCyclic Therapeutics. Access pipeline data, clinical milestones, and partnership opportunities in precision medicine for endometriosis.",
-  alternates: {
-    canonical: "/investors",
-  },
-  openGraph: {
-    title: "Investors | EndoCyclic Therapeutics",
-    description:
-      "Pipeline data, clinical milestones, and partnership opportunities in precision medicine for endometriosis.",
-    url: "/investors",
-  },
+    "The diligence front door for EndoCyclic Therapeutics. Request data-room access and review FDA IND Allowance (2026) for ENDO-205, a first-in-class non-hormonal lead therapeutic, and a $180B–$250B market opportunity.",
+  alternates: { canonical: "/investors" },
 };
 
-export default function InvestorsLayout({ children }: { children: React.ReactNode }) {
+export default function InvestorsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: "Investor Relations — EndoCyclic Therapeutics",
+    url: "https://endocyclic.com/investors",
     description:
-      "Access pipeline data, clinical milestones, and investor materials for EndoCyclic Therapeutics.",
-    mainEntity: {
-      "@type": "Organization",
+      "Investor relations and data-room access for EndoCyclic Therapeutics, a clinical-stage precision medicine company.",
+    isPartOf: {
+      "@type": "WebSite",
       name: "EndoCyclic Therapeutics",
       url: "https://endocyclic.com",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Irvine",
-        addressRegion: "CA",
-        addressCountry: "US",
-      },
+    },
+    about: {
+      "@type": "MedicalOrganization",
+      name: "EndoCyclic Therapeutics",
+      url: "https://endocyclic.com",
     },
   };
 

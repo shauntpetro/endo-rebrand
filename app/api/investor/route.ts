@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-// Resend client — gracefully falls back to console.log if no API key is set
+// Delivery must be configured before a real submission can be accepted.
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
@@ -147,13 +147,18 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
     };
 
-    // Log the submission
-    console.log("[Investor Data Room Request]", sanitizedData);
+    if (!resend) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Request delivery is temporarily unavailable. Please email info@endocyclic.com directly.",
+        },
+        { status: 503 },
+      );
+    }
 
-    // Send email notification via Resend if configured
-    if (resend) {
-      try {
-        await resend.emails.send({
+    try {
+      const { error } = await resend.emails.send({
           from: "EndoCyclic Investor Relations <investor@endocyclic.com>",
           to: ["info@endocyclic.com"],
           subject: `Data Room Access Request — ${sanitizedData.name} (${sanitizedData.company})`,
@@ -170,11 +175,17 @@ export async function POST(request: NextRequest) {
             `---`,
             `Submitted: ${sanitizedData.timestamp}`,
           ].join("\n"),
-        });
-      } catch (emailError) {
-        // Log but don't fail the request — the form data is already logged
-        console.error("[Resend Error]", emailError);
-      }
+      });
+      if (error) throw error;
+    } catch (emailError) {
+      console.error("[Investor request delivery failed]", emailError);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "We couldn’t deliver your request. Please try again or email info@endocyclic.com directly.",
+        },
+        { status: 502 },
+      );
     }
 
     return NextResponse.json({

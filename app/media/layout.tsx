@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Media Kit",
   description:
-    "EndoCyclic Therapeutics media kit. Download logos, company boilerplate, key facts, and press contact information.",
-  alternates: {
-    canonical: "/media",
-  },
+    "Press resources for EndoCyclic Therapeutics — approved company boilerplate, key facts, brand asset guidance, leadership, and media contact.",
+  alternates: { canonical: "/media" },
   openGraph: {
     title: "Media Kit | EndoCyclic Therapeutics",
     description:
-      "Download logos, company boilerplate, key facts, and press contact information.",
-    url: "/media",
+      "Approved boilerplate, key facts, brand asset guidance, and media contact for EndoCyclic Therapeutics.",
+    url: "https://endocyclic.com/media",
   },
 };
 
@@ -20,18 +19,15 @@ export default function MediaLayout({ children }: { children: React.ReactNode })
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: "Media Kit — EndoCyclic Therapeutics",
+    url: "https://endocyclic.com/media",
     description:
-      "Press resources, logos, company boilerplate, and media contact information for EndoCyclic Therapeutics.",
-    mainEntity: {
+      "Press resources for EndoCyclic Therapeutics — boilerplate, key facts, logos, leadership, and media contact.",
+    about: {
       "@type": "Organization",
-      name: "EndoCyclic Therapeutics",
-      url: "https://endocyclic.com",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Irvine",
-        addressRegion: "CA",
-        addressCountry: "US",
-      },
+      name: SITE.legalName,
+      email: SITE.email,
+      location: SITE.location,
+      founder: { "@type": "Person", name: SITE.founder },
     },
   };
 

@@ -1,41 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Montserrat } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
-import ScrollProgress from "@/components/ScrollProgress";
-import ScrollToTop from "@/components/ScrollToTop";
-import BackToTop from "@/components/BackToTop";
-import MotionProvider from "@/components/MotionProvider";
 import PostHogProvider from "@/components/PostHogProvider";
+import MotionProvider from "@/components/MotionProvider";
+import Nav from "@/components/site/Nav";
+import Footer from "@/components/site/Footer";
 
-const inter = Inter({
+const hanken = Hanken_Grotesk({
   subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-hanken",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://endocyclic.com"),
-  alternates: {
-    canonical: "/",
-  },
+  alternates: { canonical: "/" },
   title: {
     default: "EndoCyclic Therapeutics | Clinical-Stage Precision Medicine",
     template: "%s | EndoCyclic Therapeutics",
   },
   description:
-    "Clinical-stage precision medicine company developing first-in-class, targeted, non-hormonal therapeutics for endometriosis and oncology. IND cleared by the FDA.",
+    "Clinical-stage precision medicine company developing non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology. ENDO-205 has FDA IND Allowance.",
   keywords: [
     "endometriosis",
     "precision medicine",
@@ -43,9 +28,10 @@ export const metadata: Metadata = {
     "non-hormonal therapy",
     "targeted therapeutics",
     "oncology",
-    "IND cleared",
+    "IND allowance",
     "clinical stage biotech",
     "ENDO-205",
+    "FemLUNA",
     "EndoCyclic",
   ],
   authors: [{ name: "EndoCyclic Therapeutics" }],
@@ -57,13 +43,13 @@ export const metadata: Metadata = {
     siteName: "EndoCyclic Therapeutics",
     title: "EndoCyclic Therapeutics | Clinical-Stage Precision Medicine",
     description:
-      "Developing first-in-class, targeted, non-hormonal therapeutics for endometriosis and oncology. IND cleared by the FDA.",
+      "Non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology. ENDO-205 has FDA IND Allowance.",
   },
   twitter: {
     card: "summary_large_image",
     title: "EndoCyclic Therapeutics | Clinical-Stage Precision Medicine",
     description:
-      "First-in-class, targeted, non-hormonal therapeutics for endometriosis and oncology.",
+      "Non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology.",
   },
   robots: {
     index: true,
@@ -76,17 +62,12 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
+  icons: { icon: "/favicon.ico", apple: "/apple-touch-icon.png" },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MedicalOrganization",
@@ -94,12 +75,11 @@ export default function RootLayout({
     url: "https://endocyclic.com",
     logo: "https://endocyclic.com/logo.avif",
     description:
-      "Clinical-stage precision medicine company developing first-in-class, targeted, non-hormonal therapeutics for endometriosis and oncology.",
-    foundingDate: "2017",
+      "Clinical-stage precision medicine company developing non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology.",
     founder: {
       "@type": "Person",
       name: "Dr. Tanya Petrossian",
-      jobTitle: "CEO, Founder, and Inventor",
+      jobTitle: "Founder & CEO",
     },
     address: {
       "@type": "PostalAddress",
@@ -125,27 +105,23 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${montserrat.variable}`}>
+    <html lang="en" className={hanken.variable}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased bg-surface text-black-soft selection:bg-gold-primary selection:text-white" suppressHydrationWarning>
-        <a href="#main-content" className="skip-to-content">
-          Skip to content
-        </a>
+      <body suppressHydrationWarning>
         <MotionProvider>
-          <PostHogProvider>
-            <ScrollProgress />
-            <ScrollToTop />
-            <div id="main-content">
-              {children}
-            </div>
-            <BackToTop />
-          </PostHogProvider>
+          <a href="#main-content" className="skip-to-content">
+            Skip to content
+          </a>
+          <Nav />
+          {children}
+          <Footer />
         </MotionProvider>
+        <PostHogProvider />
       </body>
     </html>
   );

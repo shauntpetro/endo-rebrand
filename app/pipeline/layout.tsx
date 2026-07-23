@@ -1,66 +1,37 @@
 import type { Metadata } from "next";
+import { PIPELINE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Pipeline — Therapeutic & Diagnostic Programs",
+  title: "Pipeline",
   description:
-    "EndoCyclic's clinical and preclinical pipeline: ENDO-205 (IND cleared, Phase 1 for endometriosis), ENDO-995 (oncology), and FemLUNA diagnostic imaging agent.",
-  alternates: {
-    canonical: "/pipeline",
-  },
+    "Four therapeutic and diagnostic programs across endometriosis and oncology, built on one non-hormonal precision peptide platform: ENDO-205 (Phase 1), FemLUNA™, ENDO-995, and ENDO-311.",
+  alternates: { canonical: "/pipeline" },
   openGraph: {
-    title: "Pipeline — Therapeutic & Diagnostic Programs | EndoCyclic Therapeutics",
+    title: "Pipeline | EndoCyclic Therapeutics",
     description:
-      "ENDO-205: IND cleared, first-in-class non-hormonal endometriosis therapy. ENDO-995: targeted oncology. FemLUNA: diagnostic imaging.",
-    url: "/pipeline",
+      "Four therapeutic and diagnostic programs across endometriosis and oncology, built on one non-hormonal precision peptide platform.",
+    url: "https://endocyclic.com/pipeline",
   },
 };
 
 export default function PipelineLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Drug",
-        name: "ENDO-205",
-        description:
-          "First-in-class non-hormonal therapeutic targeting the root cause of endometriosis lesions. IND cleared by the FDA.",
-        mechanismOfAction:
-          "Intracellular Peptide Inhibitor — pH-activated cyclic peptide selectively absorbed by diseased tissue",
-        drugClass: "Cyclic Peptide Therapeutic",
-        clinicalPharmacology:
-          "Selective uptake by endometriotic lesions via pH-responsive mechanism",
-        legalStatus: "Investigational New Drug (IND cleared)",
-        manufacturer: {
-          "@type": "Organization",
-          name: "EndoCyclic Therapeutics",
-        },
+    "@type": "ItemList",
+    name: "EndoCyclic Therapeutics Pipeline",
+    description:
+      "Clinical and preclinical programs across endometriosis and oncology on one non-hormonal precision peptide platform.",
+    itemListElement: PIPELINE.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "MedicalTherapy",
+        name: c.name,
+        description: c.summary,
+        relevantSpecialty:
+          c.area === "Oncology" ? "https://schema.org/Oncologic" : "https://schema.org/Gynecologic",
       },
-      {
-        "@type": "Drug",
-        name: "FemLUNA",
-        description:
-          "Non-invasive diagnostic imaging agent for early, accurate detection of all subtypes of endometriosis.",
-        drugClass: "Targeted Imaging Agent",
-        legalStatus: "Investigational",
-        manufacturer: {
-          "@type": "Organization",
-          name: "EndoCyclic Therapeutics",
-        },
-      },
-      {
-        "@type": "Drug",
-        name: "ENDO-995",
-        description:
-          "Novel non-hormonal therapeutic peptide for malignant solid tumors, with initial focus on colon and endometrial cancers.",
-        mechanismOfAction: "Tumor-Selective Cyclic Peptide",
-        drugClass: "Cyclic Peptide Therapeutic",
-        legalStatus: "Investigational",
-        manufacturer: {
-          "@type": "Organization",
-          name: "EndoCyclic Therapeutics",
-        },
-      },
-    ],
+    })),
   };
 
   return (

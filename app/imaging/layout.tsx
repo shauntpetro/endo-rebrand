@@ -1,33 +1,50 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Imaging — FemLUNA Diagnostic Platform",
+  title: "Imaging & Diagnostics",
   description:
-    "FemLUNA: EndoCyclic's non-invasive diagnostic imaging agent for endometriosis. Selective lesion uptake enables earlier, more accurate detection without surgery.",
-  alternates: {
-    canonical: "/imaging",
-  },
+    "FemLUNA™ is developed to be the first non-invasive, definitive diagnostic for endometriosis — detecting superficial and sub-millimeter lesions often missed by current imaging and offering a non-invasive alternative to laparoscopy.",
+  alternates: { canonical: "/imaging" },
   openGraph: {
-    title: "Imaging — FemLUNA Diagnostic Platform | EndoCyclic Therapeutics",
+    title: "Imaging & Diagnostics | EndoCyclic Therapeutics",
     description:
-      "Non-invasive endometriosis imaging. Selective lesion uptake for earlier, accurate detection.",
-    url: "/imaging",
+      "FemLUNA™ — developed as the first non-invasive, definitive diagnostic for endometriosis, detecting lesions often missed by current imaging. Plus ENDO-311, an investigational oncology imaging agent.",
+    url: "https://endocyclic.com/imaging",
+    type: "website",
   },
 };
 
-export default function ImagingLayout({ children }: { children: React.ReactNode }) {
+export default function ImagingLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "MedicalDevice",
-    name: "FemLUNA",
+    "@type": "WebPage",
+    name: "Imaging & Diagnostics — EndoCyclic Therapeutics",
+    url: "https://endocyclic.com/imaging",
     description:
-      "Non-invasive diagnostic imaging agent for endometriosis. Selective lesion uptake enables earlier, more accurate detection without surgery. Radiation-free, non-hormonal, and free of heavy metals.",
-    manufacturer: {
-      "@type": "Organization",
+      "FemLUNA™ is developed to be the first non-invasive, definitive diagnostic for endometriosis, detecting superficial and sub-millimeter lesions often missed by current imaging methods. ENDO-311 is an investigational oncology imaging agent.",
+    isPartOf: {
+      "@type": "MedicalOrganization",
       name: "EndoCyclic Therapeutics",
+      url: "https://endocyclic.com",
     },
-    medicalSpecialty: "https://schema.org/Gynecologic",
-    relevantSpecialty: "Diagnostic Imaging",
+    about: [
+      {
+        "@type": "MedicalDevice",
+        name: "FemLUNA",
+        description:
+          "Investigational targeted imaging agent developed as the first non-invasive, definitive diagnostic for endometriosis and as a non-invasive alternative to laparoscopy.",
+      },
+      {
+        "@type": "MedicalDevice",
+        name: "ENDO-311",
+        description:
+          "Investigational imaging agent for non-invasive detection and monitoring of malignant solid tumors. Radiation-free, non-hormonal, and free of heavy metals; companion diagnostic to ENDO-995.",
+      },
+    ],
   };
 
   return (

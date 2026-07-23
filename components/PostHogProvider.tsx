@@ -1,52 +1,47 @@
 "use client";
 
-import posthog from "posthog-js";
-import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
-import { useEffect, Suspense } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
-function PostHogPageView() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const posthogClient = usePostHog();
+let analyticsPromise: Promise<typeof import("posthog-js")["default"]> | null = null;
 
-  useEffect(() => {
-    if (pathname && posthogClient) {
-      let url = window.origin + pathname;
-      const search = searchParams.toString();
-      if (search) url += "?" + search;
-      posthogClient.capture("$pageview", { $current_url: url });
-    }
-  }, [pathname, searchParams, posthogClient]);
-
-  return null;
+async function loadAnalytics() {
+  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+  if (!key) return null;
+  if (!analyticsPromise) {
+    analyticsPromise = import("posthog-js").then(({ default: posthog }) => {
+      if (!posthog.__loaded) {
+        posthog.init(key, {
+          api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+          person_profiles: "identified_only",
+          capture_pageview: false,
+          capture_pageleave: true,
+        });
+      }
+      return posthog;
+    });
+  }
+  return analyticsPromise;
 }
 
-export default function PostHogProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+/** Analytics loads after the critical rendering path and remains a tiny island. */
+export default function PostHogProvider() {
+  const pathname = usePathname();
+
   useEffect(() => {
-    if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
-        api_host:
-          process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
-        person_profiles: "identified_only",
-        capture_pageview: false, // We capture manually above
-        capture_pageleave: true,
-      });
-    }
-  }, []);
+    if (!process.env.NEXT_PUBLIC_POSTHOG_KEY) return;
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      const posthog = await loadAnalytics();
+      if (!cancelled && posthog) {
+        posthog.capture("$pageview", { $current_url: window.location.href });
+      }
+    }, 900);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [pathname]);
 
-  if (!process.env.NEXT_PUBLIC_POSTHOG_KEY) return <>{children}</>;
-
-  return (
-    <PHProvider client={posthog}>
-      <Suspense fallback={null}>
-        <PostHogPageView />
-      </Suspense>
-      {children}
-    </PHProvider>
-  );
+  return null;
 }

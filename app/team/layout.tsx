@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Team — Leadership & Advisors",
+  title: "Team",
   description:
-    "Meet the EndoCyclic Therapeutics team — experienced leaders in peptide chemistry, drug development, toxicology, CMC, clinical operations, and business strategy.",
-  alternates: {
-    canonical: "/team",
-  },
+    "The founder-led team advancing EndoCyclic Therapeutics' precision peptide platform and Phase 1 lead program, ENDO-205.",
+  alternates: { canonical: "/team" },
   openGraph: {
-    title: "Team — Leadership & Advisors | EndoCyclic Therapeutics",
+    title: "Team | EndoCyclic Therapeutics",
     description:
-      "World-class team with deep expertise in peptide therapeutics, drug delivery, and clinical development.",
-    url: "/team",
+      "Led by founder and CEO Dr. Tanya Petrossian, EndoCyclic is advancing a precision peptide platform across therapeutics, diagnostics, and oncology.",
+    url: "https://endocyclic.com/team",
   },
 };
 
@@ -19,52 +18,18 @@ export default function TeamLayout({ children }: { children: React.ReactNode }) 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    name: "EndoCyclic Therapeutics Leadership Team",
-    description:
-      "Experienced leaders in peptide chemistry, drug development, toxicology, CMC, clinical operations, and business strategy.",
-    mainEntity: {
+    name: "Team — EndoCyclic Therapeutics",
+    url: "https://endocyclic.com/team",
+    about: {
       "@type": "Organization",
-      name: "EndoCyclic Therapeutics",
-      member: [
-        {
-          "@type": "Person",
-          name: "Dr. Tanya Petrossian",
-          jobTitle: "CEO, Founder, and Inventor",
-          description:
-            "Biochemist and serial entrepreneur with over 15 years of experience in peptide therapeutics and targeted drug delivery.",
-          alumniOf: { "@type": "CollegeOrUniversity", name: "UCLA" },
-        },
-        {
-          "@type": "Person",
-          name: "Dr. Melanie Hartsough",
-          jobTitle: "Nonclinical Toxicology",
-        },
-        {
-          "@type": "Person",
-          name: "Dr. David Lin",
-          jobTitle: "CMC (Chemistry, Manufacturing, and Controls)",
-        },
-        {
-          "@type": "Person",
-          name: "Frank Fernandez",
-          jobTitle: "CFO",
-        },
-        {
-          "@type": "Person",
-          name: "Dr. Andrea Lukes",
-          jobTitle: "Clinical Affairs",
-        },
-        {
-          "@type": "Person",
-          name: "Aileen Ryan",
-          jobTitle: "Regulatory Affairs",
-        },
-        {
-          "@type": "Person",
-          name: "Dr. Miganush Stepanians",
-          jobTitle: "Biostatistics",
-        },
-      ],
+      name: SITE.legalName,
+      founder: {
+        "@type": "Person",
+        name: SITE.founder,
+        jobTitle: "Founder & CEO",
+        image: "https://endocyclic.com/team/tanya-petrossian.avif",
+        worksFor: { "@type": "Organization", name: SITE.legalName },
+      },
     },
   };
 

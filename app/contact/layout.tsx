@@ -1,31 +1,33 @@
 import type { Metadata } from "next";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with EndoCyclic Therapeutics. Reach our team for partnership inquiries, investor relations, media requests, and general information.",
-  alternates: {
-    canonical: "/contact",
-  },
+    "Get in touch with EndoCyclic Therapeutics — partnership and business development, investor relations, media, data room access, and careers. Based in Irvine, California.",
+  alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact | EndoCyclic Therapeutics",
     description:
-      "Partnership inquiries, investor relations, media requests, and general information.",
-    url: "/contact",
+      "Get in touch with EndoCyclic Therapeutics — partnership, investor relations, media, and general inquiries.",
+    url: "https://endocyclic.com/contact",
   },
 };
 
-export default function ContactLayout({ children }: { children: React.ReactNode }) {
+export default function ContactLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
     name: "Contact EndoCyclic Therapeutics",
+    url: "https://endocyclic.com/contact",
     description:
-      "Get in touch for partnership inquiries, investor relations, media requests, and general information.",
+      "Contact EndoCyclic Therapeutics for partnership, investor relations, media, data room access, and general inquiries.",
     mainEntity: {
       "@type": "Organization",
-      name: "EndoCyclic Therapeutics",
-      email: "info@endocyclic.com",
+      name: SITE.legalName,
+      email: SITE.email,
       address: {
         "@type": "PostalAddress",
         addressLocality: "Irvine",
@@ -34,9 +36,10 @@ export default function ContactLayout({ children }: { children: React.ReactNode 
       },
       contactPoint: {
         "@type": "ContactPoint",
-        contactType: "General Inquiries",
-        email: "info@endocyclic.com",
+        contactType: "General inquiries",
+        email: SITE.email,
       },
+      sameAs: [SITE.linkedin, SITE.twitter],
     },
   };
 
