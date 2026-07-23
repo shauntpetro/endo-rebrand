@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-// Resend client — gracefully falls back to console.log if no API key is set
+// Delivery must be configured before an update request can be accepted.
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
@@ -101,13 +101,18 @@ export async function POST(request: NextRequest) {
     const subscriberEmail = email.trim().toLowerCase();
     const timestamp = new Date().toISOString();
 
-    // Log the subscription
-    console.log("[Newsletter Subscription]", { email: subscriberEmail, timestamp });
+    if (!resend) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Update requests are temporarily unavailable. Please email info@endocyclic.com directly.",
+        },
+        { status: 503 },
+      );
+    }
 
-    // Send notification email via Resend if configured
-    if (resend) {
-      try {
-        await resend.emails.send({
+    try {
+      const { error } = await resend.emails.send({
           from: "EndoCyclic Newsletter <contact@endocyclic.com>",
           to: ["info@endocyclic.com"],
           subject: `New Newsletter Subscriber: ${subscriberEmail}`,
@@ -116,11 +121,17 @@ export async function POST(request: NextRequest) {
             `Email: ${subscriberEmail}`,
             `Subscribed: ${timestamp}`,
           ].join("\n"),
-        });
-      } catch (emailError) {
-        // Log but don't fail the request — the subscription is already logged
-        console.error("[Resend Error]", emailError);
-      }
+      });
+      if (error) throw error;
+    } catch (emailError) {
+      console.error("[Update request delivery failed]", emailError);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "We couldn’t deliver your update request. Please try again or email info@endocyclic.com directly.",
+        },
+        { status: 502 },
+      );
     }
 
     return NextResponse.json({ success: true });

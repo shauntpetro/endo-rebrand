@@ -1,280 +1,260 @@
 import Image from "next/image";
-import { Radiation, ShieldOff, Sparkles, Layers, ScanLine, Baby } from "lucide-react";
-import Section from "@/components/site/Section";
-import Container from "@/components/site/Container";
-import Eyebrow from "@/components/site/Eyebrow";
+import FemLunaConceptComparison from "@/components/figures/FemLunaConceptComparison";
 import Button from "@/components/site/Button";
+import Container from "@/components/site/Container";
+import NextChapter from "@/components/site/NextChapter";
+import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
-import Figure from "@/components/site/Figure";
-import FemLunaDetection from "@/components/figures/FemLunaDetection";
+import Section from "@/components/site/Section";
 
-/* -------------------------------------------------------------------- Hero */
+const FEMLUNA_BRIEF = [
+  {
+    term: "Stage",
+    detail: "IND-enabling",
+  },
+  {
+    term: "Intended role",
+    detail: "Non-invasive detection of endometriosis",
+  },
+  {
+    term: "Detection scope",
+    detail: "Superficial and sub-millimeter lesions",
+  },
+  {
+    term: "Diagnostic context",
+    detail: "An alternative to laparoscopy",
+  },
+] as const;
+
+const ENDO_311_BRIEF = [
+  {
+    title: "Targeted imaging",
+    body: "An investigational imaging agent for non-invasive detection and monitoring of malignant solid tumors.",
+  },
+  {
+    title: "Localization and monitoring",
+    body: "Designed for early-stage tumor localization and disease monitoring, with an initial focus on colon cancer.",
+  },
+  {
+    title: "Radiation-free by design",
+    body: "Radiation-free, non-hormonal, free of heavy metals, and compatible with standard imaging systems.",
+  },
+  {
+    title: "Companion to ENDO-995",
+    body: "The diagnostic member of the oncology therapeutic and diagnostic pair.",
+  },
+] as const;
+
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-paper pt-32 md:pt-40">
-      <div aria-hidden className="pointer-events-none absolute right-[-6rem] top-24 h-72 w-72 rounded-full bg-tint-teal blur-2xl md:right-[-2rem]" />
-      <div aria-hidden className="pointer-events-none absolute right-24 top-52 h-40 w-40 rounded-full bg-tint-plum blur-2xl" />
-      <Container className="relative">
-        <div className="max-w-3xl reveal">
-          <Eyebrow>Imaging &amp; diagnostics</Eyebrow>
-          <h1 className="t-hero mt-6 text-ink">See what laparoscopy can’t.</h1>
-          <p className="t-lead mt-6 max-w-2xl">
-            FemLUNA™ is developed to be the first non-invasive, definitive diagnostic for
-            endometriosis — designed to detect superficial and sub-millimeter lesions often missed
-            by current imaging, as a non-invasive alternative to laparoscopy, today’s diagnostic
-            gold standard.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button href="/pipeline" variant="primary">View the full pipeline</Button>
-            <Button href="/contact?subject=partnership" variant="ghost">Partner with us</Button>
-          </div>
-          <p className="mt-10 flex items-center gap-2.5 text-sm text-muted">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-teal" />
-            FemLUNA™ · IND-enabling
-          </p>
-        </div>
-        <div className="mt-16 h-px w-full bg-line md:mt-24" />
-      </Container>
-    </section>
+    <PageHero
+      eyebrow="FemLUNA™ · IND-enabling"
+      title="Find what current imaging can miss."
+      intro="FemLUNA™ is a targeted imaging agent developed for accurate, non-invasive detection of endometriosis—including superficial and sub-millimeter lesions often missed by current imaging methods."
+      actions={
+        <>
+          <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+          <Button href="#detection-logic" variant="ghost">
+            See the detection logic
+          </Button>
+        </>
+      }
+      proof="A non-invasive alternative to laparoscopy, the current diagnostic gold standard."
+      caption="Conceptual representation; FemLUNA™ is IND-enabling. Not clinical imaging or performance data."
+      tone="tint-warm"
+      layout="portrait"
+      frame="arch"
+      visualAspect="portrait"
+      titleClassName="max-w-[14ch]"
+    >
+      <Image
+        src="/illustrations/femluna-targeting-v2.avif"
+        alt="Conceptual editorial illustration of a targeted peptide localizing at a small endometriosis lesion within simplified pelvic anatomy."
+        fill
+        priority
+        sizes="(min-width: 1184px) 380px, (min-width: 1024px) 34vw, 94vw"
+        className="object-cover object-[64%_center]"
+      />
+    </PageHero>
   );
 }
 
-/* ---------------------------------------------------------------- FemLUNA */
-const FEMLUNA_HIGHLIGHTS = [
-  {
-    icon: Radiation,
-    title: "Radiation-free imaging",
-    body: "No ionizing radiation — designed for repeat use across the long arc of diagnosis and follow-up.",
-  },
-  {
-    icon: ShieldOff,
-    title: "Non-hormonal, no heavy metals",
-    body: "Free of hormones and heavy metals, in keeping with our precision peptide platform.",
-  },
-  {
-    icon: Baby,
-    title: "For sensitive populations",
-    body: "Developed with adolescents and reproductive-age women in mind, where invasive workups fall short.",
-  },
-  {
-    icon: ScanLine,
-    title: "Standard and low-field imaging",
-    body: "Designed to be compatible with standard and low-field imaging systems already in clinical use.",
-  },
-  {
-    icon: Layers,
-    title: "Hard-to-see lesion subtypes",
-    body: "Developed to visualize lesion subtypes that are difficult to detect with standard imaging.",
-  },
-  {
-    icon: Sparkles,
-    title: "Sub-millimeter sensitivity",
-    body: "Designed to reveal superficial and sub-millimeter lesions often overlooked by current methods.",
-  },
-];
+function DiagnosticDelay() {
+  const years = Array.from({ length: 9 }, (_, index) => index);
+
+  return (
+    <figure>
+      <div className="grid gap-10 border-y border-line py-10 lg:grid-cols-12 lg:items-center lg:py-14">
+        <div className="lg:col-span-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-ink">
+            Average diagnostic delay
+          </p>
+          <p className="mt-4 text-[clamp(4.75rem,12vw,9rem)] font-medium leading-[0.85] tracking-[-0.065em] text-ink">
+            8
+          </p>
+          <p className="mt-4 text-2xl font-medium text-ink">years</p>
+        </div>
+
+        <div className="lg:col-span-7 lg:col-start-6">
+          <div aria-hidden className="grid grid-cols-9 border-t border-rose/55 pt-3">
+            {years.map((year) => (
+              <div key={year} className="relative text-center">
+                <span className="absolute -top-[1.05rem] left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full border-2 border-paper bg-rose" />
+                <span className="text-[0.65rem] font-medium text-muted">{year}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex justify-between gap-6 text-sm font-medium text-ink">
+            <span>Symptoms</span>
+            <span>Diagnosis</span>
+          </div>
+
+          <div className="mt-9 divide-y divide-line border-y border-line">
+            <div className="grid gap-2 py-5 sm:grid-cols-[11rem_1fr]">
+              <p className="text-xs font-semibold uppercase tracking-[0.13em] text-rose-ink">What imaging can miss</p>
+              <p className="text-sm leading-relaxed text-muted">Superficial and sub-millimeter lesions.</p>
+            </div>
+            <div className="grid gap-2 py-5 sm:grid-cols-[11rem_1fr]">
+              <p className="text-xs font-semibold uppercase tracking-[0.13em] text-teal-ink">Current gold standard</p>
+              <p className="text-sm leading-relaxed text-muted">Laparoscopy, a surgical procedure.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
+        Endometriosis affects more than 190 million women worldwide and remains a leading cause of infertility and chronic pelvic pain.
+      </figcaption>
+    </figure>
+  );
+}
+
+function DiagnosticGap() {
+  return (
+    <Section tone="paper" size="chapter">
+      <Container>
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <Reveal className="lg:col-span-5">
+            <div className="flex items-center gap-4">
+              <span className="chapter-thread-mark" aria-hidden><span /></span>
+              <p className="eyebrow">The diagnostic gap</p>
+            </div>
+            <h2 className="t-h2 mt-5 text-ink">Eight years between symptoms and answers.</h2>
+          </Reveal>
+          <Reveal delay={0.06} className="lg:col-span-6 lg:col-start-7">
+            <p className="t-lead">
+              The scale of endometriosis stands in sharp contrast to the length and invasiveness of the current diagnostic path.
+            </p>
+          </Reveal>
+        </div>
+
+        <Reveal className="mt-14">
+          <DiagnosticDelay />
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
 
 function FemLuna() {
   return (
-    <Section tone="white" id="femluna">
+    <Section tone="tint-teal" size="chapter" id="femluna">
       <Container>
-        <div className="grid gap-10 md:grid-cols-12">
-          <Reveal className="md:col-span-5">
-            <Eyebrow>FemLUNA™</Eyebrow>
-            <h2 className="t-h2 mt-4 text-ink">
-              A definitive picture, without the operating room.
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1} className="self-end md:col-span-6 md:col-start-7">
-            <p className="t-body text-muted">
-              FemLUNA™ is a targeted imaging agent developed for accurate, non-invasive detection of
-              endometriosis — including the superficial and sub-millimeter lesions that current
-              imaging so often misses. It is designed to be the first non-invasive, definitive
-              diagnostic for the disease, and an alternative to laparoscopy, today’s diagnostic gold
-              standard.
-            </p>
-          </Reveal>
-        </div>
-
-        {/* How it works — mechanism depth */}
-        <div className="mt-16 grid gap-10 md:grid-cols-12">
-          <Reveal className="md:col-span-5">
-            <Eyebrow>How it works</Eyebrow>
-            <h3 className="t-h3 mt-4 text-ink">
-              A targeted agent that makes lesions visible.
-            </h3>
-          </Reveal>
-          <Reveal delay={0.1} className="self-end md:col-span-6 md:col-start-7">
-            <p className="t-body text-muted">
-              Built on the same precision peptide platform as our therapeutics, FemLUNA™ is designed
-              to be selectively taken up by diseased tissue and to label endometriosis lesions so
-              they stand out against surrounding anatomy. Because the agent seeks out the disease
-              itself rather than relying on gross anatomical change, it is developed to reveal
-              superficial and sub-millimeter lesions — the subtypes most often overlooked on
-              standard imaging — without cutting into the body. Diagnosis today typically requires
-              laparoscopy, a surgical procedure; a non-invasive read that resolves the same lesions
-              is designed to change when, and for whom, a definitive answer is possible.
-            </p>
-          </Reveal>
-        </div>
-
-        {/* Schematic — Figure 1 */}
-        <Reveal delay={0.05} className="mt-14">
-          <Figure
-            label="Figure 1"
-            caption="FemLUNA™ is designed to detect endometriosis without surgery: a targeted imaging agent binds the lesion and renders it clearly visible, where the same sub-millimeter lesion stays faint on standard imaging — and where the current gold standard, laparoscopy, requires an incision. Schematic."
-          >
-            <FemLunaDetection />
-          </Figure>
-        </Reveal>
-
-        {/* Before / after comparison */}
-        <Reveal delay={0.05} className="mt-14">
-          <div className="grid gap-6 md:grid-cols-2">
-            <figure className="overflow-hidden rounded-xl border border-line bg-paper">
-              <div className="relative aspect-[1024/559]">
-                <Image
-                  src="/standard-mri.webp"
-                  alt="A standard MRI scan of the pelvis, in which small endometriosis lesions are difficult to distinguish from surrounding tissue."
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-              <figcaption className="border-t border-line px-4 py-3 text-sm font-medium text-ink">
-                Standard MRI
-              </figcaption>
-            </figure>
-            <figure className="overflow-hidden rounded-xl border border-line bg-paper">
-              <div className="relative aspect-[1024/565]">
-                <Image
-                  src="/FemLUNA-enhanced.webp"
-                  alt="An illustrative FemLUNA-enhanced scan of the pelvis, in which lesions appear more clearly delineated against surrounding tissue."
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-              <figcaption className="border-t border-line px-4 py-3 text-sm font-medium text-ink">
-                FemLUNA-enhanced <span className="text-muted">(illustrative)</span>
-              </figcaption>
-            </figure>
-          </div>
-          <p className="mt-4 text-sm text-muted">
-            Illustrative comparison for concept demonstration only — not clinical study data.
-          </p>
-        </Reveal>
-
-        {/* Why it matters */}
-        <Reveal delay={0.05} className="mt-16 max-w-2xl">
-          <p className="t-body text-muted">
-            Endometriosis carries an eight-year average diagnostic delay — years of pain that
-            precede a definitive answer. A radiation-free, non-hormonal, heavy-metal-free read is
-            designed for repeat use across that long arc, and with adolescents and reproductive-age
-            women in mind, where an invasive surgical workup is hardest to justify.
-          </p>
-        </Reveal>
-
-        {/* Highlights */}
-        <div className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-          {FEMLUNA_HIGHLIGHTS.map((h, i) => {
-            const Icon = h.icon;
-            return (
-              <Reveal key={h.title} delay={i * 0.06} className="border-t border-line pt-5">
-                <Icon size={20} className="text-teal-ink" aria-hidden />
-                <h3 className="t-h3 mt-4 text-ink">{h.title}</h3>
-                <p className="mt-2 text-sm text-muted">{h.body}</p>
-              </Reveal>
-            );
-          })}
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
-/* --------------------------------------------------------------- ENDO-311 */
-const ENDO311_POINTS = [
-  {
-    title: "Radiation-free, non-hormonal, heavy-metal-free",
-    body: "The same platform principles as FemLUNA — designed to image without ionizing radiation, hormones, or heavy metals.",
-  },
-  {
-    title: "Early localization and monitoring",
-    body: "Designed for early-stage tumor localization and ongoing disease monitoring in malignant solid tumors.",
-  },
-  {
-    title: "Compatible with standard imaging",
-    body: "Developed to work with the standard imaging systems already in clinical use.",
-  },
-  {
-    title: "A companion to ENDO-995",
-    body: "The diagnostic half of the oncology “detect and treat” pair, matched to therapeutic candidate ENDO-995.",
-  },
-];
-
-function Endo311() {
-  return (
-    <Section tone="tint-teal" id="endo-311">
-      <Container>
-        <div className="grid gap-12 md:grid-cols-12">
-          <Reveal className="md:col-span-5">
-            <Eyebrow>ENDO-311</Eyebrow>
-            <h2 className="t-h2 mt-4 text-ink">
-              The same imaging principles, extended to oncology.
-            </h2>
-            <p className="t-body mt-5 text-muted">
-              ENDO-311 is an investigational imaging agent for non-invasive detection and monitoring
-              of malignant solid tumors, with an initial focus on colon cancer. It applies the same
-              targeting principles as FemLUNA™ — a radiation-free, non-hormonal, heavy-metal-free
-              agent designed to localize tumor tissue and follow it over the course of treatment.
-            </p>
-            <p className="t-body mt-4 text-muted">
-              ENDO-311 is developed as the diagnostic half of an oncology “detect and treat” pair,
-              matched to our tumor-selective therapeutic candidate ENDO-995. The intent is a single
-              platform that finds the disease and then acts on it — the same imaging agent used to
-              select and monitor patients whom the companion therapeutic is designed to treat.
-            </p>
-            <div className="mt-8">
-              <Button href="/pipeline" variant="quiet">See the oncology pair</Button>
+        <div id="detection-logic" className="scroll-mt-28 grid gap-8 lg:grid-cols-12 lg:items-end">
+          <Reveal className="lg:col-span-6">
+            <div className="flex items-center gap-4">
+              <span className="chapter-thread-mark" aria-hidden><span /></span>
+              <p className="eyebrow">The FemLUNA™ detection logic</p>
             </div>
+            <h2 className="mt-5 text-[clamp(2.25rem,5vw,3.75rem)] font-medium leading-[1.04] tracking-[-0.04em] text-ink">
+              Target the lesion. Make disease visible.
+            </h2>
           </Reveal>
-          <div className="md:col-span-6 md:col-start-7">
-            <dl className="divide-y divide-line border-t border-line">
-              {ENDO311_POINTS.map((p, i) => (
-                <Reveal key={p.title} delay={i * 0.05}>
-                  <div className="py-5">
-                    <dt className="t-h3 text-ink">{p.title}</dt>
-                    <dd className="mt-1.5 text-sm text-muted">{p.body}</dd>
-                  </div>
-                </Reveal>
+          <Reveal delay={0.06} className="lg:col-span-5 lg:col-start-8">
+            <p className="t-lead">
+              FemLUNA™ is designed as the first non-invasive, definitive diagnostic for endometriosis and is currently in IND-enabling development.
+            </p>
+          </Reveal>
+        </div>
+
+        <Reveal className="mt-14">
+          <FemLunaConceptComparison />
+        </Reveal>
+
+        <Reveal className="mt-12 border-y border-line">
+          <div className="grid lg:grid-cols-12">
+            <div className="border-b border-line py-7 lg:col-span-3 lg:border-b-0 lg:border-r lg:py-9 lg:pr-8">
+              <p className="eyebrow">Development brief</p>
+              <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
+                The program context behind the targeting concept.
+              </p>
+            </div>
+
+            <dl className="grid sm:grid-cols-2 lg:col-span-9 lg:grid-cols-4">
+              {FEMLUNA_BRIEF.map((item) => (
+                <div
+                  key={item.term}
+                  className="border-b border-line py-7 sm:px-6 sm:[&:nth-child(odd)]:border-r sm:[&:nth-child(n+3)]:border-b-0 lg:border-b-0 lg:border-r lg:px-7 lg:py-9 lg:last:border-r-0"
+                >
+                  <dt className="text-xs font-semibold uppercase tracking-[0.13em] text-rose-ink">{item.term}</dt>
+                  <dd className="mt-3 text-sm font-medium leading-relaxed text-ink">{item.detail}</dd>
+                </div>
               ))}
             </dl>
           </div>
-        </div>
+        </Reveal>
+
       </Container>
     </Section>
   );
 }
 
-/* -------------------------------------------------------------- Closing CTA */
-function Closing() {
+function Endo311() {
   return (
-    <Section tone="plum">
+    <Section tone="tint-plum" size="chapter" id="endo-311">
       <Container>
-        <div className="max-w-2xl">
-          <Reveal>
-            <Eyebrow tone="dark">Precision, end to end</Eyebrow>
-            <h2 className="t-h2 mt-4 text-on-dark">
-              Detect earlier. Treat with precision.
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <Reveal className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
+            <p className="eyebrow">The diagnostic logic extends · Preclinical</p>
+            <h2 className="mt-6 text-[clamp(2.35rem,5vw,3.9rem)] font-medium leading-none tracking-[-0.045em] text-ink">
+              ENDO-311
             </h2>
-            <p className="mt-5 max-w-xl text-muted-on-dark">
-              Our diagnostics and therapeutics are built on one platform. Explore the full pipeline,
-              or reach out to discuss partnership.
+            <p className="t-lead mt-7">A second diagnostic path, built for malignant solid tumors.</p>
+            <p className="t-body mt-5 text-muted">
+              ENDO-311 is the companion diagnostic to tumor-selective therapeutic ENDO-995, forming the oncology therapeutic and diagnostic pair.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button href="/pipeline" variant="ghost-on-dark">View the full pipeline</Button>
-              <Button href="/contact?subject=partnership" variant="ghost-on-dark">Partner with us</Button>
+            <div className="mt-8">
+              <Button href="/pipeline#oncology" variant="ghost">
+                See the oncology pair
+              </Button>
             </div>
+          </Reveal>
+
+          <Reveal className="lg:col-span-7 lg:col-start-6">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-bl-[2rem] rounded-tr-[4rem] border border-line bg-surface shadow-[0_24px_70px_rgb(57_38_56/0.08)] sm:aspect-[3/2]">
+              <Image
+                src="/illustrations/endo-311-localization-v1.avif"
+                alt="Conceptual illustration of a targeted imaging agent localizing at the boundary of a solid-tumor focus."
+                fill
+                sizes="(min-width: 1184px) 650px, (min-width: 1024px) 57vw, 94vw"
+                className="object-cover object-center"
+              />
+            </div>
+            <div className="mt-4 grid gap-2 text-sm leading-relaxed text-muted md:grid-cols-12">
+              <p className="md:col-span-8">A distinct localization path for the diagnostic member of the oncology pair.</p>
+              <p className="text-xs md:col-span-4 md:text-right">Conceptual representation; not clinical imaging or performance data.</p>
+            </div>
+
+            <ol className="mt-10 divide-y divide-line border-y border-line">
+              {ENDO_311_BRIEF.map((item, index) => (
+                <li key={item.title} className="grid gap-3 py-6 sm:grid-cols-[2.5rem_1fr]">
+                  <span className="text-sm font-semibold text-rose-ink">0{index + 1}</span>
+                  <div>
+                    <h3 className="t-h3 text-ink">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </Reveal>
         </div>
       </Container>
@@ -286,9 +266,24 @@ export default function ImagingPage() {
   return (
     <main id="main-content">
       <Hero />
+      <DiagnosticGap />
       <FemLuna />
       <Endo311 />
-      <Closing />
+      <NextChapter
+        eyebrow="Diagnostics in context"
+        title="Follow both imaging programs into the full pipeline."
+        tone="plum"
+        actions={
+          <>
+            <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+            <Button href="/pipeline" variant="ghost-on-dark">
+              View the full pipeline
+            </Button>
+          </>
+        }
+      >
+        Review the therapeutic and diagnostic programs across endometriosis and oncology.
+      </NextChapter>
     </main>
   );
 }

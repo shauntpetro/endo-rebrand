@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
-import MotionProvider from "@/components/MotionProvider";
 import PostHogProvider from "@/components/PostHogProvider";
-import ScrollManager from "@/components/site/ScrollManager";
+import MotionProvider from "@/components/MotionProvider";
 import Nav from "@/components/site/Nav";
 import Footer from "@/components/site/Footer";
 
@@ -21,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | EndoCyclic Therapeutics",
   },
   description:
-    "Clinical-stage precision medicine company developing first-in-class, non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology. FDA IND Allowance for ENDO-205.",
+    "Clinical-stage precision medicine company developing non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology. ENDO-205 has FDA IND Allowance.",
   keywords: [
     "endometriosis",
     "precision medicine",
@@ -44,13 +43,13 @@ export const metadata: Metadata = {
     siteName: "EndoCyclic Therapeutics",
     title: "EndoCyclic Therapeutics | Clinical-Stage Precision Medicine",
     description:
-      "First-in-class, non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology. FDA IND Allowance for ENDO-205.",
+      "Non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology. ENDO-205 has FDA IND Allowance.",
   },
   twitter: {
     card: "summary_large_image",
     title: "EndoCyclic Therapeutics | Clinical-Stage Precision Medicine",
     description:
-      "First-in-class, non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology.",
+      "Non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology.",
   },
   robots: {
     index: true,
@@ -76,8 +75,7 @@ export default function RootLayout({
     url: "https://endocyclic.com",
     logo: "https://endocyclic.com/logo.avif",
     description:
-      "Clinical-stage precision medicine company developing first-in-class, non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology.",
-    foundingDate: "2017",
+      "Clinical-stage precision medicine company developing non-hormonal precision peptide therapeutics and diagnostics for endometriosis and oncology.",
     founder: {
       "@type": "Person",
       name: "Dr. Tanya Petrossian",
@@ -115,17 +113,15 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
-        <a href="#main-content" className="skip-to-content">
-          Skip to content
-        </a>
         <MotionProvider>
-          <PostHogProvider>
-            <ScrollManager />
-            <Nav />
-            {children}
-            <Footer />
-          </PostHogProvider>
+          <a href="#main-content" className="skip-to-content">
+            Skip to content
+          </a>
+          <Nav />
+          {children}
+          <Footer />
         </MotionProvider>
+        <PostHogProvider />
       </body>
     </html>
   );

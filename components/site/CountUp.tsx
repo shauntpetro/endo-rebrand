@@ -5,7 +5,7 @@ import { useReducedMotion } from "framer-motion";
 
 const EASE_OUT = (t: number) => 1 - Math.pow(1 - t, 4);
 
-/** Counts up on mount. Reduced motion → final value immediately. */
+/** Counts up on mount. Reduced motion renders the final value immediately. */
 export default function CountUp({
   value,
   duration = 1400,
@@ -22,14 +22,10 @@ export default function CountUp({
   className?: string;
 }) {
   const reduced = useReducedMotion();
-  const [display, setDisplay] = useState(value);
+  const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    if (reduced) {
-      setDisplay(value);
-      return;
-    }
-    setDisplay(0);
+    if (reduced) return;
     let raf = 0;
     let start: number | null = null;
     const step = (ts: number) => {
@@ -47,7 +43,7 @@ export default function CountUp({
     };
   }, [value, duration, reduced]);
 
-  const formatted = display.toLocaleString("en-US", {
+  const formatted = (reduced ? value : display).toLocaleString("en-US", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   });

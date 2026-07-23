@@ -1,13 +1,26 @@
 # Illustrations
 
-Generated scientific illustrations for the site live here (`.webp`, long edge ~2000px).
+Production scientific illustrations live here as compressed AVIF assets. Keep
+the original generated source outside `public/`; only the optimized delivery
+asset belongs in this directory.
 
-Prompt specs to generate them (paste into ChatGPT image gen): `docs/illustration-specs.md`.
+Current page-specific plates:
 
-Expected files (suggested names — see the spec doc for each):
-hero-home.webp · cyclic-peptide.webp · mech-1-activation.webp · mech-2-uptake.webp ·
-mech-3-correction.webp · selective-targeting.webp · endometriosis-biology.webp ·
-femluna-imaging.webp · oncology-cold-tumor.webp · platform-breadth.webp ·
-acts-only-where.webp · womens-health.webp
+- `hero-home-v3.avif` — homepage platform hero
+- `selective-mechanism-v2.avif` — platform mechanism sequence
+- `platform-breadth-v2.avif` — platform application breadth
+- `pipeline-portfolio-wide-v1.avif` — four-program pipeline overview
+- `endo-205-translation-v1.avif` — ENDO-205 activation and uptake concept
+- `femluna-targeting-v2.avif` — FemLUNA™ pelvic localization concept
+- `femluna-comparison-current-v1.avif` — matched low-contrast tissue context for the FemLUNA™ comparison
+- `femluna-comparison-targeted-v1.avif` — matched targeted-localization tissue context for the FemLUNA™ comparison
+- `endo-311-localization-v1.avif` — ENDO-311 solid-tumor localization concept
+- `oncology-pair-v2.avif` — paired oncology therapeutic and diagnostic concept
+- `endometriosis-biology-v1.avif` — endometriosis disease-biology concept
+- `care-gap-selective-shift-v1.avif` — symptom-management loop and selective-uptake design concept
+- `investor-platform-v2.avif` — investor-facing platform architecture
 
-Once an image is dropped in, ask Claude to wire it into the relevant page.
+Prompt and factual guardrails are documented in `docs/illustration-specs.md`.
+Every generated plate must remain conceptual, carry an on-page disclosure, and
+avoid simulated clinical scans, performance data, measurements, or treatment
+outcomes unless those claims are explicitly approved in `truth.md`.

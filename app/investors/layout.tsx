@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Investor Relations",
   description:
-    "The diligence front door for EndoCyclic Therapeutics. Request data-room access and review investment highlights: FDA IND Allowance (2026) for ENDO-205, a first-in-class non-hormonal platform, and a $180B–$250B market opportunity.",
+    "The diligence front door for EndoCyclic Therapeutics. Request data-room access and review FDA IND Allowance (2026) for ENDO-205, a first-in-class non-hormonal lead therapeutic, and a $180B–$250B market opportunity.",
   alternates: { canonical: "/investors" },
 };
 

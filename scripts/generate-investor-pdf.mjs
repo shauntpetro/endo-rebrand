@@ -30,9 +30,6 @@ async function main() {
   const pdf = await PDFDocument.create();
   const helvetica = await pdf.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await pdf.embedFont(StandardFonts.HelveticaBold);
-  const times = await pdf.embedFont(StandardFonts.TimesRoman);
-  const timesBold = await pdf.embedFont(StandardFonts.TimesRomanBold);
-  const timesItalic = await pdf.embedFont(StandardFonts.TimesRomanItalic);
 
   // Helper: draw wrapped text, returns final Y
   function drawWrapped(page, text, x, y, font, size, color, maxW, lineHeight) {
@@ -91,7 +88,7 @@ async function main() {
   p1.drawText("Investor Summary", {
     x: MARGIN,
     y: PAGE_H - 95,
-    font: timesBold,
+    font: helveticaBold,
     size: 32,
     color: WHITE,
   });
@@ -106,7 +103,7 @@ async function main() {
   });
 
   // Date
-  p1.drawText("March 2026  |  Confidential", {
+  p1.drawText("2026  |  Confidential", {
     x: MARGIN,
     y: PAGE_H - 145,
     font: helvetica,
@@ -120,7 +117,7 @@ async function main() {
   y = sectionHeader(p1, "Company Overview", y);
   y = drawWrapped(
     p1,
-    "EndoCyclic Therapeutics, Inc. is a clinical-stage precision medicine company headquartered in Irvine, California. Founded in 2017 by Dr. Tanya Petrossian, PhD, the company is developing first-in-class, non-hormonal therapeutics and diagnostics for endometriosis and oncology using a proprietary precision peptide platform with pH-mediated activation.",
+    "EndoCyclic Therapeutics, Inc. is a clinical-stage precision medicine company in Irvine, California. Led by founder and CEO Dr. Tanya Petrossian, PhD, the company is developing first-in-class, non-hormonal therapeutics and diagnostics for endometriosis and oncology using a proprietary precision peptide platform with pH-mediated activation.",
     MARGIN, y, helvetica, 9.5, BLACK, CONTENT_W, 14
   );
   y -= 8;
@@ -134,10 +131,10 @@ async function main() {
   // Key Metrics bar
   p1.drawRectangle({ x: MARGIN, y: y - 55, width: CONTENT_W, height: 60, color: CREAM });
   const metricX = [MARGIN + 15, MARGIN + 143, MARGIN + 275, MARGIN + 400];
-  const metricVals = ["$200B+", "190M+", "IND Cleared", 'Perfect "10"'];
+  const metricVals = ["$200B", "190M+", "IND Allowance", 'Perfect "10"'];
   const metricLabels = ["US economic burden", "Women affected", "FDA milestone", "NIH grant score"];
   for (let i = 0; i < 4; i++) {
-    p1.drawText(metricVals[i], { x: metricX[i], y: y - 22, font: timesBold, size: 16, color: PLUM });
+    p1.drawText(metricVals[i], { x: metricX[i], y: y - 22, font: helveticaBold, size: 16, color: PLUM });
     p1.drawText(metricLabels[i], { x: metricX[i], y: y - 38, font: helvetica, size: 7.5, color: GRAY });
   }
   y -= 75;
@@ -146,13 +143,9 @@ async function main() {
   y = sectionHeader(p1, "Market Opportunity", y);
   const marketPoints = [
     "$180B-$250B global market potential for endometriosis treatments (McKinsey estimate)",
-    "$1 trillion annual economic opportunity from closing the women's health gap by 2040 (McKinsey, 2024)",
     "10% of reproductive-age women globally - 190M+ affected, leading cause of infertility and chronic pelvic pain",
-    "$9,500-$21,000 annual cost per patient, with 65-84% from lost productivity",
-    "7-9 year average diagnostic delay - patients see an average of 7 providers before diagnosis",
-    "Non-hormonal therapy segment projected CAGR of 13.7%, fastest-growing segment in the market",
-    "Women's health receives just ~2% of health-related VC funding despite massive disease burden",
-    "VC investment in women's health reached $2.6B in 2024, a 55% YoY increase - momentum accelerating",
+    "$200B annual economic burden in the United States",
+    "8-year average diagnostic delay",
   ];
   for (const point of marketPoints) {
     p1.drawText("-", { x: MARGIN + 4, y, font: helveticaBold, size: 9, color: GOLD });
@@ -161,11 +154,11 @@ async function main() {
   }
   y -= 12;
 
-  // Funding disparity callout
+  // Disease burden callout
   p1.drawRectangle({ x: MARGIN, y: y - 38, width: CONTENT_W, height: 42, color: PLUM_DARK });
-  p1.drawText("FUNDING DISPARITY:", { x: MARGIN + 12, y: y - 15, font: helveticaBold, size: 8, color: GOLD });
+  p1.drawText("THE CARE GAP:", { x: MARGIN + 12, y: y - 15, font: helveticaBold, size: 8, color: GOLD });
   p1.drawText(
-    "Endometriosis research received $44M (2019-2023) vs. $1.24B for erectile dysfunction in the same period.",
+    "Current therapies are largely hormone-based and symptomatic; they do not eliminate lesions or modify disease biology.",
     { x: MARGIN + 12, y: y - 30, font: helvetica, size: 8.5, color: WHITE }
   );
   y -= 58;
@@ -198,14 +191,13 @@ async function main() {
   y -= 18;
 
   const pipeline = [
-    { name: "ENDO-205", indication: "Endometriosis (Therapeutic)", stage: "Phase 1 / IND Cleared", diff: "First-in-class non-hormonal, disease-modifying, short-course precision peptide therapeutic" },
-    { name: "FemLUNA(TM)", indication: "Endometriosis (Diagnostic)", stage: "IND-Enabling", diff: "First non-invasive diagnostic; detects sub-millimeter lesions missed by current imaging" },
-    { name: "ENDO-995", indication: "Maintenance Therapy", stage: "Preclinical", diff: "Follow-on to ENDO-205 for sustained disease management" },
-    { name: "ENDO-311", indication: "Colorectal Cancer / Solid Tumors", stage: "Preclinical", diff: "Oncology expansion of precision peptide platform" },
+    { name: "ENDO-205", indication: "Endometriosis therapeutic", stage: "Phase 1", diff: "FDA IND Allowance (2026); first-in-class, non-hormonal, short-course, disease-modifying precision peptide therapeutic" },
+    { name: "FemLUNA(TM)", indication: "Endometriosis imaging", stage: "IND-enabling", diff: "Targeted imaging agent capable of detecting superficial and sub-millimeter lesions often missed by current imaging" },
+    { name: "ENDO-995", indication: "Malignant solid tumors", stage: "Pre-clinical", diff: "Investigational tumor-selective, non-hormonal therapeutic peptide" },
+    { name: "ENDO-311", indication: "Solid tumor diagnostics", stage: "Pre-clinical", diff: "Investigational targeted imaging agent paired with ENDO-995" },
   ];
 
   for (const item of pipeline) {
-    const rowTop = y;
     // Calculate row height based on differentiator text
     const diffLines = Math.ceil(helvetica.widthOfTextAtSize(item.diff, 8) / (CONTENT_W - colX[3] + MARGIN - 8));
     const rowH = Math.max(28, diffLines * 11 + 12);
@@ -225,15 +217,14 @@ async function main() {
   // Milestones & Validation
   y = sectionHeader(p2, "Milestones & Validation", y);
   const milestones = [
-    "FDA IND Allowance achieved (2026) - ENDO-205 cleared to enter Phase 1 first-in-human clinical study",
-    "NIH Perfect \"10\" score on Commercialization Readiness Pilot (CRP) grant from NICHD - rarest possible designation",
-    "Met all milestones for NIH SBIR Phase I, Phase II, and Phase IIB grants on schedule and within budget",
-    "Named NIH SBIR Success Story - featured in NICHD Director's Corner",
-    "Fast Track designation filing underway with FDA",
+    "FDA IND Allowance achieved for ENDO-205 (2026); Phase 1 first-in-human clinical study",
+    "NIH perfect score of 10 on a Commercialization Readiness Pilot grant",
+    "Multiple NIH awards from NICHD",
+    "Recognized as an NIH SBIR Success Story",
+    "Fast Track filing underway",
     "No dose-limiting toxicities observed in GLP toxicology studies (preclinical)",
-    "White House recognition for innovation in women's health",
+    "NIH-backed, with UCLA partnership, RADx Tech validation, and White House recognition",
     "Founding member, Milken Institute Women's Health Network",
-    "Biocom California Life Science Catalyst Award (CEO, 2017)",
   ];
   for (const m of milestones) {
     p2.drawText(">", { x: MARGIN + 4, y, font: helveticaBold, size: 9, color: TEAL });
@@ -256,9 +247,9 @@ async function main() {
   for (const l of leaders) {
     p2.drawText(l.name, { x: MARGIN, y, font: helveticaBold, size: 8.5, color: PLUM });
     p2.drawText(`  -  ${l.role}`, { x: MARGIN + helveticaBold.widthOfTextAtSize(l.name, 8.5), y, font: helvetica, size: 8.5, color: GOLD });
+    y -= 10;
+    p2.drawText(l.detail, { x: MARGIN + 8, y, font: helvetica, size: 7, color: GRAY });
     y -= 12;
-    p2.drawText(l.detail, { x: MARGIN + 8, y, font: helvetica, size: 7.5, color: GRAY });
-    y -= 15;
   }
 
   // Footer
@@ -281,29 +272,29 @@ async function main() {
   y = sectionHeader(p3, "Investment Thesis", y);
   const thesisPoints = [
     {
-      title: "First-Mover in a $180B-$250B Market",
-      text: "ENDO-205 is the first non-hormonal, disease-modifying therapeutic for endometriosis to reach clinical stage. No approved therapy today eliminates lesions or modifies the underlying disease biology.",
+      title: "Clinical-Stage Lead in a $180B-$250B Market",
+      text: "ENDO-205 is a first-in-class, non-hormonal precision peptide therapeutic with FDA IND Allowance (2026), now in Phase 1. It is designed as a short-course, disease-modifying treatment for endometriosis.",
     },
     {
-      title: "Validated Science, De-Risked Path",
-      text: "FDA IND clearance, NIH perfect \"10\" grant score, and successful completion of all SBIR milestones on time and within budget demonstrate both scientific validity and operational execution.",
+      title: "Regulatory and External Milestones",
+      text: "FDA IND Allowance, a perfect NIH grant score of 10, multiple NICHD awards, and NIH SBIR Success Story recognition mark the path into clinical-stage development.",
     },
     {
-      title: "Platform with Multi-Indication Potential",
-      text: "The proprietary precision peptide platform extends beyond endometriosis into diagnostics (FemLUNA), maintenance therapy (ENDO-995), and oncology (ENDO-311), creating multiple value-creation opportunities.",
+      title: "One Platform, Four Precision Programs",
+      text: "The proprietary precision peptide platform spans ENDO-205 and FemLUNA for endometriosis, plus the ENDO-995 therapeutic and ENDO-311 diagnostic pair for oncology.",
     },
     {
-      title: "Massive Unmet Need, Accelerating Tailwinds",
-      text: "190M+ women affected. 8-year diagnostic delay. Current treatments are hormone-based and symptomatic only. VC investment in women's health grew 55% YoY to $2.6B in 2024. McKinsey projects a $1 trillion annual economic opportunity from closing the women's health gap.",
+      title: "Significant Unmet Need",
+      text: "Endometriosis affects more than 190 million women worldwide, carries a $200 billion annual economic burden in the United States, and takes an average of eight years to diagnose.",
     },
     {
-      title: "Experienced, Mission-Driven Team",
-      text: "Leadership includes former FDA reviewers, a board-certified OB/GYN with 90+ clinical trials, regulatory experts with 40+ years of experience, and a founder-CEO with deep domain expertise and personal connection to the disease.",
+      title: "Founder-Led Development Team",
+      text: "Founder and CEO Dr. Tanya Petrossian leads expertise across nonclinical toxicology, CMC, clinical affairs, regulatory affairs, biostatistics, and finance.",
     },
   ];
 
   for (const t of thesisPoints) {
-    p3.drawText(t.title, { x: MARGIN, y, font: timesBold, size: 11, color: PLUM });
+    p3.drawText(t.title, { x: MARGIN, y, font: helveticaBold, size: 11, color: PLUM });
     y -= 16;
     y = drawWrapped(p3, t.text, MARGIN, y, helvetica, 9, BLACK, CONTENT_W, 13.5);
     y -= 12;
@@ -318,10 +309,10 @@ async function main() {
   const halfW = CONTENT_W / 2 - 10;
   p3.drawText("CURRENT STANDARD OF CARE", { x: MARGIN + 12, y: y - 12, font: helveticaBold, size: 7.5, color: GRAY });
   const socPoints = [
-    "Hormone-based (GnRH agonists, oral contraceptives)",
-    "Symptom management only - does not eliminate lesions",
-    "50%+ recurrence within 1-5 years",
-    "Side effects: bone loss, infertility impact, mood changes",
+    "Largely hormone-based",
+    "Primarily symptomatic",
+    "Does not eliminate lesions",
+    "Does not modify disease biology",
   ];
   let socY = y - 28;
   for (const s of socPoints) {
@@ -335,8 +326,8 @@ async function main() {
   const endoPoints = [
     "Non-hormonal precision peptide mechanism",
     "Designed to eliminate lesions and modify disease",
-    "Short-course therapy - not lifelong treatment",
-    "No hormones, no surgery, no systemic toxicity",
+    "Short-course, disease-modifying treatment",
+    "Designed to avoid hormones, surgery, and systemic toxicity",
   ];
   let endoY = y - 28;
   for (const e of endoPoints) {
@@ -350,13 +341,13 @@ async function main() {
   y -= 10;
   y = sectionHeader(p3, "Contact & Next Steps", y);
   y -= 4;
-  p3.drawText("EndoCyclic Therapeutics, Inc.", { x: MARGIN, y, font: timesBold, size: 12, color: PLUM });
+  p3.drawText("EndoCyclic Therapeutics, Inc.", { x: MARGIN, y, font: helveticaBold, size: 12, color: PLUM });
   y -= 18;
   p3.drawText("Irvine, California", { x: MARGIN, y, font: helvetica, size: 9.5, color: BLACK });
   y -= 16;
   p3.drawText("info@endocyclic.com", { x: MARGIN, y, font: helvetica, size: 9.5, color: GOLD });
   y -= 16;
-  p3.drawText("endocyclictherapeutics.com/investors", { x: MARGIN, y, font: helvetica, size: 9.5, color: GOLD });
+  p3.drawText("endocyclic.com/investors", { x: MARGIN, y, font: helvetica, size: 9.5, color: GOLD });
   y -= 30;
 
   // Disclaimer

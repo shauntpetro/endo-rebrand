@@ -3,7 +3,7 @@ import { PIPELINE, PHASES } from "@/lib/site";
 /**
  * PhaseTimeline — a calm, journal-grade development-stage chart.
  *
- * A single horizontal axis across the six clinical PHASES. Each of the four
+ * A single horizontal axis across six development stages. Each of the four
  * pipeline programs is plotted as a progress track ending in a marker at its
  * current `phaseIndex`. Therapeutics read as a filled teal dot; diagnostics as
  * an open teal ring. All positions and copy trace to lib/site (→ truth.md).

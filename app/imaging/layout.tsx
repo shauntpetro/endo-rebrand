@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Imaging & Diagnostics",
   description:
-    "FemLUNA™ is developed to be the first non-invasive, definitive diagnostic for endometriosis — detecting superficial and sub-millimeter lesions often missed by current imaging. A radiation-free, non-hormonal, heavy-metal-free alternative to laparoscopy.",
+    "FemLUNA™ is developed to be the first non-invasive, definitive diagnostic for endometriosis — detecting superficial and sub-millimeter lesions often missed by current imaging and offering a non-invasive alternative to laparoscopy.",
   alternates: { canonical: "/imaging" },
   openGraph: {
     title: "Imaging & Diagnostics | EndoCyclic Therapeutics",
@@ -36,7 +36,7 @@ export default function ImagingLayout({
         "@type": "MedicalDevice",
         name: "FemLUNA",
         description:
-          "Investigational targeted imaging agent developed as the first non-invasive, definitive diagnostic for endometriosis. Radiation-free, non-hormonal, and free of heavy metals.",
+          "Investigational targeted imaging agent developed as the first non-invasive, definitive diagnostic for endometriosis and as a non-invasive alternative to laparoscopy.",
       },
       {
         "@type": "MedicalDevice",

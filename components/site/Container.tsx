@@ -4,12 +4,14 @@ export default function Container({
   children,
   prose = false,
   className,
+  id,
 }: {
   children: React.ReactNode;
   prose?: boolean;
   className?: string;
+  id?: string;
 }) {
   return (
-    <div className={clsx(prose ? "container-prose" : "container-page", className)}>{children}</div>
+    <div id={id} className={clsx(prose ? "container-prose" : "container-page", className)}>{children}</div>
   );
 }

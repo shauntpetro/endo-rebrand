@@ -2,59 +2,117 @@
 
 /* ============================================================================
    EndoCyclic — "Calm Clinical" design system
-   Soft off-white ground · muted plum text · gentle clinical teal + soft pastels ·
+   Warm ivory ground · mulberry text · clinical teal + soft botanical pastels ·
    one clean sans (Hanken Grotesk) at modest sizes · generous whitespace.
    Quiet, refined, trustworthy — minimal by intent.
    ============================================================================ */
 
 @theme {
   /* Grounds */
-  --color-paper: #fbfaf8;       /* primary soft off-white */
-  --color-surface: #ffffff;     /* raised cards */
-  --color-tint-plum: #f4f1f8;   /* soft plum section wash */
-  --color-tint-teal: #edf5f2;   /* soft teal section wash */
-  --color-tint-warm: #f6f3ee;   /* soft warm neutral wash */
+  --color-paper: #fff8f4;       /* warm ivory ground */
+  --color-surface: #fffcfa;     /* porcelain raised surface */
+  --color-tint-plum: #f0e8f2;  /* soft lilac section wash */
+  --color-tint-teal: #e5f0eb;  /* soft sage section wash */
+  --color-tint-warm: #f4e7d8;  /* soft sand section wash */
 
   /* Text */
-  --color-ink: #2e263a;         /* headings + strong text (muted plum) */
-  --color-ink-body: #4b4553;    /* body text */
-  --color-muted: #6f6a76;       /* secondary / captions (AA on paper) */
-  --color-line: #2e263a1f;      /* hairlines (~12%) */
-  --color-line-soft: #2e263a12;
+  --color-ink: #392638;         /* headings + strong text (mulberry) */
+  --color-ink-body: #574650;    /* body text */
+  --color-muted: #6d5e66;       /* secondary / captions (AA on paper) */
+  --color-line: #39263820;      /* hairlines (~12%) */
+  --color-line-soft: #39263812;
 
   /* Plum (dark footer / rare accent) */
-  --color-plum: #2e263a;
-  --color-plum-deep: #241e30;
-  --color-on-dark: #f1eef4;
-  --color-muted-on-dark: #b7b1c0;
+  --color-plum: #392638;
+  --color-plum-deep: #2c1d2d;
+  --color-on-dark: #fff8f4;
+  --color-muted-on-dark: #d8cbd3;
   --color-line-on-dark: #ffffff1f;
 
   /* Clinical teal (primary accent) */
-  --color-teal: #4a9b8e;        /* decorative fills / dots */
-  --color-teal-ink: #2f6e62;    /* teal TEXT / links on light (AA) */
-  --color-teal-tint: #e4efeb;
+  --color-teal: #43877d;        /* decorative fills / dots */
+  --color-teal-ink: #27675e;    /* teal TEXT / links on light (AA) */
+  --color-teal-tint: #dcebe5;
+  --color-teal-on-dark: #8fc5ba;
 
   /* Restrained gold (brand whisper) */
-  --color-gold: #c9a961;
-  --color-gold-ink: #806524;    /* gold text on light (AA) */
+  --color-gold: #d8b850;
+  --color-gold-ink: #80611e;    /* gold text on light (AA) */
 
   /* Soft rose (very sparing warmth) */
-  --color-rose: #d4a5a5;
+  --color-rose: #c9798a;
+  --color-rose-ink: #8b4b62;
+  --color-petal: #f7e8e7;
+  --color-peony: #f1d8de;
 
   --font-sans: var(--font-hanken), "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
 
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-fast: 110ms;
+  --motion-ui: 260ms;
+  --motion-scene: 680ms;
 }
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }
 }
+@keyframes reveal-view {
+  from {
+    transform: translateY(var(--reveal-y, 14px));
+    clip-path: inset(0 0 8% 0);
+  }
+  to {
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes nav-panel-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 @keyframes page-enter {
   from { opacity: 0.001; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
-
+@keyframes hero-enter {
+  from { opacity: 0.001; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-step-enter {
+  from {
+    opacity: 0.001;
+    transform: translateY(14px);
+    clip-path: inset(0 0 22% 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes hero-title-settle {
+  from { transform: translateY(12px); }
+  to { transform: translateY(0); }
+}
+@keyframes hero-aperture-enter {
+  from { clip-path: inset(0 7% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes hero-media-settle {
+  from { transform: scale(1.025); }
+  to { transform: scale(1); }
+}
+@keyframes hero-proof-enter {
+  from { opacity: 0.001; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes thread-sweep-enter {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
 /* ---------------------------------------------------------------------------
    Base
    --------------------------------------------------------------------------- */
@@ -88,11 +146,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 p { text-wrap: pretty; }
 
+/* Dark sections own their foreground colors. Keep these selectors after the
+   global heading/eyebrow rules so utility-class ordering cannot make copy
+   disappear against the plum ground. */
+[data-tone="dark"] h1,
+[data-tone="dark"] h2,
+[data-tone="dark"] h3,
+[data-tone="dark"] h4,
+[data-tone="dark"] h5,
+[data-tone="dark"] h6 {
+  color: var(--color-on-dark) !important;
+}
+
 /* ---------------------------------------------------------------------------
    Modest, calm type scale (utility classes)
    --------------------------------------------------------------------------- */
 .t-hero {
-  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-size: clamp(2.45rem, 4.8vw, 4.15rem);
   font-weight: 500;
   line-height: 1.08;
   letter-spacing: -0.025em;
@@ -131,6 +201,7 @@ p { text-wrap: pretty; }
   text-transform: uppercase;
   color: var(--color-teal-ink);
 }
+[data-tone="dark"] .eyebrow { color: var(--color-teal-on-dark) !important; }
 
 /* ---------------------------------------------------------------------------
    Layout
@@ -150,21 +221,154 @@ p { text-wrap: pretty; }
 .section {
   padding-block: clamp(4rem, 9vw, 8rem);
 }
+.section-hero { padding-block: clamp(3.5rem, 7vw, 6.5rem); }
+.section-chapter { padding-block: clamp(5rem, 10vw, 9rem); }
+.section-proof { padding-block: clamp(3.5rem, 7vw, 6rem); }
+.section-compact { padding-block: clamp(2.75rem, 5vw, 4.5rem); }
 .hairline { height: 1px; background: var(--color-line); border: 0; }
 
-/* Reveal — quiet fade-up; content stays visible if motion can't run */
-.reveal { animation: fade-up 0.7s var(--ease-soft) both; }
+.editorial-shadow {
+  box-shadow: 0 26px 80px rgb(57 38 56 / 0.11);
+}
+.soft-rule {
+  background: linear-gradient(90deg, transparent, var(--color-line), transparent);
+  height: 1px;
+}
+
+/* Reveal — visible fallback, view-linked enhancement in capable browsers. */
+.reveal {
+  min-width: 0;
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0);
+}
 .page-enter { animation: page-enter 0.4s var(--ease-soft) both; }
+.hero-copy-enter { animation: none; }
+.hero-copy-enter [data-hero-step] {
+  animation: hero-step-enter var(--motion-scene) var(--ease-quint) both;
+  will-change: transform, opacity, clip-path;
+}
+.hero-copy-enter [data-hero-step="title"] {
+  animation-name: hero-title-settle;
+  animation-delay: 70ms;
+}
+.hero-copy-enter [data-hero-step="intro"] { animation-delay: 140ms; }
+.hero-copy-enter [data-hero-step="actions"] { animation-delay: 210ms; }
+.hero-copy-enter [data-hero-step="proof"] { animation-delay: 280ms; }
+.hero-visual-enter { animation: none; }
+.hero-visual-frame {
+  animation: hero-aperture-enter 820ms 90ms var(--ease-quint) both;
+  will-change: clip-path;
+}
+[data-hero-layout="reverse"] .hero-visual-frame {
+  animation-name: hero-aperture-enter-reverse;
+}
+.hero-visual-frame > :first-child {
+  animation: hero-media-settle 980ms 70ms var(--ease-quint) both;
+  will-change: transform;
+}
+.hero-visual-caption {
+  animation: hero-step-enter 560ms 420ms var(--ease-quint) both;
+}
+[data-hero-proof] {
+  animation: hero-proof-enter 620ms 320ms var(--ease-quint) both;
+}
+.home-hero-art > :first-child {
+  animation: hero-media-settle 1.15s 80ms var(--ease-quint) both;
+  will-change: transform;
+}
+.pipeline-hero-thread {
+  animation: thread-sweep-enter 1.15s 180ms var(--ease-quint) both;
+  will-change: clip-path;
+}
+@keyframes hero-aperture-enter-reverse {
+  from { clip-path: inset(0 0 0 7%); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-view linear both;
+    animation-timeline: view();
+    animation-range: entry var(--reveal-start, 4%) cover var(--reveal-end, 24%);
+  }
+}
+
+/* The Selective Thread is a compositional rule, not a decorative page number. */
+.chapter-thread-mark {
+  position: relative;
+  display: inline-flex;
+  width: 2.75rem;
+  height: 0.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+}
+.chapter-thread-mark::before {
+  content: "";
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-rose), var(--color-gold) 52%, var(--color-teal));
+}
+.chapter-thread-mark > span {
+  position: absolute;
+  left: 50%;
+  width: 0.42rem;
+  height: 0.42rem;
+  border: 1px solid var(--color-rose-ink);
+  border-radius: 999px;
+  background: var(--color-paper);
+  transform: translateX(-50%);
+}
+[data-tone="dark"] .chapter-thread-mark > span { background: var(--color-plum); border-color: var(--color-teal-on-dark); }
+
+.hero-stage { isolation: isolate; }
+.hero-thread-trace {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  top: 7.25rem;
+  right: -3rem;
+  width: min(36vw, 34rem);
+  height: min(36vw, 34rem);
+  border: 1px solid color-mix(in srgb, var(--color-rose) 28%, transparent);
+  border-radius: 50%;
+  opacity: 0.55;
+  transform: translate(38%, -48%);
+}
+.hero-frame-bleed {
+  border-radius: 1.5rem 0 1.5rem 3.5rem;
+  box-shadow: 0 24px 70px rgb(57 38 56 / 0.07);
+}
+[data-hero-layout="reverse"] .hero-frame-bleed { border-radius: 0 1.5rem 3.5rem 1.5rem; }
+[data-hero-layout="stacked"] .hero-frame-bleed { border-radius: 1.5rem 4rem 1.5rem 1.5rem; }
+.nav-panel-enter { animation: nav-panel-in 0.3s var(--ease-soft) both; }
+
+@media (min-width: 1024px) {
+  .hero-frame-bleed { border-radius: 3rem 0 0 7rem; }
+  [data-hero-layout="reverse"] .hero-frame-bleed { border-radius: 0 3rem 7rem 0; }
+  [data-hero-layout="stacked"] .hero-frame-bleed { border-radius: 2rem 8rem 2rem 2rem; }
+}
 
 /* Understated link underline */
 .link-underline {
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  transition: background-size 0.35s var(--ease-soft);
+  position: relative;
+  display: inline-block;
 }
-.link-underline:hover { background-size: 100% 1px; }
+.link-underline::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -0.08rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s var(--ease-soft);
+}
+.link-underline:hover::after,
+.group:hover .link-underline::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
 
 /* ---------------------------------------------------------------------------
    Accessibility
@@ -174,32 +378,45 @@ p { text-wrap: pretty; }
   outline-offset: 2px;
   border-radius: 3px;
 }
+[data-tone="dark"] :focus-visible,
+footer :focus-visible {
+  outline-color: var(--color-teal-on-dark);
+}
 :focus:not(:focus-visible) { outline: none; }
 
 .skip-to-content {
-  position: absolute;
-  top: -100%;
+  position: fixed;
+  top: 0;
   left: 1.25rem;
   z-index: 9999;
   padding: 0.7rem 1.15rem;
+  min-height: 3rem;
   background: var(--color-plum);
   color: #fff;
   font-weight: 600;
   font-size: 0.8rem;
   letter-spacing: 0.04em;
   border-radius: 0 0 0.4rem 0.4rem;
-  transition: top 0.2s ease;
+  transform: translateY(-110%);
+  transition: transform var(--motion-ui) var(--ease-quart);
 }
-.skip-to-content:focus { top: 0; }
+.skip-to-content:focus { transform: translateY(0); }
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+  .reveal {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
   }
 }

@@ -9,12 +9,14 @@ export default function Figure({
   caption,
   label,
   framed = true,
+  variant = "clinical",
   className,
 }: {
   children: React.ReactNode;
   caption?: React.ReactNode;
   label?: string;
   framed?: boolean;
+  variant?: "clinical" | "editorial" | "frameless";
   className?: string;
 }) {
   return (
@@ -22,7 +24,9 @@ export default function Figure({
       <div
         className={clsx(
           "overflow-hidden",
-          framed && "rounded-xl border border-line bg-surface p-5 md:p-8",
+          framed && variant === "clinical" && "rounded-2xl border border-line bg-surface p-5 md:p-8",
+          framed && variant === "editorial" && "editorial-shadow rounded-[2rem] bg-surface",
+          variant === "frameless" && "rounded-none",
         )}
       >
         {children}

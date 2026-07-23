@@ -1,180 +1,223 @@
-import Section from "@/components/site/Section";
-import Container from "@/components/site/Container";
-import Eyebrow from "@/components/site/Eyebrow";
+import Image from "next/image";
+import CareGapShift from "@/components/figures/CareGapShift";
 import Button from "@/components/site/Button";
+import Container from "@/components/site/Container";
+import NextChapter from "@/components/site/NextChapter";
+import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
-import CountUp from "@/components/site/CountUp";
-import Figure from "@/components/site/Figure";
-import DiseaseBurden from "@/components/figures/DiseaseBurden";
-import { BURDEN_STATS } from "@/lib/site";
+import Section from "@/components/site/Section";
 
-/* -------------------------------------------------------------------- Hero */
+const MECHANISM_STEPS = [
+  {
+    index: "01",
+    label: "pH-mediated activation",
+    detail: "The precision peptide platform uses pH-mediated activation.",
+  },
+  {
+    index: "02",
+    label: "Selective uptake",
+    detail: "Diseased tissue takes up the peptide through a proprietary endocytic pathway.",
+  },
+  {
+    index: "03",
+    label: "Non-hormonal by design",
+    detail: "The platform is designed to act through a non-hormonal mechanism.",
+  },
+] as const;
+
+const BURDEN_SIGNALS = [
+  {
+    value: "1 in 10",
+    label: "reproductive-age women globally",
+  },
+  {
+    value: "$200B",
+    label: "annual economic burden in the US",
+  },
+  {
+    value: "$180–250B",
+    label: "global treatment-market potential · McKinsey estimate",
+  },
+] as const;
+
 function Hero() {
   return (
-    <Section tone="paper" rhythm={false} className="relative overflow-hidden pt-32 md:pt-40">
-      <div aria-hidden className="pointer-events-none absolute right-[-6rem] top-24 h-72 w-72 rounded-full bg-tint-teal blur-2xl md:right-[-2rem]" />
-      <div aria-hidden className="pointer-events-none absolute right-24 top-52 h-40 w-40 rounded-full bg-tint-plum blur-2xl" />
-      <Container className="relative pb-16 md:pb-24">
-        <div className="max-w-3xl reveal">
-          <Eyebrow>Impact</Eyebrow>
-          <h1 className="t-hero mt-6 text-ink">
-            The most common disease you’ve never been taught to see.
-          </h1>
-          <p className="t-lead mt-6 max-w-2xl">
-            Endometriosis affects roughly 1 in 10 women of reproductive age — yet it
-            takes an average of eight years to diagnose, and today’s therapies only
-            manage symptoms. We’re working to change what that means.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button href="/contact?subject=partnership" variant="primary">Partner with us</Button>
-            <Button href="/news" variant="ghost">Read the latest news</Button>
-          </div>
-        </div>
-        <div className="mt-16 h-px w-full bg-line md:mt-24" />
-      </Container>
-    </Section>
+    <PageHero
+      eyebrow="The endometriosis burden"
+      title="A disease affecting more than 190 million women."
+      intro="Endometriosis affects roughly 1 in 10 women of reproductive age, yet diagnosis still takes an average of eight years. Current therapies are largely hormone-based and symptomatic."
+      actions={
+        <>
+          <Button href="/pipeline#endo-205">Review ENDO-205</Button>
+          <Button href="#burden" variant="ghost">
+            Review the burden
+          </Button>
+        </>
+      }
+      proof="A leading cause of infertility and chronic pelvic pain."
+      caption="Conceptual anatomical representation of endometrial-like tissue growing outside the uterus; not clinical imagery."
+      tone="tint-warm"
+      layout="reverse"
+      frame="soft"
+      visualAspect="auto"
+      titleClassName="max-w-[18ch]"
+    >
+      <Image
+        src="/illustrations/endometriosis-biology-v1.avif"
+        alt="Conceptual anatomical illustration of endometriosis lesions outside the uterus, including on the ovaries and pelvic sidewall."
+        fill
+        priority
+        sizes="(min-width: 1184px) 650px, (min-width: 1024px) 52vw, 94vw"
+        className="object-cover object-left"
+      />
+    </PageHero>
   );
 }
 
-/* ---------------------------------------------------------------- The burden */
+function BurdenLedger() {
+  return (
+    <figure>
+      <div className="grid border-y border-line lg:grid-cols-12">
+        <div className="border-b border-line py-10 lg:col-span-5 lg:border-b-0 lg:border-r lg:py-14 lg:pr-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-ink">Average diagnostic delay</p>
+          <p className="mt-6 text-[clamp(4.75rem,12vw,9rem)] font-medium leading-[0.85] tracking-[-0.065em] text-ink">
+            8 years
+          </p>
+          <div aria-hidden className="mt-10 grid grid-cols-8 border-t border-rose/55 pt-3">
+            {Array.from({ length: 8 }, (_, index) => (
+              <span key={index} className="relative text-center text-[0.65rem] text-muted">
+                <span className="absolute -top-[1.05rem] left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full border-2 border-paper bg-rose" />
+                {index + 1}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <dl className="divide-y divide-line lg:col-span-6 lg:col-start-7">
+          {BURDEN_SIGNALS.map((signal) => (
+            <div key={signal.value} className="grid gap-2 py-7 sm:grid-cols-[12rem_1fr] sm:items-baseline lg:py-8">
+              <dt className="text-[clamp(2rem,4vw,3.5rem)] font-medium leading-none tracking-[-0.045em] text-ink">
+                {signal.value}
+              </dt>
+              <dd className="text-sm leading-relaxed text-muted">{signal.label}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <figcaption className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
+        Worldwide prevalence, diagnostic delay, US economic burden, and global treatment-market potential show the scale of the unmet need.
+      </figcaption>
+    </figure>
+  );
+}
+
 function Burden() {
   return (
-    <Section tone="paper">
+    <Section tone="paper" size="chapter" id="burden" className="scroll-mt-24">
       <Container>
-        <div className="grid gap-10 md:grid-cols-12">
-          <Reveal className="md:col-span-5">
-            <Eyebrow>The burden</Eyebrow>
-            <h2 className="t-h2 mt-4 text-ink">
-              A chronic disease, hidden in plain sight.
-            </h2>
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <Reveal className="lg:col-span-6">
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-semibold tracking-[0.18em] text-rose-ink">01</span>
+              <p className="eyebrow">Scale and delay</p>
+            </div>
+            <h2 className="t-h2 mt-5 text-ink">The cost of waiting is measured in years and economic burden.</h2>
           </Reveal>
-          <Reveal delay={0.1} className="self-end md:col-span-6 md:col-start-7">
-            <p className="t-body text-muted">
-              Endometriosis is a chronic, systemic disease in which endometrial-like
-              tissue grows outside the uterus, driving inflammation, scarring, and
-              adhesions. It is a leading cause of infertility and chronic pelvic pain — and
-              its reach extends well beyond the pelvis. The disease is associated with
-              comorbidities including cardiovascular disease, an increased risk of certain
-              cancers, and other inflammatory conditions. For a condition affecting roughly
-              1 in 10 women of reproductive age, it remains strikingly under-recognized.
+          <Reveal delay={0.06} className="lg:col-span-5 lg:col-start-8">
+            <p className="t-lead">
+              Endometriosis is associated with cardiovascular disease, an increased risk of certain cancers, and other inflammatory conditions.
             </p>
           </Reveal>
         </div>
 
-        <div className="mt-16 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-          {BURDEN_STATS.map((s, i) => (
-            <Reveal key={s.label} delay={i * 0.08} className="border-t border-line pt-5">
-              <div className="t-stat">
-                <CountUp value={s.value} prefix={"prefix" in s ? s.prefix : ""} suffix={"suffix" in s ? s.suffix : ""} />
-              </div>
-              <p className="mt-3 text-sm font-medium text-ink">{s.label}</p>
-              <p className="mt-1.5 text-sm text-muted">{s.detail}</p>
-            </Reveal>
-          ))}
+        <Reveal className="mt-14">
+          <BurdenLedger />
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
+
+function CareGap() {
+  return (
+    <Section tone="tint-plum" size="chapter">
+      <Container>
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <Reveal className="lg:col-span-6">
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-semibold tracking-[0.18em] text-rose-ink">02</span>
+              <p className="eyebrow">The care gap</p>
+            </div>
+            <h2 className="mt-5 max-w-[15ch] text-[clamp(2.35rem,4.5vw,4.25rem)] font-medium leading-[1.03] tracking-[-0.04em] text-ink">
+              Symptoms are treated. Disease biology remains.
+            </h2>
+          </Reveal>
+          <Reveal delay={0.06} className="lg:col-span-5 lg:col-start-8">
+            <p className="t-lead">
+              Current therapies do not eliminate lesions or modify the underlying disease biology.
+            </p>
+          </Reveal>
         </div>
 
-        <Reveal delay={0.1}>
-          <p className="mt-12 max-w-2xl text-sm text-muted">
-            That eight-year average delay is among the widest in medicine — years of pain,
-            missed work, and uncertainty before the disease is even named. And a diagnosis
-            rarely changes its course: today’s standard of care is largely hormone-based
-            and symptomatic, easing pain while the underlying lesions remain. These
-            therapies suppress symptoms rather than modify the disease, and symptoms often
-            return once treatment stops.
-          </p>
-        </Reveal>
+        <div className="mt-14">
+          <CareGapShift />
+        </div>
+      </Container>
+    </Section>
+  );
+}
 
-        {/* Figure 1 — journal-grade synthesis of the burden numbers */}
-        <Reveal delay={0.1}>
-          <div className="mt-16 md:mt-20">
-            <Figure
-              label="Figure 1"
-              caption="Endometriosis at a glance: an eight-year average delay from first symptom to diagnosis; a prevalence of roughly 1 in 10 reproductive-age women (190M+ worldwide); and an economic scale of $200B annually in the US against a $180–250B global treatment market (McKinsey estimate)."
-            >
-              <DiseaseBurden />
-            </Figure>
+function Response() {
+  return (
+    <Section tone="paper" size="chapter">
+      <Container>
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <Reveal className="lg:col-span-6">
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-semibold tracking-[0.18em] text-rose-ink">03</span>
+              <p className="eyebrow">The response</p>
+            </div>
+            <h2 className="t-h2 mt-5 text-ink">A therapeutic designed to act where disease lives.</h2>
+          </Reveal>
+          <Reveal delay={0.06} className="lg:col-span-5 lg:col-start-8">
+            <p className="t-lead">
+              ENDO-205 is a first-in-class, non-hormonal precision peptide therapeutic in Phase 1 following FDA IND Allowance in 2026.
+            </p>
+          </Reveal>
+        </div>
+
+        <ol className="mt-14 divide-y divide-line border-y border-line md:grid md:grid-cols-3 md:divide-x md:divide-y-0">
+          {MECHANISM_STEPS.map((step, index) => (
+            <Reveal as="li" key={step.index} delay={index * 0.06} className="py-8 md:px-8 first:md:pl-0 last:md:pr-0">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold tracking-[0.16em] text-rose-ink">{step.index}</span>
+                <span aria-hidden className="h-px flex-1 bg-line" />
+              </div>
+              <h3 className="t-h3 mt-5 text-ink">{step.label}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted">{step.detail}</p>
+            </Reveal>
+          ))}
+        </ol>
+
+        <Reveal className="mt-14 grid gap-10 border-t border-line pt-10 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-ink">Lead program · Phase 1</p>
+            <h3 className="mt-4 text-[clamp(3rem,7vw,6rem)] font-medium leading-none tracking-[-0.055em] text-ink">
+              ENDO-205
+            </h3>
+          </div>
+          <div className="lg:col-span-6 lg:col-start-7">
+            <p className="t-lead">Designed as a short-course, disease-modifying treatment for endometriosis.</p>
+            <p className="mt-5 text-sm leading-relaxed text-muted">
+              In preclinical studies, ENDO-205 demonstrated elimination of endometriosis lesions and associated inflammation. GLP toxicology studies showed no dose-limiting toxicities.
+            </p>
+            <div className="mt-8">
+              <Button href="/pipeline#endo-205" variant="ghost">
+                Review the lead program
+              </Button>
+            </div>
           </div>
         </Reveal>
-      </Container>
-    </Section>
-  );
-}
-
-/* --------------------------------------------------------------- The mission */
-function Mission() {
-  const points = [
-    {
-      k: "Modify disease, not mask it",
-      v: "ENDO-205, our lead therapeutic, is an investigational precision peptide designed to eliminate endometriosis lesions and change the course of the disease — not manage symptoms until they return. In preclinical studies it demonstrated elimination of lesions and their associated inflammation.",
-    },
-    {
-      k: "Non-hormonal by design",
-      v: "The platform works through pH-mediated activation and selective uptake by diseased tissue — a mechanism designed to switch on only where disease lives and leave healthy tissue untouched, without relying on hormones.",
-    },
-    {
-      k: "Designed to protect what matters",
-      v: "Developed as a short-course therapy, ENDO-205 is designed to preserve fertility and to avoid the hormones, surgery, and systemic toxicity that define today’s options. In GLP toxicology studies, it showed no dose-limiting toxicities.",
-    },
-  ];
-  return (
-    <Section tone="tint-teal">
-      <Container>
-        <div className="max-w-2xl">
-          <Reveal>
-            <Eyebrow>The mission</Eyebrow>
-            <h2 className="t-h2 mt-4 text-ink">
-              Treat the disease at its source.
-            </h2>
-            <p className="t-lead mt-5">
-              EndoCyclic exists to give women more than symptom management — a
-              non-hormonal, short-course therapy designed to eliminate lesions and modify
-              the biology of the disease itself.
-            </p>
-          </Reveal>
-        </div>
-
-        <div className="mt-14 grid gap-10 md:grid-cols-3">
-          {points.map((p, i) => (
-            <Reveal key={p.k} delay={i * 0.08}>
-              <div className="text-sm font-medium text-teal-ink">{`0${i + 1}`}</div>
-              <h3 className="t-h3 mt-3 text-ink">{p.k}</h3>
-              <p className="mt-2 text-sm text-muted">{p.v}</p>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal delay={0.1}>
-          <p className="mt-12 max-w-2xl text-sm text-muted">
-            As a founding member of the Milken Institute’s Women’s Health Network,
-            EndoCyclic is helping build the research collaboration and investment that
-            women’s health has long been denied — the groundwork for turning a
-            historically overlooked disease into a solvable one.
-          </p>
-        </Reveal>
-      </Container>
-    </Section>
-  );
-}
-
-/* -------------------------------------------------------------- Closing CTA */
-function Closing() {
-  return (
-    <Section tone="plum">
-      <Container>
-        <div className="max-w-2xl">
-          <Reveal>
-            <Eyebrow tone="dark">Get involved</Eyebrow>
-            <h2 className="t-h2 mt-4 text-on-dark">Let’s change what a diagnosis can mean.</h2>
-            <p className="mt-5 max-w-xl text-muted-on-dark">
-              For partnership, investment, or media — the right person on our team will
-              follow up. Or follow the science as it moves forward.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button href="/contact?subject=partnership" variant="ghost-on-dark">Partner with us</Button>
-              <Button href="/news" variant="ghost-on-dark">Read the latest news</Button>
-            </div>
-          </Reveal>
-        </div>
       </Container>
     </Section>
   );
@@ -185,8 +228,23 @@ export default function ImpactPage() {
     <main id="main-content">
       <Hero />
       <Burden />
-      <Mission />
-      <Closing />
+      <CareGap />
+      <Response />
+      <NextChapter
+        eyebrow="Continue the science"
+        title="See how one selective mechanism becomes four precision programs."
+        tone="plum"
+        actions={
+          <>
+            <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+            <Button href="/pipeline" variant="ghost-on-dark">
+              Explore the pipeline
+            </Button>
+          </>
+        }
+      >
+        Follow the platform from ENDO-205 and FemLUNA™ into paired oncology programs.
+      </NextChapter>
     </main>
   );
 }

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Impact",
   description:
-    "Endometriosis affects 190M+ women worldwide, carries a $200B annual US burden, and takes an average of eight years to diagnose. EndoCyclic is working to eliminate lesions and modify disease — not mask symptoms.",
+    "Endometriosis affects 190M+ women worldwide, carries a $200B annual US burden, and takes an average of eight years to diagnose. ENDO-205 is designed to eliminate lesions and modify disease biology.",
   alternates: { canonical: "/impact" },
   openGraph: {
     title: "Impact | EndoCyclic Therapeutics",
@@ -25,7 +25,7 @@ export default function ImpactLayout({
     name: "Impact — EndoCyclic Therapeutics",
     url: "https://endocyclic.com/impact",
     description:
-      "The disease burden of endometriosis and EndoCyclic's mission to eliminate lesions and modify disease with a non-hormonal precision approach.",
+      "The disease burden of endometriosis and ENDO-205, a non-hormonal precision therapeutic designed to eliminate lesions and modify disease biology.",
     about: {
       "@type": "MedicalCondition",
       name: "Endometriosis",

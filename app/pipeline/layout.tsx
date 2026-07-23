@@ -4,12 +4,12 @@ import { PIPELINE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Pipeline",
   description:
-    "Four programs across endometriosis and oncology — two therapeutic and diagnostic pairs built on one non-hormonal precision peptide platform. ENDO-205 (Phase 1), FemLUNA™, ENDO-995, and ENDO-311.",
+    "Four therapeutic and diagnostic programs across endometriosis and oncology, built on one non-hormonal precision peptide platform: ENDO-205 (Phase 1), FemLUNA™, ENDO-995, and ENDO-311.",
   alternates: { canonical: "/pipeline" },
   openGraph: {
     title: "Pipeline | EndoCyclic Therapeutics",
     description:
-      "Four programs across endometriosis and oncology — two therapeutic and diagnostic pairs built on one non-hormonal precision peptide platform.",
+      "Four therapeutic and diagnostic programs across endometriosis and oncology, built on one non-hormonal precision peptide platform.",
     url: "https://endocyclic.com/pipeline",
   },
 };

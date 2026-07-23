@@ -13,7 +13,7 @@ export default function Eyebrow({
     <span
       className={clsx(
         "eyebrow inline-flex items-center gap-2.5",
-        tone === "dark" && "text-teal",
+        tone === "dark" && "!text-teal-on-dark",
         className,
       )}
     >

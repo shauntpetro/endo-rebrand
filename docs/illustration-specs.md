@@ -430,3 +430,31 @@ Iterate 2–3 times, refining toward cleaner linework, calmer negative space on 
 - **Usage:** Truth.md grounding: EndoCyclic is a women's-health precision-medicine company (endometriosis lead program, uterine/reproductive anatomy is on-topic); non-hormonal, care-focused mission. This is a conceptual mission emblem — invents no data, no efficacy, no chemical structure. Export as public/illustrations/womens-health.webp. After generation, downscale/convert to WebP and verify the left negative space aligns with the /impact headline overlay. Run 2–3 iterations.
 
 ---
+
+## 13. Care gap — symptom-management loop to selective uptake
+
+- **Placement:** `/impact`, inside the “The care gap” section.
+- **Aspect ratio:** wide 16:9 master with a crop-safe central narrative for phone and tablet frames.
+- **Production file:** `public/illustrations/care-gap-selective-shift-v1.avif`
+- **Depicts (truth.md):** Current therapies are largely hormone-based and symptomatic and do not eliminate lesions or modify the underlying disease biology. The platform design objective combines pH-mediated activation, selective uptake by diseased tissue, and a non-hormonal mechanism.
+- **Disclosure:** Conceptual comparison of current therapies and the platform's design strategy; not clinical outcome data.
+- **Guardrail:** The diseased tissue remains visibly present on both sides. The image depicts activation and uptake only—never lesion removal, healing, or a treatment outcome.
+
+**Final production prompt (built-in ImageGen):**
+
+```text
+Use case: scientific-educational
+Asset type: wide responsive editorial illustration for a clinical-stage biotech website section
+Primary request: Create one sophisticated, continuous conceptual illustration contrasting today’s symptom-focused endometriosis care with a selective precision-peptide design objective.
+Scene/backdrop: warm ivory porcelain paper with softly painted cellular and tissue textures; no hard split-screen divider.
+Subject and narrative: on the left, a pale dusty-rose endometriosis lesion microenvironment remains visibly present while a graceful ribbon-like path loops around the tissue surface, communicating repeated symptom management without changing the lesion. At the center, the looping ribbon opens at a restrained gold transition point and becomes one purposeful peptide-like thread. On the right, that thread becomes a cyclic peptide ring, changes state at a subtle acidic-pH tissue boundary, and is selectively taken up into rose-colored diseased tissue rendered with refined cell-scale detail. The right side must show targeting and entry only—not lesion removal, shrinkage, healing, or a clinical result.
+Style/medium: premium hand-painted medical editorial illustration; delicate watercolor, colored pencil, and translucent gouache; feminine warmth, precise anatomy-inspired cellular detail, calm institutional sophistication; suitable for an Awwwards-level biotech annual report; organic and authored rather than diagrammatic.
+Composition/framing: wide cinematic 16:9 landscape; left 42 percent loop/tissue, a quiet gold pivot near center, right 58 percent selective uptake; continuous visual flow with generous ivory breathing room and a clear focal point on the cyclic peptide entering diseased tissue.
+Color palette: warm ivory, blush and dusty rose, muted sage and clinical teal, mulberry linework, restrained gold accents.
+Constraints: purely conceptual and non-clinical; scientifically sober; no claims embedded in the image; no people; no surgery; no medication packaging; no lesion disappearing; no before-and-after framing.
+Avoid: all text, letters, numbers, labels, logos, watermark, UI panels, flat vector infographic style, generic arrows, glossy 3D render, neon glow, blue-purple sci-fi palette, photorealistic gore.
+```
+
+- **Usage:** Keep all factual labels in accessible HTML below the art. Preserve the original generated PNG outside `public/`; serve only the optimized AVIF. Test the image crop at 390, 880, and 1280 CSS pixels.
+
+---

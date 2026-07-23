@@ -1,314 +1,371 @@
-"use client";
-
-import { useState } from "react";
-import { CheckCircle2, FileDown, Lock } from "lucide-react";
-import Section from "@/components/site/Section";
+import Link from "next/link";
+import Image from "next/image";
+import { Download, Lock } from "lucide-react";
+import Button from "@/components/site/Button";
 import Container from "@/components/site/Container";
 import Eyebrow from "@/components/site/Eyebrow";
-import Button from "@/components/site/Button";
+import NIHRecognitionPanel from "@/components/site/NIHRecognitionPanel";
+import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
-import { TextField, TextArea, Honeypot } from "@/components/site/Field";
-import { SITE } from "@/lib/site";
+import Section from "@/components/site/Section";
+import InvestorRequestForm from "./InvestorRequestForm";
 
-/* Investment highlights — every claim traces to truth.md / lib/site */
-const HIGHLIGHTS = [
+const DILIGENCE_PATH = [
+  { index: "01", label: "Regulatory path", href: "#regulatory" },
+  { index: "02", label: "Platform & programs", href: "#platform" },
+  { index: "03", label: "External validation", href: "#validation" },
+  { index: "04", label: "Controlled access", href: "#data-room" },
+] as const;
+
+const REGULATORY_PATH = [
   {
-    k: "FDA IND Allowance (2026)",
-    v: "Achieved for lead therapeutic ENDO-205, now in a first-in-human Phase 1 study.",
+    index: "01",
+    status: "Preclinical",
+    statusClass: "text-gold-ink",
+    nodeClass: "bg-gold",
+    label: "Preclinical evidence",
+    title: "Disease biology",
+    text: "Demonstrated elimination of endometriosis lesions and associated inflammation.",
   },
   {
-    k: "First-in-class, non-hormonal, disease-modifying",
-    v: "A short-course precision peptide designed to eliminate endometriosis lesions at the source — not suppress symptoms with hormones.",
+    index: "02",
+    status: "Achieved · 2026",
+    statusClass: "text-teal-ink",
+    nodeClass: "bg-teal",
+    label: "FDA milestone",
+    title: "IND Allowance",
+    text: "FDA IND Allowance for ENDO-205 in 2026.",
   },
   {
-    k: "$180B–$250B global market potential",
-    v: "Estimated market for endometriosis treatments (McKinsey), against an $200B annual US economic burden.",
+    index: "03",
+    status: "Current",
+    statusClass: "text-rose-ink",
+    nodeClass: "bg-rose",
+    label: "Current stage",
+    title: "Phase 1",
+    text: "First-in-human clinical study in healthy pre-menopausal women of reproductive age.",
   },
   {
-    k: "One platform, multiple shots on goal",
-    v: "A precision peptide platform spanning therapeutics, diagnostics, and oncology — with a paired detect-and-treat oncology program.",
-  },
-  {
-    k: "Rare depth of non-dilutive validation",
-    v: "A perfect NIH “10” impact score on the Commercialization Readiness Pilot grant, plus multiple NICHD awards.",
-  },
-  {
-    k: "Experienced, regulatory-fluent team",
-    v: "Includes former FDA reviewers across CBER, CDER, and CMC alongside seasoned clinical and regulatory leaders.",
+    index: "04",
+    status: "Filing underway",
+    statusClass: "text-rose-ink",
+    nodeClass: "bg-surface ring-2 ring-rose",
+    label: "Next regulatory step",
+    title: "Fast Track",
+    text: "Fast Track filing is underway.",
   },
 ] as const;
 
-type FieldErrors = Partial<Record<"name" | "email" | "company", string>>;
+const PROGRAMS = [
+  {
+    name: "ENDO-205",
+    type: "Therapeutic · Endometriosis",
+    stage: "FDA IND Allowance (2026) · Phase 1",
+    href: "/pipeline#endo-205",
+  },
+  {
+    name: "FemLUNA™",
+    type: "Diagnostic · Endometriosis imaging",
+    stage: "IND-enabling",
+    href: "/pipeline#femluna",
+  },
+  {
+    name: "ENDO-995",
+    type: "Therapeutic · Malignant solid tumors",
+    stage: "Preclinical",
+    href: "/pipeline#oncology",
+  },
+  {
+    name: "ENDO-311",
+    type: "Diagnostic · Solid tumors",
+    stage: "Preclinical",
+    href: "/pipeline#oncology",
+  },
+] as const;
 
-export default function InvestorsPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [company, setCompany] = useState("");
-  const [role, setRole] = useState("");
-  const [message, setMessage] = useState("");
-  const [honeypot, setHoneypot] = useState("");
+const SUPPORTING_VALIDATION = [
+  "Multiple NICHD awards and recognition as an NIH SBIR Success Story",
+  "UCLA partnership, RADx Tech, and White House recognition",
+  "Founding member of the Milken Institute Women’s Health Network",
+] as const;
 
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [formError, setFormError] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
-
-  function validate(): boolean {
-    const next: FieldErrors = {};
-    if (!name.trim()) next.name = "Please enter your full name.";
-    if (!email.trim()) next.email = "Please enter your email address.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
-      next.email = "Please provide a valid email address.";
-    if (!company.trim()) next.company = "Please enter your firm or company.";
-    setFieldErrors(next);
-    return Object.keys(next).length === 0;
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setFormError("");
-    if (!validate()) return;
-
-    setStatus("submitting");
-    try {
-      const res = await fetch("/api/investor", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          company,
-          role,
-          message,
-          _honeypot: honeypot,
-        }),
-      });
-
-      if (res.ok) {
-        setStatus("success");
-        return;
-      }
-
-      if (res.status === 429) {
-        setFormError("Too many requests. Please wait a moment and try again.");
-      } else {
-        const data = await res.json().catch(() => null);
-        setFormError(
-          data?.error || "Something went wrong. Please try again, or email us directly.",
-        );
-      }
-      setStatus("idle");
-    } catch {
-      setFormError("Network error. Please try again, or email us directly.");
-      setStatus("idle");
-    }
-  }
-
+function DiligenceIndex() {
   return (
-    <main id="main-content">
-      {/* --------------------------------------------------------------- Hero */}
-      <Section tone="paper" className="pt-32 md:pt-40">
-        <Container>
-          <div className="max-w-3xl reveal">
-            <Eyebrow>Investor relations</Eyebrow>
-            <h1 className="t-hero mt-6 text-ink">The diligence front door.</h1>
-            <p className="t-lead mt-6 max-w-2xl">
-              EndoCyclic is building a non-hormonal precision medicine platform with a
-              clinical-stage lead program and rare external validation. We welcome
-              conversations with qualified investors and strategic partners.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Button href="#data-room" variant="primary">Request data-room access</Button>
-              <Button
-                href="/downloads/endocyclic-investor-summary.pdf"
-                variant="ghost"
-                external
-                arrow
+    <Section tone="paper" size="compact">
+      <Container>
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
+          <div className="lg:col-span-4">
+            <a
+              href="/downloads/endocyclic-investor-summary.pdf"
+              download
+              aria-label="Download the three-page EndoCyclic investor summary PDF"
+              className="group grid gap-6 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-ink sm:grid-cols-[9.5rem_1fr] sm:items-end lg:grid-cols-1 lg:items-start"
+            >
+              <span
+                aria-hidden
+                className="relative block aspect-[8.5/11] w-36 overflow-hidden border border-line bg-surface shadow-[0_18px_50px_rgb(57_38_56/0.12)] transition-transform duration-300 ease-[var(--ease-soft)] group-hover:-translate-y-1 sm:w-[9.5rem]"
               >
-                Download investor summary
-              </Button>
-            </div>
-          </div>
-          <div className="mt-16 h-px w-full bg-line md:mt-24" />
-        </Container>
-      </Section>
+                <Image
+                  src="/downloads/endocyclic-investor-summary-cover.avif"
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 152px, 144px"
+                  className="object-cover object-top"
+                />
+              </span>
 
-      {/* --------------------------------------------------- Investment highlights */}
-      <Section tone="tint-teal">
-        <Container>
-          <div className="max-w-2xl">
-            <Reveal>
-              <Eyebrow>Investment highlights</Eyebrow>
-              <h2 className="t-h2 mt-4 text-ink">Why EndoCyclic, why now.</h2>
-              <p className="t-lead mt-5">
-                A first-in-class program addressing a large, chronically underserved
-                market — de-risked by regulatory progress and independent recognition.
-              </p>
+              <span className="block min-w-0">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-ink">
+                  Investor memo
+                </span>
+                <span className="t-h3 mt-2 block text-ink">Investor summary</span>
+                <span className="mt-2 block text-sm leading-relaxed text-muted">
+                  A concise overview of the platform, pipeline, and development milestones.
+                </span>
+                <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-teal-ink">
+                  Download summary (PDF)
+                  <Download aria-hidden size={15} className="transition-transform duration-300 group-hover:translate-y-0.5" />
+                </span>
+                <span className="block text-xs text-muted">3 pages · PDF</span>
+              </span>
+            </a>
+          </div>
+
+          <nav aria-label="Investor diligence sections" className="lg:col-span-7 lg:col-start-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-ink">
+              Diligence index
+            </p>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted">
+              Four sections organize the diligence path.
+            </p>
+            <ol className="grid list-none border-t border-line sm:grid-cols-2">
+              {DILIGENCE_PATH.map((item) => (
+                <li key={item.href} className="border-b border-line sm:odd:pr-6 sm:even:border-l sm:even:pl-6">
+                  <a href={item.href} className="group flex min-h-14 items-center gap-4 text-sm font-medium text-ink">
+                    <span className="text-xs font-semibold tracking-[0.16em] text-rose-ink">{item.index}</span>
+                    <span className="link-underline">{item.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+function RegulatoryChronology() {
+  return (
+    <Section tone="tint-teal" size="chapter">
+      <Container id="regulatory" className="scroll-mt-28">
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-7">
+            <Eyebrow>Regulatory path</Eyebrow>
+            <h2 className="t-h2 mt-5 max-w-2xl text-ink">
+              From preclinical evidence to FDA allowance and Phase 1.
+            </h2>
+          </div>
+          <p className="max-w-lg text-muted lg:col-span-4 lg:col-start-9">
+            ENDO-205 is the clinical-stage lead within a four-program precision peptide pipeline.
+          </p>
+        </div>
+
+        <ol className="mt-14 grid list-none border-y border-line sm:grid-cols-2 xl:grid-cols-4">
+          {REGULATORY_PATH.map((item, index) => (
+            <Reveal
+              as="li"
+              key={item.index}
+              delay={index * 0.05}
+              className="relative grid grid-cols-[2.25rem_1fr] gap-4 border-b border-line py-7 last:border-b-0 sm:block sm:odd:pr-8 sm:even:border-l sm:even:pl-8 sm:[&:nth-last-child(-n+2)]:border-b-0 xl:border-b-0 xl:border-l xl:px-7 xl:first:border-l-0 xl:first:pl-0 xl:last:pr-0"
+            >
+              <div className="pt-1 sm:flex sm:items-center sm:gap-3 sm:pt-0">
+                <span
+                  aria-hidden
+                  className={`block h-3 w-3 rounded-full border-2 border-tint-teal ${item.nodeClass}`}
+                />
+                <span className="mt-2 block text-xs font-semibold tracking-[0.16em] text-muted sm:mt-0">
+                  {item.index}
+                </span>
+              </div>
+              <div>
+                <p className={`text-xs font-semibold uppercase tracking-[0.13em] sm:mt-7 ${item.statusClass}`}>
+                  {item.status}
+                </p>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.13em] text-teal-ink">
+                  {item.label}
+                </p>
+                <h3 className="t-h3 mt-3 text-ink">{item.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{item.text}</p>
+              </div>
             </Reveal>
-          </div>
+          ))}
+        </ol>
+      </Container>
+    </Section>
+  );
+}
 
-          <div className="mt-14 grid gap-x-10 gap-y-10 sm:grid-cols-2">
-            {HIGHLIGHTS.map((h, i) => (
-              <Reveal key={h.k} delay={i * 0.06} className="border-t border-line pt-5">
-                <div className="text-sm font-medium text-teal-ink">{`0${i + 1}`}</div>
-                <h3 className="t-h3 mt-3 text-ink">{h.k}</h3>
-                <p className="mt-2 text-sm text-muted">{h.v}</p>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      {/* ------------------------------------------------------- Data-room request */}
-      <Section tone="paper" id="data-room">
-        <Container>
-          <div className="grid gap-12 md:grid-cols-12 md:gap-16">
-            <Reveal className="md:col-span-5">
-              <Eyebrow>Data room</Eyebrow>
-              <h2 className="t-h2 mt-4 text-ink">Request access.</h2>
-              <p className="t-body mt-5 text-muted">
-                Share a few details and the right person on our team will follow up to
-                arrange access to the confidential investor data room.
+function PlatformLedger() {
+  return (
+    <Section tone="paper" size="chapter">
+      <Container id="platform" className="scroll-mt-28">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+          <Reveal className="lg:col-span-4">
+            <div className="lg:sticky lg:top-32">
+              <Eyebrow>Platform & programs</Eyebrow>
+              <h2 className="t-h2 mt-5 text-ink">One selective logic across four programs.</h2>
+              <p className="mt-5 text-muted">
+                The platform combines pH-mediated activation with selective uptake by diseased
+                tissue and spans therapeutics, diagnostics, and oncology.
               </p>
-
-              <div className="mt-8 flex items-start gap-3 rounded-xl border border-line bg-surface p-4">
-                <Lock size={18} className="mt-0.5 shrink-0 text-teal-ink" aria-hidden />
-                <p className="text-sm text-muted">
-                  Requests are handled in confidence. Data-room access is granted to
-                  qualified investors and partners and may be subject to a confidentiality
-                  agreement.
+              <div className="mt-8 border-t border-line pt-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
+                  Platform logic
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-muted">
+                  pH-mediated activation · selective uptake · non-hormonal
                 </p>
               </div>
+            </div>
+          </Reveal>
 
-              <div className="mt-6">
-                <a
-                  href="/downloads/endocyclic-investor-summary.pdf"
-                  download
-                  aria-label="Download the EndoCyclic investor summary (PDF)"
-                  className="group inline-flex items-center gap-2 text-sm font-medium text-teal-ink hover:text-ink"
-                >
-                  <FileDown size={16} aria-hidden />
-                  <span className="link-underline">Download investor summary (PDF)</span>
-                </a>
-              </div>
-            </Reveal>
-
-            <div className="md:col-span-6 md:col-start-7">
-              {status === "success" ? (
+          <div className="lg:col-span-7 lg:col-start-6">
+            <dl className="border-y border-line">
+              {PROGRAMS.map((program, index) => (
                 <Reveal
-                  className="rounded-2xl border border-line bg-surface p-8"
-                  aria-live="polite"
+                  key={program.name}
+                  delay={index * 0.05}
+                  className="grid gap-4 border-b border-line py-7 last:border-b-0 sm:grid-cols-[1fr_1.45fr] sm:items-start sm:gap-8"
                 >
-                  <CheckCircle2 size={28} className="text-teal-ink" aria-hidden />
-                  <h3 className="t-h3 mt-4 text-ink">Request received.</h3>
-                  <p className="mt-3 text-sm text-muted">
-                    Thank you. Our team will review your request and respond shortly. For
-                    anything urgent, email us at{" "}
-                    <a
-                      href={`mailto:${SITE.email}`}
-                      className="link-underline text-teal-ink"
-                    >
-                      {SITE.email}
-                    </a>
-                    .
-                  </p>
-                </Reveal>
-              ) : (
-                <form onSubmit={handleSubmit} noValidate className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
-                  {formError && (
-                    <p
-                      role="alert"
-                      className="mb-6 rounded-lg border border-rose bg-tint-warm px-4 py-3 text-sm text-ink"
-                    >
-                      {formError}
-                    </p>
-                  )}
-                  <div className="grid gap-5">
-                    <TextField
-                      label="Full name"
-                      name="name"
-                      required
-                      value={name}
-                      onChange={setName}
-                      error={fieldErrors.name}
-                      autoComplete="name"
-                    />
-                    <TextField
-                      label="Email"
-                      name="email"
-                      type="email"
-                      required
-                      value={email}
-                      onChange={setEmail}
-                      error={fieldErrors.email}
-                      autoComplete="email"
-                    />
-                    <TextField
-                      label="Firm or company"
-                      name="company"
-                      required
-                      value={company}
-                      onChange={setCompany}
-                      error={fieldErrors.company}
-                      autoComplete="organization"
-                    />
-                    <TextField
-                      label="Role or title"
-                      name="role"
-                      value={role}
-                      onChange={setRole}
-                      autoComplete="organization-title"
-                    />
-                    <TextArea
-                      label="Message"
-                      name="message"
-                      value={message}
-                      onChange={setMessage}
-                      placeholder="Tell us a little about your interest or mandate (optional)."
-                    />
-                    <Honeypot value={honeypot} onChange={setHoneypot} />
-
-                    <div className="mt-1">
-                      <button
-                        type="submit"
-                        disabled={status === "submitting"}
-                        className="group inline-flex items-center justify-center gap-2 rounded-full bg-plum px-6 py-3 text-sm font-medium text-on-dark transition-colors duration-300 hover:bg-teal-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-ink disabled:cursor-not-allowed disabled:opacity-60"
+                  <div>
+                    <dt className="t-h3">
+                      <Link
+                        href={program.href}
+                        aria-label={`Review ${program.name} in the full pipeline`}
+                        className="group inline-flex min-h-11 items-center gap-2 text-ink transition-colors duration-300 hover:text-teal-ink"
                       >
-                        {status === "submitting" ? "Sending…" : "Request access"}
-                      </button>
-                    </div>
+                        <span className="link-underline">{program.name}</span>
+                        <span
+                          aria-hidden
+                          className="text-sm font-medium text-rose-ink transition-transform duration-300 group-hover:translate-x-0.5"
+                        >
+                          →
+                        </span>
+                      </Link>
+                    </dt>
+                    <dd className="mt-2 text-sm text-muted">{program.type}</dd>
                   </div>
-                </form>
-              )}
+                  <dd className="text-sm font-medium text-teal-ink sm:text-right">{program.stage}</dd>
+                </Reveal>
+              ))}
+            </dl>
+            <div className="mt-8 flex justify-end">
+              <Button href="/pipeline" variant="quiet" className="min-h-11">Review the full pipeline</Button>
             </div>
           </div>
-        </Container>
-      </Section>
+        </div>
+      </Container>
+    </Section>
+  );
+}
 
-      {/* -------------------------------------------------------------- Closing CTA */}
-      <Section tone="plum">
-        <Container>
-          <div className="max-w-2xl">
-            <Reveal>
-              <Eyebrow tone="dark">Let’s talk</Eyebrow>
-              <h2 className="t-h2 mt-4 text-on-dark">
-                A conversation is the fastest path to diligence.
-              </h2>
-              <p className="mt-5 max-w-xl text-muted-on-dark">
-                Prefer to reach out directly? We read every message and route it to the
-                right person on our team.
+function ValidationDossier() {
+  return (
+    <Section tone="tint-warm" size="chapter">
+      <Container id="validation" className="scroll-mt-28">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
+          <Reveal className="lg:col-span-5">
+            <Eyebrow>External validation</Eyebrow>
+            <h2 className="t-h2 mt-5 text-ink">Independent recognition around the platform.</h2>
+            <ul className="mt-8 divide-y divide-line border-y border-line">
+              {SUPPORTING_VALIDATION.map((item) => (
+                <li key={item} className="flex gap-4 py-5 text-sm leading-relaxed text-muted">
+                  <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal delay={0.08} className="lg:col-span-6 lg:col-start-7">
+            <NIHRecognitionPanel />
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+              NIH Commercialization Readiness Pilot grant recognition for the ENDO-205 program.
+            </p>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+function DataRoom() {
+  return (
+    <Section tone="paper" size="chapter">
+      <Container id="data-room" className="scroll-mt-28">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <Reveal className="lg:col-span-4">
+            <Eyebrow>Controlled access</Eyebrow>
+            <h2 className="t-h2 mt-5 text-ink">Request the confidential data room.</h2>
+            <p className="mt-5 text-muted">
+              Share a few details and the appropriate person on our team will review your
+              request for investor or strategic-partner access.
+            </p>
+            <div className="mt-8 flex items-start gap-3 border-y border-line bg-tint-warm px-5 py-5">
+              <Lock size={18} className="mt-0.5 shrink-0 text-rose-ink" aria-hidden />
+              <p className="text-sm leading-relaxed text-muted">
+                Access is granted to qualified investors and partners and may be subject to a
+                confidentiality agreement.
               </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Button href={`mailto:${SITE.email}`} variant="ghost-on-dark" external>
-                  Email investor relations
-                </Button>
-                <Button href="/contact?subject=investor" variant="ghost-on-dark">
-                  Contact the team
-                </Button>
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.08} className="lg:col-span-7 lg:col-start-6">
+            <InvestorRequestForm />
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+export default function InvestorsPage() {
+  return (
+    <main id="main-content">
+      <PageHero
+        eyebrow="Investor relations"
+        title="FDA IND Allowance. Phase 1. Four programs."
+        intro="EndoCyclic is a clinical-stage precision medicine company advancing a non-hormonal peptide platform across endometriosis therapeutics, diagnostics, and oncology."
+        actions={
+          <>
+            <Button href="#data-room">Request data-room access</Button>
+            <Button href="/pipeline" variant="ghost">Review the pipeline</Button>
+          </>
+        }
+        proof="ENDO-205 · FDA IND Allowance (2026) · Phase 1"
+        caption="Conceptual representation. The precision peptide platform spans therapeutics, diagnostics, and oncology."
+        tone="tint-warm"
+        layout="reverse"
+        frame="soft"
+        visualAspect="landscape"
+        visualClassName="bg-petal"
+        titleClassName="max-w-[19ch] !text-[clamp(2.25rem,4.5vw,3.8rem)]"
+      >
+        <Image
+          src="/illustrations/investor-platform-v2.avif"
+          alt="Conceptual illustration of one precision peptide platform branching toward therapeutic, diagnostic, and oncology applications."
+          fill
+          priority
+          sizes="(min-width: 1184px) 544px, (min-width: 1024px) 46vw, 94vw"
+          className="object-contain"
+        />
+      </PageHero>
+      <DiligenceIndex />
+      <RegulatoryChronology />
+      <PlatformLedger />
+      <ValidationDossier />
+      <DataRoom />
     </main>
   );
 }

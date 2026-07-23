@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { TEAM, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Team",
   description:
-    "The people behind EndoCyclic Therapeutics — led by founder and CEO Dr. Tanya Petrossian, with deep expertise across peptide chemistry, regulatory affairs, oncology, and women's health.",
+    "The founder-led team advancing EndoCyclic Therapeutics' precision peptide platform and Phase 1 lead program, ENDO-205.",
   alternates: { canonical: "/team" },
   openGraph: {
     title: "Team | EndoCyclic Therapeutics",
     description:
-      "Led by Dr. Tanya Petrossian, EndoCyclic's team spans peptide chemistry, regulatory affairs, oncology, and women's health.",
+      "Led by founder and CEO Dr. Tanya Petrossian, EndoCyclic is advancing a precision peptide platform across therapeutics, diagnostics, and oncology.",
     url: "https://endocyclic.com/team",
   },
 };
@@ -23,13 +23,13 @@ export default function TeamLayout({ children }: { children: React.ReactNode }) 
     about: {
       "@type": "Organization",
       name: SITE.legalName,
-      employee: TEAM.map((m) => ({
+      founder: {
         "@type": "Person",
-        name: m.name,
-        jobTitle: m.role,
-        image: `https://endocyclic.com${m.image}`,
+        name: SITE.founder,
+        jobTitle: "Founder & CEO",
+        image: "https://endocyclic.com/team/tanya-petrossian.avif",
         worksFor: { "@type": "Organization", name: SITE.legalName },
-      })),
+      },
     },
   };
 

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Platform | EndoCyclic Therapeutics",
     description:
-      "A non-hormonal precision peptide that stays inert until it reaches the acidic microenvironment of disease — designed to correct, not destroy.",
+      "A non-hormonal precision peptide platform with pH-mediated activation and selective uptake by diseased tissue — designed for correction, not destruction.",
     url: "https://endocyclic.com/innovation",
   },
 };

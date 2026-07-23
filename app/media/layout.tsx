@@ -4,12 +4,12 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Media Kit",
   description:
-    "Press resources for EndoCyclic Therapeutics — company boilerplate, key facts, logo downloads, leadership, and media contact.",
+    "Press resources for EndoCyclic Therapeutics — approved company boilerplate, key facts, brand asset guidance, leadership, and media contact.",
   alternates: { canonical: "/media" },
   openGraph: {
     title: "Media Kit | EndoCyclic Therapeutics",
     description:
-      "Boilerplate, key facts, logos, and media contact for EndoCyclic Therapeutics, a clinical-stage precision medicine company.",
+      "Approved boilerplate, key facts, brand asset guidance, and media contact for EndoCyclic Therapeutics.",
     url: "https://endocyclic.com/media",
   },
 };

@@ -19,8 +19,8 @@ export default function FemLunaDetection() {
       <desc id="femluna-desc">
         Two panels compare endometriosis detection on the same pelvic outline. Left:
         laparoscopy, the invasive current gold standard, requires a surgical incision.
-        Right: FemLUNA non-invasive, radiation-free imaging in which a targeted imaging
-        agent binds a sub-millimeter lesion and renders it clearly visible, whereas
+        Right: FemLUNA non-invasive imaging in which a targeted imaging agent highlights
+        a sub-millimeter lesion, whereas
         standard imaging leaves the same lesion faint.
       </desc>
 
@@ -149,7 +149,7 @@ export default function FemLunaDetection() {
       <text x="600" y="298" fontSize="11.5" fill="#6F6A76" textAnchor="middle">faint on standard imaging</text>
 
       <text x="670" y="332" textAnchor="middle" fontSize="12.5" letterSpacing="1.5" fill="#2F6E62">
-        RADIATION-FREE · NON-INVASIVE
+        TARGETED · NON-INVASIVE
       </text>
 
       {/* baseline caption strip */}
