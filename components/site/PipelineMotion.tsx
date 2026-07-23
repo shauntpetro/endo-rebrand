@@ -1,59 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import { clsx } from "clsx";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
-
-export function PipelineScaleFade({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const root = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const media = gsap.matchMedia();
-
-      media.add(
-        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-        () => {
-          gsap.fromTo(
-            root.current,
-            { autoAlpha: 0.68, scale: 0.94, y: 24 },
-            {
-              autoAlpha: 1,
-              scale: 1,
-              y: 0,
-              ease: "none",
-              scrollTrigger: {
-                trigger: root.current,
-                start: "top 90%",
-                end: "top 52%",
-                scrub: 0.45,
-              },
-            },
-          );
-        },
-      );
-
-      return () => media.revert();
-    },
-    { scope: root },
-  );
-
-  return (
-    <div ref={root} className={clsx("min-w-0 transform-gpu", className)}>
-      {children}
-    </div>
-  );
-}
 
 export function PipelineAtlasMotion({ children }: { children: React.ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
@@ -90,7 +42,7 @@ export function PipelineAtlasMotion({ children }: { children: React.ReactNode })
 
           gsap.set(tracks, { scaleX: 0, transformOrigin: "left center" });
           if (marker) gsap.set(marker, { opacity: 0.42, scale: 0.72 });
-          if (label) gsap.set(label, { opacity: 0.58, y: 6 });
+          if (label) gsap.set(label, { y: 6 });
 
           timeline.to(
             tracks,
@@ -113,7 +65,7 @@ export function PipelineAtlasMotion({ children }: { children: React.ReactNode })
           if (label) {
             timeline.to(
               label,
-              { opacity: 1, y: 0, duration: 0.34 },
+              { y: 0, duration: 0.34 },
               start + 0.3,
             );
           }
@@ -121,11 +73,11 @@ export function PipelineAtlasMotion({ children }: { children: React.ReactNode })
       };
 
       media.add(
-        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+        "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
         () => buildSequence('[data-pipeline-row="desktop"]'),
       );
       media.add(
-        "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+        "(max-width: 1023px) and (prefers-reduced-motion: no-preference)",
         () => buildSequence('[data-pipeline-row="mobile"]'),
       );
 
@@ -161,7 +113,7 @@ export function PipelineThesis({
           root.current,
         );
 
-        gsap.set(items, { opacity: 0.46 });
+        gsap.set(items, { opacity: 0.74 });
         gsap.to(items, {
           opacity: 1,
           stagger: 0.065,

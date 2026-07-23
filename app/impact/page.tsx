@@ -1,29 +1,12 @@
 import Image from "next/image";
 import CareGapShift from "@/components/figures/CareGapShift";
+import Endo205ImpactTranslation from "@/components/figures/Endo205ImpactTranslation";
 import Button from "@/components/site/Button";
 import Container from "@/components/site/Container";
 import NextChapter from "@/components/site/NextChapter";
 import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
 import Section from "@/components/site/Section";
-
-const MECHANISM_STEPS = [
-  {
-    index: "01",
-    label: "pH-mediated activation",
-    detail: "The precision peptide platform uses pH-mediated activation.",
-  },
-  {
-    index: "02",
-    label: "Selective uptake",
-    detail: "Diseased tissue takes up the peptide through a proprietary endocytic pathway.",
-  },
-  {
-    index: "03",
-    label: "Non-hormonal by design",
-    detail: "The platform is designed to act through a non-hormonal mechanism.",
-  },
-] as const;
 
 const BURDEN_SIGNALS = [
   {
@@ -83,13 +66,17 @@ function BurdenLedger() {
           <p className="mt-6 text-[clamp(4.75rem,12vw,9rem)] font-medium leading-[0.85] tracking-[-0.065em] text-ink">
             8 years
           </p>
-          <div aria-hidden className="mt-10 grid grid-cols-8 border-t border-rose/55 pt-3">
-            {Array.from({ length: 8 }, (_, index) => (
+          <div aria-hidden className="mt-10 grid grid-cols-9 border-t border-rose/55 pt-3">
+            {Array.from({ length: 9 }, (_, index) => (
               <span key={index} className="relative text-center text-[0.65rem] text-muted">
                 <span className="absolute -top-[1.05rem] left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full border-2 border-paper bg-rose" />
-                {index + 1}
+                {index}
               </span>
             ))}
+          </div>
+          <div className="mt-3 flex justify-between text-xs font-medium text-muted">
+            <span>Symptoms</span>
+            <span>Diagnosis</span>
           </div>
         </div>
 
@@ -177,7 +164,7 @@ function Response() {
               <span className="text-xs font-semibold tracking-[0.18em] text-rose-ink">03</span>
               <p className="eyebrow">The response</p>
             </div>
-            <h2 className="t-h2 mt-5 text-ink">A therapeutic designed to act where disease lives.</h2>
+            <h2 className="t-h2 mt-5 text-ink">From selective design to a Phase 1 program.</h2>
           </Reveal>
           <Reveal delay={0.06} className="lg:col-span-5 lg:col-start-8">
             <p className="t-lead">
@@ -186,38 +173,9 @@ function Response() {
           </Reveal>
         </div>
 
-        <ol className="mt-14 divide-y divide-line border-y border-line md:grid md:grid-cols-3 md:divide-x md:divide-y-0">
-          {MECHANISM_STEPS.map((step, index) => (
-            <Reveal as="li" key={step.index} delay={index * 0.06} className="py-8 md:px-8 first:md:pl-0 last:md:pr-0">
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-semibold tracking-[0.16em] text-rose-ink">{step.index}</span>
-                <span aria-hidden className="h-px flex-1 bg-line" />
-              </div>
-              <h3 className="t-h3 mt-5 text-ink">{step.label}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted">{step.detail}</p>
-            </Reveal>
-          ))}
-        </ol>
-
-        <Reveal className="mt-14 grid gap-10 border-t border-line pt-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-ink">Lead program · Phase 1</p>
-            <h3 className="mt-4 text-[clamp(3rem,7vw,6rem)] font-medium leading-none tracking-[-0.055em] text-ink">
-              ENDO-205
-            </h3>
-          </div>
-          <div className="lg:col-span-6 lg:col-start-7">
-            <p className="t-lead">Designed as a short-course, disease-modifying treatment for endometriosis.</p>
-            <p className="mt-5 text-sm leading-relaxed text-muted">
-              In preclinical studies, ENDO-205 demonstrated elimination of endometriosis lesions and associated inflammation. GLP toxicology studies showed no dose-limiting toxicities.
-            </p>
-            <div className="mt-8">
-              <Button href="/pipeline#endo-205" variant="ghost">
-                Review the lead program
-              </Button>
-            </div>
-          </div>
-        </Reveal>
+        <div className="mt-14">
+          <Endo205ImpactTranslation />
+        </div>
       </Container>
     </Section>
   );

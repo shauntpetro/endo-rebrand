@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useSearchParams } from "next/navigation";
 import { Honeypot, TextArea, TextField } from "@/components/site/Field";
 import { CONTACT_SUBJECTS } from "@/lib/site";
+import {
+  DEFAULT_CONTACT_SUBJECT,
+  type ContactSubjectValue,
+} from "./contact-subject";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -13,16 +16,11 @@ type FieldErrors = {
   message?: string;
 };
 
-type SubjectValue = (typeof CONTACT_SUBJECTS)[number]["value"];
-
-function isValidSubject(value: string | null): value is SubjectValue {
-  return CONTACT_SUBJECTS.some((subject) => subject.value === value);
-}
-
-export default function ContactForm() {
-  const searchParams = useSearchParams();
-  const requested = searchParams.get("subject");
-  const routedSubject = isValidSubject(requested) ? requested : null;
+export default function ContactForm({
+  initialSubject = null,
+}: {
+  initialSubject?: ContactSubjectValue | null;
+}) {
   const formRef = useRef<HTMLFormElement>(null);
   const subjectOptionsRef = useRef<HTMLDivElement>(null);
   const changeSubjectRef = useRef<HTMLButtonElement>(null);
@@ -30,8 +28,10 @@ export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
-  const [subject, setSubject] = useState<SubjectValue>(routedSubject ?? "general");
-  const [subjectChooserOpen, setSubjectChooserOpen] = useState(!routedSubject);
+  const [subject, setSubject] = useState<ContactSubjectValue>(
+    initialSubject ?? DEFAULT_CONTACT_SUBJECT,
+  );
+  const [subjectChooserOpen, setSubjectChooserOpen] = useState(!initialSubject);
   const [message, setMessage] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -40,21 +40,22 @@ export default function ContactForm() {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    const nextSubject = isValidSubject(requested) ? requested : "general";
-    setSubject(nextSubject);
-    setSubjectChooserOpen(!isValidSubject(requested));
-  }, [requested]);
+    setSubject(initialSubject ?? DEFAULT_CONTACT_SUBJECT);
+    setSubjectChooserOpen(!initialSubject);
+  }, [initialSubject]);
 
   const selectedSubject =
     CONTACT_SUBJECTS.find((option) => option.value === subject) ??
-    CONTACT_SUBJECTS[CONTACT_SUBJECTS.length - 2];
+    CONTACT_SUBJECTS.find(
+      (option) => option.value === DEFAULT_CONTACT_SUBJECT,
+    )!;
 
   function resetForm() {
     setName("");
     setEmail("");
     setCompany("");
-    setSubject(routedSubject ?? "general");
-    setSubjectChooserOpen(!routedSubject);
+    setSubject(initialSubject ?? DEFAULT_CONTACT_SUBJECT);
+    setSubjectChooserOpen(!initialSubject);
     setMessage("");
     setHoneypot("");
     setErrors({});
@@ -65,11 +66,13 @@ export default function ContactForm() {
   function restartForm() {
     resetForm();
     requestAnimationFrame(() => {
-      if (routedSubject) {
+      if (initialSubject) {
         changeSubjectRef.current?.focus();
       } else {
         subjectOptionsRef.current
-          ?.querySelector<HTMLInputElement>('input[value="general"]')
+          ?.querySelector<HTMLInputElement>(
+            `input[value="${DEFAULT_CONTACT_SUBJECT}"]`,
+          )
           ?.focus();
       }
     });
@@ -84,10 +87,15 @@ export default function ContactForm() {
     });
   }
 
-  function selectSubject(nextSubject: SubjectValue) {
+  function selectSubject(nextSubject: ContactSubjectValue) {
     setSubject(nextSubject);
+  }
+
+  function confirmSubject() {
     setSubjectChooserOpen(false);
-    requestAnimationFrame(() => changeSubjectRef.current?.focus());
+    requestAnimationFrame(() => {
+      formRef.current?.querySelector<HTMLInputElement>('[name="name"]')?.focus();
+    });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -193,8 +201,20 @@ export default function ContactForm() {
 
       <fieldset>
         <legend className="sr-only">What would you like to discuss?</legend>
-        {subjectChooserOpen ? (
-          <div id="contact-subject-options" ref={subjectOptionsRef} className="page-enter">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-5 gap-y-5 border-y border-line bg-tint-warm px-4 py-4 sm:px-5">
+          <div className="col-start-1 row-start-1 min-w-0">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-rose-ink">
+              Selected inquiry route
+            </p>
+            <p className="mt-1 font-medium text-ink">{selectedSubject.label}</p>
+          </div>
+
+          <div
+            id="contact-subject-options"
+            ref={subjectOptionsRef}
+            hidden={!subjectChooserOpen}
+            className="page-enter col-span-full row-start-2 border-t border-line pt-5"
+          >
             <p className="text-sm font-semibold text-ink">What would you like to discuss?</p>
             <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
               {CONTACT_SUBJECTS.map((option) => {
@@ -218,30 +238,22 @@ export default function ContactForm() {
               })}
             </div>
           </div>
-        ) : (
-          <div
-            id="contact-subject-summary"
-            className="page-enter flex min-h-16 items-center justify-between gap-5 border-y border-line bg-tint-warm px-4 py-3 sm:px-5"
+
+          <button
+            ref={changeSubjectRef}
+            type="button"
+            aria-expanded={subjectChooserOpen}
+            aria-controls="contact-subject-options"
+            onClick={subjectChooserOpen ? confirmSubject : openSubjectChooser}
+            className={
+              subjectChooserOpen
+                ? "col-span-full row-start-3 inline-flex min-h-12 w-fit items-center justify-center rounded-full bg-rose-ink px-6 py-3 text-sm font-medium text-white transition-[background-color,transform] duration-300 hover:bg-plum active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-ink motion-reduce:active:scale-100 motion-reduce:transition-none"
+                : "link-underline col-start-2 row-start-1 inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-teal-ink hover:text-ink"
+            }
           >
-            <input type="hidden" name="subject" value={subject} />
-            <div className="min-w-0">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-rose-ink">
-                Selected inquiry route
-              </p>
-              <p className="mt-1 font-medium text-ink">{selectedSubject.label}</p>
-            </div>
-            <button
-              ref={changeSubjectRef}
-              type="button"
-              aria-expanded="false"
-              aria-controls="contact-subject-options"
-              onClick={openSubjectChooser}
-              className="link-underline inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-teal-ink hover:text-ink"
-            >
-              Change
-            </button>
-          </div>
-        )}
+            {subjectChooserOpen ? "Continue" : "Change"}
+          </button>
+        </div>
       </fieldset>
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2">

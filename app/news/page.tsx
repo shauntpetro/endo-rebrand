@@ -8,7 +8,12 @@ import NIHRecognitionPanel from "@/components/site/NIHRecognitionPanel";
 import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
 import Section from "@/components/site/Section";
-import { NEWS, type Article } from "@/lib/site";
+import {
+  getArticleDisplayTitle,
+  getArticleSourceLabel,
+  NEWS,
+  type Article,
+} from "@/lib/site";
 
 const FEATURED = NEWS.find((article) => article.featured) ?? NEWS[0];
 const ARCHIVE = [...NEWS]
@@ -52,7 +57,11 @@ function EventMark({ article }: { article: Article }) {
 
 function EventRow({ article, index }: { article: Article; index: number }) {
   const sources = [
-    { label: "Read source", source: article.source, link: article.link },
+    {
+      label: article.ctaLabel,
+      source: getArticleSourceLabel(article),
+      link: article.link,
+    },
     ...(article.coverage ?? []),
   ];
 
@@ -78,9 +87,9 @@ function EventRow({ article, index }: { article: Article; index: number }) {
           <h3 className="text-[clamp(1.3rem,2.2vw,1.9rem)] font-medium leading-tight tracking-[-0.02em] text-ink">
             {article.title}
           </h3>
-          {article.excerpt && (
-            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">{article.excerpt}</p>
-          )}
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
+            {article.excerpt}
+          </p>
         </div>
 
         <div className="border-y border-line lg:col-span-3 lg:col-start-10 lg:border-b-0 lg:border-t-0 lg:border-l lg:pl-7">
@@ -129,27 +138,28 @@ export default function NewsPage() {
   return (
     <main id="main-content">
       <PageHero
-        eyebrow="Featured recognition"
-        title="A rare NIH ‘Perfect 10’ for ENDO-205."
-        intro="EndoCyclic received an NIH Commercialization Readiness Pilot grant from NICHD with a perfect overall impact score of 10."
+        eyebrow={FEATURED.featureLabel ?? `Featured ${FEATURED.type.toLowerCase()}`}
+        title={getArticleDisplayTitle(FEATURED)}
+        intro={FEATURED.excerpt}
         actions={
           <>
             <Button href={FEATURED.link} external arrow>
-              Read the announcement
+              {FEATURED.ctaLabel}
               <span className="sr-only"> Opens in a new tab.</span>
             </Button>
             {FEATURED.coverage?.[0] && (
               <Button href={FEATURED.coverage[0].link} variant="ghost" external>
-                {FEATURED.coverage[0].label}
+                {FEATURED.coverage[0].label} · {FEATURED.coverage[0].source}
                 <span className="sr-only"> Opens in a new tab.</span>
               </Button>
             )}
           </>
         }
-        proof="NIH Commercialization Readiness Pilot grant · NICHD"
+        proof={FEATURED.proof}
         caption={
           <>
-            {FEATURED.source} · <time dateTime={FEATURED.dateTime}>{FEATURED.date}</time>
+            {getArticleSourceLabel(FEATURED)} ·{" "}
+            <time dateTime={FEATURED.dateTime}>{FEATURED.date}</time>
           </>
         }
         tone="tint-warm"

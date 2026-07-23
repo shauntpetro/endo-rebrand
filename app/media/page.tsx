@@ -7,6 +7,10 @@ import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
 import Section from "@/components/site/Section";
 import { SITE } from "@/lib/site";
+import BoilerplateActions from "./BoilerplateActions";
+
+const APPROVED_BOILERPLATE =
+  "EndoCyclic Therapeutics, Inc. is a clinical-stage precision medicine company based in Irvine, California, founded by Dr. Tanya Petrossian, PhD. The company is advancing a proprietary precision peptide platform with pH-mediated activation and selective uptake by diseased tissue. Its lead therapeutic, ENDO-205, is a first-in-class, non-hormonal precision peptide therapeutic for endometriosis in Phase 1 following FDA IND Allowance in 2026. Its lead diagnostic, FemLUNA™, is an IND-enabling targeted imaging agent designed as a non-invasive alternative to laparoscopy. The platform spans therapeutics, diagnostics, and oncology. EndoCyclic is a founding member of the Milken Institute Women’s Health Network.";
 
 const KEY_FACTS = [
   { label: "Based in", value: "Irvine, California" },
@@ -19,6 +23,22 @@ const KEY_FACTS = [
 
 const MEDIA_ASSETS = [
   {
+    name: "Platform mechanism visual",
+    description: "Conceptual illustration of pH-mediated activation and selective uptake by diseased tissue.",
+    usage: "AVIF · 1774 × 887 px",
+    href: "/illustrations/selective-mechanism-v2.avif",
+    download: "endocyclic-platform-mechanism.avif",
+    image: "/illustrations/selective-mechanism-v2.avif",
+    alt: "Conceptual illustration of the EndoCyclic selective peptide mechanism",
+    previewClass: "object-cover object-center",
+    disclosure: "Conceptual representation; not clinical imagery.",
+    layoutClass: "lg:col-span-7 lg:col-start-1 lg:row-span-2 lg:row-start-1",
+    shapeClass: "rounded-bl-[2.5rem] sm:rounded-bl-[3.5rem]",
+    mobileClass: "min-h-[30rem]",
+    dark: true,
+    compact: false,
+  },
+  {
     name: "Primary wordmark",
     description: "The current digital wordmark for use on light, quiet backgrounds.",
     usage: "AVIF · 233 × 70 px",
@@ -26,8 +46,13 @@ const MEDIA_ASSETS = [
     download: "endocyclic-wordmark.avif",
     image: "/logo.avif",
     alt: "EndoCyclic Therapeutics wordmark",
-    previewClass: "object-contain p-8 sm:p-10",
+    previewClass: "object-contain px-10 pb-32 pt-9 sm:px-16 sm:pb-28 lg:px-12 lg:pb-32",
     disclosure: "Use the mark without alteration or recoloring.",
+    layoutClass: "lg:col-span-5 lg:col-start-8 lg:row-start-1",
+    shapeClass: "rounded-tr-[2.5rem] sm:rounded-tr-[3.5rem]",
+    mobileClass: "min-h-[24rem]",
+    dark: false,
+    compact: false,
   },
   {
     name: "Founder & CEO portrait",
@@ -39,17 +64,11 @@ const MEDIA_ASSETS = [
     alt: "Dr. Tanya Petrossian, Founder and CEO of EndoCyclic Therapeutics",
     previewClass: "object-cover object-top",
     disclosure: "Credit: EndoCyclic Therapeutics, Inc.",
-  },
-  {
-    name: "Platform mechanism visual",
-    description: "Conceptual illustration of pH-mediated activation and selective uptake by diseased tissue.",
-    usage: "AVIF · 1774 × 887 px",
-    href: "/illustrations/selective-mechanism-v2.avif",
-    download: "endocyclic-platform-mechanism.avif",
-    image: "/illustrations/selective-mechanism-v2.avif",
-    alt: "Conceptual illustration of the EndoCyclic selective peptide mechanism",
-    previewClass: "object-cover object-center",
-    disclosure: "Conceptual representation; not clinical imagery.",
+    layoutClass: "lg:col-span-2 lg:col-start-8 lg:row-start-2",
+    shapeClass: "",
+    mobileClass: "min-h-[25rem]",
+    dark: true,
+    compact: true,
   },
   {
     name: "Portfolio architecture visual",
@@ -61,6 +80,11 @@ const MEDIA_ASSETS = [
     alt: "Conceptual illustration of the EndoCyclic four-program portfolio architecture",
     previewClass: "object-cover object-center",
     disclosure: "Not clinical imagery or development-performance data.",
+    layoutClass: "lg:col-span-3 lg:col-start-10 lg:row-start-2",
+    shapeClass: "rounded-br-[2rem] sm:rounded-br-[2.5rem]",
+    mobileClass: "min-h-[25rem]",
+    dark: true,
+    compact: true,
   },
 ] as const;
 
@@ -160,20 +184,14 @@ function PressSheet() {
 
         <div className="mt-14 grid border-y border-line lg:grid-cols-12">
           <Reveal className="py-9 lg:col-span-7 lg:border-r lg:border-line lg:py-12 lg:pr-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-ink">
-              Approved boilerplate
-            </p>
+            <div className="flex flex-col gap-6 border-b border-line pb-7 sm:flex-row sm:items-start sm:justify-between">
+              <p className="pt-3 text-xs font-semibold uppercase tracking-[0.18em] text-rose-ink">
+                Approved boilerplate
+              </p>
+              <BoilerplateActions text={APPROVED_BOILERPLATE} />
+            </div>
             <p className="mt-7 text-lg leading-[1.75] text-ink-body">
-              EndoCyclic Therapeutics, Inc. is a clinical-stage precision medicine company
-              based in Irvine, California, founded by Dr. Tanya Petrossian, PhD. The company
-              is advancing a proprietary precision peptide platform with pH-mediated
-              activation and selective uptake by diseased tissue. Its lead therapeutic,
-              ENDO-205, is a first-in-class, non-hormonal precision peptide therapeutic for
-              endometriosis in Phase 1 following FDA IND Allowance in 2026. Its lead
-              diagnostic, FemLUNA™, is an IND-enabling targeted imaging agent designed as a
-              non-invasive alternative to laparoscopy. The platform spans therapeutics,
-              diagnostics, and oncology. EndoCyclic is a founding member of the Milken
-              Institute Women’s Health Network.
+              {APPROVED_BOILERPLATE}
             </p>
           </Reveal>
 
@@ -215,42 +233,93 @@ function BrandAssets() {
           </p>
         </div>
 
-        <ol className="mt-14 grid list-none border-y border-line md:grid-cols-2">
+        <ol className="mt-14 grid list-none gap-5 lg:grid-cols-12 lg:grid-rows-[22rem_22rem] lg:gap-3">
           {MEDIA_ASSETS.map((asset, index) => (
             <Reveal
               as="li"
-              delay={(index % 2) * 0.04}
+              delay={Math.min(index * 0.04, 0.12)}
               key={asset.name}
-              className="group border-b border-line py-7 md:px-8 md:[&:nth-child(odd)]:border-r md:[&:nth-last-child(-n+2)]:border-b-0 md:first:pl-0 md:last:pr-0"
+              className={`group min-w-0 ${asset.layoutClass}`}
             >
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-xs font-semibold tracking-[0.16em] text-rose-ink">
-                  {String(index + 1).padStart(2, "0")}
-                </p>
-                <p className="text-xs text-muted">{asset.usage}</p>
-              </div>
-              <div className="relative mt-5 aspect-[16/9] overflow-hidden rounded-bl-2xl rounded-tr-2xl border border-line bg-surface">
+              <article
+                className={`relative flex h-full flex-col overflow-hidden border border-line bg-surface ${asset.mobileClass} ${asset.shapeClass} lg:min-h-0`}
+              >
                 <Image
                   src={asset.image}
                   alt={asset.alt}
                   fill
-                  sizes="(min-width: 768px) 45vw, 94vw"
+                  sizes={
+                    asset.name === "Platform mechanism visual"
+                      ? "(min-width: 1024px) 55vw, 94vw"
+                      : asset.name === "Primary wordmark"
+                        ? "(min-width: 1024px) 40vw, 94vw"
+                        : "(min-width: 1024px) 24vw, 94vw"
+                  }
                   className={asset.previewClass}
                 />
-              </div>
-              <h3 className="t-h3 mt-6 text-ink">{asset.name}</h3>
-              <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-                {asset.description}
-              </p>
-              <p className="mt-3 text-xs leading-relaxed text-muted">{asset.disclosure}</p>
-              <a
-                href={asset.href}
-                download={asset.download}
-                className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-teal-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-ink"
-              >
-                Download asset
-                <Download aria-hidden size={16} className="transition-transform duration-300 ease-soft group-hover:translate-y-0.5" />
-              </a>
+                <span
+                  aria-hidden
+                  className={`absolute inset-0 ${
+                    asset.dark
+                      ? "bg-gradient-to-t from-plum via-plum/52 to-transparent"
+                      : "bg-gradient-to-t from-paper via-paper/90 to-transparent"
+                  }`}
+                />
+
+                <div
+                  className={`relative z-10 mt-auto p-6 sm:p-7 ${
+                    asset.dark ? "text-on-dark" : "text-ink"
+                  } ${asset.compact ? "lg:p-5" : "lg:p-8"}`}
+                >
+                  <div
+                    className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs ${
+                      asset.dark ? "text-muted-on-dark" : "text-muted"
+                    }`}
+                  >
+                    <span className={`font-semibold tracking-[0.16em] ${asset.dark ? "text-teal-on-dark" : "text-rose-ink"}`}>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>{asset.usage}</span>
+                  </div>
+                  <h3
+                    className={`mt-4 font-medium leading-tight tracking-[-0.025em] ${
+                      asset.compact ? "text-xl" : "text-[clamp(1.35rem,2.4vw,2rem)]"
+                    }`}
+                  >
+                    {asset.name}
+                  </h3>
+                  <p
+                    className={`mt-3 max-w-xl text-sm leading-relaxed ${
+                      asset.dark ? "text-muted-on-dark" : "text-muted"
+                    } ${asset.compact ? "lg:hidden xl:block" : ""}`}
+                  >
+                    {asset.description}
+                  </p>
+                  <p
+                    className={`mt-2 text-xs leading-relaxed ${
+                      asset.dark ? "text-muted-on-dark" : "text-muted"
+                    } ${asset.compact ? "lg:text-[0.7rem] lg:leading-snug" : ""}`}
+                  >
+                    {asset.disclosure}
+                  </p>
+                  <a
+                    href={asset.href}
+                    download={asset.download}
+                    className={`mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-4 ${
+                      asset.dark
+                        ? "text-teal-on-dark focus-visible:outline-teal-on-dark"
+                        : "text-teal-ink focus-visible:outline-teal-ink"
+                    }`}
+                  >
+                    Download asset
+                    <Download
+                      aria-hidden
+                      size={16}
+                      className="transition-transform duration-300 ease-soft group-hover:translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
+                    />
+                  </a>
+                </div>
+              </article>
             </Reveal>
           ))}
         </ol>
@@ -285,6 +354,7 @@ function MediaContact() {
             </a>
           </div>
           <div className="flex flex-wrap gap-3 lg:col-span-4 lg:justify-end">
+            <Button href="/contact?subject=media">Send a media inquiry</Button>
             <Button href="/news" variant="ghost-on-dark">Read company news</Button>
           </div>
         </div>
@@ -303,10 +373,8 @@ export default function MediaPage() {
         intro="Approved boilerplate, key facts, brand asset guidance, leadership imagery, and a direct route to the EndoCyclic team."
         actions={
           <>
-            <Button href="#assets">
-              Download assets
-            </Button>
-            <Button href="#boilerplate" variant="ghost">Approved boilerplate</Button>
+            <Button href="/contact?subject=media">Contact the press desk</Button>
+            <Button href="#assets" variant="ghost">Browse approved assets</Button>
           </>
         }
         proof="Clinical-stage precision medicine · Irvine, California"

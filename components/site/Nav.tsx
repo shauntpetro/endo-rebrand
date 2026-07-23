@@ -22,34 +22,32 @@ const panelVariants: Variants = {
     clipPath: "inset(0 0 100% 0)",
     opacity: 0,
     transition: {
-      clipPath: { duration: 0.38, ease: [0.4, 0, 1, 1] },
-      opacity: { duration: 0.22, ease: "easeOut" },
-      when: "afterChildren",
+      clipPath: { duration: 0.3, ease: [0.4, 0, 1, 1] },
+      opacity: { duration: 0.16, ease: "easeOut" },
     },
   },
   open: {
     clipPath: "inset(0 0 0% 0)",
     opacity: 1,
     transition: {
-      clipPath: { duration: 0.54, ease: [0.22, 1, 0.36, 1] },
-      opacity: { duration: 0.18, ease: "easeOut" },
-      when: "beforeChildren",
+      clipPath: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
+      opacity: { duration: 0.14, ease: "easeOut" },
     },
   },
 };
 
 const listVariants: Variants = {
   closed: {
-    transition: { staggerChildren: 0.025, staggerDirection: -1 },
+    transition: { staggerChildren: 0.018, staggerDirection: -1 },
   },
   open: {
-    transition: { delayChildren: 0.05, staggerChildren: 0.045 },
+    transition: { delayChildren: 0.04, staggerChildren: 0.035 },
   },
 };
 
 const itemVariants: Variants = {
-  closed: { opacity: 0, y: 12, transition: { duration: 0.18, ease: "easeIn" } },
-  open: { opacity: 1, y: 0, transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } },
+  closed: { opacity: 0, y: 8, transition: { duration: 0.14, ease: "easeIn" } },
+  open: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } },
 };
 
 export default function Nav() {
@@ -66,8 +64,18 @@ export default function Nav() {
   });
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const close = useCallback(() => setOpen(false), []);
+  const restoreMenuFocusRef = useRef(true);
+  const previousPathnameRef = useRef(pathname);
+  const close = useCallback(() => {
+    restoreMenuFocusRef.current = true;
+    setOpen(false);
+  }, []);
+  const closeForNavigation = useCallback(() => {
+    restoreMenuFocusRef.current = false;
+    setOpen(false);
+  }, []);
   const openMenu = useCallback(() => {
+    restoreMenuFocusRef.current = true;
     setMenuPresent(true);
     setOpen(true);
   }, []);
@@ -130,10 +138,38 @@ export default function Nav() {
       background.forEach((node) => {
         if (!previouslyInert.get(node)) node.removeAttribute("inert");
       });
-      const focusTarget = previouslyFocused?.isConnected ? previouslyFocused : menuButton;
-      focusTarget?.focus();
+      if (restoreMenuFocusRef.current) {
+        const focusTarget = previouslyFocused?.isConnected ? previouslyFocused : menuButton;
+        focusTarget?.focus();
+      }
+      restoreMenuFocusRef.current = true;
     };
   }, [menuPresent, close]);
+
+  useEffect(() => {
+    if (previousPathnameRef.current === pathname) return;
+    previousPathnameRef.current = pathname;
+    restoreMenuFocusRef.current = false;
+    const frame = window.requestAnimationFrame(() => {
+      setOpen(false);
+      setMenuPresent(false);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 1024px)");
+    const dismissHiddenMenu = () => {
+      if (!desktopQuery.matches) return;
+      restoreMenuFocusRef.current = false;
+      setOpen(false);
+      setMenuPresent(false);
+    };
+
+    desktopQuery.addEventListener("change", dismissHiddenMenu);
+    dismissHiddenMenu();
+    return () => desktopQuery.removeEventListener("change", dismissHiddenMenu);
+  }, []);
 
   const activePanelVariants: Variants = reducedMotion
     ? {
@@ -177,7 +213,6 @@ export default function Nav() {
         />
         <Link
           href="/"
-          onClick={close}
           aria-label="EndoCyclic Therapeutics — home"
           className="relative flex h-11 w-36 shrink-0 items-center lg:w-40"
         >
@@ -258,7 +293,7 @@ export default function Nav() {
             className="pointer-events-auto fixed inset-0 overflow-y-auto bg-paper px-5 pb-10 pt-4 lg:hidden"
           >
             <div className="mx-auto flex max-w-xl items-center justify-between">
-              <Link href="/" onClick={close} aria-label="EndoCyclic Therapeutics — home" className="relative flex h-11 w-36 items-center">
+              <Link href="/" onClick={closeForNavigation} aria-label="EndoCyclic Therapeutics — home" className="relative flex h-11 w-36 items-center">
                 <Image src="/logo.avif" alt="EndoCyclic Therapeutics" width={233} height={70} sizes="144px" className="h-auto w-full object-contain object-left" />
               </Link>
               <button type="button" onClick={close} aria-label="Close menu" className="flex h-11 w-11 items-center justify-center text-ink">
@@ -276,7 +311,7 @@ export default function Nav() {
                       <Link
                         href={link.href}
                         aria-current={active ? "page" : undefined}
-                        onClick={close}
+                        onClick={closeForNavigation}
                         className={clsx("flex min-h-16 items-center justify-between text-xl", active ? "text-rose-ink" : "text-ink")}
                       >
                         {link.name}
@@ -289,7 +324,7 @@ export default function Nav() {
                   <Link
                     href="/investors"
                     aria-current={pathname === "/investors" ? "page" : undefined}
-                    onClick={close}
+                    onClick={closeForNavigation}
                     className={clsx("flex min-h-16 items-center justify-between text-xl", pathname === "/investors" ? "text-rose-ink" : "text-ink")}
                   >
                     Investors <span aria-hidden className="text-sm text-muted">→</span>
@@ -297,7 +332,7 @@ export default function Nav() {
                 </motion.li>
               </motion.ul>
               <motion.div variants={activeItemVariants}>
-                <Button href="/contact?subject=partnership" onClick={close} className="mt-8">
+                <Button href="/contact?subject=partnership" onClick={closeForNavigation} className="mt-8">
                   Partner with us
                 </Button>
               </motion.div>

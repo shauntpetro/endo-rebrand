@@ -107,8 +107,9 @@ function StaticComparison() {
 function InteractiveComparison() {
   const [position, setPosition] = useState(50);
   const [adjusting, setAdjusting] = useState(false);
-  const currentSelected = position === 0;
-  const targetedSelected = position === 100;
+  const currentSelected = position === 100;
+  const targetedSelected = position === 0;
+  const targetingVisible = 100 - position;
 
   function selectView(nextPosition: 0 | 100) {
     setAdjusting(false);
@@ -130,7 +131,7 @@ function InteractiveComparison() {
               type="button"
               aria-pressed={selected}
               aria-controls="femluna-shared-viewport"
-              onClick={() => selectView(index === 0 ? 0 : 100)}
+              onClick={() => selectView(index === 0 ? 100 : 0)}
               className={`group relative flex min-h-16 items-center justify-between gap-4 border-b border-line px-6 py-3 text-left active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-teal-ink motion-reduce:transform-none sm:border-b-0 sm:px-8 lg:px-10 ${
                 selected ? (index === 0 ? "bg-petal text-rose-ink" : "bg-tint-teal text-teal-ink") : "bg-paper text-ink"
               }`}
@@ -166,7 +167,7 @@ function InteractiveComparison() {
 
         <div
           className={`absolute inset-0 ${adjusting ? "" : "transition-[clip-path] duration-500 ease-[cubic-bezier(0.65,0,0.35,1)]"} motion-reduce:transition-none`}
-          style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+          style={{ clipPath: `inset(0 0 0 ${position}%)` }}
         >
           <Image
             src={VIEWS[1].image}
@@ -201,7 +202,7 @@ function InteractiveComparison() {
           onKeyUp={() => setAdjusting(false)}
           onBlur={() => setAdjusting(false)}
           aria-label="Reveal FemLUNA targeting in the matched tissue field"
-          aria-valuetext={`${position}% FemLUNA targeting visible`}
+          aria-valuetext={`${targetingVisible}% FemLUNA targeting visible`}
           aria-describedby="femluna-range-instructions femluna-comparison-caption"
           className="peer absolute inset-0 z-30 h-full w-full cursor-ew-resize touch-pan-y opacity-0"
         />
@@ -251,7 +252,7 @@ function InteractiveComparison() {
           Drag the comparison thread, or focus the image and use the Arrow keys. Home and End select a complete view.
         </p>
         <output htmlFor="femluna-comparison-range" className="shrink-0 font-semibold text-teal-ink">
-          {position}% targeting visible
+          {targetingVisible}% targeting visible
         </output>
       </div>
     </section>

@@ -75,6 +75,8 @@ const FOUNDER_PROOF = [
   },
 ] as const;
 
+type FounderProofItem = (typeof FOUNDER_PROOF)[number];
+
 const DEVELOPMENT_CHAPTERS = [
   {
     index: "01",
@@ -163,7 +165,40 @@ function Hero() {
   );
 }
 
+function FounderContinuityEntry({
+  item,
+  index,
+  className,
+}: {
+  item: FounderProofItem;
+  index: string;
+  className: string;
+}) {
+  return (
+    <div className={`flex min-h-44 flex-col justify-between gap-8 px-6 py-7 sm:px-7 sm:py-8 ${className}`}>
+      <dt className="flex items-start justify-between gap-4">
+        <span className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
+          {item.label}
+        </span>
+        <span className="shrink-0 text-xs font-semibold tracking-[0.14em] text-muted">
+          {index}
+        </span>
+      </dt>
+      <dd>
+        <span className="block text-[clamp(1.25rem,2vw,1.55rem)] font-medium leading-tight tracking-[-0.025em] text-ink">
+          {item.value}
+        </span>
+        <span className="mt-2 block max-w-sm text-sm leading-relaxed text-muted">
+          {item.detail}
+        </span>
+      </dd>
+    </div>
+  );
+}
+
 function FounderStory() {
+  const [role, platform, clinical, portfolio, network] = FOUNDER_PROOF;
+
   return (
     <Section tone="tint-warm" size="chapter" className="overflow-hidden">
       <Container>
@@ -253,36 +288,67 @@ function FounderStory() {
         </div>
 
         <Reveal delay={0.1} className="mt-16 md:mt-20">
-          <div className="mb-5 flex items-center gap-4">
-            <span aria-hidden className="chapter-thread-mark"><span /></span>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
-              Founder continuity
+          <div className="mb-7 grid gap-4 sm:grid-cols-2 sm:items-end">
+            <div className="flex items-center gap-4">
+              <span aria-hidden className="chapter-thread-mark"><span /></span>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
+                Founder continuity
+              </p>
+            </div>
+            <p className="max-w-md text-sm leading-relaxed text-muted sm:justify-self-end sm:text-right">
+              One leadership through-line from platform science to clinical
+              development.
             </p>
           </div>
-          <dl className="grid gap-px border-y border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
-            {FOUNDER_PROOF.map((item, index) => (
+          <dl className="grid overflow-hidden border-y border-line sm:grid-cols-2 md:grid-cols-12">
+            <div className="relative flex min-h-[21rem] flex-col justify-between overflow-hidden border-b border-line bg-tint-plum px-7 py-8 sm:col-span-2 sm:px-9 sm:py-10 md:col-span-5 md:row-span-2 md:min-h-[25rem] md:border-b-0 md:border-r lg:px-10">
               <div
-                key={item.label}
-                className="min-h-44 bg-tint-warm px-5 py-6 sm:px-6 sm:py-7"
-              >
-                <dt className="flex items-start justify-between gap-3">
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
-                    {item.label}
-                  </span>
-                  <span className="text-xs font-semibold tracking-[0.14em] text-muted">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                </dt>
-                <dd className="mt-3">
-                  <span className="block text-xl font-medium tracking-[-0.02em] text-ink">
-                    {item.value}
-                  </span>
-                  <span className="mt-1.5 block text-sm leading-relaxed text-muted">
-                    {item.detail}
-                  </span>
-                </dd>
-              </div>
-            ))}
+                aria-hidden
+                className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-rose/20"
+              />
+              <dt className="relative flex items-start justify-between gap-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
+                  {role.label}
+                </span>
+                <span className="text-xs font-semibold tracking-[0.14em] text-muted">
+                  01
+                </span>
+              </dt>
+              <dd className="relative mt-16">
+                <span className="block max-w-xs text-[clamp(1.9rem,4vw,2.8rem)] font-medium leading-[1.02] tracking-[-0.045em] text-ink">
+                  {role.value}
+                </span>
+                <span className="mt-4 block max-w-xs text-sm leading-relaxed text-muted">
+                  {role.detail}
+                </span>
+                <span className="mt-10 flex items-center gap-3 border-t border-line pt-5 text-xs font-semibold uppercase tracking-[0.12em] text-teal-ink">
+                  <span>Platform science</span>
+                  <span aria-hidden className="h-px min-w-6 flex-1 bg-teal/55" />
+                  <span>Phase 1</span>
+                </span>
+              </dd>
+            </div>
+
+            <FounderContinuityEntry
+              item={platform}
+              index="02"
+              className="border-b border-line bg-paper/55 sm:border-r md:col-span-4"
+            />
+            <FounderContinuityEntry
+              item={clinical}
+              index="03"
+              className="border-b border-line bg-tint-warm md:col-span-3"
+            />
+            <FounderContinuityEntry
+              item={portfolio}
+              index="04"
+              className="border-b border-line bg-tint-warm sm:border-b-0 sm:border-r md:col-span-3"
+            />
+            <FounderContinuityEntry
+              item={network}
+              index="05"
+              className="bg-tint-teal md:col-span-4"
+            />
           </dl>
         </Reveal>
       </Container>

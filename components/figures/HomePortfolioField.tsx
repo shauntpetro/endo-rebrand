@@ -500,7 +500,7 @@ export default function HomePortfolioField() {
                 </div>
 
                 <div className="hidden border-t border-line pt-5 sm:block">
-                  <div className="grid grid-cols-6 text-[0.64rem] font-semibold uppercase tracking-[0.08em] text-muted">
+                  <div className="grid grid-cols-6 text-xs font-semibold uppercase tracking-[0.04em] text-muted">
                     {PHASES.map((phase) => (
                       <span key={phase} className="text-center">
                         {phase}

@@ -108,7 +108,7 @@ export default function SelectiveThreadPage() {
               </p>
               <div data-hero-fade className="mt-10 flex flex-wrap gap-3">
                 <FlagshipLink href="/innovation">Follow the mechanism</FlagshipLink>
-                <FlagshipLink href="/contact?subject=partnership" tone="outline">Discuss a partnership</FlagshipLink>
+                <FlagshipLink href="/contact?subject=partnership#contact-form" tone="outline">Discuss a partnership</FlagshipLink>
               </div>
               <a
                 href="#burden"
@@ -302,7 +302,7 @@ export default function SelectiveThreadPage() {
               <h2 className="mt-6 max-w-4xl text-[clamp(2.6rem,5.5vw,5.25rem)] font-medium leading-[0.98] tracking-[-0.04em] text-ink">Move from overview to diligence.</h2>
               <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted">Connect with EndoCyclic about strategic partnerships, investment, or data-room access.</p>
               <div className="mt-10 flex flex-wrap gap-3">
-                <FlagshipLink href="/contact?subject=partnership" tone="dark">Partner with us</FlagshipLink>
+                <FlagshipLink href="/contact?subject=partnership#contact-form" tone="dark">Partner with us</FlagshipLink>
                 <FlagshipLink href="/investors" tone="outline-light">Investor overview</FlagshipLink>
               </div>
             </div>

@@ -42,7 +42,7 @@ export const FOOTER_NAV = {
   Connect: [
     { name: "LinkedIn", href: SITE.linkedin, external: true },
     { name: "Twitter / X", href: SITE.twitter, external: true },
-    { name: "Partner with us", href: "/contact?subject=partnership" },
+    { name: "Partner with us", href: "/contact?subject=partnership#contact-form" },
   ],
 } as const;
 
@@ -305,14 +305,22 @@ export const TEAM: Member[] = [
 
 /* Newsroom — verified event-level source records. */
 export type ArticleType = "Press Release" | "Award" | "Interview";
+export type ArticleSourceKind = "company" | "institutional" | "independent";
 export interface Article {
   id: number;
   type: ArticleType;
   date: string;
   dateTime: string;
+  sourceKind: ArticleSourceKind;
   source: string;
+  host?: string;
   title: string;
-  excerpt?: string;
+  displayTitle?: string;
+  excerpt: string;
+  ctaLabel: string;
+  featureLabel?: string;
+  featureMark?: string;
+  proof?: string;
   image: string;
   link: string;
   featured?: boolean;
@@ -323,21 +331,38 @@ export interface Article {
   }[];
 }
 
+export function getArticleDisplayTitle(article: Article) {
+  return article.displayTitle ?? article.title;
+}
+
+export function getArticleSourceLabel(article: Article) {
+  return article.host
+    ? `${article.source} · Hosted by ${article.host}`
+    : article.source;
+}
+
 export const NEWS: Article[] = [
   {
     id: 1,
-    type: "Award",
+    type: "Press Release",
     date: "Sep 16, 2025",
     dateTime: "2025-09-16",
-    source: "BioSpace",
+    sourceKind: "company",
+    source: "EndoCyclic Therapeutics",
+    host: "BioSpace",
     title: "EndoCyclic Therapeutics Awarded Rare NIH 'Perfect 10' Grant for Endometriosis Therapeutic",
-    excerpt: "EndoCyclic Therapeutics received a highly competitive NIH Commercialization Readiness Pilot (CRP) Program grant from NICHD, earning an exceptionally rare perfect overall impact score of 10. This funding accelerates the commercialization of ENDO-205, a non-hormonal, disease-modifying therapeutic designed to treat endometriosis.",
+    displayTitle: "A rare NIH ‘Perfect 10’ for ENDO-205.",
+    excerpt: "EndoCyclic received an NIH Commercialization Readiness Pilot grant from NICHD with a perfect overall impact score of 10.",
+    ctaLabel: "Read the company announcement",
+    featureLabel: "Company press release",
+    featureMark: "10",
+    proof: "NIH Commercialization Readiness Pilot grant · NICHD",
     image: "/NIH_2013_logo_vertical.svg",
     link: "https://www.biospace.com/press-releases/endocyclic-therapeutics-awarded-rare-nih-perfect-10-grant-for-endometriosis-therapeutic",
     featured: true,
     coverage: [
       {
-        label: "Read independent coverage",
+        label: "Independent coverage",
         source: "BioWorld",
         link: "https://www.bioworld.com/articles/724279-endocyclics-endo-205-awarded-nih-grant-for-endometriosis",
       },
@@ -348,9 +373,11 @@ export const NEWS: Article[] = [
     type: "Award",
     date: "Sep 16, 2025",
     dateTime: "2025-09-16",
+    sourceKind: "institutional",
     source: "NIH SEED",
     title: "EndoCyclic Therapeutics Featured in the NIH Portfolio Company Showcase",
     excerpt: "The NIH portfolio profile recognizes EndoCyclic Therapeutics as an NIH-backed company advancing a precision peptide platform for endometriosis.",
+    ctaLabel: "Open the NIH profile",
     image: "/NIH_2013_logo_vertical.svg",
     link: "https://seed.nih.gov/portfolio/nih-portfolio-company-showcase/endocyclic-therapeutics",
   },
@@ -359,9 +386,11 @@ export const NEWS: Article[] = [
     type: "Interview",
     date: "Oct 23, 2017",
     dateTime: "2017-10-23",
+    sourceKind: "institutional",
     source: "UCLA",
     title: "UCLA Alumni News Profiles Dr. Tanya Petrossian and EndoCyclic Therapeutics",
     excerpt: "UCLA profiles alumna Dr. Tanya Petrossian and the founding of EndoCyclic Therapeutics to develop a non-hormonal treatment for endometriosis.",
+    ctaLabel: "Read the UCLA profile",
     image: "/University_of_California,_Los_Angeles_logo.svg",
     link: "https://www.chemistry.ucla.edu/news/alumni-news-13/",
   },

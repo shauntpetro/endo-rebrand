@@ -4,12 +4,12 @@ import { PHASES, PIPELINE, type Area, type Modality } from "@/lib/site";
 const AREAS: Area[] = ["Endometriosis", "Oncology"];
 
 const PHASE_LABELS = [
-  { full: "Discovery", lines: ["Discovery"] },
-  { full: "Pre-clinical", lines: ["Pre-", "clinical"] },
-  { full: "IND-enabling", lines: ["IND-", "enabling"] },
-  { full: "Phase 1", lines: ["Phase 1"] },
-  { full: "Phase 2", lines: ["Phase 2"] },
-  { full: "Phase 3", lines: ["Phase 3"] },
+  { full: "Discovery", compact: "Disc.", lines: ["Discovery"] },
+  { full: "Pre-clinical", compact: "Preclin.", lines: ["Pre-", "clinical"] },
+  { full: "IND-enabling", compact: "IND", lines: ["IND-", "enabling"] },
+  { full: "Phase 1", compact: "P1", lines: ["Phase 1"] },
+  { full: "Phase 2", compact: "P2", lines: ["Phase 2"] },
+  { full: "Phase 3", compact: "P3", lines: ["Phase 3"] },
 ] as const;
 
 const programHref = (programId: string) => {
@@ -186,7 +186,10 @@ function MobileStageRail({
   const progress = (phaseIndex / (PHASES.length - 1)) * 83.334;
 
   return (
-    <div className="mt-4" role="img" aria-label={`Current development stage: ${currentStage(phaseIndex)}`}>
+    <div className="mt-4">
+      <p className="sr-only">
+        Current development stage: {currentStage(phaseIndex)}.
+      </p>
       <div className="relative h-7">
         <span aria-hidden className="absolute left-[8.333%] right-[8.333%] top-1/2 h-px -translate-y-1/2 bg-line" />
         <span
@@ -207,10 +210,39 @@ function MobileStageRail({
           ))}
         </div>
       </div>
-      <div className="mt-1 flex items-center justify-between text-[0.72rem] font-medium text-muted">
-        <span>Discovery</span>
-        <span>Phase 3</span>
-      </div>
+      <ol
+        aria-label="Development stages"
+        className="mt-1 grid list-none grid-cols-6"
+      >
+        {PHASE_LABELS.map((phase, index) => {
+          const isCurrent = index === phaseIndex;
+
+          return (
+            <li
+              key={phase.full}
+              aria-current={isCurrent ? "step" : undefined}
+              className={`min-w-0 px-0.5 text-center text-xs font-medium leading-[1.1] tracking-[-0.015em] ${
+                isCurrent ? style.accentText : "text-muted"
+              }`}
+            >
+              <span className="sr-only">
+                {phase.full}
+                {isCurrent ? ", current stage" : ""}
+              </span>
+              <span aria-hidden className="min-[400px]:hidden">
+                {phase.compact}
+              </span>
+              <span aria-hidden className="hidden min-[400px]:inline">
+                {phase.lines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

@@ -7,7 +7,6 @@ import NextChapter from "@/components/site/NextChapter";
 import PipelineChapterNav from "@/components/site/PipelineChapterNav";
 import {
   PipelineAtlasMotion,
-  PipelineScaleFade,
   PipelineThesis,
 } from "@/components/site/PipelineMotion";
 import Reveal from "@/components/site/Reveal";
@@ -232,7 +231,7 @@ function LeadProgram() {
         </ChapterIntro>
 
         <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
-          <PipelineScaleFade className="lg:col-span-7">
+          <div className="min-w-0 lg:col-span-7">
             <SciencePlate
               src="/illustrations/endo-205-translation-v1.avif"
               alt="Conceptual editorial illustration of a precision peptide activating at an endometriosis lesion boundary and undergoing selective uptake."
@@ -243,7 +242,7 @@ function LeadProgram() {
               caption="ENDO-205 applies the platform's pH-mediated activation and selective-uptake logic to a non-hormonal endometriosis therapeutic."
               disclosure="Conceptual representation; not clinical imagery or efficacy data."
             />
-          </PipelineScaleFade>
+          </div>
 
           <Reveal delay={0.06} className="lg:col-span-5">
             <p className="eyebrow">Clinical dossier</p>
@@ -293,7 +292,7 @@ function EndometriosisImaging() {
         </ChapterIntro>
 
         <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
-          <PipelineScaleFade className="lg:col-span-7">
+          <div className="min-w-0 lg:col-span-7">
             <SciencePlate
               src="/illustrations/femluna-targeting-v2.avif"
               alt="Conceptual editorial illustration of a targeted peptide localizing at a small endometriosis lesion within simplified pelvic anatomy."
@@ -304,7 +303,7 @@ function EndometriosisImaging() {
               caption="FemLUNA™ is capable of detecting superficial and sub-millimeter lesions often missed by current imaging."
               disclosure="Conceptual representation; FemLUNA™ is IND-enabling. Not clinical imaging or performance data."
             />
-          </PipelineScaleFade>
+          </div>
 
           <Reveal delay={0.06} className="lg:col-span-4 lg:col-start-9">
             <p className="t-lead">
@@ -429,9 +428,9 @@ function OncologyPair() {
           ENDO-995 and ENDO-311 extend the platform into malignant solid tumors through a therapeutic and companion-diagnostic strategy.
         </ChapterIntro>
 
-        <PipelineScaleFade className="mt-14 md:mt-16">
+        <div className="mt-14 min-w-0 md:mt-16">
           <OncologyPairFigure />
-        </PipelineScaleFade>
+        </div>
 
         <div className="mt-12 grid-flow-dense border-y border-line md:grid md:grid-cols-12">
           {programs.map(({ program, label, body, note }, index) => (

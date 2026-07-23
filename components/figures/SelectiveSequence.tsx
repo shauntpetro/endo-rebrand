@@ -17,6 +17,9 @@ const STAGE_PRESENTATION = [
     ring: "border-gold/75",
     ink: "text-gold-ink",
     activeGround: "bg-tint-warm",
+    focusX: "45.5%",
+    focusY: "57%",
+    artworkTransform: "scale-[1.03] translate-x-0 translate-y-0",
   },
   {
     shortTitle: "Uptake",
@@ -24,6 +27,9 @@ const STAGE_PRESENTATION = [
     ring: "border-teal/70",
     ink: "text-teal-ink",
     activeGround: "bg-tint-teal",
+    focusX: "76.5%",
+    focusY: "52.5%",
+    artworkTransform: "scale-[1.07] -translate-x-[2%] translate-y-0",
   },
   {
     shortTitle: "Action",
@@ -31,6 +37,9 @@ const STAGE_PRESENTATION = [
     ring: "border-rose/75",
     ink: "text-rose-ink",
     activeGround: "bg-petal",
+    focusX: "78%",
+    focusY: "69%",
+    artworkTransform: "scale-[1.11] -translate-x-[4%] -translate-y-[1%]",
   },
 ] as const;
 
@@ -48,6 +57,10 @@ export default function SelectiveSequence({
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sentinelRefs = useRef<Array<HTMLDivElement | null>>([]);
   const keyboardFocusRef = useRef(false);
+  const programmaticStageRef = useRef<number | null>(null);
+  const programmaticScrollFrameRef = useRef<number | null>(null);
+  const programmaticScrollTokenRef = useRef(0);
+  const syncStageFromReadingLineRef = useRef<() => void>(() => {});
   const activeStage = STAGE_PRESENTATION[activeIndex] ?? STAGE_PRESENTATION[0];
 
   useEffect(() => {
@@ -55,6 +68,8 @@ export default function SelectiveSequence({
     let observer: IntersectionObserver | null = null;
 
     const selectStageAtReadingLine = () => {
+      if (programmaticStageRef.current !== null) return;
+
       if (
         keyboardFocusRef.current &&
         tablistRef.current?.contains(document.activeElement)
@@ -85,6 +100,7 @@ export default function SelectiveSequence({
         );
       }
     };
+    syncStageFromReadingLineRef.current = selectStageAtReadingLine;
 
     const connectObserver = () => {
       observer?.disconnect();
@@ -109,13 +125,76 @@ export default function SelectiveSequence({
     return () => {
       observer?.disconnect();
       media.removeEventListener("change", connectObserver);
+      syncStageFromReadingLineRef.current = () => {};
     };
   }, [steps.length]);
 
-  const focusStage = (index: number) => {
+  useEffect(
+    () => () => {
+      programmaticScrollTokenRef.current += 1;
+      if (programmaticScrollFrameRef.current !== null) {
+        window.cancelAnimationFrame(programmaticScrollFrameRef.current);
+      }
+    },
+    [],
+  );
+
+  const selectStage = (index: number, moveFocus = false) => {
     const nextIndex = (index + steps.length) % steps.length;
     setActiveIndex(nextIndex);
-    tabRefs.current[nextIndex]?.focus();
+    if (moveFocus) {
+      tabRefs.current[nextIndex]?.focus({ preventScroll: true });
+    }
+
+    if (!window.matchMedia(STICKY_MEDIA_QUERY).matches) return;
+
+    const sentinel = sentinelRefs.current[nextIndex];
+    if (!sentinel) return;
+
+    programmaticScrollTokenRef.current += 1;
+    const scrollToken = programmaticScrollTokenRef.current;
+
+    if (programmaticScrollFrameRef.current !== null) {
+      window.cancelAnimationFrame(programmaticScrollFrameRef.current);
+    }
+
+    const readingLine = window.innerHeight * 0.46;
+    const rect = sentinel.getBoundingClientRect();
+    const desiredTop =
+      window.scrollY + rect.top + rect.height / 2 - readingLine;
+    const maxTop = Math.max(
+      0,
+      document.documentElement.scrollHeight - window.innerHeight,
+    );
+    const targetTop = Math.min(maxTop, Math.max(0, desiredTop));
+    const deadline = window.performance.now() + 1200;
+
+    programmaticStageRef.current = nextIndex;
+    window.scrollTo({ top: targetTop, behavior: "smooth" });
+
+    const settleProgrammaticScroll = () => {
+      if (programmaticScrollTokenRef.current !== scrollToken) return;
+
+      const settled =
+        Math.abs(window.scrollY - targetTop) <= 2 ||
+        window.performance.now() >= deadline;
+
+      if (settled) {
+        programmaticScrollFrameRef.current = null;
+        programmaticStageRef.current = null;
+        setActiveIndex(nextIndex);
+        syncStageFromReadingLineRef.current();
+        return;
+      }
+
+      programmaticScrollFrameRef.current = window.requestAnimationFrame(
+        settleProgrammaticScroll,
+      );
+    };
+
+    programmaticScrollFrameRef.current = window.requestAnimationFrame(
+      settleProgrammaticScroll,
+    );
   };
 
   const handleKeyDown = (
@@ -124,29 +203,32 @@ export default function SelectiveSequence({
   ) => {
     if (event.key === "ArrowRight" || event.key === "ArrowDown") {
       event.preventDefault();
-      focusStage(index + 1);
+      selectStage(index + 1, true);
     }
 
     if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
       event.preventDefault();
-      focusStage(index - 1);
+      selectStage(index - 1, true);
     }
 
     if (event.key === "Home") {
       event.preventDefault();
-      focusStage(0);
+      selectStage(0, true);
     }
 
     if (event.key === "End") {
       event.preventDefault();
-      focusStage(steps.length - 1);
+      selectStage(steps.length - 1, true);
     }
   };
 
   return (
     <div className={styles.scene} data-sequence-scene>
       <figure className={styles.sticky} data-sequence-sticky>
-        <div className="overflow-hidden rounded-bl-[2.5rem] rounded-tr-[2.5rem] border border-line bg-paper editorial-shadow sm:rounded-bl-[4rem] sm:rounded-tr-[4rem]">
+        <div
+          data-sequence-enhanced
+          className={`${styles.enhancedSequence} overflow-hidden rounded-bl-[2.5rem] rounded-tr-[2.5rem] border border-line bg-paper editorial-shadow sm:rounded-bl-[4rem] sm:rounded-tr-[4rem]`}
+        >
           <div className="border-b border-line bg-paper">
             <div className="flex items-center justify-between gap-6 px-5 py-4 sm:px-7">
               <p className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-ink">
@@ -181,7 +263,7 @@ export default function SelectiveSequence({
                   keyboardFocusRef.current = false;
                 }
               }}
-              className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto border-t border-line sm:grid sm:grid-cols-3 sm:overflow-visible"
+              className="grid grid-cols-3 border-t border-line"
             >
               {steps.map((step, index) => {
                 const stage =
@@ -201,16 +283,16 @@ export default function SelectiveSequence({
                     aria-controls={`${sequenceId}-panel-${index}`}
                     aria-label={`${step.index} ${step.title}`}
                     tabIndex={active ? 0 : -1}
-                    onClick={() => setActiveIndex(index)}
+                    onClick={() => selectStage(index)}
                     onKeyDown={(event) => handleKeyDown(event, index)}
-                    className={`group relative flex min-w-[11.5rem] snap-start items-center gap-3 border-r border-line px-5 py-4 text-left last:border-r-0 active:scale-[0.99] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-teal-ink motion-reduce:transform-none sm:min-w-0 sm:px-6 sm:py-5 ${
+                    className={`group relative flex min-w-0 flex-col items-start gap-2 border-r border-line px-3 py-3.5 text-left last:border-r-0 active:scale-[0.99] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-teal-ink motion-reduce:transform-none sm:flex-row sm:items-center sm:gap-3 sm:px-6 sm:py-5 ${
                       active
                         ? stage.activeGround
                         : "bg-paper hover:bg-tint-warm/55"
                     }`}
                   >
                     <span
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[0.62rem] font-semibold tracking-[0.08em] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[0.65rem] font-semibold tracking-[0.08em] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:h-8 sm:w-8 ${
                         active
                           ? `${stage.marker} ${stage.ring} scale-100 text-ink`
                           : "scale-90 border-line bg-paper text-muted group-hover:scale-100"
@@ -220,7 +302,7 @@ export default function SelectiveSequence({
                     </span>
                     <span className="min-w-0">
                       <span
-                        className={`block text-xs font-semibold uppercase tracking-[0.12em] ${active ? stage.ink : "text-muted"}`}
+                        className={`block text-[0.7rem] font-semibold uppercase leading-tight tracking-[0.08em] sm:text-xs sm:tracking-[0.12em] ${active ? stage.ink : "text-muted"}`}
                       >
                         {stage.shortTitle}
                       </span>
@@ -242,13 +324,57 @@ export default function SelectiveSequence({
 
           <div className="grid bg-tint-warm md:grid-cols-12">
             <div className="relative aspect-[2/1] overflow-hidden bg-tint-warm md:col-span-8 md:self-center">
-              <Image
-                src="/illustrations/selective-mechanism-v2.avif"
-                alt="Conceptual illustration of a cyclic peptide changing state in a disease microenvironment and undergoing selective uptake by diseased tissue."
-                fill
-                sizes="(min-width: 1184px) 720px, (min-width: 768px) 64vw, 94vw"
-                className="object-cover"
-              />
+              <div
+                className={`absolute inset-0 transform-gpu transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:scale-100 motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:transition-none ${activeStage.artworkTransform}`}
+              >
+                <Image
+                  src="/illustrations/selective-mechanism-v2.avif"
+                  alt="Conceptual illustration of a cyclic peptide changing state in a disease microenvironment and undergoing selective uptake by diseased tissue."
+                  fill
+                  sizes="(min-width: 1184px) 720px, (min-width: 768px) 64vw, 94vw"
+                  className="object-cover"
+                />
+
+                {steps.map((step, index) => {
+                  const stage =
+                    STAGE_PRESENTATION[index] ?? STAGE_PRESENTATION[0];
+                  const active = index === activeIndex;
+
+                  return (
+                    <div key={step.index}>
+                      <span
+                        aria-hidden
+                        className={`absolute inset-0 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                          active ? "opacity-100" : "opacity-0"
+                        }`}
+                        style={{
+                          background: `radial-gradient(circle at ${stage.focusX} ${stage.focusY}, transparent 0%, transparent 11%, color-mix(in srgb, var(--color-paper) 22%, transparent) 48%, color-mix(in srgb, var(--color-paper) 58%, transparent) 100%)`,
+                        }}
+                      />
+                      <span
+                        aria-hidden
+                        className={`absolute z-10 -translate-x-1/2 -translate-y-1/2 transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                          active
+                            ? "scale-100 opacity-100"
+                            : "scale-75 opacity-0"
+                        }`}
+                        style={{ left: stage.focusX, top: stage.focusY }}
+                      >
+                        <span
+                          className={`relative flex h-10 w-10 items-center justify-center rounded-full border bg-paper/70 shadow-[0_8px_24px_rgb(57_38_56/0.14)] sm:h-14 sm:w-14 ${stage.ring}`}
+                        >
+                          <span
+                            className={`h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3 ${stage.marker}`}
+                          />
+                          <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-paper bg-ink text-[0.55rem] font-semibold tracking-[0.05em] text-paper sm:h-6 sm:w-6 sm:text-[0.6rem]">
+                            {step.index}
+                          </span>
+                        </span>
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
               <div
                 aria-hidden
                 className="absolute inset-0 bg-gradient-to-b from-paper/10 via-transparent to-plum/5"
@@ -332,37 +458,78 @@ export default function SelectiveSequence({
           </div>
         </div>
 
+        <div
+          data-sequence-static
+          className={`${styles.staticSequence} overflow-hidden rounded-bl-[2.5rem] rounded-tr-[2.5rem] border border-line bg-paper editorial-shadow sm:rounded-bl-[4rem] sm:rounded-tr-[4rem]`}
+        >
+          <div className="border-b border-line bg-paper px-5 py-5 sm:px-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-ink">
+              Complete mechanism sequence
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Activation, uptake, then action in diseased tissue.
+            </p>
+          </div>
+
+          <div className="relative aspect-[2/1] overflow-hidden bg-tint-warm">
+            <Image
+              src="/illustrations/selective-mechanism-v2.avif"
+              alt="Conceptual illustration of a cyclic peptide changing state in a disease microenvironment and undergoing selective uptake by diseased tissue."
+              fill
+              sizes="(min-width: 1184px) 1120px, 94vw"
+              className="object-cover"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-b from-paper/10 via-transparent to-plum/5"
+            />
+          </div>
+
+          <ol
+            aria-label="Complete selective mechanism sequence"
+            className="divide-y divide-line"
+          >
+            {steps.map((step, index) => {
+              const stage =
+                STAGE_PRESENTATION[index] ?? STAGE_PRESENTATION[0];
+
+              return (
+                <li
+                  key={step.index}
+                  className={`grid gap-4 px-5 py-6 sm:grid-cols-[3rem_1fr] sm:px-7 sm:py-7 ${stage.activeGround}`}
+                >
+                  <span
+                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-xs font-semibold tracking-[0.08em] text-ink ${stage.marker} ${stage.ring}`}
+                  >
+                    {step.index}
+                  </span>
+                  <div>
+                    <p
+                      className={`text-xs font-semibold uppercase tracking-[0.14em] ${stage.ink}`}
+                    >
+                      {stage.shortTitle}
+                    </p>
+                    <h3 className="mt-2 text-lg font-medium text-ink">
+                      {step.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted">
+                      {step.body}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
         <noscript>
           <style>{`
           [data-sequence-scene] { display: block !important; }
           [data-sequence-sticky] { position: static !important; top: auto !important; }
           [data-sequence-track] { display: none !important; }
+          [data-sequence-enhanced] { display: none !important; }
+          [data-sequence-static] { display: block !important; }
         `}</style>
-          <div className="mt-5 border-y border-line bg-paper px-5 py-2 sm:px-7">
-            <p className="py-3 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-ink">
-              Complete mechanism sequence
-            </p>
-            <ol className="divide-y divide-line">
-              {steps.map((step) => (
-                <li
-                  key={step.index}
-                  className="grid gap-2 py-4 sm:grid-cols-[2rem_1fr] sm:gap-4"
-                >
-                  <span className="text-xs font-semibold tracking-[0.14em] text-rose-ink">
-                    {step.index}
-                  </span>
-                  <div>
-                    <h3 className="text-base font-medium text-ink">
-                      {step.title}
-                    </h3>
-                    <p className="mt-1 text-sm leading-relaxed text-muted">
-                      {step.body}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
         </noscript>
 
         <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs leading-relaxed text-muted">

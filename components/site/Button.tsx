@@ -17,6 +17,14 @@ const variants: Record<Variant, string> = {
   quiet: "gap-1.5 px-1 text-teal-ink hover:text-ink",
 };
 
+function resolveInternalHref(href: string) {
+  if (/^\/contact\?subject=[^#]+$/.test(href)) {
+    return `${href}#contact-form`;
+  }
+
+  return href;
+}
+
 export default function Button({
   href,
   children,
@@ -56,7 +64,7 @@ export default function Button({
     );
   }
   return (
-    <Link href={href} onClick={onClick} className={clsx("group", cls)}>
+    <Link href={resolveInternalHref(href)} onClick={onClick} className={clsx("group", cls)}>
       {inner}
     </Link>
   );

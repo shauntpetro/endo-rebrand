@@ -4,6 +4,7 @@ import { Download, Lock } from "lucide-react";
 import Button from "@/components/site/Button";
 import Container from "@/components/site/Container";
 import Eyebrow from "@/components/site/Eyebrow";
+import InvestorRegulatoryPath from "@/components/figures/InvestorRegulatoryPath";
 import NIHRecognitionPanel from "@/components/site/NIHRecognitionPanel";
 import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
@@ -50,9 +51,10 @@ const REGULATORY_PATH = [
     status: "Filing underway",
     statusClass: "text-rose-ink",
     nodeClass: "bg-surface ring-2 ring-rose",
-    label: "Next regulatory step",
+    label: "Parallel regulatory activity",
     title: "Fast Track",
     text: "Fast Track filing is underway.",
+    parallel: true,
   },
 ] as const;
 
@@ -155,6 +157,57 @@ function DiligenceIndex() {
   );
 }
 
+function InvestmentThesis() {
+  return (
+    <Section tone="tint-plum" size="compact">
+      <Container>
+        <div className="grid gap-10 border-y border-line py-10 lg:grid-cols-12 lg:items-end lg:gap-16 lg:py-14">
+          <Reveal className="lg:col-span-5">
+            <Eyebrow>Investment context</Eyebrow>
+            <h2 className="mt-5 max-w-xl text-[clamp(2.15rem,4.8vw,4rem)] font-medium leading-[1.02] tracking-[-0.04em] text-ink">
+              Clinical-stage progress inside a four-program platform.
+            </h2>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-muted">
+              ENDO-205 has FDA IND Allowance and is in Phase 1, while the same
+              precision peptide logic extends across therapeutics, diagnostics,
+              and oncology.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.06} className="lg:col-span-6 lg:col-start-7">
+            <dl className="border-t border-line">
+              <div className="grid gap-2 border-b border-line py-6 sm:grid-cols-[10rem_1fr] sm:items-baseline">
+                <dt className="text-[clamp(2.4rem,5vw,4.5rem)] font-medium leading-none tracking-[-0.055em] text-ink">
+                  $180–250B
+                </dt>
+                <dd className="text-sm leading-relaxed text-muted">
+                  Global market potential for endometriosis treatments · McKinsey estimate
+                </dd>
+              </div>
+              <div className="grid gap-2 border-b border-line py-6 sm:grid-cols-[10rem_1fr] sm:items-baseline">
+                <dt className="text-[clamp(2rem,4vw,3.3rem)] font-medium leading-none tracking-[-0.045em] text-ink">
+                  190M+
+                </dt>
+                <dd className="text-sm leading-relaxed text-muted">
+                  Women affected by endometriosis worldwide
+                </dd>
+              </div>
+              <div className="grid gap-2 border-b border-line py-6 sm:grid-cols-[10rem_1fr] sm:items-baseline">
+                <dt className="text-[clamp(1.7rem,3vw,2.5rem)] font-medium leading-none tracking-[-0.035em] text-ink">
+                  4 programs
+                </dt>
+                <dd className="text-sm leading-relaxed text-muted">
+                  Therapeutic and diagnostic programs across endometriosis and oncology
+                </dd>
+              </div>
+            </dl>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
 function RegulatoryChronology() {
   return (
     <Section tone="tint-teal" size="chapter">
@@ -171,36 +224,7 @@ function RegulatoryChronology() {
           </p>
         </div>
 
-        <ol className="mt-14 grid list-none border-y border-line sm:grid-cols-2 xl:grid-cols-4">
-          {REGULATORY_PATH.map((item, index) => (
-            <Reveal
-              as="li"
-              key={item.index}
-              delay={index * 0.05}
-              className="relative grid grid-cols-[2.25rem_1fr] gap-4 border-b border-line py-7 last:border-b-0 sm:block sm:odd:pr-8 sm:even:border-l sm:even:pl-8 sm:[&:nth-last-child(-n+2)]:border-b-0 xl:border-b-0 xl:border-l xl:px-7 xl:first:border-l-0 xl:first:pl-0 xl:last:pr-0"
-            >
-              <div className="pt-1 sm:flex sm:items-center sm:gap-3 sm:pt-0">
-                <span
-                  aria-hidden
-                  className={`block h-3 w-3 rounded-full border-2 border-tint-teal ${item.nodeClass}`}
-                />
-                <span className="mt-2 block text-xs font-semibold tracking-[0.16em] text-muted sm:mt-0">
-                  {item.index}
-                </span>
-              </div>
-              <div>
-                <p className={`text-xs font-semibold uppercase tracking-[0.13em] sm:mt-7 ${item.statusClass}`}>
-                  {item.status}
-                </p>
-                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.13em] text-teal-ink">
-                  {item.label}
-                </p>
-                <h3 className="t-h3 mt-3 text-ink">{item.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{item.text}</p>
-              </div>
-            </Reveal>
-          ))}
-        </ol>
+        <InvestorRegulatoryPath items={REGULATORY_PATH} />
       </Container>
     </Section>
   );
@@ -361,6 +385,7 @@ export default function InvestorsPage() {
           className="object-contain"
         />
       </PageHero>
+      <InvestmentThesis />
       <DiligenceIndex />
       <RegulatoryChronology />
       <PlatformLedger />

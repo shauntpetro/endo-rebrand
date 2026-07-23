@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Image from "next/image";
 import { Mail, Linkedin, MapPin } from "lucide-react";
 import Section from "@/components/site/Section";
@@ -8,6 +7,7 @@ import Eyebrow from "@/components/site/Eyebrow";
 import Reveal from "@/components/site/Reveal";
 import PageHero from "@/components/site/PageHero";
 import ContactForm from "./ContactForm";
+import { parseContactSubject } from "./contact-subject";
 import { CONTACT_SUBJECTS, SITE } from "@/lib/site";
 
 /* -------------------------------------------------------------- Direct lines */
@@ -122,7 +122,14 @@ function RoutingVisual() {
 }
 
 /* ------------------------------------------------------------------- Page */
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ subject?: string | string[] }>;
+}) {
+  const { subject } = await searchParams;
+  const initialSubject = parseContactSubject(subject);
+
   return (
     <main id="main-content">
       <PageHero
@@ -164,9 +171,7 @@ export default function ContactPage() {
 
           <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:items-start">
             <Reveal className="lg:col-span-7">
-              <Suspense fallback={<div aria-hidden className="min-h-[32rem] border-t border-line" />}>
-                <ContactForm />
-              </Suspense>
+              <ContactForm initialSubject={initialSubject} />
             </Reveal>
             <Reveal delay={0.08} className="lg:col-span-4 lg:col-start-9">
               <DirectLines />

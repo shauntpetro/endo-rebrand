@@ -52,7 +52,7 @@ export default function SciencePlate({
 
         gsap.set(frameNode, { clipPath: "inset(3.5% 6% 3.5% 0)" });
         gsap.set(imageNode, { scale: 1.025, transformOrigin: "50% 50%" });
-        if (captionNode) gsap.set(captionNode, { autoAlpha: 0.58, y: 8 });
+        if (captionNode) gsap.set(captionNode, { y: 8 });
 
         const timeline = gsap.timeline({
           defaults: { ease: "power3.out" },
@@ -68,7 +68,7 @@ export default function SciencePlate({
           .to(imageNode, { scale: 1, duration: 0.96 }, 0);
 
         if (captionNode) {
-          timeline.to(captionNode, { autoAlpha: 1, y: 0, duration: 0.48 }, 0.2);
+          timeline.to(captionNode, { y: 0, duration: 0.48 }, 0.2);
         }
       });
 
