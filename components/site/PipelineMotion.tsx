@@ -1,93 +1,123 @@
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useEffect, useRef, useState } from "react";
+import { clsx } from "clsx";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+type MotionState = "visible" | "pending" | "revealed";
 
 export function PipelineAtlasMotion({ children }: { children: React.ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
+  const [motionState, setMotionState] = useState<MotionState>("visible");
 
-  useGSAP(
-    () => {
-      const media = gsap.matchMedia();
+  useEffect(() => {
+    const rootNode = root.current;
+    if (
+      !rootNode ||
+      typeof IntersectionObserver === "undefined" ||
+      !window.matchMedia("(prefers-reduced-motion: no-preference)").matches
+    ) {
+      return;
+    }
 
-      const buildSequence = (rowSelector: string) => {
-        const rows = gsap.utils.toArray<HTMLElement>(rowSelector, root.current);
-        if (!rows.length) return;
+    let observer: IntersectionObserver | undefined;
+    const animationFrame = window.requestAnimationFrame(() => {
+      try {
+        const rows = Array.from(
+          rootNode.querySelectorAll<HTMLElement>(
+            '[data-pipeline-row="program"]',
+          ),
+        );
 
-        const timeline = gsap.timeline({
-          defaults: { ease: "power2.out" },
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 76%",
-            once: true,
+        rows.forEach((row, rowIndex) => {
+          const rowDelay = rowIndex * 140;
+          const tracks = Array.from(
+            row.querySelectorAll<HTMLElement>("[data-pipeline-stage-track]"),
+          );
+
+          tracks.forEach((track, trackIndex) => {
+            track.style.setProperty(
+              "--pipeline-motion-delay",
+              `${rowDelay + trackIndex * 55}ms`,
+            );
+          });
+          row
+            .querySelector<HTMLElement>("[data-pipeline-current-marker]")
+            ?.style.setProperty(
+              "--pipeline-motion-delay",
+              `${rowDelay + 260}ms`,
+            );
+          row
+            .querySelector<HTMLElement>("[data-pipeline-current-label]")
+            ?.style.setProperty(
+              "--pipeline-motion-delay",
+              `${rowDelay + 300}ms`,
+            );
+        });
+
+        observer = new IntersectionObserver(
+          (entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+
+            setMotionState("revealed");
+            observer?.disconnect();
           },
-        });
+          {
+            rootMargin: "0px 0px -24% 0px",
+            threshold: 0,
+          },
+        );
 
-        rows.forEach((row, index) => {
-          const tracks = gsap.utils.toArray<HTMLElement>(
-            "[data-pipeline-stage-track]",
-            row,
-          );
-          const marker = row.querySelector<HTMLElement>(
-            "[data-pipeline-current-marker]",
-          );
-          const label = row.querySelector<HTMLElement>(
-            "[data-pipeline-current-label]",
-          );
-          const start = index * 0.14;
+        // Keep SSR/no-JS fully visible. The clipped start state is applied
+        // only after the observer is ready to complete the sequence.
+        setMotionState("pending");
+        observer.observe(rootNode);
+      } catch {
+        setMotionState("visible");
+      }
+    });
 
-          gsap.set(tracks, { scaleX: 0, transformOrigin: "left center" });
-          if (marker) gsap.set(marker, { opacity: 0.42, scale: 0.72 });
-          if (label) gsap.set(label, { y: 6 });
-
-          timeline.to(
-            tracks,
-            {
-              scaleX: 1,
-              duration: 0.58,
-              stagger: 0.055,
-            },
-            start,
-          );
-
-          if (marker) {
-            timeline.to(
-              marker,
-              { opacity: 1, scale: 1, duration: 0.34 },
-              start + 0.26,
-            );
-          }
-
-          if (label) {
-            timeline.to(
-              label,
-              { y: 0, duration: 0.34 },
-              start + 0.3,
-            );
-          }
-        });
-      };
-
-      media.add(
-        "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
-        () => buildSequence('[data-pipeline-row="desktop"]'),
-      );
-      media.add(
-        "(max-width: 1023px) and (prefers-reduced-motion: no-preference)",
-        () => buildSequence('[data-pipeline-row="mobile"]'),
-      );
-
-      return () => media.revert();
-    },
-    { scope: root },
-  );
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      observer?.disconnect();
+    };
+  }, []);
 
   return (
-    <div ref={root} className="min-w-0">
+    <div
+      ref={root}
+      data-pipeline-motion={
+        motionState === "visible" ? undefined : motionState
+      }
+      className={clsx(
+        "min-w-0",
+        motionState === "pending" && [
+          "[&_[data-pipeline-stage-track]]:origin-left",
+          "[&_[data-pipeline-stage-track]]:scale-x-0",
+          "[&_[data-pipeline-current-marker]]:scale-[0.72]",
+          "[&_[data-pipeline-current-marker]]:opacity-[0.42]",
+          "[&_[data-pipeline-current-label]]:translate-y-1.5",
+        ],
+        motionState === "revealed" && [
+          "[&_[data-pipeline-stage-track]]:origin-left",
+          "[&_[data-pipeline-stage-track]]:scale-x-100",
+          "[&_[data-pipeline-stage-track]]:transition-transform",
+          "[&_[data-pipeline-stage-track]]:duration-[580ms]",
+          "[&_[data-pipeline-stage-track]]:ease-[var(--ease-soft)]",
+          "[&_[data-pipeline-stage-track]]:[transition-delay:var(--pipeline-motion-delay)]",
+          "[&_[data-pipeline-current-marker]]:scale-100",
+          "[&_[data-pipeline-current-marker]]:opacity-100",
+          "[&_[data-pipeline-current-marker]]:transition-[transform,opacity]",
+          "[&_[data-pipeline-current-marker]]:duration-[340ms]",
+          "[&_[data-pipeline-current-marker]]:ease-[var(--ease-soft)]",
+          "[&_[data-pipeline-current-marker]]:[transition-delay:var(--pipeline-motion-delay)]",
+          "[&_[data-pipeline-current-label]]:translate-y-0",
+          "[&_[data-pipeline-current-label]]:transition-transform",
+          "[&_[data-pipeline-current-label]]:duration-[340ms]",
+          "[&_[data-pipeline-current-label]]:ease-[var(--ease-soft)]",
+          "[&_[data-pipeline-current-label]]:[transition-delay:var(--pipeline-motion-delay)]",
+        ],
+      )}
+    >
       {children}
     </div>
   );
@@ -101,44 +131,68 @@ export function PipelineThesis({
   className?: string;
 }) {
   const root = useRef<HTMLHeadingElement>(null);
+  const [motionState, setMotionState] = useState<MotionState>("visible");
   const words = children.split(" ");
 
-  useGSAP(
-    () => {
-      const media = gsap.matchMedia();
+  useEffect(() => {
+    const rootNode = root.current;
+    if (
+      !rootNode ||
+      typeof IntersectionObserver === "undefined" ||
+      !window.matchMedia("(prefers-reduced-motion: no-preference)").matches
+    ) {
+      return;
+    }
 
-      media.add("(prefers-reduced-motion: no-preference)", () => {
-        const items = gsap.utils.toArray<HTMLElement>(
-          "[data-pipeline-word]",
-          root.current,
+    let observer: IntersectionObserver | undefined;
+    const animationFrame = window.requestAnimationFrame(() => {
+      try {
+        observer = new IntersectionObserver(
+          (entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+
+            setMotionState("revealed");
+            observer?.disconnect();
+          },
+          {
+            rootMargin: "0px 0px -16% 0px",
+            threshold: 0,
+          },
         );
 
-        gsap.set(items, { opacity: 0.74 });
-        gsap.to(items, {
-          opacity: 1,
-          stagger: 0.065,
-          ease: "none",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 84%",
-            end: "bottom 46%",
-            scrub: 0.5,
-          },
-        });
-      });
+        setMotionState("pending");
+        observer.observe(rootNode);
+      } catch {
+        setMotionState("visible");
+      }
+    });
 
-      return () => media.revert();
-    },
-    { scope: root },
-  );
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      observer?.disconnect();
+    };
+  }, []);
 
   return (
-    <h2 ref={root} className={className}>
+    <h2
+      ref={root}
+      aria-label={children}
+      data-pipeline-thesis-motion={
+        motionState === "visible" ? undefined : motionState
+      }
+      className={className}
+    >
       {words.map((word, index) => (
         <span
           key={`${word}-${index}`}
           data-pipeline-word
-          className="inline-block"
+          style={{ transitionDelay: `${Math.min(index * 32, 420)}ms` }}
+          className={clsx(
+            "inline-block motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none",
+            motionState === "pending" && "translate-y-1.5 opacity-[0.58]",
+            motionState === "revealed" &&
+              "translate-y-0 opacity-100 transition-[transform,opacity] duration-500 ease-[var(--ease-soft)]",
+          )}
         >
           {word}
           {index < words.length - 1 ? "\u00a0" : ""}

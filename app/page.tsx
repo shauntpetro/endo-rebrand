@@ -1,15 +1,23 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Section from "@/components/site/Section";
 import Container from "@/components/site/Container";
 import Eyebrow from "@/components/site/Eyebrow";
 import Button from "@/components/site/Button";
 import Reveal from "@/components/site/Reveal";
+import ArtDirectedImage from "@/components/site/ArtDirectedImage";
+import HomeDesktopMotion from "@/components/figures/HomeDesktopMotion";
 import HomeNarrativeThread from "@/components/figures/HomeNarrativeThread";
 import HomeBurdenHorizon from "@/components/figures/HomeBurdenHorizon";
 import HomeMechanismCanvas from "@/components/figures/HomeMechanismCanvas";
 import HomeNewsMedia from "@/components/figures/HomeNewsMedia";
 import HomePortfolioField from "@/components/figures/HomePortfolioField";
 import HomeEvidenceDossier from "@/components/figures/HomeEvidenceDossier";
+import { PARTNERSHIP_CONTACT_HREF } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 function ChapterLabel({
   children,
@@ -20,7 +28,7 @@ function ChapterLabel({
 }) {
   return (
     <p
-      className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.14em] md:text-[0.7rem] md:tracking-[0.16em] ${
+      className={`flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.14em] md:text-xs md:tracking-[0.16em] ${
         tone === "dark" ? "text-teal-on-dark" : "text-rose-ink"
       }`}
     >
@@ -43,30 +51,33 @@ function Hero() {
         <div className="grid min-h-[34rem] items-center md:min-h-[42rem] md:grid-cols-12">
           <div className="hero-copy-enter relative z-10 pb-10 pt-10 md:col-span-6 md:py-16">
             <div data-hero-step="eyebrow">
-              <Eyebrow className="text-sm md:text-[0.72rem]">Clinical-stage precision medicine</Eyebrow>
+              <Eyebrow className="text-sm md:text-xs">Clinical-stage precision medicine</Eyebrow>
             </div>
             <h1 data-hero-step="title" className="t-hero mt-6 max-w-2xl text-ink">
-              Precision medicine, activated by disease.
+              Precision peptides, activated through pH.
             </h1>
             <p data-hero-step="intro" className="t-lead mt-6 max-w-xl">
-              EndoCyclic develops non-hormonal precision peptides designed for selective uptake by diseased tissue—beginning with ENDO-205 for endometriosis, now in Phase 1.
+              EndoCyclic develops non-hormonal precision peptides designed for
+              selective uptake by diseased tissue across therapeutic and
+              diagnostic programs in endometriosis and oncology.
             </p>
             <div data-hero-step="actions" className="mt-8 flex flex-wrap gap-3">
-              <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+              <Button href={PARTNERSHIP_CONTACT_HREF}>Discuss a partnership</Button>
               <Button href="/pipeline#endo-205" variant="ghost">Review ENDO-205</Button>
             </div>
           </div>
 
           <figure className="hero-visual-enter -mx-5 md:absolute md:-top-24 md:bottom-0 md:left-[calc(50%_-_50vw)] md:right-[calc(50%_-_50vw)] md:mx-0">
             <div className="hero-visual-frame relative aspect-[4/3] overflow-hidden md:absolute md:inset-0 md:aspect-auto">
-              <Image
-                src="/illustrations/hero-home-v3.avif"
-                alt="Conceptual platform illustration of a cyclic peptide changing state at a disease-tissue boundary and branching within rose-colored diseased tissue."
-                aria-describedby="home-hero-disclosure"
-                fill
+              <ArtDirectedImage
+                desktopSrc="/illustrations/hero-home-v8.avif"
+                mobileSrc="/illustrations/hero-home-mobile-v8.avif"
+                alt="Conceptual platform illustration of selective uptake through an endocytic pathway and pH-mediated activation. The intact peptide remains visible within diseased tissue before a separate final state shows the same lesion receding to represent the ENDO-205 preclinical lesion-elimination finding."
+                describedBy="home-hero-disclosure"
                 priority
                 sizes="100vw"
-                className="object-cover object-[70%_center]"
+                mobileSizes="100vw"
+                className="object-cover object-center md:object-[70%_center]"
               />
               <span
                 aria-hidden
@@ -78,24 +89,47 @@ function Hero() {
               className="px-5 pt-4 text-sm leading-relaxed text-muted md:absolute md:bottom-5 md:z-10 md:max-w-3xl md:px-0 md:pt-0 md:text-xs"
               style={{ left: "max(1.25rem, calc((100vw - 74rem) / 2 + 3rem))" }}
             >
-              Conceptual representation of pH-mediated activation and selective uptake by diseased tissue; not clinical imagery.
+              Conceptual platform sequence through selective uptake and
+              pH-mediated activation. A separate final state represents the
+              ENDO-205 preclinical lesion-elimination finding; not clinical
+              imagery, outcome data, or restored-tissue histology.
             </figcaption>
           </figure>
         </div>
 
-        <div data-hero-proof className="relative grid grid-cols-2 border-y border-line bg-paper/90 sm:grid-cols-3 sm:divide-x sm:divide-line">
-          <div className="border-b border-r border-line py-4 pr-4 sm:border-b-0 sm:border-r-0 sm:px-5 sm:first:pl-0">
-            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-muted md:text-[0.68rem] md:tracking-[0.14em]">Lead program</p>
-            <p className="mt-1 font-medium text-ink">ENDO-205</p>
+        <div
+          data-hero-proof
+          className="relative grid overflow-hidden border-y border-line bg-paper/92 sm:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)]"
+        >
+          <div className="flex min-h-[5.5rem] items-center gap-4 border-b border-line px-5 py-4 sm:border-b-0 sm:px-6">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold" />
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
+                Clinical threshold
+              </p>
+              <p className="mt-1 text-base font-medium text-ink">ENDO-205</p>
+            </div>
           </div>
-          <div className="border-b border-line py-4 pl-4 sm:border-b-0 sm:px-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-muted md:text-[0.68rem] md:tracking-[0.14em]">Development</p>
-            <p className="mt-1 font-medium text-ink">Phase 1</p>
-          </div>
-          <div className="col-span-2 py-4 sm:col-span-1 sm:px-5 sm:last:pr-0">
-            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-muted md:text-[0.68rem] md:tracking-[0.14em]">Regulatory</p>
-            <p className="mt-1 font-medium text-ink">FDA IND Allowance · 2026</p>
-          </div>
+
+          <dl className="grid grid-cols-2 divide-x divide-line sm:border-l sm:border-line">
+            <div className="flex min-h-[5.5rem] min-w-0 flex-col justify-center px-4 py-4 sm:px-6">
+              <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-rose-ink">
+                Regulatory
+              </dt>
+              <dd className="mt-1 text-sm font-medium leading-snug text-ink sm:text-base">
+                FDA IND Allowance
+                <span className="mt-0.5 block text-xs font-normal text-muted">
+                  2026
+                </span>
+              </dd>
+            </div>
+            <div className="flex min-h-[5.5rem] min-w-0 flex-col justify-center px-4 py-4 sm:px-6">
+              <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-teal-ink">
+                Current stage
+              </dt>
+              <dd className="mt-1 text-base font-medium text-ink">Phase 1</dd>
+            </div>
+          </dl>
         </div>
       </Container>
     </section>
@@ -135,11 +169,14 @@ function Mechanism() {
           <div className="md:col-span-7">
             <ChapterLabel>The platform</ChapterLabel>
             <h2 className="t-h2 mt-5 max-w-2xl text-ink">
-              A peptide that changes state at the disease boundary.
+              Target. Enter. Activate. Evidence.
             </h2>
           </div>
           <p className="max-w-md text-base leading-relaxed text-muted md:col-span-4 md:col-start-9">
-            The same selective logic supports therapeutic and diagnostic programs across endometriosis and oncology.
+            The intact peptide remains visible within diseased tissue through
+            the conceptual sequence. Separately, ENDO-205 preclinical studies
+            demonstrated elimination of endometriosis lesions and associated
+            inflammation.
           </p>
         </Reveal>
 
@@ -164,7 +201,9 @@ function Portfolio() {
             <h2 className="t-h2 mt-5 max-w-xl text-ink">One platform branches into four precision programs.</h2>
           </div>
           <p className="t-lead max-w-xl self-end md:col-span-5 md:col-start-8">
-            Therapeutic and diagnostic programs span endometriosis and oncology, led by ENDO-205 in Phase 1.
+            The portfolio combines an endometriosis therapeutic and targeted
+            imaging agent with a matched oncology therapeutic and companion
+            diagnostic.
           </p>
         </Reveal>
 
@@ -185,11 +224,14 @@ function Evidence() {
       <Container className="relative z-20">
         <Reveal className="grid gap-8 md:grid-cols-12 md:items-end md:gap-10">
           <div className="md:col-span-6">
-            <ChapterLabel>Regulatory &amp; external validation</ChapterLabel>
-            <h2 className="t-h2 mt-5 max-w-xl text-ink">Evidence at each transition.</h2>
+            <ChapterLabel>Validation &amp; next steps</ChapterLabel>
+            <h2 className="t-h2 mt-5 max-w-xl text-ink">
+              Beyond the development-stage label.
+            </h2>
           </div>
           <p className="max-w-lg text-base leading-relaxed text-muted md:col-span-5 md:col-start-8">
-            Regulatory progress and external recognition mark the path from platform science to clinical-stage development.
+            NIH recognition, institutional relationships, and the Fast Track
+            filing underway add context to the clinical-stage lead program.
           </p>
         </Reveal>
 
@@ -209,12 +251,12 @@ function NewsMedia() {
           <div className="md:col-span-7">
             <ChapterLabel tone="dark">News &amp; media</ChapterLabel>
             <h2 className="t-h2 mt-5 max-w-2xl !text-on-dark">
-              Recognition, recorded at the source.
+              Milestones and recognition, at the source.
             </h2>
           </div>
           <p className="max-w-lg text-base leading-relaxed text-muted-on-dark md:col-span-4 md:col-start-9">
-            A selected record of external recognition, with approved resources
-            for accurate coverage.
+            A selected record of company milestones and institutional recognition,
+            with approved resources for accurate coverage.
           </p>
         </Reveal>
 
@@ -231,30 +273,33 @@ function Closing() {
     <Section tone="tint-warm" size="proof" className="relative overflow-hidden border-t border-line">
       <Container>
         <div className="grid items-center gap-12 md:grid-cols-12">
-          <div className="md:col-span-7">
+          <div className="md:col-span-6 lg:col-span-7">
             <ChapterLabel>Partnering</ChapterLabel>
             <h2 className="t-h2 mt-5 max-w-2xl text-ink">Advance selective precision medicine with us.</h2>
             <p className="mt-5 max-w-xl text-muted">
               Connect with EndoCyclic about strategic partnerships, investment, or access to the diligence process.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+              <Button href={PARTNERSHIP_CONTACT_HREF}>Discuss a partnership</Button>
               <Button href="/investors#data-room" variant="ghost">Request data-room access</Button>
             </div>
           </div>
 
-          <figure className="flex items-end gap-5 md:col-span-5 md:col-start-8 md:justify-end">
-            <div className="relative aspect-[4/5] w-36 shrink-0 overflow-hidden rounded-b-2xl rounded-t-[999px] bg-peony shadow-[0_20px_55px_rgb(57_38_56/0.09)] sm:w-44 md:w-48">
+          <figure
+            data-home-founder-closing
+            className="flex min-w-0 max-w-full flex-wrap items-end gap-4 md:col-span-6 md:col-start-7 md:justify-end lg:col-span-5 lg:col-start-8 lg:gap-5"
+          >
+            <div className="relative aspect-[4/5] w-[144px] shrink-0 overflow-hidden rounded-b-2xl rounded-t-[999px] bg-peony shadow-[0_20px_55px_rgb(57_38_56/0.09)] sm:w-[176px] lg:w-[192px]">
               <Image
-                src="/team/tanya-petrossian.avif"
+                src="/team/tanya-petrossian-v2.avif"
                 alt="Dr. Tanya Petrossian, founder and CEO of EndoCyclic Therapeutics"
                 fill
-                sizes="(min-width: 768px) 192px, 176px"
+                sizes="(min-width: 1024px) 192px, (min-width: 640px) 176px, 144px"
                 className="object-cover object-top"
               />
               <span aria-hidden className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-plum/12 to-transparent" />
             </div>
-            <figcaption className="border-l border-line pb-2 pl-5">
+            <figcaption className="min-w-[7.5rem] max-w-full flex-1 border-l border-line pb-2 pl-4 lg:pl-5">
               <p className="font-medium leading-snug text-ink">Dr. Tanya Petrossian, PhD</p>
               <p className="mt-2 text-sm text-muted">Founder &amp; CEO</p>
               <span aria-hidden className="mt-5 block h-8 w-px bg-gold" />
@@ -268,9 +313,10 @@ function Closing() {
 
 export default function HomePage() {
   return (
-    <main id="main-content">
+    <main id="main-content" tabIndex={-1}>
       <Hero />
-      <div className="relative">
+      <div id="home-narrative" className="relative">
+        <HomeDesktopMotion rootId="home-narrative" />
         <HomeNarrativeThread />
         <Burden />
         <Mechanism />

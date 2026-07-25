@@ -8,6 +8,7 @@ import Section from "@/components/site/Section";
 import {
   BURDEN_STATS,
   MILESTONES,
+  PARTNERSHIP_CONTACT_HREF,
   PARTNERS,
   PHASES,
   PIPELINE,
@@ -142,7 +143,7 @@ function Closing({
             <p className="mt-5 max-w-xl text-muted-on-dark">{body}</p>
           </div>
           <div className="flex flex-wrap gap-3 md:col-span-5 md:justify-end">
-            <Button href="/contact?subject=partnership" variant="ghost-on-dark">
+            <Button href={PARTNERSHIP_CONTACT_HREF} variant="ghost-on-dark">
               Partner with us
             </Button>
             <Button href="/investors" variant="ghost-on-dark">
@@ -177,7 +178,7 @@ export function ClinicalLedger() {
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Button href="/pipeline" variant="primary">Review the pipeline</Button>
-              <Button href="/contact?subject=partnership" variant="ghost">Discuss a partnership</Button>
+              <Button href={PARTNERSHIP_CONTACT_HREF} variant="ghost">Discuss a partnership</Button>
             </div>
           </div>
         </Container>
@@ -190,7 +191,7 @@ export function ClinicalLedger() {
               <div className="md:sticky md:top-36">
                 <Eyebrow>The investment case</Eyebrow>
                 <h2 className="t-h2 mt-5 text-ink">
-                  One platform. A therapeutic <InlineImage src="/illustrations/femluna-targeting-v2.avif" /> and
+                  One platform. A therapeutic <InlineImage src="/illustrations/femluna-targeting-v3.avif" /> and
                   diagnostic path.
                 </h2>
                 <p className="mt-5 text-muted">
@@ -227,7 +228,7 @@ export function ClinicalLedger() {
                   </div>
                   <div className="relative aspect-[4/3] overflow-hidden md:col-span-2">
                     <Image
-                      src="/illustrations/femluna-targeting-v2.avif"
+                      src="/illustrations/femluna-targeting-v3.avif"
                       alt="Conceptual FemLUNA targeted-imaging illustration"
                       fill
                       sizes="(min-width: 768px) 240px, 100vw"
@@ -240,11 +241,11 @@ export function ClinicalLedger() {
               <article data-stack-card className="border border-line bg-plum p-7 text-on-dark md:p-9">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal">Platform logic</p>
                 <h3 className="t-h2 mt-4 max-w-xl !text-on-dark">
-                  pH-mediated activation. Selective uptake. Non-hormonal action.
+                  Selective uptake. pH-mediated activation. Non-hormonal action.
                 </h3>
                 <p className="mt-5 max-w-2xl text-muted-on-dark">
-                  A proprietary precision peptide platform designed to activate in diseased tissue
-                  and enter diseased cells through a proprietary endocytic pathway.
+                  A proprietary precision peptide platform designed for selective uptake by diseased
+                  tissue through a proprietary endocytic pathway, with pH-mediated activation.
                 </p>
               </article>
             </StackMotion>
@@ -315,7 +316,7 @@ export function MolecularAtlas() {
                 <div aria-hidden className="absolute bottom-[13%] right-[13%] h-[54%] w-[54%] rounded-full bg-teal-tint" />
                 <div aria-hidden className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border-[12px] border-plum bg-paper" />
                 <p className="absolute bottom-8 left-8 max-w-52 text-sm text-muted">
-                  Designed for pH-mediated activation and selective uptake by diseased tissue.
+                  Designed for selective uptake by diseased tissue and pH-mediated activation.
                 </p>
               </div>
             </ScaleFade>
@@ -337,11 +338,11 @@ export function MolecularAtlas() {
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal">Disease-selective platform</p>
                   <h3 className="t-h2 mt-5 max-w-xl !text-on-dark">
-                    Activate in the disease microenvironment. Enter selectively. Address the biology.
+                    Target diseased tissue. Enter selectively. Activate through pH.
                   </h3>
                 </div>
                 <ol className="mt-16 grid gap-8 border-t border-line-on-dark pt-8 sm:grid-cols-3">
-                  {["pH-mediated activation", "Selective uptake", "Non-hormonal"].map((item) => (
+                  {["Selective uptake", "pH-mediated activation", "Non-hormonal"].map((item) => (
                     <li key={item} className="text-sm text-muted-on-dark">{item}</li>
                   ))}
                 </ol>
@@ -385,7 +386,7 @@ export function MolecularAtlas() {
             <div className="md:col-span-4">
               <Eyebrow>Designed to translate</Eyebrow>
               <h2 className="t-h2 mt-5 text-ink">
-                From endometriosis <InlineImage src="/illustrations/femluna-targeting-v2.avif" className="w-16" /> to oncology.
+                From endometriosis <InlineImage src="/illustrations/femluna-targeting-v3.avif" className="w-16" /> to oncology.
               </h2>
             </div>
             <div className="md:col-span-7 md:col-start-6">
@@ -460,7 +461,7 @@ export function PartnerBrief() {
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Button href="/investors" variant="primary">Investor overview</Button>
-              <Button href="/contact?subject=data" variant="ghost">Request data-room access</Button>
+              <Button href="/investors#data-room" variant="ghost">Request data-room access</Button>
             </div>
           </div>
         </Container>

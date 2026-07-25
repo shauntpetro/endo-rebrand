@@ -6,135 +6,109 @@ import NextChapter from "@/components/site/NextChapter";
 import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
 import Section from "@/components/site/Section";
-import { TEAM, type Member } from "@/lib/site";
+import {
+  EVIDENCE_LINKS,
+  NEWS,
+  PARTNERSHIP_CONTACT_HREF,
+  TEAM,
+} from "@/lib/site";
 
-const [FOUNDER, ...DEVELOPMENT_TEAM] = TEAM;
+const FOUNDER = TEAM[0];
+const ARCHIVAL_FOUNDER_PROFILE = NEWS.find((article) => article.id === 8);
 
-const PORTRAIT_PLACEMENTS: Record<string, string> = {
-  tanya:
-    "col-span-3 col-start-1 row-span-1 row-start-1 sm:col-span-2 sm:row-span-3 sm:row-start-1",
-  melanie:
-    "col-span-1 col-start-1 row-start-2 sm:col-start-3 sm:row-start-1",
-  david:
-    "col-span-1 col-start-2 row-start-2 sm:col-start-4 sm:row-start-1",
-  frank:
-    "col-span-1 col-start-3 row-start-2 sm:col-start-3 sm:row-start-2",
-  andrea:
-    "col-span-1 col-start-1 row-start-3 sm:col-start-4 sm:row-start-2",
-  aileen:
-    "col-span-1 col-start-2 row-start-3 sm:col-start-3 sm:row-start-3",
-  miganush:
-    "col-span-1 col-start-3 row-start-3 sm:col-start-4 sm:row-start-3",
-};
-
-const PORTRAIT_TONES: Record<string, string> = {
-  tanya: "bg-peony",
-  melanie: "bg-tint-teal",
-  david: "bg-tint-warm",
-  frank: "bg-tint-plum",
-  andrea: "bg-tint-plum",
-  aileen: "bg-tint-warm",
-  miganush: "bg-tint-teal",
-};
-
-const PORTRAIT_FOCAL_POINTS: Record<string, string> = {
-  tanya: "object-[50%_12%]",
-  melanie: "object-[50%_18%]",
-  david: "object-[50%_15%]",
-  frank: "object-[50%_22%]",
-  andrea: "object-[50%_16%]",
-  aileen: "object-[50%_18%]",
-  miganush: "object-[50%_14%]",
-};
-
-const FOUNDER_PROOF = [
+const LEADERSHIP_BRIEF = [
   {
-    label: "Company role",
+    label: "Role",
     value: "Founder & CEO",
-    detail: "EndoCyclic Therapeutics, Inc.",
+  },
+  {
+    label: "Company",
+    value: "EndoCyclic Therapeutics, Inc.",
+  },
+  {
+    label: "Base",
+    value: "Irvine, California",
   },
   {
     label: "Platform",
-    value: "Precision peptide",
-    detail: "pH-mediated activation · Selective uptake",
+    value: "Precision peptides · pH-mediated activation · selective uptake",
   },
   {
-    label: "Clinical transition",
-    value: "Phase 1",
-    detail: "ENDO-205 · FDA IND Allowance (2026)",
+    label: "Portfolio",
+    value: "Therapeutics · diagnostics · endometriosis · oncology",
   },
   {
-    label: "Portfolio reach",
-    value: "Three paths",
-    detail: "Therapeutics · Diagnostics · Oncology",
-  },
-  {
-    label: "Women’s health network",
-    value: "Founding member",
-    detail: "Milken Institute Women’s Health Network",
+    label: "Clinical entry",
+    value: "ENDO-205 · Phase 1 · FDA IND Allowance (2026)",
   },
 ] as const;
 
-type FounderProofItem = (typeof FOUNDER_PROOF)[number];
-
-const DEVELOPMENT_CHAPTERS = [
+const DILIGENCE_RECORD = [
   {
-    index: "01",
-    verb: "Prepare",
-    title: "Nonclinical toxicology · CMC · Regulatory affairs",
-    memberIds: ["melanie", "david", "aileen"],
+    category: "Archival institutional profile",
+    title: "Founder context",
+    detail:
+      "UCLA profiles Dr. Tanya Petrossian and the founding of EndoCyclic Therapeutics.",
+    source: "Read the 2017 UCLA founder profile",
+    href: ARCHIVAL_FOUNDER_PROFILE?.link,
+    marker: "bg-rose",
   },
   {
-    index: "02",
-    verb: "Evaluate",
-    title: "Clinical affairs · Biostatistics",
-    memberIds: ["andrea", "miganush"],
+    category: "Institutional record",
+    title: "Women’s-health network",
+    detail:
+      "EndoCyclic is a founding member of the Milken Institute Women’s Health Network.",
+    source: "Review the Milken Institute record",
+    href: EVIDENCE_LINKS.milkenNetworkRecord,
+    marker: "bg-gold",
   },
   {
-    index: "03",
-    verb: "Steward",
-    title: "Financial leadership",
-    memberIds: ["frank"],
+    category: "Company announcement",
+    title: "NIH grant recognition",
+    detail:
+      "A perfect overall impact score of 10 on an NIH Commercialization Readiness Pilot grant.",
+    source: "Review the NIH grant announcement",
+    href: EVIDENCE_LINKS.nihGrantAnnouncement,
+    marker: "bg-rose",
+  },
+  {
+    category: "Company announcement",
+    title: "Clinical entry",
+    detail:
+      "ENDO-205 received FDA IND Allowance in 2026 and is in Phase 1.",
+    source: "Review the FDA IND announcement",
+    href: EVIDENCE_LINKS.fdaAnnouncement,
+    marker: "bg-teal",
   },
 ] as const;
 
-function getChapterMembers(memberIds: readonly string[]) {
-  return memberIds.flatMap((memberId) => {
-    const member = DEVELOPMENT_TEAM.find((candidate) => candidate.id === memberId);
-    return member ? [member] : [];
-  });
-}
-
-function TeamPortraitField() {
+function FounderPortraitField() {
   return (
-    <div
-      role="img"
-      aria-label="Portraits of Dr. Tanya Petrossian and the EndoCyclic development team."
-      className="absolute inset-0 grid grid-cols-3 grid-rows-[2.2fr_1fr_1fr] gap-2 bg-tint-warm p-2 sm:grid-cols-4 sm:grid-rows-3 sm:gap-3 sm:p-3"
-    >
-      {TEAM.map((member, index) => (
-        <div
-          key={member.id}
-          className={`relative min-h-0 overflow-hidden border border-line-soft ${
-            member.id === "tanya"
-              ? "rounded-bl-[2.75rem] rounded-tr-[5.5rem]"
-              : "rounded-bl-2xl rounded-tr-[3rem]"
-          } ${PORTRAIT_PLACEMENTS[member.id]} ${PORTRAIT_TONES[member.id]}`}
-        >
-          <Image
-            src={member.image}
-            alt=""
-            fill
-            priority={index === 0}
-            sizes={
-              member.id === "tanya"
-                ? "(min-width: 1184px) 240px, (min-width: 640px) 23vw, 88vw"
-                : "(min-width: 1184px) 100px, (min-width: 640px) 9vw, 30vw"
-            }
-            className={`object-cover saturate-[0.9] ${PORTRAIT_FOCAL_POINTS[member.id]}`}
-          />
-        </div>
-      ))}
+    <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-paper via-petal to-tint-plum">
+      <div
+        aria-hidden
+        className="absolute -left-16 top-1/2 h-52 w-52 -translate-y-1/2 rounded-full border border-rose/25"
+      />
+      <div
+        aria-hidden
+        className="absolute left-[18%] top-[18%] h-px w-[34%] bg-gradient-to-r from-rose via-gold to-teal"
+      />
+
+      <div className="absolute inset-y-0 right-0 w-[78%] overflow-hidden rounded-tl-[7rem] border-l border-line bg-peony/55 shadow-[-18px_0_50px_rgb(57_38_56/0.08)] sm:w-[42%] sm:overflow-visible sm:rounded-none sm:border-0 sm:bg-transparent sm:shadow-none lg:w-[62%]">
+        <Image
+          src={FOUNDER.image}
+          alt={`Portrait of ${FOUNDER.name}`}
+          fill
+          priority
+          fetchPriority="high"
+          sizes="(min-width: 1024px) 290px, (min-width: 640px) 42vw, 78vw"
+          className="object-cover object-top saturate-[0.9] sm:object-contain sm:object-bottom"
+        />
+        <span
+          aria-hidden
+          className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-petal/85 to-transparent sm:w-24"
+        />
+      </div>
     </div>
   );
 }
@@ -142,323 +116,179 @@ function TeamPortraitField() {
 function Hero() {
   return (
     <PageHero
-      eyebrow="Development leadership"
-      title="A team carrying precision peptide science into the clinic."
-      titleClassName="max-w-[18ch]"
-      intro="Founder and CEO Dr. Tanya Petrossian leads a team spanning nonclinical toxicology, CMC, clinical affairs, regulatory affairs, biostatistics, and finance."
+      eyebrow="Founder & CEO"
+      title="Dr. Tanya Petrossian, PhD"
+      intro="Founder and CEO of EndoCyclic Therapeutics, a clinical-stage precision medicine company advancing a proprietary peptide platform across endometriosis and oncology."
       actions={
         <>
-          <Button href="/pipeline">Review the pipeline</Button>
-          <Button href="#development-team" variant="ghost">Meet the team</Button>
+          <Button href={PARTNERSHIP_CONTACT_HREF}>
+            Discuss a partnership
+          </Button>
+          <Button href="#tanya-petrossian" variant="ghost">
+            Review the leadership brief
+          </Button>
         </>
       }
-      proof="ENDO-205 · FDA IND Allowance (2026) · Phase 1"
-      caption="Founder and development team"
+      proof="Irvine, California · Clinical-stage"
+      caption="Dr. Tanya Petrossian, PhD · Founder & CEO"
       tone="tint-plum"
       layout="evidence"
       frame="line"
-      visualAspect="auto"
-      visualClassName="min-h-[34rem] bg-tint-warm sm:min-h-[30rem]"
+      visualAspect="content"
+      visualClassName="h-[21rem] bg-tint-warm sm:h-[22rem] lg:h-[23rem]"
     >
-      <TeamPortraitField />
+      <FounderPortraitField />
     </PageHero>
   );
 }
 
-function FounderContinuityEntry({
-  item,
-  index,
-  className,
-}: {
-  item: FounderProofItem;
-  index: string;
-  className: string;
-}) {
-  return (
-    <div className={`flex min-h-44 flex-col justify-between gap-8 px-6 py-7 sm:px-7 sm:py-8 ${className}`}>
-      <dt className="flex items-start justify-between gap-4">
-        <span className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
-          {item.label}
-        </span>
-        <span className="shrink-0 text-xs font-semibold tracking-[0.14em] text-muted">
-          {index}
-        </span>
-      </dt>
-      <dd>
-        <span className="block text-[clamp(1.25rem,2vw,1.55rem)] font-medium leading-tight tracking-[-0.025em] text-ink">
-          {item.value}
-        </span>
-        <span className="mt-2 block max-w-sm text-sm leading-relaxed text-muted">
-          {item.detail}
-        </span>
-      </dd>
-    </div>
-  );
-}
-
-function FounderStory() {
-  const [role, platform, clinical, portfolio, network] = FOUNDER_PROOF;
-
+function FounderDossier() {
   return (
     <Section tone="tint-warm" size="chapter" className="overflow-hidden">
-      <Container>
-        <div className="grid gap-12 md:grid-cols-12 md:gap-x-10 lg:gap-x-16">
-          <div className="md:col-span-7">
-            <Reveal>
-              <Eyebrow>Founder & CEO</Eyebrow>
-              <h2 className="t-h2 mt-5 max-w-2xl text-ink">
-                Dr. Tanya Petrossian, PhD
-              </h2>
-              <p className="t-lead mt-6 max-w-2xl">
-                Leadership from platform science into Phase 1.
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.04}>
-              <div className="mt-10 max-w-3xl border-y border-line py-7 sm:py-8">
-                <div className="flex items-center gap-3">
-                  <span aria-hidden className="h-2 w-2 rounded-full bg-teal" />
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
-                    Leadership brief
-                  </p>
-                </div>
-                <p className="mt-6 text-[clamp(1.3rem,2.1vw,1.75rem)] font-medium leading-[1.3] tracking-[-0.02em] text-ink">
-                  As Founder and CEO, she leads EndoCyclic Therapeutics, a
-                  clinical-stage precision medicine company in Irvine,
-                  California.
-                </p>
-                <p className="mt-5 max-w-2xl text-[0.98rem] leading-[1.75] text-muted">
-                  The company&apos;s proprietary precision peptide platform spans
-                  therapeutics, diagnostics, and oncology.
-                  ENDO-205 received FDA IND Allowance in 2026 and is in Phase
-                  1. EndoCyclic is a founding member of the Milken Institute
-                  Women&apos;s Health Network.
-                </p>
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.08} className="mt-8">
-              <div className="flex flex-wrap gap-3">
+      <Container
+        id="tanya-petrossian"
+        tabIndex={-1}
+        role="region"
+        aria-labelledby="founder-dossier-title"
+        className="outline-none"
+      >
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
+          <Reveal className="lg:col-span-5">
+            <Eyebrow>Leadership brief</Eyebrow>
+            <h2
+              id="founder-dossier-title"
+              className="t-h2 mt-5 max-w-2xl text-ink"
+            >
+              From platform science to clinical entry.
+            </h2>
+            <p className="t-body mt-7 max-w-xl text-muted">
+              Dr. Tanya Petrossian leads EndoCyclic as it advances a
+              proprietary precision peptide platform across therapeutic and
+              diagnostic programs in endometriosis and oncology.
+            </p>
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted">
+              The lead therapeutic, ENDO-205, received FDA IND Allowance in
+              2026 and is in Phase 1.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <Button href="/pipeline#endo-205">
+                Explore ENDO-205
+              </Button>
+              {ARCHIVAL_FOUNDER_PROFILE?.link && (
                 <Button
-                  href="/contact?subject=partnership"
+                  href={ARCHIVAL_FOUNDER_PROFILE.link}
+                  variant="quiet"
+                  external
                 >
-                  Discuss a partnership
+                  Read the archival UCLA founder profile
                 </Button>
-                <Button
-                  href="/pipeline#endo-205"
-                  variant="ghost"
-                >
-                  Explore ENDO-205
-                </Button>
-              </div>
-            </Reveal>
-          </div>
+              )}
+            </div>
+          </Reveal>
 
-          <Reveal delay={0.06} className="md:col-span-4 md:col-start-9">
-            <figure className="mx-auto w-full max-w-[18rem] md:mx-0 md:max-w-none lg:max-w-[17rem]">
-              <div className="relative">
+          <Reveal delay={0.06} className="lg:col-span-6 lg:col-start-7">
+            <dl className="border-y border-line">
+              {LEADERSHIP_BRIEF.map((item) => (
                 <div
-                  aria-hidden
-                  className="absolute -bottom-3 -left-3 h-full w-full rounded-bl-[4rem] rounded-tr-[7rem] border border-rose/40"
-                />
-                <div className="relative aspect-[4/5] overflow-hidden rounded-bl-[4rem] rounded-tr-[7rem] border border-line bg-peony editorial-shadow">
-                  <Image
-                    src={FOUNDER.image}
-                    alt={`Portrait of ${FOUNDER.name}`}
-                    fill
-                    sizes="(min-width: 1024px) 272px, (min-width: 768px) 26vw, 288px"
-                    className={`object-cover saturate-[0.9] ${PORTRAIT_FOCAL_POINTS[FOUNDER.id]}`}
-                  />
+                  key={item.label}
+                  className="grid gap-2 border-b border-line py-5 last:border-b-0 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-6"
+                >
+                  <dt className="text-xs font-semibold uppercase tracking-[0.13em] text-rose-ink">
+                    {item.label}
+                  </dt>
+                  <dd className="text-sm font-medium leading-relaxed text-ink">
+                    {item.value}
+                  </dd>
                 </div>
-                <span
-                  aria-hidden
-                  className="absolute -right-4 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border-4 border-tint-warm bg-teal"
-                />
-              </div>
-              <figcaption className="mt-6 border-t border-line pt-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
-                  Founder & CEO
-                </p>
-                <h3 className="t-h3 mt-2 text-ink">
-                  Dr. Tanya Petrossian, PhD
-                </h3>
-              </figcaption>
-            </figure>
+              ))}
+            </dl>
           </Reveal>
         </div>
-
-        <Reveal delay={0.1} className="mt-16 md:mt-20">
-          <div className="mb-7 grid gap-4 sm:grid-cols-2 sm:items-end">
-            <div className="flex items-center gap-4">
-              <span aria-hidden className="chapter-thread-mark"><span /></span>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
-                Founder continuity
-              </p>
-            </div>
-            <p className="max-w-md text-sm leading-relaxed text-muted sm:justify-self-end sm:text-right">
-              One leadership through-line from platform science to clinical
-              development.
-            </p>
-          </div>
-          <dl className="grid overflow-hidden border-y border-line sm:grid-cols-2 md:grid-cols-12">
-            <div className="relative flex min-h-[21rem] flex-col justify-between overflow-hidden border-b border-line bg-tint-plum px-7 py-8 sm:col-span-2 sm:px-9 sm:py-10 md:col-span-5 md:row-span-2 md:min-h-[25rem] md:border-b-0 md:border-r lg:px-10">
-              <div
-                aria-hidden
-                className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-rose/20"
-              />
-              <dt className="relative flex items-start justify-between gap-4">
-                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
-                  {role.label}
-                </span>
-                <span className="text-xs font-semibold tracking-[0.14em] text-muted">
-                  01
-                </span>
-              </dt>
-              <dd className="relative mt-16">
-                <span className="block max-w-xs text-[clamp(1.9rem,4vw,2.8rem)] font-medium leading-[1.02] tracking-[-0.045em] text-ink">
-                  {role.value}
-                </span>
-                <span className="mt-4 block max-w-xs text-sm leading-relaxed text-muted">
-                  {role.detail}
-                </span>
-                <span className="mt-10 flex items-center gap-3 border-t border-line pt-5 text-xs font-semibold uppercase tracking-[0.12em] text-teal-ink">
-                  <span>Platform science</span>
-                  <span aria-hidden className="h-px min-w-6 flex-1 bg-teal/55" />
-                  <span>Phase 1</span>
-                </span>
-              </dd>
-            </div>
-
-            <FounderContinuityEntry
-              item={platform}
-              index="02"
-              className="border-b border-line bg-paper/55 sm:border-r md:col-span-4"
-            />
-            <FounderContinuityEntry
-              item={clinical}
-              index="03"
-              className="border-b border-line bg-tint-warm md:col-span-3"
-            />
-            <FounderContinuityEntry
-              item={portfolio}
-              index="04"
-              className="border-b border-line bg-tint-warm sm:border-b-0 sm:border-r md:col-span-3"
-            />
-            <FounderContinuityEntry
-              item={network}
-              index="05"
-              className="bg-tint-teal md:col-span-4"
-            />
-          </dl>
-        </Reveal>
       </Container>
     </Section>
   );
 }
 
-function Portrait({ member }: { member: Member }) {
-  return (
-    <div className="relative aspect-[4/5] w-20 shrink-0 overflow-hidden rounded-b-2xl rounded-t-[4.75rem] bg-peony sm:w-24 lg:w-20 xl:w-24">
-      <Image
-        src={member.image}
-        alt={`Portrait of ${member.name}`}
-        fill
-        sizes="(min-width: 1280px) 96px, (min-width: 1024px) 80px, (min-width: 640px) 96px, 80px"
-        className={`object-cover saturate-[0.88] ${PORTRAIT_FOCAL_POINTS[member.id]}`}
-      />
-    </div>
-  );
-}
-
-function DevelopmentProfile({ member, index }: { member: Member; index: number }) {
-  return (
-    <Reveal as="li" delay={Math.min(index * 0.035, 0.1)} className="border-t border-line pt-6">
-      <article>
-        <div className="flex items-start gap-5">
-          <Portrait member={member} />
-          <div className="min-w-0 pt-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-teal-ink">
-              {member.role}
-            </p>
-            <h4 className="t-h3 mt-2 text-ink">{member.name}</h4>
-          </div>
-        </div>
-        <p className="mt-6 text-[0.95rem] leading-relaxed text-muted">{member.bio}</p>
-      </article>
-    </Reveal>
-  );
-}
-
-function DevelopmentLedger() {
+function DiligenceRecord() {
   return (
     <Section
       tone="paper"
       size="chapter"
-      id="development-team"
-      className="scroll-mt-24 overflow-hidden"
+      className="overflow-clip"
     >
       <Container>
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-8">
-            <Eyebrow>Development team</Eyebrow>
-            <h2 className="t-h2 mt-5 max-w-2xl text-ink">
-              The work around the molecule.
-            </h2>
-          </div>
-          <div className="lg:col-span-4 lg:col-start-9">
-            <p className="max-w-lg text-muted">
-              Nonclinical toxicology, CMC, clinical affairs, regulatory affairs,
-              biostatistics, and finance.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-16 border-b border-line md:mt-20">
-          {DEVELOPMENT_CHAPTERS.map((chapter) => {
-            const members = getChapterMembers(chapter.memberIds);
-            const columns =
-              members.length === 3
-                ? "md:grid-cols-2 2xl:grid-cols-3"
-                : members.length === 2
-                  ? "md:grid-cols-2"
-                  : "md:grid-cols-1";
-
-            return (
-              <section
-                key={chapter.index}
-                aria-labelledby={`development-chapter-${chapter.index}`}
-                className="grid gap-9 border-t border-line py-12 lg:grid-cols-12 lg:gap-12 lg:py-16"
+        <div
+          id="leadership-record"
+          tabIndex={-1}
+          role="region"
+          aria-labelledby="diligence-record-title"
+          className="grid gap-12 outline-none lg:grid-cols-12 lg:gap-16"
+        >
+          <Reveal className="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
+            <div>
+              <Eyebrow>Leadership and company record</Eyebrow>
+              <h2
+                id="diligence-record-title"
+                className="t-h2 mt-5 max-w-md text-ink"
               >
-                <header className="lg:col-span-3">
-                  <div className="flex items-center gap-3">
-                    <span aria-hidden className="chapter-thread-mark"><span /></span>
-                    <span className="text-xs font-semibold tracking-[0.16em] text-rose-ink">
-                      {chapter.index}
-                    </span>
-                  </div>
-                  <p className="mt-6 text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
-                    {chapter.verb}
-                  </p>
-                  <h3
-                    id={`development-chapter-${chapter.index}`}
-                    className="mt-3 max-w-xs text-xl font-medium leading-snug tracking-[-0.02em] text-ink"
-                  >
-                    {chapter.title}
-                  </h3>
-                </header>
+                A documented path into the clinic.
+              </h2>
+              <p className="mt-6 max-w-md text-base leading-relaxed text-muted">
+                Founder context, institutional participation, grant
+                recognition, and clinical entry—each linked to its available
+                source record.
+              </p>
+              <div
+                aria-hidden
+                className="mt-10 hidden items-center gap-3 lg:flex"
+              >
+                <span className="h-2 w-2 rounded-full bg-rose" />
+                <span className="h-px flex-1 bg-gradient-to-r from-rose via-gold to-teal" />
+                <span className="h-2 w-2 rounded-full border border-teal" />
+              </div>
+            </div>
+          </Reveal>
 
-                <ol className={`grid list-none gap-x-8 gap-y-10 lg:col-span-9 ${columns}`}>
-                  {members.map((member, memberIndex) => (
-                    <DevelopmentProfile
-                      key={member.id}
-                      member={member}
-                      index={memberIndex}
+          <Reveal delay={0.06} className="lg:col-span-7 lg:col-start-6">
+            <div className="overflow-hidden border-y border-line">
+              <ul className="list-none">
+                {DILIGENCE_RECORD.map((item) => (
+                  <li
+                    key={item.title}
+                    className="grid gap-5 border-b border-line py-7 last:border-b-0 sm:grid-cols-[1.25rem_minmax(0,1fr)] sm:gap-6 sm:py-8"
+                  >
+                    <span
+                      aria-hidden
+                      className={`mt-1.5 h-2.5 w-2.5 rounded-full ${item.marker}`}
                     />
-                  ))}
-                </ol>
-              </section>
-            );
-          })}
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
+                        {item.category}
+                      </p>
+                      <h3 className="t-h3 mt-2 text-ink">{item.title}</h3>
+                      <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
+                        {item.detail}
+                      </p>
+                      {item.href && (
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          aria-label={`${item.source}, opens in a new tab`}
+                          className="link-underline mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-teal-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-ink"
+                        >
+                          {item.source}
+                          <span aria-hidden className="ml-1.5">
+                            ↗
+                          </span>
+                        </a>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
         </div>
       </Container>
     </Section>
@@ -467,22 +297,26 @@ function DevelopmentLedger() {
 
 export default function TeamPage() {
   return (
-    <main id="main-content">
+    <main id="main-content" tabIndex={-1}>
       <Hero />
-      <FounderStory />
-      <DevelopmentLedger />
+      <FounderDossier />
+      <DiligenceRecord />
       <NextChapter
-        eyebrow="Partnership"
-        title="Bring the development team into the diligence conversation."
+        eyebrow="Strategic conversations"
+        title="Discuss the platform, pipeline, or partnership fit."
         tone="teal"
         actions={
           <>
-            <Button href="/contact?subject=partnership">Discuss a partnership</Button>
-            <Button href="/pipeline" variant="ghost">Explore the pipeline</Button>
+            <Button href={PARTNERSHIP_CONTACT_HREF}>
+              Discuss a partnership
+            </Button>
+            <Button href="/pipeline" variant="ghost">
+              Explore the pipeline
+            </Button>
           </>
         }
       >
-        Review the four-program portfolio or contact EndoCyclic directly to discuss strategic fit.
+        Review the four-program portfolio or contact EndoCyclic directly.
       </NextChapter>
     </main>
   );

@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
+import {
+  ORGANIZATION_ID,
+  SITE_ORIGIN,
+  WEBSITE_ID,
+  createPageMetadata,
+} from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Investor Relations",
   description:
-    "The diligence front door for EndoCyclic Therapeutics. Request data-room access and review FDA IND Allowance (2026) for ENDO-205, a first-in-class non-hormonal lead therapeutic, and a $180B–$250B market opportunity.",
-  alternates: { canonical: "/investors" },
-};
+    "Investor diligence for EndoCyclic Therapeutics: ENDO-205 has FDA IND Allowance (2026), is in Phase 1, and leads a four-program precision peptide pipeline with a McKinsey-estimated $180B–$250B global market potential for endometriosis treatments.",
+  path: "/investors",
+  socialDescription:
+    "Investor diligence for EndoCyclic Therapeutics: ENDO-205 has FDA IND Allowance (2026), is in Phase 1, and leads a four-program precision peptide pipeline.",
+});
 
 export default function InvestorsLayout({
   children,
@@ -16,19 +24,11 @@ export default function InvestorsLayout({
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: "Investor Relations — EndoCyclic Therapeutics",
-    url: "https://endocyclic.com/investors",
+    url: `${SITE_ORIGIN}/investors`,
     description:
       "Investor relations and data-room access for EndoCyclic Therapeutics, a clinical-stage precision medicine company.",
-    isPartOf: {
-      "@type": "WebSite",
-      name: "EndoCyclic Therapeutics",
-      url: "https://endocyclic.com",
-    },
-    about: {
-      "@type": "MedicalOrganization",
-      name: "EndoCyclic Therapeutics",
-      url: "https://endocyclic.com",
-    },
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": ORGANIZATION_ID },
   };
 
   return (

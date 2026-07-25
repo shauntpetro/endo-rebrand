@@ -5,6 +5,7 @@ export default function ChapterIntro({
   eyebrow,
   index,
   title,
+  titleId,
   children,
   align = "end",
   className,
@@ -12,6 +13,7 @@ export default function ChapterIntro({
   eyebrow: React.ReactNode;
   index?: string;
   title: React.ReactNode;
+  titleId?: string;
   children?: React.ReactNode;
   align?: "start" | "end";
   className?: string;
@@ -25,7 +27,9 @@ export default function ChapterIntro({
           </span>
           <Eyebrow>{eyebrow}</Eyebrow>
         </div>
-        <h2 className="t-h2 mt-5 max-w-[18ch] text-ink">{title}</h2>
+        <h2 id={titleId} className="t-h2 mt-5 max-w-[18ch] text-ink">
+          {title}
+        </h2>
       </div>
       {children && (
         <div className={clsx("t-lead max-w-xl", align === "end" ? "self-end md:col-span-6 md:col-start-7" : "md:col-span-6")}>{children}</div>

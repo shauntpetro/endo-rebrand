@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Button from "@/components/site/Button";
 import ChapterIntro from "@/components/site/ChapterIntro";
 import Container from "@/components/site/Container";
+import EvidenceNote from "@/components/site/EvidenceNote";
 import Eyebrow from "@/components/site/Eyebrow";
 import NextChapter from "@/components/site/NextChapter";
 import PipelineChapterNav from "@/components/site/PipelineChapterNav";
@@ -12,143 +12,35 @@ import {
 import Reveal from "@/components/site/Reveal";
 import SciencePlate from "@/components/site/SciencePlate";
 import Section from "@/components/site/Section";
+import OncologyPairMobileComparison from "@/components/figures/OncologyPairMobileComparison";
 import PipelineStageAtlas from "@/components/figures/PipelineStageAtlas";
-import { PIPELINE } from "@/lib/site";
+import PipelineHero from "./PipelineHero";
+import {
+  ENDO205_MECHANISM_ALT,
+  ENDO205_MECHANISM_IMAGE,
+  EVIDENCE_LINKS,
+  PARTNERSHIP_CONTACT_HREF,
+  PIPELINE,
+  type EvidenceReference,
+} from "@/lib/site";
 
 const FEMLUNA = PIPELINE[1];
 const ENDO_995 = PIPELINE[2];
 const ENDO_311 = PIPELINE[3];
-
-function Hero() {
-  return (
-    <section className="relative isolate overflow-hidden bg-paper pb-16 pt-28 md:pb-20 md:pt-32">
-      <svg
-        aria-hidden
-        viewBox="0 0 1200 420"
-        preserveAspectRatio="none"
-        className="pipeline-hero-thread pointer-events-none absolute inset-x-0 top-20 h-72 w-full opacity-25"
-      >
-        <path
-          d="M-80 328C165 360 262 190 476 244c192 48 280-126 441-42 133 70 203 15 363-111"
-          fill="none"
-          stroke="url(#pipeline-hero-thread)"
-          strokeLinecap="round"
-          strokeWidth="1.5"
-        />
-        <defs>
-          <linearGradient id="pipeline-hero-thread" x1="0" x2="1">
-            <stop stopColor="#c9798a" />
-            <stop offset="0.5" stopColor="#d8b850" />
-            <stop offset="1" stopColor="#43877d" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <Container className="relative z-10">
-        <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12 xl:gap-16">
-          <div className="hero-copy-enter lg:col-span-6 xl:col-span-5">
-            <div data-hero-step="eyebrow">
-              <Eyebrow>Development portfolio</Eyebrow>
-            </div>
-            <h1
-              data-hero-step="title"
-              className="mt-6 max-w-2xl text-[clamp(2.45rem,5vw,4.5rem)] font-medium leading-[1.01] tracking-[-0.045em] text-ink"
-            >
-              One precision platform. Four programs.
-            </h1>
-            <p data-hero-step="intro" className="t-lead mt-7 max-w-xl">
-              EndoCyclic is advancing therapeutic and diagnostic programs
-              across endometriosis and oncology, led by ENDO-205 now in Phase
-              1.
-            </p>
-            <div data-hero-step="actions" className="mt-8 flex flex-wrap gap-3">
-              <Button href="/contact?subject=partnership">
-                Discuss a partnership
-              </Button>
-              <Button href="#development" variant="ghost">
-                View development stages
-              </Button>
-            </div>
-          </div>
-
-          <Reveal delay={0.06} className="lg:col-span-6 xl:col-span-7">
-            <figure>
-              <div className="hero-visual-frame relative aspect-[2/1] overflow-hidden rounded-bl-[2rem] rounded-tr-[4rem] border border-line bg-tint-warm md:rounded-bl-[3rem] md:rounded-tr-[6rem]">
-                <Image
-                  src="/illustrations/pipeline-portfolio-wide-v1.avif"
-                  alt="Conceptual editorial illustration of one precision peptide platform branching toward four therapeutic and diagnostic program paths."
-                  fill
-                  priority
-                  sizes="(min-width: 1280px) 640px, (min-width: 1024px) 50vw, 94vw"
-                  className="object-cover object-center"
-                />
-                <div
-                  aria-hidden
-                  className="absolute inset-0 bg-gradient-to-t from-plum/30 via-transparent to-paper/5"
-                />
-                <p className="absolute inset-x-0 bottom-0 max-w-md p-5 text-sm font-medium leading-relaxed text-on-dark sm:p-7">
-                  A common logic of pH-mediated activation and selective uptake.
-                </p>
-              </div>
-              <figcaption className="mt-3 max-w-2xl text-xs leading-relaxed text-muted">
-                Conceptual portfolio architecture; not clinical imagery or
-                development-performance data.
-              </figcaption>
-            </figure>
-          </Reveal>
-        </div>
-
-        <Reveal className="mt-10 md:mt-12">
-          <div className="grid grid-cols-2 gap-px overflow-hidden border-y border-line bg-line lg:grid-cols-4">
-            {PIPELINE.map((candidate, index) => (
-              <a
-                key={candidate.id}
-                href={
-                  candidate.area === "Oncology"
-                    ? "#oncology"
-                    : `#${candidate.id.toLowerCase()}`
-                }
-                className="group flex min-h-40 flex-col bg-paper px-4 py-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-teal-ink sm:px-5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <span className="text-xs font-semibold tracking-[0.16em] text-muted">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span
-                    className={`text-[0.68rem] font-semibold uppercase tracking-[0.12em] ${
-                      candidate.area === "Endometriosis"
-                        ? "text-rose-ink"
-                        : "text-teal-ink"
-                    }`}
-                  >
-                    {candidate.area}
-                  </span>
-                </div>
-                <p className="mt-5 text-lg font-medium leading-tight text-ink">
-                  {candidate.name}
-                </p>
-                <p className="mt-1 text-xs font-medium text-muted">
-                  {candidate.modality}
-                </p>
-                <div className="mt-auto flex items-end justify-between gap-3 border-t border-line pt-3">
-                  <p className="text-xs font-medium leading-snug text-ink-body">
-                    {candidate.stage}
-                  </p>
-                  <span
-                    aria-hidden
-                    className="shrink-0 text-base text-teal-ink transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-visible:translate-x-1"
-                  >
-                    →
-                  </span>
-                </div>
-              </a>
-            ))}
-          </div>
-        </Reveal>
-      </Container>
-    </section>
-  );
-}
+const FDA_PHASE_ONE_REFERENCE = {
+  basis: "company",
+  label: "FDA / Phase 1 announcement",
+  href: EVIDENCE_LINKS.fdaAnnouncement,
+} as const satisfies EvidenceReference;
+const NIH_PERFECT_SCORE_REFERENCE = {
+  basis: "company",
+  label: "NIH grant announcement",
+  href: EVIDENCE_LINKS.nihGrantAnnouncement,
+} as const satisfies EvidenceReference;
+const COMPANY_REPORTED_REFERENCE = {
+  basis: "company",
+  label: "Company reported",
+} as const satisfies EvidenceReference;
 
 function DevelopmentOverview() {
   return (
@@ -157,15 +49,14 @@ function DevelopmentOverview() {
       size="chapter"
       className="overflow-hidden"
     >
-      <Container id="development" className="scroll-mt-32">
-        <ChapterIntro
-          eyebrow="Current development"
-          title="The lead program has crossed into the clinic."
-        >
-          ENDO-205 is in Phase 1 following FDA IND Allowance in 2026. FemLUNA™ is IND-enabling, with two paired oncology programs in preclinical development.
-        </ChapterIntro>
-
-        <Reveal className="mt-14 md:mt-16">
+      <Container
+        id="development"
+        tabIndex={-1}
+        role="region"
+        aria-labelledby="pipeline-atlas-title"
+        className="scroll-mt-12 outline-none"
+      >
+        <Reveal>
           <PipelineAtlasMotion>
             <PipelineStageAtlas />
           </PipelineAtlasMotion>
@@ -188,7 +79,8 @@ function PlatformThesis() {
           <Eyebrow tone="dark">The selective thread</Eyebrow>
         </div>
         <PipelineThesis className="mt-8 max-w-5xl text-[clamp(2rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-[-0.035em] text-on-dark">
-          A single precision peptide platform extends into therapeutics and diagnostics across endometriosis and oncology.
+          The portfolio shares a common design logic: selective uptake by
+          diseased tissue, pH-mediated activation, and non-hormonal action.
         </PipelineThesis>
       </Container>
     </section>
@@ -198,11 +90,11 @@ function PlatformThesis() {
 function LeadProgram() {
   const dossier = [
     {
-      label: "Current status",
-      value: "FDA IND Allowance (2026) · Phase 1",
+      label: "Clinical study",
+      value: "First-in-human Phase 1 study",
     },
     {
-      label: "First-in-human study",
+      label: "Study population",
       value: "Healthy pre-menopausal women of reproductive age",
     },
     {
@@ -222,25 +114,34 @@ function LeadProgram() {
       size="chapter"
       className="overflow-hidden"
     >
-      <Container id="endo-205" className="scroll-mt-32">
+      <Container
+        id="endo-205"
+        tabIndex={-1}
+        role="region"
+        aria-labelledby="endo-205-title"
+        className="scroll-mt-12 outline-none"
+      >
         <ChapterIntro
           eyebrow="Clinical lead · ENDO-205"
-          title="A non-hormonal approach now in Phase 1."
+          title="A short-course, disease-modifying therapeutic for endometriosis."
+          titleId="endo-205-title"
         >
-          ENDO-205 is a first-in-class precision peptide therapeutic designed to eliminate endometriosis lesions and resolve associated symptoms, including pain.
+          ENDO-205 is a first-in-class, non-hormonal precision peptide
+          therapeutic designed to eliminate endometriosis lesions and resolve
+          associated symptoms, including pain.
         </ChapterIntro>
 
         <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
           <div className="min-w-0 lg:col-span-7">
             <SciencePlate
-              src="/illustrations/endo-205-translation-v1.avif"
-              alt="Conceptual editorial illustration of a precision peptide activating at an endometriosis lesion boundary and undergoing selective uptake."
+              src={ENDO205_MECHANISM_IMAGE}
+              alt={ENDO205_MECHANISM_ALT}
               aspect="landscape"
               frame="bleed"
               sizes="(min-width: 1184px) 650px, (min-width: 1024px) 57vw, 94vw"
               imageClassName="object-center"
-              caption="ENDO-205 applies the platform's pH-mediated activation and selective-uptake logic to a non-hormonal endometriosis therapeutic."
-              disclosure="Conceptual representation; not clinical imagery or efficacy data."
+              caption="Conceptual ENDO-205 sequence through selective uptake and pH-mediated activation."
+              disclosure="A separate final state represents the ENDO-205 preclinical lesion-elimination finding; not clinical imagery, outcome data, or restored-tissue histology."
             />
           </div>
 
@@ -258,6 +159,16 @@ function LeadProgram() {
                 </div>
               ))}
             </dl>
+            <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-1">
+              <EvidenceNote reference={FDA_PHASE_ONE_REFERENCE} flush />
+              <EvidenceNote
+                reference={{
+                  basis: "company",
+                  label: "Preclinical study summary",
+                }}
+                flush
+              />
+            </div>
             <div className="mt-7">
               <Button href="/innovation" variant="quiet">
                 Review the platform mechanism
@@ -283,19 +194,27 @@ function EndometriosisImaging() {
       size="chapter"
       className="overflow-hidden"
     >
-      <Container id="femluna" className="scroll-mt-32">
+      <Container
+        id="femluna"
+        tabIndex={-1}
+        role="region"
+        aria-labelledby="femluna-title"
+        className="scroll-mt-12 outline-none"
+      >
         <ChapterIntro
           eyebrow="Endometriosis imaging · FemLUNA™"
-          title="Designed to find lesions current imaging can miss."
+          title="Treatment and detection, on one platform."
+          titleId="femluna-title"
         >
-          FemLUNA™ is a targeted imaging agent in IND-enabling development for accurate, non-invasive detection of endometriosis.
+          FemLUNA™ extends the endometriosis portfolio from therapeutics into
+          targeted, non-invasive imaging.
         </ChapterIntro>
 
         <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
           <div className="min-w-0 lg:col-span-7">
             <SciencePlate
-              src="/illustrations/femluna-targeting-v2.avif"
-              alt="Conceptual editorial illustration of a targeted peptide localizing at a small endometriosis lesion within simplified pelvic anatomy."
+              src="/illustrations/femluna-targeting-v3.avif"
+              alt="Conceptual editorial illustration of a targeted imaging agent localizing near a small endometriosis lesion within simplified pelvic anatomy."
               aspect="landscape"
               frame="soft"
               sizes="(min-width: 1184px) 650px, (min-width: 1024px) 57vw, 94vw"
@@ -307,7 +226,8 @@ function EndometriosisImaging() {
 
           <Reveal delay={0.06} className="lg:col-span-4 lg:col-start-9">
             <p className="t-lead">
-              The first non-invasive, definitive diagnostic for endometriosis in development as an alternative to the current diagnostic gold standard of laparoscopy.
+              Developed as the first non-invasive, definitive diagnostic for
+              endometriosis.
             </p>
             <dl className="mt-8 border-y border-line">
               {diagnosticProfile.map(([label, value]) => (
@@ -336,51 +256,17 @@ function EndometriosisImaging() {
 function OncologyPairFigure() {
   return (
     <>
-      <figure className="sm:hidden">
-        <div className="space-y-5">
-          <div>
-            <div className="mb-3 flex items-center justify-between gap-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">ENDO-311</p>
-              <p className="text-xs font-medium text-muted">Targeted localization</p>
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-bl-[1.75rem] rounded-tr-[1.75rem] border border-line bg-surface">
-              <Image
-                src="/illustrations/oncology-pair-v2.avif"
-                alt="Conceptual illustration of a targeted imaging agent localizing a solid-tumor cluster."
-                fill
-                sizes="94vw"
-                className="object-cover object-left"
-              />
-            </div>
-          </div>
-          <div>
-            <div className="mb-3 flex items-center justify-between gap-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">ENDO-995</p>
-              <p className="text-xs font-medium text-muted">Intracellular target</p>
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-bl-[1.75rem] rounded-tr-[1.75rem] border border-line bg-surface">
-              <Image
-                src="/illustrations/oncology-pair-v2.avif"
-                alt="Conceptual illustration of a cyclic peptide undergoing uptake into a tumor cell toward an intracellular target."
-                fill
-                sizes="94vw"
-                className="object-cover object-right"
-              />
-            </div>
-          </div>
-        </div>
-        <figcaption className="mt-4 text-xs leading-relaxed text-muted">
-          Conceptual representation of investigational preclinical programs; not efficacy or imaging-performance data.
-        </figcaption>
-      </figure>
+      <OncologyPairMobileComparison />
 
       <div className="hidden sm:block">
         <SciencePlate
-          src="/illustrations/oncology-pair-v2.avif"
-          alt="Conceptual paired illustration of a targeted imaging agent localizing a solid tumor and a cyclic peptide undergoing uptake into a tumor cell toward an intracellular target."
+          src="/illustrations/oncology-pair-v4.avif"
+          alt="Conceptual paired illustration of a targeted imaging agent localizing a solid-tumor focus and a tumor-selective cyclic peptide crossing a tumor-cell membrane toward an intracellular target."
+          aspect="panoramic"
           frame="line"
-          caption="ENDO-311 is designed for tumor localization and monitoring; ENDO-995 is designed to reach previously undruggable intracellular targets."
-          disclosure="Conceptual representation of investigational preclinical programs; not efficacy or imaging-performance data."
+          imageClassName="object-contain"
+          caption="One platform, two distinct oncology applications: ENDO-311 is designed to localize at the tumor boundary; ENDO-995 is designed for selective uptake and intracellular access."
+          disclosure="Conceptual representation of investigational preclinical programs; not clinical imaging, efficacy, or performance data."
         >
           <div className="pointer-events-none absolute inset-x-0 top-0 grid grid-cols-2 gap-4 p-7 md:p-9">
             <div className="border-l border-rose/50 pl-3">
@@ -405,12 +291,20 @@ function OncologyPair() {
       label: "Diagnostic",
       body: "An investigational imaging agent for non-invasive detection and monitoring of malignant solid tumors, initially focused on colon cancer. It is radiation-free, non-hormonal, free of heavy metals, and compatible with standard imaging systems.",
       note: "Designed for early-stage tumor localization and disease monitoring.",
+      reference: {
+        basis: "company",
+        label: "Oncology diagnostic program description",
+      } as const satisfies EvidenceReference,
     },
     {
       program: ENDO_995,
       label: "Therapeutic",
       body: "A tumor-selective, non-hormonal cyclic peptide for malignant solid tumors, initially focused on colon and endometrial cancers. It is designed to overcome therapeutic resistance and restore responsiveness in cold tumors.",
       note: "Potential applicability across 25%+ of solid tumor types.",
+      reference: {
+        basis: "company",
+        label: "Oncology therapeutic and applicability estimate",
+      } as const satisfies EvidenceReference,
     },
   ] as const;
 
@@ -420,10 +314,17 @@ function OncologyPair() {
       size="chapter"
       className="overflow-hidden"
     >
-      <Container id="oncology" className="scroll-mt-32">
+      <Container
+        id="oncology"
+        tabIndex={-1}
+        role="region"
+        aria-labelledby="oncology-title"
+        className="scroll-mt-12 outline-none"
+      >
         <ChapterIntro
-          eyebrow="Oncology · Preclinical"
+          eyebrow="Oncology · Pre-clinical"
           title="Detection and treatment designed as a matched pair."
+          titleId="oncology-title"
         >
           ENDO-995 and ENDO-311 extend the platform into malignant solid tumors through a therapeutic and companion-diagnostic strategy.
         </ChapterIntro>
@@ -433,7 +334,7 @@ function OncologyPair() {
         </div>
 
         <div className="mt-12 grid-flow-dense border-y border-line md:grid md:grid-cols-12">
-          {programs.map(({ program, label, body, note }, index) => (
+          {programs.map(({ program, label, body, note, reference }, index) => (
             <Reveal
               key={program.id}
               delay={index * 0.06}
@@ -443,11 +344,16 @@ function OncologyPair() {
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">{label}</p>
                 <span className="text-xs font-medium text-muted">{program.stage}</span>
               </div>
-              <h3 className="mt-6 text-[clamp(2.2rem,5vw,4.5rem)] font-medium leading-none tracking-[-0.045em] text-ink">
+              <h3
+                id={program.id.toLowerCase()}
+                tabIndex={-1}
+                className="mt-6 scroll-mt-12 text-[clamp(2.2rem,5vw,4.5rem)] font-medium leading-none tracking-[-0.045em] text-ink outline-none"
+              >
                 {program.name}
               </h3>
               <p className="mt-5 text-sm leading-relaxed text-muted">{body}</p>
               <p className="mt-5 border-t border-line pt-4 text-sm font-medium text-ink">{note}</p>
+              <EvidenceNote reference={reference} />
             </Reveal>
           ))}
         </div>
@@ -457,60 +363,140 @@ function OncologyPair() {
 }
 
 function DiligenceSignals() {
-  const signals = [
+  const supportingSignals = [
     {
-      type: "Regulatory",
-      value: "2026",
-      title: "FDA IND Allowance",
-      body: "Achieved for lead therapeutic ENDO-205.",
+      type: "NIH portfolio record",
+      value: "SBIR",
+      title: "NIH SBIR Success Story",
+      body: "Recognized among NIH’s highlighted portfolio companies.",
+      reference: {
+        basis: "institutional",
+        label: "Archival NIH SEED profile",
+        href: EVIDENCE_LINKS.nihPortfolio,
+      } as const satisfies EvidenceReference,
     },
     {
-      type: "Clinical",
-      value: "Phase 1",
-      title: "First-in-human study",
-      body: "ENDO-205 is now in Phase 1.",
-    },
-    {
-      type: "External validation",
-      value: "10",
-      title: "NIH perfect “unicorn” score",
-      body: "NIH Commercialization Readiness Pilot grant.",
+      type: "NIH support",
+      value: "NICHD",
+      title: "Multiple NIH awards",
+      body: "Awards from the Eunice Kennedy Shriver National Institute of Child Health and Human Development.",
+      reference: {
+        basis: "company",
+        label: "NICHD awards announcement",
+        href: EVIDENCE_LINKS.fdaAnnouncement,
+      } as const satisfies EvidenceReference,
     },
     {
       type: "Regulatory path",
       value: "Underway",
       title: "Fast Track filing",
       body: "Filing underway for the lead program.",
+      reference: COMPANY_REPORTED_REFERENCE,
     },
   ] as const;
 
   return (
     <Section tone="tint-plum" size="chapter">
-      <Container id="evidence" className="scroll-mt-32">
+      <Container
+        id="evidence"
+        tabIndex={-1}
+        role="region"
+        aria-labelledby="pipeline-evidence-title"
+        className="scroll-mt-12 outline-none"
+      >
         <ChapterIntro
           eyebrow="Diligence signals"
-          title="Evidence at the transitions that matter."
+          title="Evidence beyond reported program stage."
+          titleId="pipeline-evidence-title"
         >
-          Regulatory progress, clinical entry, and NIH backing mark the portfolio&apos;s path from platform science toward clinical-stage development.
+          NIH recognition, multiple NICHD awards, and the Fast Track filing
+          underway add context beyond reported program stage.
         </ChapterIntro>
 
-        <div className="mt-14 grid-flow-dense border-y border-line sm:grid sm:grid-cols-2 lg:grid-cols-4">
-          {signals.map((signal, index) => (
-            <Reveal
-              key={signal.title}
-              delay={index * 0.04}
-              className="border-b border-line py-7 last:border-b-0 sm:border-r sm:px-6 sm:last:border-r-0 lg:border-b-0 first:sm:pl-0 last:sm:pr-0"
-            >
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-rose-ink">{signal.type}</p>
-              <p className="mt-7 text-[clamp(1.8rem,3.2vw,3.1rem)] font-medium leading-none tracking-[-0.04em] text-ink">{signal.value}</p>
-              <h3 className="t-h3 mt-5 text-ink">{signal.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{signal.body}</p>
-            </Reveal>
-          ))}
+        <div
+          data-pipeline-evidence-dossier
+          className="mt-14 overflow-hidden rounded-bl-[2rem] rounded-tr-[2rem] border border-line bg-surface editorial-shadow md:mt-16 md:rounded-bl-[3rem] md:rounded-tr-[3rem] lg:grid lg:grid-cols-12"
+        >
+          <Reveal
+            className="relative overflow-hidden bg-plum p-7 text-on-dark sm:p-9 lg:col-span-5 lg:p-10 xl:p-12"
+          >
+            <span
+              aria-hidden
+              className="absolute -right-20 -top-24 h-60 w-60 rounded-full border border-line-on-dark"
+            />
+            <div className="relative">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-on-dark">
+                NIH grant milestone
+              </p>
+              <div className="mt-8 flex items-end gap-4 border-b border-white/15 pb-6">
+                <p className="text-[clamp(3.5rem,8vw,6.5rem)] font-medium leading-[0.78] tracking-[-0.06em] text-on-dark">
+                  10
+                </p>
+                <p className="pb-1 text-xs font-semibold uppercase tracking-[0.14em] text-muted-on-dark">
+                  Overall
+                  <br />
+                  impact score
+                </p>
+              </div>
+              <h3 className="mt-7 text-[clamp(1.8rem,3vw,2.8rem)] font-medium leading-[1.08] tracking-[-0.035em] !text-on-dark [overflow-wrap:anywhere]">
+                Commercialization Readiness Pilot grant.
+              </h3>
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-on-dark sm:text-base">
+                A perfect “unicorn” score.
+              </p>
+              <EvidenceNote
+                reference={NIH_PERFECT_SCORE_REFERENCE}
+                className="!text-teal-on-dark"
+              />
+            </div>
+          </Reveal>
+
+          <div className="p-7 sm:p-9 lg:col-span-7 lg:p-10 xl:p-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-ink">
+              Supporting record
+            </p>
+            <ol className="relative mt-5 border-y border-line">
+              {supportingSignals.map((signal, index) => (
+                <li
+                  key={signal.title}
+                  data-pipeline-evidence-record
+                  className="relative grid min-w-0 grid-cols-[2.25rem_minmax(0,1fr)] gap-x-4 border-b border-line py-6 last:border-b-0 sm:grid-cols-[2.25rem_minmax(6rem,0.75fr)_minmax(0,1.7fr)] sm:items-start sm:gap-x-5"
+                >
+                  <span
+                    aria-hidden
+                    className="row-span-2 flex h-9 w-9 items-center justify-center rounded-full border border-line bg-paper text-xs font-semibold text-rose-ink sm:row-span-1"
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className="col-start-2 min-w-0 sm:col-start-auto sm:pt-1">
+                    <p className="text-xs font-semibold uppercase tracking-[0.13em] text-muted [overflow-wrap:anywhere]">
+                      {signal.type}
+                    </p>
+                    <p className="mt-2 text-[clamp(1.5rem,2.8vw,2.25rem)] font-medium leading-none tracking-[-0.035em] text-ink [overflow-wrap:anywhere]">
+                      {signal.value}
+                    </p>
+                  </div>
+                  <div className="col-start-2 mt-4 min-w-0 sm:col-start-auto sm:mt-0 sm:pt-1">
+                    <h3 className="text-base font-semibold leading-snug text-ink [overflow-wrap:anywhere]">
+                      {signal.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted [overflow-wrap:anywhere]">
+                      {signal.body}
+                    </p>
+                    <EvidenceNote reference={signal.reference} />
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
 
         <div className="mt-8">
-          <Button href="/downloads/endocyclic-investor-summary.pdf" variant="ghost">
+          <Button
+            href="/downloads/endocyclic-investor-summary-v2.pdf"
+            variant="ghost"
+            download
+          >
             Download investor summary
           </Button>
         </div>
@@ -521,8 +507,8 @@ function DiligenceSignals() {
 
 export default function PipelinePage() {
   return (
-    <main id="main-content">
-      <Hero />
+    <main id="main-content" tabIndex={-1}>
+      <PipelineHero />
       <PipelineChapterNav />
       <DevelopmentOverview />
       <PlatformThesis />
@@ -536,7 +522,7 @@ export default function PipelinePage() {
         tone="plum"
         actions={
           <>
-            <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+            <Button href={PARTNERSHIP_CONTACT_HREF}>Discuss a partnership</Button>
             <Button href="/investors" variant="ghost-on-dark">
               Investor overview
             </Button>

@@ -1,48 +1,54 @@
 import type { Metadata } from "next";
-import { NEWS, SITE } from "@/lib/site";
+import {
+  ORGANIZATION_ID,
+  SITE_ORIGIN,
+  WEBSITE_ID,
+  createPageMetadata,
+} from "@/lib/metadata";
+import { NEWS } from "@/lib/site";
 
-export const metadata: Metadata = {
+const ORDERED_NEWS = [...NEWS].sort(
+  (a, b) =>
+    (b.dateTime ? Date.parse(b.dateTime) : 0) -
+      (a.dateTime ? Date.parse(a.dateTime) : 0) || b.id - a.id,
+);
+
+export const metadata: Metadata = createPageMetadata({
   title: "News & Recognition",
   description:
-    "Selected awards, external coverage, and interviews from EndoCyclic Therapeutics — including the rare NIH 'Perfect 10' grant for ENDO-205.",
-  alternates: { canonical: "/news" },
-  openGraph: {
-    title: "News & Recognition | EndoCyclic Therapeutics",
-    description:
-      "Selected awards, external coverage, and interviews from EndoCyclic Therapeutics.",
-    url: "https://endocyclic.com/news",
-  },
-};
+    "Selected company announcements, awards, institutional profiles, and external coverage from EndoCyclic Therapeutics.",
+  path: "/news",
+});
 
 export default function NewsLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: "News & Recognition — EndoCyclic Therapeutics",
-    url: "https://endocyclic.com/news",
+    url: `${SITE_ORIGIN}/news`,
     description:
-      "Selected awards, external coverage, and interviews from EndoCyclic Therapeutics.",
+      "Selected company announcements, awards, institutional profiles, and external coverage from EndoCyclic Therapeutics.",
+    isPartOf: { "@id": WEBSITE_ID },
+    publisher: { "@id": ORGANIZATION_ID },
     mainEntity: {
       "@type": "ItemList",
       name: "Selected EndoCyclic Therapeutics news and recognition",
       numberOfItems: NEWS.length,
       itemListOrder: "https://schema.org/ItemListOrderDescending",
-      itemListElement: NEWS.map((article, index) => ({
+      itemListElement: ORDERED_NEWS.map((article, index) => ({
         "@type": "ListItem",
         position: index + 1,
         item: {
           "@type": "Article",
           headline: article.title,
-          datePublished: article.dateTime,
+          ...(article.dateTime ? { datePublished: article.dateTime } : {}),
           url: article.link,
           publisher: {
             "@type": "Organization",
             name: article.source,
           },
           about: {
-            "@type": "Organization",
-            name: SITE.legalName,
-            url: "https://endocyclic.com",
+            "@id": ORGANIZATION_ID,
           },
         },
       })),

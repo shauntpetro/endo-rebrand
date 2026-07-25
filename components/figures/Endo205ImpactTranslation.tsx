@@ -3,6 +3,10 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import Button from "@/components/site/Button";
+import {
+  ENDO205_MECHANISM_ALT,
+  ENDO205_MECHANISM_IMAGE,
+} from "@/lib/site";
 
 const PROGRAM_STATUS = [
   {
@@ -162,21 +166,25 @@ export default function Endo205ImpactTranslation() {
   return (
     <figure
       ref={root}
+      data-endo205-impact-translation
       className="overflow-hidden rounded-bl-[2rem] rounded-tr-[2rem] border border-line bg-surface shadow-[0_28px_80px_rgb(57_38_56/0.1)] sm:rounded-bl-[3.5rem] sm:rounded-tr-[3.5rem]"
     >
-      <div className="grid lg:grid-cols-12">
-        <div className="min-w-0 lg:col-span-7 xl:col-span-8">
+      <div data-endo205-layout className="grid lg:grid-cols-12">
+        <div
+          data-endo205-media
+          className="min-w-0 lg:col-span-7 xl:col-span-8"
+        >
           <div
             data-endo205-visual
             className="relative aspect-[3/2] overflow-hidden bg-tint-warm"
           >
             <Image
               data-endo205-image
-              src="/illustrations/endo-205-translation-v1.avif"
-              alt="Conceptual illustration of pH-mediated activation and selective peptide uptake at an endometriosis lesion."
+              src={ENDO205_MECHANISM_IMAGE}
+              alt={ENDO205_MECHANISM_ALT}
               fill
               sizes="(min-width: 1184px) 740px, (min-width: 1024px) 60vw, 100vw"
-              className="object-contain transform-gpu sm:object-cover"
+              className="object-contain transform-gpu"
             />
             <div
               aria-hidden
@@ -199,11 +207,13 @@ export default function Endo205ImpactTranslation() {
 
           <div className="grid gap-2 border-t border-line px-5 py-5 text-sm leading-relaxed text-muted sm:grid-cols-12 sm:px-7">
             <span className="sm:col-span-7">
-              Conceptual view of pH-mediated activation and selective uptake by
-              diseased tissue.
+              Conceptual selective uptake and pH-mediated activation keep the
+              intact peptide visible within diseased tissue.
             </span>
             <span className="text-xs sm:col-span-5 sm:text-right">
-              Conceptual representation; not clinical imagery or efficacy data.
+              A separate final state represents the ENDO-205 preclinical
+              lesion-elimination finding; not clinical outcome data or
+              restored-tissue histology.
             </span>
           </div>
         </div>
@@ -269,14 +279,14 @@ export default function Endo205ImpactTranslation() {
 
       <div
         data-endo205-proof
-        className="grid border-t border-line bg-tint-teal md:grid-cols-12"
+        className="grid border-t border-line bg-tint-teal lg:grid-cols-12"
       >
-        <div className="border-b border-line px-5 py-6 sm:px-7 md:col-span-4 md:border-b-0 md:border-r lg:px-9">
+        <div className="border-b border-line px-5 py-6 sm:px-7 lg:col-span-4 lg:border-b-0 lg:border-r lg:px-9">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-ink">
             Preclinical foundation
           </p>
         </div>
-        <p className="px-5 py-6 text-sm leading-relaxed text-ink sm:px-7 md:col-span-8 lg:px-9">
+        <p className="px-5 py-6 text-sm leading-relaxed text-ink sm:px-7 lg:col-span-8 lg:px-9">
           Preclinical studies demonstrated elimination of endometriosis lesions
           and associated inflammation. GLP toxicology studies showed no
           dose-limiting toxicities.

@@ -31,14 +31,14 @@ export default function NIHRecognitionPanel({
             sizes="128px"
             className="relative h-auto w-[clamp(4.75rem,12vw,8rem)]"
           />
-          <p className="relative mt-4 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-teal-ink">
-            NICHD
+          <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.15em] text-teal-ink">
+            NIH grant
           </p>
         </div>
 
         <div className="relative flex min-w-0 flex-col justify-between overflow-hidden p-[clamp(1.25rem,4vw,2.75rem)]">
           <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-peony/70" />
-          <p className="relative text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-rose-ink">
+          <p className="relative text-xs font-semibold uppercase tracking-[0.15em] text-rose-ink">
             NIH recognition
           </p>
           <div className="relative mt-5">

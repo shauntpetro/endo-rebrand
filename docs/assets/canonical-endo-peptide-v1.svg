@@ -1,0 +1,92 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 512 512"
+  role="img"
+  aria-labelledby="title description"
+>
+  <title id="title">Canonical EndoCyclic peptide color sequence</title>
+  <desc id="description">
+    A thirteen-residue cyclic peptide with four orange residues, three violet
+    residues, and six warm-gray residues in the approved visual order.
+  </desc>
+  <defs>
+    <radialGradient id="orange" cx="32%" cy="25%" r="72%">
+      <stop offset="0" stop-color="#FFF1B3" />
+      <stop offset="0.22" stop-color="#F7B733" />
+      <stop offset="0.72" stop-color="#E89A16" />
+      <stop offset="1" stop-color="#C97508" />
+    </radialGradient>
+    <radialGradient id="violet" cx="32%" cy="25%" r="72%">
+      <stop offset="0" stop-color="#D7BEFF" />
+      <stop offset="0.22" stop-color="#8956D0" />
+      <stop offset="0.72" stop-color="#6532AA" />
+      <stop offset="1" stop-color="#45207F" />
+    </radialGradient>
+    <radialGradient id="warm-gray" cx="32%" cy="25%" r="72%">
+      <stop offset="0" stop-color="#F4EEE7" />
+      <stop offset="0.24" stop-color="#CFC3B7" />
+      <stop offset="0.74" stop-color="#A99F91" />
+      <stop offset="1" stop-color="#7E746A" />
+    </radialGradient>
+    <filter id="soft-depth" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow
+        dx="0"
+        dy="4"
+        stdDeviation="4"
+        flood-color="#2E263A"
+        flood-opacity="0.16"
+      />
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" fill="#FBFAF8" />
+
+  <g filter="url(#soft-depth)">
+    <polygon
+      points="256,106 326,123 379,171 405,238 396,309 355,368 292,402 220,402 157,368 116,309 107,238 133,171 186,123"
+      fill="none"
+      stroke="#51463E"
+      stroke-width="18"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <g fill="url(#orange)" stroke="#A95E05" stroke-width="3">
+      <circle cx="256" cy="106" r="35" />
+      <circle cx="116" cy="309" r="35" />
+      <circle cx="107" cy="238" r="35" />
+      <circle cx="133" cy="171" r="35" />
+    </g>
+
+    <g fill="url(#warm-gray)" stroke="#71675E" stroke-width="3">
+      <circle cx="326" cy="123" r="35" />
+      <circle cx="379" cy="171" r="35" />
+      <circle cx="405" cy="238" r="35" />
+      <circle cx="396" cy="309" r="35" />
+      <circle cx="355" cy="368" r="35" />
+      <circle cx="186" cy="123" r="35" />
+    </g>
+
+    <g fill="url(#violet)" stroke="#432078" stroke-width="3">
+      <circle cx="292" cy="402" r="35" />
+      <circle cx="220" cy="402" r="35" />
+      <circle cx="157" cy="368" r="35" />
+    </g>
+
+    <g fill="#FFF" opacity="0.68">
+      <ellipse cx="244" cy="94" rx="11" ry="7" />
+      <ellipse cx="104" cy="297" rx="11" ry="7" />
+      <ellipse cx="95" cy="226" rx="11" ry="7" />
+      <ellipse cx="121" cy="159" rx="11" ry="7" />
+      <ellipse cx="174" cy="111" rx="11" ry="7" />
+      <ellipse cx="314" cy="111" rx="11" ry="7" />
+      <ellipse cx="367" cy="159" rx="11" ry="7" />
+      <ellipse cx="393" cy="226" rx="11" ry="7" />
+      <ellipse cx="384" cy="297" rx="11" ry="7" />
+      <ellipse cx="343" cy="356" rx="11" ry="7" />
+      <ellipse cx="280" cy="390" rx="11" ry="7" />
+      <ellipse cx="208" cy="390" rx="11" ry="7" />
+      <ellipse cx="145" cy="356" rx="11" ry="7" />
+    </g>
+  </g>
+</svg>

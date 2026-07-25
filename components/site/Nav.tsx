@@ -3,65 +3,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  type Variants,
-} from "framer-motion";
 import { clsx } from "clsx";
-import { NAV_LINKS } from "@/lib/site";
+import { NAV_LINKS, PARTNERSHIP_CONTACT_HREF } from "@/lib/site";
 import Button from "./Button";
-
-const panelVariants: Variants = {
-  closed: {
-    clipPath: "inset(0 0 100% 0)",
-    opacity: 0,
-    transition: {
-      clipPath: { duration: 0.3, ease: [0.4, 0, 1, 1] },
-      opacity: { duration: 0.16, ease: "easeOut" },
-    },
-  },
-  open: {
-    clipPath: "inset(0 0 0% 0)",
-    opacity: 1,
-    transition: {
-      clipPath: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
-      opacity: { duration: 0.14, ease: "easeOut" },
-    },
-  },
-};
-
-const listVariants: Variants = {
-  closed: {
-    transition: { staggerChildren: 0.018, staggerDirection: -1 },
-  },
-  open: {
-    transition: { delayChildren: 0.04, staggerChildren: 0.035 },
-  },
-};
-
-const itemVariants: Variants = {
-  closed: { opacity: 0, y: 8, transition: { duration: 0.14, ease: "easeIn" } },
-  open: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } },
-};
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const [menuPresent, setMenuPresent] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [compactDesktopNav, setCompactDesktopNav] = useState(false);
   const pathname = usePathname();
-  const reducedMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
-  const progressScale = useSpring(scrollYProgress, {
-    stiffness: 170,
-    damping: 32,
-    mass: 0.24,
-  });
+  const router = useRouter();
+  const navRef = useRef<HTMLElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const brandLinkRef = useRef<HTMLAnchorElement>(null);
+  const desktopNavRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const restoreMenuFocusRef = useRef(true);
@@ -79,23 +36,146 @@ export default function Nav() {
     setMenuPresent(true);
     setOpen(true);
   }, []);
+  const prefetchOnIntent = useCallback(
+    (
+      event:
+        | React.FocusEvent<HTMLAnchorElement>
+        | React.PointerEvent<HTMLAnchorElement>,
+    ) => {
+      const href = event.currentTarget.getAttribute("href");
+      if (!href?.startsWith("/")) return;
+
+      router.prefetch(href.split("#", 1)[0] || "/");
+    },
+    [router],
+  );
+  const fullDesktopNavFits = useCallback(() => {
+    const nav = navRef.current;
+    const brand = brandLinkRef.current;
+    const desktopNav = desktopNavRef.current;
+
+    if (!nav || !brand || !desktopNav) return true;
+
+    const navStyles = window.getComputedStyle(nav);
+    const navWidth = nav.clientWidth || nav.getBoundingClientRect().width;
+    const padding =
+      (Number.parseFloat(navStyles.paddingLeft) || 0) +
+      (Number.parseFloat(navStyles.paddingRight) || 0);
+    const gap =
+      Number.parseFloat(navStyles.columnGap) ||
+      Number.parseFloat(navStyles.gap) ||
+      0;
+    const brandWidth =
+      brand.getBoundingClientRect().width || brand.offsetWidth;
+    const desktopNavWidth = Math.max(
+      desktopNav.scrollWidth,
+      desktopNav.getBoundingClientRect().width,
+    );
+
+    return brandWidth + gap + desktopNavWidth <= navWidth - padding;
+  }, []);
 
   useEffect(() => {
     let frame = 0;
-    const onScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 18);
-        frame = 0;
-      });
+    let lastScrolled: boolean | null = null;
+    let lastProgressTransform = "";
+    const reducedMotionQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+
+    const updateNav = () => {
+      const nav = navRef.current;
+      const progress = progressRef.current;
+      const scrollableHeight = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        0,
+      );
+      const scale = scrollableHeight
+        ? Math.min(Math.max(window.scrollY / scrollableHeight, 0), 1)
+        : 0;
+
+      const scrolled = window.scrollY > 18;
+      if (nav && scrolled !== lastScrolled) {
+        nav.dataset.scrolled = scrolled ? "true" : "false";
+        lastScrolled = scrolled;
+      }
+      if (progress) {
+        const progressTransform = reducedMotionQuery.matches
+          ? "scaleX(0)"
+          : `scaleX(${scale})`;
+        if (progressTransform !== lastProgressTransform) {
+          progress.style.transform = progressTransform;
+          lastProgressTransform = progressTransform;
+        }
+      }
+      frame = 0;
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updateNav);
+    };
+
+    scheduleUpdate();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
+    reducedMotionQuery.addEventListener("change", scheduleUpdate);
+
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      reducedMotionQuery.removeEventListener("change", scheduleUpdate);
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 1024px)");
+    let frame = 0;
+    let cancelled = false;
+
+    const updateFit = () => {
+      frame = 0;
+      const useCompactNav =
+        desktopQuery.matches && !fullDesktopNavFits();
+      setCompactDesktopNav((current) =>
+        current === useCompactNav ? current : useCompactNav,
+      );
+    };
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updateFit);
+    };
+    const handleDesktopChange = () => updateFit();
+    const resizeObserver =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(scheduleUpdate);
+
+    if (navRef.current) resizeObserver?.observe(navRef.current);
+    if (brandLinkRef.current) resizeObserver?.observe(brandLinkRef.current);
+    if (desktopNavRef.current) resizeObserver?.observe(desktopNavRef.current);
+
+    desktopQuery.addEventListener("change", handleDesktopChange);
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
+
+    const fontSet = "fonts" in document ? document.fonts : null;
+    fontSet?.addEventListener("loadingdone", scheduleUpdate);
+    void fontSet?.ready.then(() => {
+      if (!cancelled) scheduleUpdate();
+    });
+
+    updateFit();
+
+    return () => {
+      cancelled = true;
+      desktopQuery.removeEventListener("change", handleDesktopChange);
+      window.removeEventListener("resize", scheduleUpdate);
+      fontSet?.removeEventListener("loadingdone", scheduleUpdate);
+      resizeObserver?.disconnect();
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [fullDesktopNavFits]);
 
   useEffect(() => {
     if (!menuPresent) return;
@@ -158,61 +238,70 @@ export default function Nav() {
   }, [pathname]);
 
   useEffect(() => {
+    if (open || !menuPresent) return;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const timer = window.setTimeout(
+      () => setMenuPresent(false),
+      reducedMotion ? 0 : 300,
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [menuPresent, open]);
+
+  useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 1024px)");
     const dismissHiddenMenu = () => {
-      if (!desktopQuery.matches) return;
+      if (
+        !desktopQuery.matches ||
+        compactDesktopNav ||
+        !fullDesktopNavFits() ||
+        !menuPresent
+      ) {
+        return;
+      }
       restoreMenuFocusRef.current = false;
       setOpen(false);
       setMenuPresent(false);
+      requestAnimationFrame(() => {
+        brandLinkRef.current?.focus({ preventScroll: true });
+      });
     };
 
     desktopQuery.addEventListener("change", dismissHiddenMenu);
     dismissHiddenMenu();
     return () => desktopQuery.removeEventListener("change", dismissHiddenMenu);
-  }, []);
-
-  const activePanelVariants: Variants = reducedMotion
-    ? {
-        closed: { opacity: 0, transition: { duration: 0 } },
-        open: { opacity: 1, transition: { duration: 0 } },
-      }
-    : panelVariants;
-
-  const activeListVariants: Variants = reducedMotion
-    ? { closed: {}, open: {} }
-    : listVariants;
-
-  const activeItemVariants: Variants = reducedMotion
-    ? {
-        closed: { opacity: 0, transition: { duration: 0 } },
-        open: { opacity: 1, transition: { duration: 0 } },
-      }
-    : itemVariants;
+  }, [compactDesktopNav, fullDesktopNavFits, menuPresent]);
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-3 sm:px-4">
-      {!reducedMotion && (
-        <motion.div
-          aria-hidden
-          className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-px origin-left bg-gradient-to-r from-rose via-gold to-teal"
-          style={{ scaleX: progressScale }}
-        />
-      )}
+      <div
+        ref={progressRef}
+        aria-hidden
+        className="nav-scroll-progress pointer-events-none fixed inset-x-0 top-0 z-[60] h-px origin-left bg-gradient-to-r from-rose via-gold to-teal"
+      />
       <nav
+        ref={navRef}
+        data-enhanced-site-nav
+        data-nav-mode={compactDesktopNav ? "compact" : "full"}
+        data-scrolled="false"
         aria-label="Main"
         aria-hidden={menuPresent || undefined}
         inert={menuPresent || undefined}
-        className="pointer-events-auto relative isolate mx-auto mt-2 flex h-14 max-w-[74rem] items-center justify-between gap-5 px-3 sm:px-5 lg:px-7"
+        className="site-nav-shell pointer-events-auto relative isolate mx-auto mt-2 flex h-14 max-w-[74rem] items-center justify-between gap-5 px-3 sm:px-5 lg:px-7"
       >
         <span
           aria-hidden
-          className={clsx(
-            "pointer-events-none absolute inset-0 -z-10 rounded-full border border-line-soft bg-paper/95 shadow-[0_12px_38px_rgb(57_38_56/0.08)] transition-opacity duration-300",
-            scrolled ? "opacity-100" : "opacity-0",
-          )}
+          className="site-nav-surface pointer-events-none absolute inset-0 -z-10 rounded-full border border-line-soft bg-paper/95 opacity-0 shadow-[0_12px_38px_rgb(57_38_56/0.08)]"
         />
         <Link
+          ref={brandLinkRef}
           href="/"
+          prefetch={false}
+          onFocus={prefetchOnIntent}
+          onPointerEnter={prefetchOnIntent}
           aria-label="EndoCyclic Therapeutics — home"
           className="relative flex h-11 w-36 shrink-0 items-center lg:w-40"
         >
@@ -221,13 +310,23 @@ export default function Nav() {
             alt="EndoCyclic Therapeutics"
             width={233}
             height={70}
-            sizes="160px"
             priority
             className="h-auto w-full object-contain object-left"
           />
         </Link>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div
+          ref={desktopNavRef}
+          data-desktop-nav
+          aria-hidden={compactDesktopNav || undefined}
+          inert={compactDesktopNav || undefined}
+          className={clsx(
+            "hidden w-max shrink-0 items-center gap-3",
+            compactDesktopNav
+              ? "lg:invisible lg:pointer-events-none lg:absolute lg:right-0 lg:flex"
+              : "lg:flex",
+          )}
+        >
           <ul className="flex items-center gap-1 xl:gap-2">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
@@ -235,6 +334,9 @@ export default function Nav() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
+                    prefetch={false}
+                    onFocus={prefetchOnIntent}
+                    onPointerEnter={prefetchOnIntent}
                     aria-current={active ? "page" : undefined}
                     className={clsx(
                       "relative inline-flex min-h-11 items-center px-2.5 text-sm transition-colors after:absolute after:inset-x-2.5 after:bottom-1.5 after:h-px after:origin-left after:bg-gradient-to-r after:from-rose after:to-teal after:transition-transform",
@@ -249,15 +351,25 @@ export default function Nav() {
           </ul>
           <Link
             href="/investors"
+            prefetch={false}
+            onFocus={prefetchOnIntent}
+            onPointerEnter={prefetchOnIntent}
             aria-current={pathname === "/investors" ? "page" : undefined}
             className={clsx(
-              "inline-flex min-h-11 items-center px-2 text-sm transition-colors",
-              pathname === "/investors" ? "text-rose-ink" : "text-muted hover:text-ink",
+              "relative inline-flex min-h-11 items-center px-2 text-sm transition-colors after:absolute after:inset-x-2 after:bottom-1.5 after:h-px after:origin-left after:bg-gradient-to-r after:from-rose after:to-teal after:transition-transform",
+              pathname === "/investors"
+                ? "text-ink after:scale-x-100"
+                : "text-muted after:scale-x-0 hover:text-ink hover:after:scale-x-100",
             )}
           >
             Investors
           </Link>
-          <Button href="/contact?subject=partnership">
+          <Button
+            href={PARTNERSHIP_CONTACT_HREF}
+            prefetch={false}
+            onFocus={prefetchOnIntent}
+            onPointerEnter={prefetchOnIntent}
+          >
             Partner with us
           </Button>
         </div>
@@ -266,80 +378,271 @@ export default function Nav() {
           type="button"
           aria-label="Open menu"
           aria-expanded={open}
-          aria-controls="mobile-nav"
+          aria-controls={menuPresent ? "mobile-nav" : undefined}
           ref={menuButtonRef}
           onClick={openMenu}
-          className="flex h-11 w-11 items-center justify-center text-ink lg:hidden"
+          className={clsx(
+            "flex h-11 w-11 items-center justify-center text-ink",
+            compactDesktopNav ? "lg:flex" : "lg:hidden",
+          )}
         >
           <Menu size={22} />
         </button>
       </nav>
 
-      <AnimatePresence
-        initial={false}
-        onExitComplete={() => setMenuPresent(false)}
-      >
-        {open && (
-          <motion.div
-            id="mobile-nav"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Main menu"
-            ref={menuRef}
-            initial={reducedMotion ? false : "closed"}
-            animate="open"
-            exit="closed"
-            variants={activePanelVariants}
-            className="pointer-events-auto fixed inset-0 overflow-y-auto bg-paper px-5 pb-10 pt-4 lg:hidden"
+      <noscript>
+        <style>{`
+          @media (max-width: 1023px) {
+            [data-enhanced-site-nav] { display: none !important; }
+          }
+        `}</style>
+        <nav
+          data-nojs-mobile-nav
+          aria-label="Main navigation"
+          className="pointer-events-auto relative mx-auto mt-2 flex h-14 max-w-[74rem] items-center justify-between gap-4 rounded-full border border-line-soft bg-paper/95 px-3 shadow-[0_12px_38px_rgb(57_38_56/0.08)] sm:px-5 lg:hidden"
+        >
+          <Link
+            href="/"
+            prefetch={false}
+            aria-label="EndoCyclic Therapeutics — home"
+            className="relative flex h-11 w-36 shrink-0 items-center"
           >
-            <div className="mx-auto flex max-w-xl items-center justify-between">
-              <Link href="/" onClick={closeForNavigation} aria-label="EndoCyclic Therapeutics — home" className="relative flex h-11 w-36 items-center">
-                <Image src="/logo.avif" alt="EndoCyclic Therapeutics" width={233} height={70} sizes="144px" className="h-auto w-full object-contain object-left" />
-              </Link>
-              <button type="button" onClick={close} aria-label="Close menu" className="flex h-11 w-11 items-center justify-center text-ink">
-                <X size={23} />
-              </button>
-            </div>
+            <Image
+              src="/logo.avif"
+              alt="EndoCyclic Therapeutics"
+              width={233}
+              height={70}
+              className="h-auto w-full object-contain object-left"
+            />
+          </Link>
 
-            <motion.div className="mx-auto mt-8 max-w-xl" variants={activeListVariants}>
-              <motion.p className="eyebrow" variants={activeItemVariants}>Navigate</motion.p>
-              <motion.ul className="mt-4 flex flex-col divide-y divide-line-soft border-y border-line-soft" variants={activeListVariants}>
+          <details className="group relative">
+            <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center text-ink [&::-webkit-details-marker]:hidden">
+              <Menu aria-hidden size={22} />
+              <span className="sr-only">Main menu</span>
+            </summary>
+            <div className="absolute right-0 top-[calc(100%+0.55rem)] w-[min(22rem,calc(100vw-1.5rem))] max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-bl-[2rem] rounded-tr-[2rem] border border-line bg-paper px-5 pb-6 pt-5 shadow-[0_24px_70px_rgb(57_38_56/0.14)]">
+              <p className="eyebrow">Navigate</p>
+              <ul className="mt-3 divide-y divide-line-soft border-y border-line-soft">
                 {NAV_LINKS.map((link) => {
                   const active = pathname === link.href;
                   return (
-                    <motion.li key={link.href} variants={activeItemVariants}>
+                    <li key={link.href}>
                       <Link
                         href={link.href}
+                        prefetch={false}
                         aria-current={active ? "page" : undefined}
-                        onClick={closeForNavigation}
-                        className={clsx("flex min-h-16 items-center justify-between text-xl", active ? "text-rose-ink" : "text-ink")}
+                        className={clsx(
+                          "flex min-h-12 items-center justify-between gap-4 text-base",
+                          active ? "text-rose-ink" : "text-ink",
+                        )}
                       >
                         {link.name}
-                        <span aria-hidden className="text-sm text-muted">→</span>
+                        <span
+                          aria-hidden
+                          className={clsx(
+                            active
+                              ? "text-xs font-semibold uppercase tracking-[0.12em] text-rose-ink"
+                              : "text-sm text-muted",
+                          )}
+                        >
+                          {active ? "Current" : "→"}
+                        </span>
                       </Link>
-                    </motion.li>
+                    </li>
                   );
                 })}
-                <motion.li variants={activeItemVariants}>
+                <li>
                   <Link
                     href="/investors"
-                    aria-current={pathname === "/investors" ? "page" : undefined}
-                    onClick={closeForNavigation}
-                    className={clsx("flex min-h-16 items-center justify-between text-xl", pathname === "/investors" ? "text-rose-ink" : "text-ink")}
+                    prefetch={false}
+                    aria-current={
+                      pathname === "/investors" ? "page" : undefined
+                    }
+                    className={clsx(
+                      "flex min-h-12 items-center justify-between gap-4 text-base",
+                      pathname === "/investors"
+                        ? "text-rose-ink"
+                        : "text-ink",
+                    )}
                   >
-                    Investors <span aria-hidden className="text-sm text-muted">→</span>
+                    Investors
+                    <span
+                      aria-hidden
+                      className={clsx(
+                        pathname === "/investors"
+                          ? "text-xs font-semibold uppercase tracking-[0.12em] text-rose-ink"
+                          : "text-sm text-muted",
+                      )}
+                    >
+                      {pathname === "/investors" ? "Current" : "→"}
+                    </span>
                   </Link>
-                </motion.li>
-              </motion.ul>
-              <motion.div variants={activeItemVariants}>
-                <Button href="/contact?subject=partnership" onClick={closeForNavigation} className="mt-8">
-                  Partner with us
-                </Button>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                </li>
+              </ul>
+              <Button
+                href={PARTNERSHIP_CONTACT_HREF}
+                prefetch={false}
+                className="mt-5 w-full"
+              >
+                Partner with us
+              </Button>
+            </div>
+          </details>
+        </nav>
+      </noscript>
+
+      {menuPresent && (
+        <div
+          id="mobile-nav"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Main menu"
+          ref={menuRef}
+          data-state={open ? "open" : "closed"}
+          onAnimationEnd={(event) => {
+            if (event.target === event.currentTarget && !open) {
+              setMenuPresent(false);
+            }
+          }}
+          className={clsx(
+            "mobile-nav-panel pointer-events-auto fixed inset-0 overflow-y-auto bg-paper px-5 pb-10 pt-4",
+            compactDesktopNav ? "lg:block" : "lg:hidden",
+          )}
+        >
+          <div className="mx-auto flex max-w-xl items-center justify-between">
+            <Link
+              href="/"
+              prefetch={false}
+              onFocus={prefetchOnIntent}
+              onPointerEnter={prefetchOnIntent}
+              onClick={pathname === "/" ? close : closeForNavigation}
+              aria-label="EndoCyclic Therapeutics — home"
+              className="relative flex h-11 w-36 items-center"
+            >
+              <Image
+                src="/logo.avif"
+                alt="EndoCyclic Therapeutics"
+                width={233}
+                height={70}
+                className="h-auto w-full object-contain object-left"
+              />
+            </Link>
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Close menu"
+              className="flex h-11 w-11 items-center justify-center text-ink"
+            >
+              <X size={23} />
+            </button>
+          </div>
+
+          <div className="mx-auto mt-8 max-w-xl">
+            <p
+              className="mobile-nav-item eyebrow"
+              style={{ "--nav-item-delay": "0ms" } as React.CSSProperties}
+            >
+              Navigate
+            </p>
+            <ul className="mt-4 flex flex-col divide-y divide-line-soft border-y border-line-soft">
+              {NAV_LINKS.map((link, index) => {
+                const active = pathname === link.href;
+                return (
+                  <li
+                    key={link.href}
+                    className="mobile-nav-item"
+                    style={{
+                      "--nav-item-delay": `${(index + 1) * 24}ms`,
+                    } as React.CSSProperties}
+                  >
+                    <Link
+                      href={link.href}
+                      prefetch={false}
+                      onFocus={prefetchOnIntent}
+                      onPointerEnter={prefetchOnIntent}
+                      aria-current={active ? "page" : undefined}
+                      onClick={active ? close : closeForNavigation}
+                      className={clsx(
+                        "flex min-h-16 items-center justify-between text-xl",
+                        active ? "text-rose-ink" : "text-ink",
+                      )}
+                    >
+                      {link.name}
+                      <span
+                        aria-hidden
+                        className={clsx(
+                          "text-sm",
+                          active
+                            ? "text-xs font-semibold uppercase tracking-[0.12em] text-rose-ink"
+                            : "text-muted",
+                        )}
+                      >
+                        {active ? "Current" : "→"}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+              <li
+                className="mobile-nav-item"
+                style={{
+                  "--nav-item-delay": `${(NAV_LINKS.length + 1) * 24}ms`,
+                } as React.CSSProperties}
+              >
+                <Link
+                  href="/investors"
+                  prefetch={false}
+                  onFocus={prefetchOnIntent}
+                  onPointerEnter={prefetchOnIntent}
+                  aria-current={
+                    pathname === "/investors" ? "page" : undefined
+                  }
+                  onClick={
+                    pathname === "/investors" ? close : closeForNavigation
+                  }
+                  className={clsx(
+                    "flex min-h-16 items-center justify-between text-xl",
+                    pathname === "/investors"
+                      ? "text-rose-ink"
+                      : "text-ink",
+                  )}
+                >
+                  Investors{" "}
+                  <span
+                    aria-hidden
+                    className={clsx(
+                      "text-sm",
+                      pathname === "/investors"
+                        ? "text-xs font-semibold uppercase tracking-[0.12em] text-rose-ink"
+                        : "text-muted",
+                    )}
+                  >
+                    {pathname === "/investors" ? "Current" : "→"}
+                  </span>
+                </Link>
+              </li>
+            </ul>
+            <div
+              className="mobile-nav-item"
+              style={{
+                "--nav-item-delay": `${(NAV_LINKS.length + 2) * 24}ms`,
+              } as React.CSSProperties}
+            >
+              <Button
+                href={PARTNERSHIP_CONTACT_HREF}
+                prefetch={false}
+                onFocus={prefetchOnIntent}
+                onPointerEnter={prefetchOnIntent}
+                onClick={closeForNavigation}
+                className="mt-8"
+              >
+                Partner with us
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

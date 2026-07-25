@@ -1,14 +1,26 @@
-import Image from "next/image";
 import CareGapShift from "@/components/figures/CareGapShift";
 import Endo205ImpactTranslation from "@/components/figures/Endo205ImpactTranslation";
+import ArtDirectedImage from "@/components/site/ArtDirectedImage";
 import Button from "@/components/site/Button";
 import Container from "@/components/site/Container";
+import EvidenceNote from "@/components/site/EvidenceNote";
 import NextChapter from "@/components/site/NextChapter";
 import PageHero from "@/components/site/PageHero";
 import Reveal from "@/components/site/Reveal";
 import Section from "@/components/site/Section";
+import {
+  EVIDENCE_LINKS,
+  IMPACT_BIOLOGY_ALT,
+  IMPACT_BIOLOGY_IMAGE,
+  IMPACT_BIOLOGY_MOBILE_IMAGE,
+  PARTNERSHIP_CONTACT_HREF,
+} from "@/lib/site";
 
 const BURDEN_SIGNALS = [
+  {
+    value: "190M+",
+    label: "women affected worldwide",
+  },
   {
     value: "1 in 10",
     label: "reproductive-age women globally",
@@ -17,21 +29,17 @@ const BURDEN_SIGNALS = [
     value: "$200B",
     label: "annual economic burden in the US",
   },
-  {
-    value: "$180–250B",
-    label: "global treatment-market potential · McKinsey estimate",
-  },
 ] as const;
 
 function Hero() {
   return (
     <PageHero
-      eyebrow="The endometriosis burden"
-      title="A disease affecting more than 190 million women."
-      intro="Endometriosis affects roughly 1 in 10 women of reproductive age, yet diagnosis still takes an average of eight years. Current therapies are largely hormone-based and symptomatic."
+      eyebrow="Disease impact"
+      title="Endometriosis is a chronic disease—not a symptom."
+      intro="Endometriosis is characterized by endometrial-like tissue growing outside the uterus."
       actions={
         <>
-          <Button href="/pipeline#endo-205">Review ENDO-205</Button>
+          <Button href={PARTNERSHIP_CONTACT_HREF}>Discuss a partnership</Button>
           <Button href="#burden" variant="ghost">
             Review the burden
           </Button>
@@ -45,13 +53,14 @@ function Hero() {
       visualAspect="auto"
       titleClassName="max-w-[18ch]"
     >
-      <Image
-        src="/illustrations/endometriosis-biology-v1.avif"
-        alt="Conceptual anatomical illustration of endometriosis lesions outside the uterus, including on the ovaries and pelvic sidewall."
-        fill
+      <ArtDirectedImage
+        desktopSrc={IMPACT_BIOLOGY_IMAGE}
+        mobileSrc={IMPACT_BIOLOGY_MOBILE_IMAGE}
+        alt={IMPACT_BIOLOGY_ALT}
         priority
         sizes="(min-width: 1184px) 650px, (min-width: 1024px) 52vw, 94vw"
-        className="object-cover object-left"
+        mobileSizes="(max-width: 399px) calc(100vw - 2.5rem), 90vw"
+        className="object-cover object-center md:object-[50%_32%] lg:object-center"
       />
     </PageHero>
   );
@@ -68,7 +77,7 @@ function BurdenLedger() {
           </p>
           <div aria-hidden className="mt-10 grid grid-cols-9 border-t border-rose/55 pt-3">
             {Array.from({ length: 9 }, (_, index) => (
-              <span key={index} className="relative text-center text-[0.65rem] text-muted">
+              <span key={index} className="relative text-center text-xs text-muted">
                 <span className="absolute -top-[1.05rem] left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full border-2 border-paper bg-rose" />
                 {index}
               </span>
@@ -91,8 +100,28 @@ function BurdenLedger() {
           ))}
         </dl>
       </div>
-      <figcaption className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
-        Worldwide prevalence, diagnostic delay, US economic burden, and global treatment-market potential show the scale of the unmet need.
+      <figcaption className="mt-4 max-w-4xl text-sm leading-relaxed text-muted">
+        <p>
+          Worldwide prevalence, diagnostic delay, and US economic burden show
+          the scale of the unmet need.
+        </p>
+        <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-1">
+          <EvidenceNote
+            flush
+            reference={{
+              basis: "institutional",
+              label: "WHO prevalence record",
+              href: EVIDENCE_LINKS.whoEndometriosis,
+            }}
+          />
+          <EvidenceNote
+            flush
+            reference={{
+              basis: "company",
+              label: "$200B annual US burden and 8-year diagnostic delay",
+            }}
+          />
+        </div>
       </figcaption>
     </figure>
   );
@@ -100,15 +129,27 @@ function BurdenLedger() {
 
 function Burden() {
   return (
-    <Section tone="paper" size="chapter" id="burden" className="scroll-mt-24">
+    <Section tone="paper" size="chapter">
       <Container>
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <Reveal className="lg:col-span-6">
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-semibold tracking-[0.18em] text-rose-ink">01</span>
-              <p className="eyebrow">Scale and delay</p>
+            <div
+              id="burden"
+              tabIndex={-1}
+              role="region"
+              aria-labelledby="burden-title"
+              className="outline-none"
+            >
+              <div className="flex items-center gap-4">
+                <span aria-hidden className="chapter-thread-mark">
+                  <span />
+                </span>
+                <p className="eyebrow">Scale and delay</p>
+              </div>
+              <h2 id="burden-title" className="t-h2 mt-5 text-ink">
+                The burden is global. The diagnostic delay is measured in years.
+              </h2>
             </div>
-            <h2 className="t-h2 mt-5 text-ink">The cost of waiting is measured in years and economic burden.</h2>
           </Reveal>
           <Reveal delay={0.06} className="lg:col-span-5 lg:col-start-8">
             <p className="t-lead">
@@ -132,7 +173,9 @@ function CareGap() {
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <Reveal className="lg:col-span-6">
             <div className="flex items-center gap-4">
-              <span className="text-xs font-semibold tracking-[0.18em] text-rose-ink">02</span>
+              <span aria-hidden className="chapter-thread-mark">
+                <span />
+              </span>
               <p className="eyebrow">The care gap</p>
             </div>
             <h2 className="mt-5 max-w-[15ch] text-[clamp(2.35rem,4.5vw,4.25rem)] font-medium leading-[1.03] tracking-[-0.04em] text-ink">
@@ -161,7 +204,9 @@ function Response() {
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <Reveal className="lg:col-span-6">
             <div className="flex items-center gap-4">
-              <span className="text-xs font-semibold tracking-[0.18em] text-rose-ink">03</span>
+              <span aria-hidden className="chapter-thread-mark">
+                <span />
+              </span>
               <p className="eyebrow">The response</p>
             </div>
             <h2 className="t-h2 mt-5 text-ink">From selective design to a Phase 1 program.</h2>
@@ -183,7 +228,7 @@ function Response() {
 
 export default function ImpactPage() {
   return (
-    <main id="main-content">
+    <main id="main-content" tabIndex={-1}>
       <Hero />
       <Burden />
       <CareGap />
@@ -194,14 +239,14 @@ export default function ImpactPage() {
         tone="plum"
         actions={
           <>
-            <Button href="/contact?subject=partnership">Discuss a partnership</Button>
+            <Button href={PARTNERSHIP_CONTACT_HREF}>Discuss a partnership</Button>
             <Button href="/pipeline" variant="ghost-on-dark">
               Explore the pipeline
             </Button>
           </>
         }
       >
-        Follow the platform from ENDO-205 and FemLUNA™ into paired oncology programs.
+        Review ENDO-205, FemLUNA™, and the paired oncology programs within the full pipeline.
       </NextChapter>
     </main>
   );
