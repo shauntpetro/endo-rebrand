@@ -2,6 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
+import {
+  PLATFORM_MECHANISM_ALT,
+  PLATFORM_MECHANISM_IMAGE,
+} from "@/lib/site";
 import styles from "./SelectiveSequence.module.css";
 
 type SequenceStep = {
@@ -12,34 +16,44 @@ type SequenceStep = {
 
 const STAGE_PRESENTATION = [
   {
-    shortTitle: "Activation",
-    marker: "bg-gold",
-    ring: "border-gold/75",
-    ink: "text-gold-ink",
-    activeGround: "bg-tint-warm",
-    focusX: "45.5%",
-    focusY: "57%",
-    artworkTransform: "scale-[1.03] translate-x-0 translate-y-0",
-  },
-  {
-    shortTitle: "Uptake",
-    marker: "bg-teal",
-    ring: "border-teal/70",
-    ink: "text-teal-ink",
-    activeGround: "bg-tint-teal",
-    focusX: "76.5%",
-    focusY: "52.5%",
-    artworkTransform: "scale-[1.07] -translate-x-[2%] translate-y-0",
-  },
-  {
-    shortTitle: "Action",
+    shortTitle: "Target",
     marker: "bg-rose",
     ring: "border-rose/75",
     ink: "text-rose-ink",
     activeGround: "bg-petal",
-    focusX: "78%",
-    focusY: "69%",
-    artworkTransform: "scale-[1.11] -translate-x-[4%] -translate-y-[1%]",
+    focusX: "11%",
+    focusY: "58%",
+    artworkTransform: "scale-[1.02] translate-x-[1%] translate-y-0",
+  },
+  {
+    shortTitle: "Enter",
+    marker: "bg-teal",
+    ring: "border-teal/70",
+    ink: "text-teal-ink",
+    activeGround: "bg-tint-teal",
+    focusX: "32%",
+    focusY: "55%",
+    artworkTransform: "scale-[1.02] translate-x-0 translate-y-0",
+  },
+  {
+    shortTitle: "Activate",
+    marker: "bg-gold",
+    ring: "border-gold/75",
+    ink: "text-gold-ink",
+    activeGround: "bg-tint-warm",
+    focusX: "48%",
+    focusY: "55%",
+    artworkTransform: "scale-[1.025] -translate-x-[1%] translate-y-0",
+  },
+  {
+    shortTitle: "Evidence",
+    marker: "bg-plum",
+    ring: "border-plum/70",
+    ink: "text-rose-ink",
+    activeGround: "bg-tint-plum",
+    focusX: "65%",
+    focusY: "59%",
+    artworkTransform: "scale-[1.025] -translate-x-[2%] translate-y-0",
   },
 ] as const;
 
@@ -54,6 +68,7 @@ export default function SelectiveSequence({
   const [activeIndex, setActiveIndex] = useState(0);
   const sequenceId = useId();
   const tablistRef = useRef<HTMLDivElement>(null);
+  const panelRegionRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const sentinelRefs = useRef<Array<HTMLDivElement | null>>([]);
   const keyboardFocusRef = useRef(false);
@@ -62,17 +77,19 @@ export default function SelectiveSequence({
   const programmaticScrollTokenRef = useRef(0);
   const syncStageFromReadingLineRef = useRef<() => void>(() => {});
   const activeStage = STAGE_PRESENTATION[activeIndex] ?? STAGE_PRESENTATION[0];
+  const evidenceIndex = Math.max(steps.length - 1, 0);
+  const platformStageCount = String(evidenceIndex).padStart(2, "0");
 
   useEffect(() => {
     const media = window.matchMedia(STICKY_MEDIA_QUERY);
     let observer: IntersectionObserver | null = null;
 
     const selectStageAtReadingLine = () => {
-      if (programmaticStageRef.current !== null) return;
-
       if (
-        keyboardFocusRef.current &&
-        tablistRef.current?.contains(document.activeElement)
+        programmaticStageRef.current !== null ||
+        panelRegionRef.current?.contains(document.activeElement) ||
+        (keyboardFocusRef.current &&
+          tablistRef.current?.contains(document.activeElement))
       ) {
         return;
       }
@@ -201,12 +218,12 @@ export default function SelectiveSequence({
     event: React.KeyboardEvent<HTMLButtonElement>,
     index: number,
   ) => {
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+    if (event.key === "ArrowRight") {
       event.preventDefault();
       selectStage(index + 1, true);
     }
 
-    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+    if (event.key === "ArrowLeft") {
       event.preventDefault();
       selectStage(index - 1, true);
     }
@@ -231,18 +248,19 @@ export default function SelectiveSequence({
         >
           <div className="border-b border-line bg-paper">
             <div className="flex items-center justify-between gap-6 px-5 py-4 sm:px-7">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-teal-ink">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-ink">
                 Follow the mechanism
               </p>
-              <p className="hidden text-xs text-muted sm:block">
-                Select a stage to inspect the sequence.
+              <p className="max-w-[8.5rem] text-right text-sm leading-tight text-muted sm:max-w-none">
+                Select a stage to inspect.
               </p>
             </div>
 
             <div
               ref={tablistRef}
               role="tablist"
-              aria-label="Selective mechanism stages"
+              aria-label="Platform stages and ENDO-205 evidence"
+              aria-orientation="horizontal"
               onPointerDownCapture={() => {
                 keyboardFocusRef.current = false;
               }}
@@ -263,7 +281,7 @@ export default function SelectiveSequence({
                   keyboardFocusRef.current = false;
                 }
               }}
-              className="grid grid-cols-3 border-t border-line"
+              className="grid grid-cols-2 gap-px border-t border-line bg-line sm:grid-cols-4"
             >
               {steps.map((step, index) => {
                 const stage =
@@ -281,20 +299,19 @@ export default function SelectiveSequence({
                     role="tab"
                     aria-selected={active}
                     aria-controls={`${sequenceId}-panel-${index}`}
-                    aria-label={`${step.index} ${step.title}`}
                     tabIndex={active ? 0 : -1}
                     onClick={() => selectStage(index)}
                     onKeyDown={(event) => handleKeyDown(event, index)}
-                    className={`group relative flex min-w-0 flex-col items-start gap-2 border-r border-line px-3 py-3.5 text-left last:border-r-0 active:scale-[0.99] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-teal-ink motion-reduce:transform-none sm:flex-row sm:items-center sm:gap-3 sm:px-6 sm:py-5 ${
+                    className={`group relative flex min-w-0 flex-col items-start gap-2 px-4 py-3.5 text-left active:scale-[0.99] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-teal-ink motion-reduce:transform-none sm:flex-row sm:items-center sm:gap-3 sm:px-6 sm:py-5 ${
                       active
                         ? stage.activeGround
                         : "bg-paper hover:bg-tint-warm/55"
                     }`}
                   >
                     <span
-                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[0.65rem] font-semibold tracking-[0.08em] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:h-8 sm:w-8 ${
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold tracking-[0.08em] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:h-8 sm:w-8 ${
                         active
-                          ? `${stage.marker} ${stage.ring} scale-100 text-ink`
+                          ? `${stage.ring} scale-100 bg-plum text-on-dark`
                           : "scale-90 border-line bg-paper text-muted group-hover:scale-100"
                       }`}
                     >
@@ -302,7 +319,7 @@ export default function SelectiveSequence({
                     </span>
                     <span className="min-w-0">
                       <span
-                        className={`block text-[0.7rem] font-semibold uppercase leading-tight tracking-[0.08em] sm:text-xs sm:tracking-[0.12em] ${active ? stage.ink : "text-muted"}`}
+                        className={`block text-xs font-semibold uppercase leading-tight tracking-[0.08em] sm:tracking-[0.12em] ${active ? stage.ink : "text-muted"}`}
                       >
                         {stage.shortTitle}
                       </span>
@@ -328,11 +345,11 @@ export default function SelectiveSequence({
                 className={`absolute inset-0 transform-gpu transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:scale-100 motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:transition-none ${activeStage.artworkTransform}`}
               >
                 <Image
-                  src="/illustrations/selective-mechanism-v2.avif"
-                  alt="Conceptual illustration of a cyclic peptide changing state in a disease microenvironment and undergoing selective uptake by diseased tissue."
+                  src={PLATFORM_MECHANISM_IMAGE}
+                  alt={PLATFORM_MECHANISM_ALT}
                   fill
-                  sizes="(min-width: 1184px) 720px, (min-width: 768px) 64vw, 94vw"
-                  className="object-cover"
+                  sizes="(min-width: 1184px) 750px, (min-width: 768px) 61vw, 94vw"
+                  className="object-contain"
                 />
 
                 {steps.map((step, index) => {
@@ -358,17 +375,17 @@ export default function SelectiveSequence({
                             ? "scale-100 opacity-100"
                             : "scale-75 opacity-0"
                         }`}
-                        style={{ left: stage.focusX, top: stage.focusY }}
+                        style={{ left: stage.focusX, top: "10%" }}
                       >
                         <span
-                          className={`relative flex h-10 w-10 items-center justify-center rounded-full border bg-paper/70 shadow-[0_8px_24px_rgb(57_38_56/0.14)] sm:h-14 sm:w-14 ${stage.ring}`}
+                          className={`relative flex h-8 w-8 items-center justify-center rounded-full border bg-paper/88 shadow-[0_6px_18px_rgb(57_38_56/0.1)] sm:h-9 sm:w-9 ${stage.ring}`}
                         >
-                          <span
-                            className={`h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3 ${stage.marker}`}
-                          />
-                          <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-paper bg-ink text-[0.55rem] font-semibold tracking-[0.05em] text-paper sm:h-6 sm:w-6 sm:text-[0.6rem]">
+                          <span className="text-[0.65rem] font-semibold tracking-[0.05em] text-ink">
                             {step.index}
                           </span>
+                          <span
+                            className={`absolute -bottom-1 h-1.5 w-1.5 rounded-full border border-paper ${stage.marker}`}
+                          />
                         </span>
                       </span>
                     </div>
@@ -393,7 +410,10 @@ export default function SelectiveSequence({
                 className={`absolute left-0 top-0 h-full w-0.5 md:w-px ${activeStage.marker}`}
               />
 
-              <div className="grid w-full px-6 py-7 sm:px-8 sm:py-9 md:px-7 md:py-8 lg:px-9 lg:py-10">
+              <div
+                ref={panelRegionRef}
+                className="grid w-full px-6 py-7 sm:px-8 sm:py-9 md:px-7 md:py-8 lg:px-9 lg:py-10"
+              >
                 {steps.map((step, index) => {
                   const stage =
                     STAGE_PRESENTATION[index] ?? STAGE_PRESENTATION[0];
@@ -406,11 +426,10 @@ export default function SelectiveSequence({
                       role="tabpanel"
                       aria-labelledby={`${sequenceId}-tab-${index}`}
                       aria-hidden={!active}
+                      hidden={!active}
                       tabIndex={active ? 0 : -1}
-                      className={`col-start-1 row-start-1 flex flex-col justify-between transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:translate-y-0 motion-reduce:transition-none ${
-                        active
-                          ? "relative z-[1] translate-y-0 opacity-100"
-                          : "pointer-events-none translate-y-3 opacity-0"
+                      className={`col-start-1 row-start-1 flex flex-col justify-between ${
+                        active ? styles.activePanel : ""
                       }`}
                     >
                       <div>
@@ -419,10 +438,11 @@ export default function SelectiveSequence({
                             className={`h-2 w-2 rounded-full ${stage.marker}`}
                           />
                           <p
-                            className={`text-[0.65rem] font-semibold uppercase tracking-[0.16em] ${stage.ink}`}
+                            className={`text-xs font-semibold uppercase tracking-[0.16em] ${stage.ink}`}
                           >
-                            Stage {step.index} of{" "}
-                            {String(steps.length).padStart(2, "0")}
+                            {index === evidenceIndex
+                              ? `ENDO-205 evidence · ${step.index}`
+                              : `Platform stage ${step.index} of ${platformStageCount}`}
                           </p>
                         </div>
                         <h3 className="mt-6 text-[clamp(1.55rem,3vw,2.2rem)] font-medium leading-[1.04] tracking-[-0.035em] text-ink">
@@ -447,7 +467,8 @@ export default function SelectiveSequence({
                           ))}
                         </div>
                         <p className="mt-3 text-xs leading-relaxed text-muted">
-                          Activation, uptake, then action in diseased tissue.
+                          Target, enter, activate. Then review the separately
+                          qualified ENDO-205 preclinical evidence.
                         </p>
                       </div>
                     </div>
@@ -464,20 +485,21 @@ export default function SelectiveSequence({
         >
           <div className="border-b border-line bg-paper px-5 py-5 sm:px-7">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-ink">
-              Complete mechanism sequence
+              Complete platform-to-evidence sequence
             </p>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Activation, uptake, then action in diseased tissue.
+              Targeting, uptake, pH-mediated activation, and the ENDO-205
+              preclinical lesion-elimination finding.
             </p>
           </div>
 
           <div className="relative aspect-[2/1] overflow-hidden bg-tint-warm">
             <Image
-              src="/illustrations/selective-mechanism-v2.avif"
-              alt="Conceptual illustration of a cyclic peptide changing state in a disease microenvironment and undergoing selective uptake by diseased tissue."
+              src={PLATFORM_MECHANISM_IMAGE}
+              alt={PLATFORM_MECHANISM_ALT}
               fill
               sizes="(min-width: 1184px) 1120px, 94vw"
-              className="object-cover"
+              className="object-contain"
             />
             <div
               aria-hidden
@@ -486,7 +508,7 @@ export default function SelectiveSequence({
           </div>
 
           <ol
-            aria-label="Complete selective mechanism sequence"
+            aria-label="Complete platform-to-evidence sequence"
             className="divide-y divide-line"
           >
             {steps.map((step, index) => {
@@ -499,7 +521,8 @@ export default function SelectiveSequence({
                   className={`grid gap-4 px-5 py-6 sm:grid-cols-[3rem_1fr] sm:px-7 sm:py-7 ${stage.activeGround}`}
                 >
                   <span
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-xs font-semibold tracking-[0.08em] text-ink ${stage.marker} ${stage.ring}`}
+                    data-sequence-static-marker
+                    className={`flex h-10 w-10 items-center justify-center rounded-full border-2 bg-plum text-xs font-semibold tracking-[0.08em] text-on-dark ${stage.ring}`}
                   >
                     {step.index}
                   </span>
@@ -533,7 +556,14 @@ export default function SelectiveSequence({
         </noscript>
 
         <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs leading-relaxed text-muted">
-          <span>Conceptual representation; investigational platform.</span>
+          <span>
+            The intermediate focal point inside diseased tissue is conceptual.
+          </span>
+          <span>
+            The final state represents the ENDO-205 preclinical
+            lesion-elimination finding; not clinical outcome data or
+            restored-tissue histology.
+          </span>
           <span className={styles.scrollHint}>
             {activeIndex === steps.length - 1
               ? "Continue to the next chapter"

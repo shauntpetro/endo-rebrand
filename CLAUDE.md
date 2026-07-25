@@ -9,12 +9,20 @@ Read these files for full context before making any changes:
 - `truth.md` — approved scientific facts. **Only modify when explicitly prompted by the user.** All copy must match this file.
 - `program.md` — optimization methodology, editable surface, eval rubric
 
-The repo is a Next.js 16 app (React 19, TypeScript, Tailwind CSS 4, Framer Motion). Dev server runs on port 3000. The site is a **clean, conventional multi-page site** in a **"Calm Clinical"** design system (2026 ground-up redesign): a soft off-white ground, muted plum text, gentle clinical-teal accents and soft pastel section washes, **one clean sans (Hanken Grotesk) at modest sizes**, and generous whitespace. Restraint is the point — quiet and refined, not loud. **Nav and Footer live in the root layout** (`app/layout.tsx`); each page is a normal route. No Three.js/WebGL, no scroll-jacking.
+The repo is a Next.js 16 app (React 19, TypeScript, Tailwind CSS 4, native CSS/DOM motion, and selectively loaded GSAP). Dev server runs on port 3000. The site is a **clean, conventional multi-page site** in a **"Calm Clinical"** design system (2026 ground-up redesign): a soft off-white ground, muted plum text, gentle clinical-teal accents and soft pastel section washes, **one clean sans (Hanken Grotesk) at modest sizes**, and generous whitespace. Restraint is the point — quiet and refined, not loud. **Nav and Footer live in the root layout** (`app/layout.tsx`); each page is a normal route. No Three.js/WebGL, no scroll-jacking.
 
 ```bash
 npm install
 npm run dev
+
+# Optional local-only design laboratory at /concepts
+npm run dev:concepts
 ```
+
+The regular development and production route trees exclude `/concepts`.
+`dev:concepts` temporarily materializes ignored route wrappers and cleans them
+on exit. Never commit `app/concepts`; production builds intentionally fail if
+those generated routes are present.
 
 ## What you CAN do
 
@@ -59,8 +67,8 @@ Note: don't add a root `loading.tsx`/`template.tsx` — a whole-page Suspense bo
 ## Performance & motion constraints
 
 - All motion is transform/opacity/clip-path only; content stays readable if motion can't run.
-- Respect reduced motion: `MotionProvider` sets `reducedMotion="user"`; components use framer's `useReducedMotion`.
-- Scroll reveals via framer `whileInView` (`components/site/Reveal.tsx`); count-ups via IntersectionObserver (`CountUp.tsx`).
+- Respect reduced motion: global CSS provides the baseline fallback, native interactions query `prefers-reduced-motion`, and shared client components use `usePrefersReducedMotion`.
+- Scroll reveals use progressive CSS view timelines with a fully visible fallback (`components/site/Reveal.tsx`); count-ups use `requestAnimationFrame` with a reduced-motion final state (`CountUp.tsx`).
 - Target Lighthouse 90+.
 
 ## Security

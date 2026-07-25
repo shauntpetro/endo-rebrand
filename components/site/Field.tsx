@@ -13,7 +13,7 @@ type Base = {
 };
 
 const inputCls =
-  "w-full rounded-lg border border-ink/25 bg-surface px-3.5 py-2.5 text-ink placeholder:text-muted transition-[border-color,box-shadow] focus-visible:border-teal-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-ink/25";
+  "w-full rounded-lg border border-control-line bg-surface px-3.5 py-2.5 text-ink placeholder:text-muted transition-[border-color,box-shadow] focus-visible:border-teal-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-ink focus-visible:ring-2 focus-visible:ring-teal-ink/25";
 
 function Label({ htmlFor, children, required }: { htmlFor: string; children: React.ReactNode; required?: boolean }) {
   return (
@@ -26,7 +26,7 @@ function Label({ htmlFor, children, required }: { htmlFor: string; children: Rea
 
 function ErrorText({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <p id={id} role="alert" className="mt-1.5 text-sm text-rose-ink">
+    <p id={id} className="mt-1.5 min-w-0 text-sm text-rose-ink [overflow-wrap:anywhere]">
       {children}
     </p>
   );
@@ -61,19 +61,31 @@ export function TextField({
 }
 
 export function TextArea({
-  label, name, required, error, className, id: providedId, value, onChange, placeholder, rows = 4, maxLength,
-}: Base & { value: string; onChange: (v: string) => void; placeholder?: string; rows?: number; maxLength?: number }) {
+  label, name, required, error, description, className, id: providedId, value, onChange, placeholder, rows = 4, minLength, maxLength,
+}: Base & { value: string; onChange: (v: string) => void; placeholder?: string; description?: string; rows?: number; minLength?: number; maxLength?: number }) {
   const id = providedId ?? `field-${name}`;
   const errId = `${id}-err`;
+  const descriptionId = `${id}-description`;
+  const describedBy = [
+    description ? descriptionId : undefined,
+    error ? errId : undefined,
+  ]
+    .filter(Boolean)
+    .join(" ");
   return (
     <div className={className}>
       <Label htmlFor={id} required={required}>{label}</Label>
       <textarea
-        id={id} name={name} rows={rows} value={value} placeholder={placeholder} maxLength={maxLength}
+        id={id} name={name} rows={rows} value={value} placeholder={placeholder} minLength={minLength} maxLength={maxLength}
         required={required} aria-required={required || undefined} aria-invalid={error ? true : undefined}
-        aria-describedby={error ? errId : undefined} onChange={(e) => onChange(e.target.value)}
+        aria-describedby={describedBy || undefined} onChange={(e) => onChange(e.target.value)}
         className={clsx(inputCls, "resize-y", error && "border-rose-ink")}
       />
+      {description && (
+        <p id={descriptionId} className="mt-1.5 text-xs leading-relaxed text-muted">
+          {description}
+        </p>
+      )}
       {error && <ErrorText id={errId}>{error}</ErrorText>}
     </div>
   );

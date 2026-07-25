@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
+import {
+  ORGANIZATION_ID,
+  SITE_ORIGIN,
+  WEBSITE_ID,
+  createPageMetadata,
+} from "@/lib/metadata";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Contact",
   description:
     "Get in touch with EndoCyclic Therapeutics — partnership and business development, investor relations, media, data room access, and careers. Based in Irvine, California.",
-  alternates: { canonical: "/contact" },
-  openGraph: {
-    title: "Contact | EndoCyclic Therapeutics",
-    description:
-      "Get in touch with EndoCyclic Therapeutics — partnership, investor relations, media, and general inquiries.",
-    url: "https://endocyclic.com/contact",
-  },
-};
+  path: "/contact",
+  socialDescription:
+    "Get in touch with EndoCyclic Therapeutics — partnership, investor relations, media, and general inquiries.",
+});
 
 export default function ContactLayout({
   children,
@@ -21,25 +23,32 @@ export default function ContactLayout({
     "@context": "https://schema.org",
     "@type": "ContactPage",
     name: "Contact EndoCyclic Therapeutics",
-    url: "https://endocyclic.com/contact",
+    url: `${SITE_ORIGIN}/contact`,
     description:
       "Contact EndoCyclic Therapeutics for partnership, investor relations, media, data room access, and general inquiries.",
+    isPartOf: { "@id": WEBSITE_ID },
     mainEntity: {
-      "@type": "Organization",
-      name: SITE.legalName,
-      email: SITE.email,
+      "@type": "Corporation",
+      "@id": ORGANIZATION_ID,
+      name: SITE.name,
+      legalName: SITE.legalName,
+      ...(SITE.email ? { email: SITE.email } : {}),
       address: {
         "@type": "PostalAddress",
         addressLocality: "Irvine",
         addressRegion: "CA",
         addressCountry: "US",
       },
-      contactPoint: {
-        "@type": "ContactPoint",
-        contactType: "General inquiries",
-        email: SITE.email,
-      },
-      sameAs: [SITE.linkedin, SITE.twitter],
+      ...(SITE.email
+        ? {
+            contactPoint: {
+              "@type": "ContactPoint",
+              contactType: "General inquiries",
+              email: SITE.email,
+            },
+          }
+        : {}),
+      sameAs: [SITE.linkedin],
     },
   };
 

@@ -39,10 +39,10 @@ export default function PhaseTimeline() {
         EndoCyclic development pipeline by clinical phase
       </title>
       <desc id="phasetimeline-desc">
-        A horizontal axis across six phases — Discovery, Preclinical,
+        A horizontal axis across six phases — Discovery, Pre-clinical,
         IND-enabling, Phase 1, Phase 2, and Phase 3. ENDO-205 (therapeutic) is
         at Phase 1; FemLUNA (diagnostic) is IND-enabling; ENDO-995 (therapeutic)
-        and ENDO-311 (diagnostic) are Preclinical. Filled teal dots mark
+        and ENDO-311 (diagnostic) are Pre-clinical. Filled teal dots mark
         therapeutics; open teal rings mark diagnostics.
       </desc>
 

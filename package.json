@@ -6,31 +6,41 @@
     "node": ">=20.9.0",
     "npm": ">=10.0.0"
   },
+  "overrides": {
+    "micromatch": {
+      "picomatch": "2.3.2"
+    },
+    "postcss": "8.5.22",
+    "sharp": "0.35.3"
+  },
   "scripts": {
     "dev": "next dev",
+    "dev:concepts": "node scripts/dev-concepts.mjs",
+    "prebuild": "node scripts/check-production-surface.mjs prebuild",
     "build": "next build",
+    "postbuild": "node scripts/check-production-surface.mjs postbuild",
     "start": "next start",
     "lint": "eslint",
+    "pdf:investor": "node scripts/generate-investor-pdf.mjs",
+    "portrait:generate": "node scripts/generate-leadership-portrait.mjs",
+    "media:generate": "node scripts/generate-leadership-portrait.mjs && node scripts/generate-media-kit.mjs",
+    "social:generate": "node scripts/generate-social-cards.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@gsap/react": "^2.1.2",
-    "@sentry/nextjs": "^10.43.0",
+    "@sentry/nextjs": "^10.67.0",
     "clsx": "^2.1.1",
-    "embla-carousel-react": "^8.6.0",
-    "framer-motion": "^12.23.25",
     "gsap": "^3.15.0",
     "lucide-react": "^0.554.0",
-    "next": "^16.0.10",
-    "pdf-lib": "^1.17.1",
-    "posthog-js": "^1.360.1",
+    "next": "^16.2.11",
+    "posthog-js": "^1.407.2",
     "react": "19.2.1",
     "react-dom": "19.2.1",
-    "resend": "^6.9.3",
-    "tailwind-merge": "^3.4.0"
+    "resend": "^6.18.0"
   },
   "devDependencies": {
+    "@gsap/react": "^2.1.2",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -38,8 +48,9 @@
     "@types/node": "^20",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19",
+    "embla-carousel-react": "^8.6.0",
     "eslint": "^9",
-    "eslint-config-next": "16.0.7",
+    "eslint-config-next": "16.2.11",
     "jsdom": "^28.1.0",
     "tailwindcss": "^4",
     "typescript": "^5",

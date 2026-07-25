@@ -1,26 +1,33 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { clsx } from "clsx";
+import ArtDirectedImage from "@/components/site/ArtDirectedImage";
 import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-  type Variants,
-} from "framer-motion";
-import { PHASES, PIPELINE, type Area } from "@/lib/site";
+  ENDO205_MECHANISM_ALT,
+  ENDO205_MECHANISM_IMAGE,
+  ENDO205_PORTFOLIO_IMAGE,
+  PHASES,
+  PIPELINE,
+  type Area,
+} from "@/lib/site";
 
 type ProgramPresentation = {
   image: string;
+  mobileImage?: string;
   imageAlt: string;
+  imageFit?: string;
   imagePosition: string;
   currentStage: string;
-  stageNote?: string;
   href: string;
 };
+
+type PortfolioOrientation = "horizontal" | "vertical";
+
+const PORTFOLIO_VERTICAL_QUERY = "(min-width: 1024px)";
 
 const AREA_PRESENTATION: Record<
   Area,
@@ -32,7 +39,7 @@ const AREA_PRESENTATION: Record<
   }
 > = {
   Endometriosis: {
-    label: "text-[#efb2bf]",
+    label: "text-rose-on-dark",
     markerFill: "bg-rose",
     markerBorder: "border-rose",
     stripe: "bg-rose/70",
@@ -47,16 +54,16 @@ const AREA_PRESENTATION: Record<
 
 const PRESENTATION: Record<string, ProgramPresentation> = {
   "ENDO-205": {
-    image: "/illustrations/endo-205-translation-v1.avif",
-    imageAlt:
-      "Conceptual illustration of a precision peptide activating at an endometriosis lesion boundary and undergoing selective uptake.",
+    image: ENDO205_PORTFOLIO_IMAGE,
+    mobileImage: ENDO205_MECHANISM_IMAGE,
+    imageAlt: ENDO205_MECHANISM_ALT,
+    imageFit: "object-cover",
     imagePosition: "object-center",
     currentStage: "Phase 1",
-    stageNote: "FDA IND Allowance · 2026",
     href: "/pipeline#endo-205",
   },
   FemLUNA: {
-    image: "/illustrations/femluna-targeting-v2.avif",
+    image: "/illustrations/femluna-targeting-v3.avif",
     imageAlt:
       "Conceptual anatomical illustration of a targeted imaging agent near endometriosis tissue.",
     imagePosition: "object-[62%_center]",
@@ -64,89 +71,190 @@ const PRESENTATION: Record<string, ProgramPresentation> = {
     href: "/pipeline#femluna",
   },
   "ENDO-995": {
-    image: "/illustrations/oncology-pair-v2.avif",
+    image: "/illustrations/endo-995-intracellular-v4.avif",
     imageAlt:
-      "Conceptual illustration of a precision peptide entering diseased tissue.",
-    imagePosition: "object-[78%_center]",
-    currentStage: "Pre-clinical",
-    href: "/pipeline#oncology",
-  },
-  "ENDO-311": {
-    image: "/illustrations/endo-311-localization-v1.avif",
-    imageAlt:
-      "Conceptual illustration of a targeted imaging agent localizing at a solid-tumor focus.",
+      "Conceptual illustration of a tumor-selective cyclic peptide crossing a tumor-cell membrane toward an intracellular target.",
     imagePosition: "object-center",
     currentStage: "Pre-clinical",
-    href: "/pipeline#oncology",
+    href: "/pipeline#endo-995",
+  },
+  "ENDO-311": {
+    image: "/illustrations/endo-311-localization-pair-v4.avif",
+    imageAlt:
+      "Conceptual illustration of a targeted imaging agent localizing around an intact solid-tumor focus.",
+    imagePosition: "object-center",
+    currentStage: "Pre-clinical",
+    href: "/pipeline#endo-311",
   },
 };
 
-const IMAGE_VARIANTS: Variants = {
-  enter: (direction: number) => ({
-    clipPath:
-      direction >= 0 ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
-    opacity: 0.72,
-    scale: 1.025,
-  }),
-  center: {
-    clipPath: "inset(0 0 0 0)",
-    opacity: 1,
-    scale: 1,
-  },
-  exit: (direction: number) => ({
-    clipPath:
-      direction >= 0 ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)",
-    opacity: 0.56,
-    scale: 0.99,
-  }),
-};
+function PortfolioProgramImage({
+  presentation,
+  alt,
+}: {
+  presentation: ProgramPresentation;
+  alt: string;
+}) {
+  const imageClassName = clsx(
+    presentation.imageFit ?? "object-contain sm:object-cover",
+    presentation.imagePosition,
+  );
 
-const DETAIL_CONTAINER_VARIANTS: Variants = {
-  enter: { opacity: 0 },
-  center: {
-    opacity: 1,
-    transition: {
-      duration: 0.2,
-      delayChildren: 0.035,
-      staggerChildren: 0.055,
-    },
-  },
-  exit: {
-    opacity: 0,
-    transition: { duration: 0.16 },
-  },
-};
+  if (presentation.mobileImage) {
+    return (
+      <ArtDirectedImage
+        desktopSrc={presentation.image}
+        mobileSrc={presentation.mobileImage}
+        alt={alt}
+        sizes="(min-width: 1184px) 650px, (min-width: 1024px) 55vw, 100vw"
+        mobileSizes="100vw"
+        mobileMedia="(max-width: 63.999rem)"
+        desktopMedia="(min-width: 64rem)"
+        className={imageClassName}
+      />
+    );
+  }
 
-const DETAIL_ITEM_VARIANTS: Variants = {
-  enter: (direction: number) => ({
-    opacity: 0,
-    y: direction >= 0 ? 18 : -14,
-  }),
-  center: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.48, ease: [0.22, 1, 0.36, 1] },
-  },
-  exit: (direction: number) => ({
-    opacity: 0,
-    y: direction >= 0 ? -10 : 10,
-    transition: { duration: 0.18, ease: "easeOut" },
-  }),
-};
+  return (
+    <Image
+      src={presentation.image}
+      alt={alt}
+      fill
+      sizes="(min-width: 1184px) 650px, (min-width: 1024px) 55vw, 100vw"
+      className={imageClassName}
+    />
+  );
+}
 
 function firstSentence(summary: string) {
   const [sentence] = summary.split(". ");
   return sentence.endsWith(".") ? sentence : `${sentence}.`;
 }
 
+function StaticPortfolio({
+  titleId,
+  printOnly = false,
+}: {
+  titleId: string;
+  printOnly?: boolean;
+}) {
+  return (
+    <section
+      data-home-portfolio-print={printOnly ? "" : undefined}
+      aria-labelledby={titleId}
+      className={clsx(
+        "mb-5 overflow-hidden rounded-bl-[2rem] rounded-tr-[2rem] border border-line bg-surface",
+        printOnly && "hidden print:block",
+      )}
+    >
+      <div className="border-b border-line px-5 py-6 sm:px-7">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-ink">
+          Development portfolio
+        </p>
+        <h3
+          id={titleId}
+          className="mt-2 text-2xl font-medium tracking-[-0.025em] text-ink"
+        >
+          Browse every program
+        </h3>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+          Open a program brief for its indication, modality, and current
+          development stage.
+        </p>
+      </div>
+
+      <ol className="grid list-none divide-y divide-line sm:grid-cols-2 sm:divide-y-0">
+        {PIPELINE.map((program, index) => {
+          const presentation = PRESENTATION[program.id];
+
+          return (
+            <li
+              key={program.id}
+              className={clsx(
+                "min-w-0",
+                index % 2 === 0 && "sm:border-r sm:border-line",
+                index >= 2 && "sm:border-t sm:border-line",
+              )}
+            >
+              <Link
+                href={presentation.href}
+                prefetch={false}
+                className="group flex h-full min-h-44 flex-col px-5 py-5 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-teal-ink sm:px-7"
+              >
+                <span className="text-xs font-semibold uppercase tracking-[0.11em] text-rose-ink">
+                  {program.area} · {program.modality}
+                </span>
+                <span className="mt-3 text-2xl font-medium tracking-[-0.03em] text-ink">
+                  {program.name}
+                </span>
+                <span className="mt-2 text-sm leading-relaxed text-muted">
+                  {program.indication}
+                </span>
+                <span className="mt-auto flex items-center justify-between gap-4 pt-5 text-sm font-semibold text-teal-ink">
+                  <span>{presentation.currentStage}</span>
+                  <span className="inline-flex items-center gap-2">
+                    View brief
+                    <ArrowRight aria-hidden size={16} />
+                  </span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
 export default function HomePortfolioField() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const [direction, setDirection] = useState(1);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [primedIndex, setPrimedIndex] = useState<number | null>(null);
+  const [tabOrientation, setTabOrientation] =
+    useState<PortfolioOrientation>("horizontal");
   const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const prefersReducedMotion = useReducedMotion();
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const primeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeProgram = PIPELINE[activeIndex];
   const activePresentation = PRESENTATION[activeProgram.id];
+  const previousProgram =
+    previousIndex === null ? null : PIPELINE[previousIndex];
+  const previousPresentation = previousProgram
+    ? PRESENTATION[previousProgram.id]
+    : null;
+  const primedProgram =
+    primedIndex === null ? null : PIPELINE[primedIndex];
+  const primedPresentation = primedProgram
+    ? PRESENTATION[primedProgram.id]
+    : null;
+
+  useEffect(
+    () => () => {
+      if (transitionTimerRef.current) {
+        clearTimeout(transitionTimerRef.current);
+      }
+      if (primeTimerRef.current) {
+        clearTimeout(primeTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+
+    const media = window.matchMedia(PORTFOLIO_VERTICAL_QUERY);
+    const updateOrientation = () => {
+      setTabOrientation(media.matches ? "vertical" : "horizontal");
+    };
+
+    updateOrientation();
+    media.addEventListener("change", updateOrientation);
+    return () => media.removeEventListener("change", updateOrientation);
+  }, []);
 
   function activateProgram(nextIndex: number, moveFocus = false) {
     if (nextIndex === activeIndex) {
@@ -156,8 +264,26 @@ export default function HomePortfolioField() {
       return;
     }
 
+    const prefersReducedMotion =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (transitionTimerRef.current) {
+      clearTimeout(transitionTimerRef.current);
+    }
+
+    setPreviousIndex(prefersReducedMotion ? null : activeIndex);
     setDirection(nextIndex > activeIndex ? 1 : -1);
+    setHasInteracted(true);
+    setPrimedIndex(null);
     setActiveIndex(nextIndex);
+
+    if (!prefersReducedMotion) {
+      transitionTimerRef.current = setTimeout(() => {
+        setPreviousIndex(null);
+        transitionTimerRef.current = null;
+      }, 760);
+    }
 
     if (moveFocus) {
       requestAnimationFrame(() => {
@@ -174,21 +300,38 @@ export default function HomePortfolioField() {
     }
   }
 
+  function primeProgram(index: number) {
+    if (index === activeIndex) return;
+
+    setPrimedIndex(index);
+  }
+
+  function cancelScheduledPrime() {
+    if (!primeTimerRef.current) return;
+    clearTimeout(primeTimerRef.current);
+    primeTimerRef.current = null;
+  }
+
+  function scheduleProgramPrime(index: number) {
+    cancelScheduledPrime();
+    primeTimerRef.current = setTimeout(() => {
+      primeProgram(index);
+      primeTimerRef.current = null;
+    }, 120);
+  }
+
   function handleKeyDown(
     event: React.KeyboardEvent<HTMLButtonElement>,
     index: number,
   ) {
     let nextIndex: number | null = null;
 
+    const forwardKey =
+      tabOrientation === "vertical" ? "ArrowDown" : "ArrowRight";
+    const backwardKey =
+      tabOrientation === "vertical" ? "ArrowUp" : "ArrowLeft";
+
     switch (event.key) {
-      case "ArrowRight":
-      case "ArrowDown":
-        nextIndex = (index + 1) % PIPELINE.length;
-        break;
-      case "ArrowLeft":
-      case "ArrowUp":
-        nextIndex = (index - 1 + PIPELINE.length) % PIPELINE.length;
-        break;
       case "Home":
         nextIndex = 0;
         break;
@@ -196,7 +339,13 @@ export default function HomePortfolioField() {
         nextIndex = PIPELINE.length - 1;
         break;
       default:
-        return;
+        if (event.key === forwardKey) {
+          nextIndex = (index + 1) % PIPELINE.length;
+        } else if (event.key === backwardKey) {
+          nextIndex = (index - 1 + PIPELINE.length) % PIPELINE.length;
+        } else {
+          return;
+        }
     }
 
     event.preventDefault();
@@ -209,13 +358,31 @@ export default function HomePortfolioField() {
 
   return (
     <figure>
+      <noscript>
+        <style>{`
+          [data-home-portfolio-enhanced] { display: none !important; }
+          [data-home-portfolio-print] { display: none !important; }
+        `}</style>
+        <StaticPortfolio titleId="home-portfolio-static-title" />
+      </noscript>
+
+      <StaticPortfolio
+        titleId="home-portfolio-print-title"
+        printOnly
+      />
+
       <section
+        data-home-portfolio-enhanced
         aria-label="EndoCyclic development portfolio"
         className="relative overflow-hidden rounded-bl-[2.5rem] rounded-tr-[2.5rem] border border-line bg-surface shadow-[0_30px_90px_rgb(57_38_56/0.12)] sm:rounded-bl-[4rem] sm:rounded-tr-[4rem]"
       >
         <p id={instructionsId} className="sr-only">
-          Select a program to update the portfolio detail. Use the arrow keys,
-          Home, or End to move between programs.
+          Select a program to update the portfolio detail. Use the{" "}
+          {tabOrientation === "vertical"
+            ? "Up and Down arrow keys"
+            : "Left and Right arrow keys"}{" "}
+          to move between programs. Home and End move to the first and last
+          program.
         </p>
 
         <div className="grid lg:min-h-[44rem] lg:grid-cols-12">
@@ -238,103 +405,116 @@ export default function HomePortfolioField() {
               <span className="absolute inset-x-0 top-0 h-1/2 bg-rose/70" />
               <span className="absolute inset-x-0 bottom-0 h-1/2 bg-teal/70" />
             </div>
-            <ol
-              role="tablist"
-              aria-label="Development programs"
-              aria-describedby={instructionsId}
-              className="grid list-none grid-cols-2 gap-px bg-line-on-dark sm:grid-cols-4 lg:h-full lg:grid-cols-1 lg:grid-rows-4 lg:gap-0 lg:bg-transparent"
+            <div
+              style={
+                {
+                  "--portfolio-index": activeIndex,
+                } as React.CSSProperties
+              }
+              className="relative overflow-hidden lg:h-full"
             >
-              {PIPELINE.map((program, index) => {
-                const areaPresentation = AREA_PRESENTATION[program.area];
-                const isActive = index === activeIndex;
-                const buttonId = `home-portfolio-${program.id.toLowerCase()}-tab`;
+              <span
+                aria-hidden
+                className="portfolio-active-surface pointer-events-none absolute z-10 hidden bg-plum-deep lg:block"
+              />
+              <ol
+                role="tablist"
+                aria-label="Development programs"
+                aria-describedby={instructionsId}
+                aria-orientation={tabOrientation}
+                className="no-scrollbar relative flex list-none snap-x snap-mandatory gap-px overflow-x-auto overscroll-x-contain bg-line-on-dark lg:grid lg:h-full lg:grid-cols-1 lg:grid-rows-4 lg:gap-0 lg:overflow-hidden lg:bg-transparent"
+              >
+                {PIPELINE.map((program, index) => {
+                  const areaPresentation = AREA_PRESENTATION[program.area];
+                  const programPresentation = PRESENTATION[program.id];
+                  const isActive = index === activeIndex;
+                  const buttonId = `home-portfolio-${program.id.toLowerCase()}-tab`;
 
-                return (
-                  <li
-                    key={program.id}
-                    role="presentation"
-                    className="min-w-0 bg-plum lg:border-b lg:border-line-on-dark lg:last:border-b-0"
-                  >
-                    <button
-                      ref={(node) => {
-                        buttonRefs.current[index] = node;
-                      }}
-                      id={buttonId}
-                      type="button"
-                      role="tab"
-                      aria-selected={isActive}
-                      aria-controls={panelId}
-                      tabIndex={isActive ? 0 : -1}
-                      onClick={() => activateProgram(index)}
-                      onKeyDown={(event) => handleKeyDown(event, index)}
-                      className={clsx(
-                        "group relative flex min-h-[7.5rem] w-full items-center gap-3 overflow-hidden px-4 py-4 text-left transition-colors duration-300 focus-visible:z-20 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-teal-on-dark sm:min-h-[8rem] sm:px-5 lg:h-full lg:min-h-0 lg:gap-4 lg:py-5 lg:pl-14 lg:pr-8",
-                        isActive
-                          ? "text-on-dark"
-                          : "text-muted-on-dark hover:bg-plum-deep/45 hover:text-on-dark",
-                      )}
+                  return (
+                    <li
+                      key={program.id}
+                      role="presentation"
+                      className="w-[82vw] max-w-72 shrink-0 snap-start bg-plum sm:w-64 lg:w-auto lg:max-w-none lg:min-w-0 lg:border-b lg:border-line-on-dark lg:last:border-b-0"
                     >
-                      {isActive && (
-                        <motion.span
-                          layoutId="home-portfolio-active-program"
-                          aria-hidden
-                          className="absolute inset-0 z-0 bg-plum-deep"
-                          transition={
-                            prefersReducedMotion
-                              ? { duration: 0 }
-                              : { duration: 0.48, ease: [0.22, 1, 0.36, 1] }
-                          }
-                        />
-                      )}
-                      <span aria-hidden className={`absolute inset-y-0 left-0 z-20 w-1 ${areaPresentation.stripe}`} />
-                      {isActive && (
+                      <button
+                        ref={(node) => {
+                          buttonRefs.current[index] = node;
+                        }}
+                        id={buttonId}
+                        type="button"
+                        role="tab"
+                        aria-selected={isActive}
+                        aria-controls={panelId}
+                        tabIndex={isActive ? 0 : -1}
+                        onPointerEnter={() => scheduleProgramPrime(index)}
+                        onPointerLeave={cancelScheduledPrime}
+                        onPointerDown={() => {
+                          cancelScheduledPrime();
+                          primeProgram(index);
+                        }}
+                        onFocus={() => {
+                          cancelScheduledPrime();
+                          primeProgram(index);
+                        }}
+                        onClick={() => activateProgram(index)}
+                        onKeyDown={(event) => handleKeyDown(event, index)}
+                        className={clsx(
+                          "group relative z-20 flex min-h-[7.5rem] w-full items-center gap-3 overflow-hidden px-4 py-4 text-left transition-colors duration-300 focus-visible:z-30 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-teal-on-dark sm:min-h-[8rem] sm:px-5 lg:h-full lg:min-h-0 lg:gap-4 lg:py-5 lg:pl-14 lg:pr-8",
+                          isActive
+                            ? "bg-plum-deep text-on-dark lg:bg-transparent"
+                            : "text-muted-on-dark hover:bg-plum-deep/45 hover:text-on-dark",
+                        )}
+                      >
+                        <span aria-hidden className={`absolute inset-y-0 left-0 z-20 w-1 ${areaPresentation.stripe}`} />
+                        {isActive && (
+                          <span
+                            aria-hidden
+                            className="absolute right-3 top-3 z-20 h-2 w-2 rounded-full bg-gold lg:hidden"
+                          />
+                        )}
                         <span
                           aria-hidden
-                          className="absolute right-3 top-3 z-20 h-2 w-2 rounded-full bg-gold lg:hidden"
-                        />
-                      )}
-                      <span
-                        aria-hidden
-                        className={clsx(
-                          "relative z-10 hidden shrink-0 rounded-full transition-transform duration-300 lg:absolute lg:left-[1.31rem] lg:top-1/2 lg:block lg:-translate-y-1/2",
-                          isActive ? "h-5 w-5 scale-100" : "h-3.5 w-3.5 scale-75",
-                          program.modality === "Diagnostic"
-                            ? `border-2 bg-plum ${areaPresentation.markerBorder}`
-                            : `border-[3px] border-plum ${areaPresentation.markerFill}`,
-                        )}
-                      />
-                      <span className="relative z-10 min-w-0 flex-1">
-                        <span className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-                          <span className={`text-[0.7rem] font-semibold uppercase tracking-[0.08em] sm:text-xs lg:text-[0.68rem] lg:tracking-[0.13em] ${areaPresentation.label}`}>
-                            {program.area}
-                            <span className="block text-muted-on-dark min-[390px]:inline"> · {program.modality}</span>
-                          </span>
-                          {isActive && (
-                            <span className="hidden text-xs font-semibold uppercase tracking-[0.12em] text-gold lg:inline">
-                              Viewing
-                            </span>
+                          className={clsx(
+                            "relative z-10 hidden shrink-0 rounded-full transition-transform duration-300 lg:absolute lg:left-[1.31rem] lg:top-1/2 lg:block lg:-translate-y-1/2",
+                            isActive ? "h-5 w-5 scale-100" : "h-3.5 w-3.5 scale-75",
+                            program.modality === "Diagnostic"
+                              ? `border-2 bg-plum ${areaPresentation.markerBorder}`
+                              : `border-[3px] border-plum ${areaPresentation.markerFill}`,
                           )}
+                        />
+                        <span className="relative z-10 min-w-0 flex-1">
+                          <span className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                            <span className={`text-xs font-semibold uppercase tracking-[0.1em] lg:tracking-[0.13em] ${areaPresentation.label}`}>
+                              {program.area}
+                              <span className="block text-muted-on-dark min-[390px]:inline"> · {program.modality}</span>
+                            </span>
+                            {isActive && (
+                              <span className="hidden text-xs font-semibold uppercase tracking-[0.12em] text-gold lg:inline">
+                                Viewing
+                              </span>
+                            )}
+                          </span>
+                          <span className="mt-2 block text-lg font-medium leading-none tracking-[-0.025em] text-on-dark sm:text-xl lg:text-[clamp(1.35rem,2.5vw,1.85rem)]">
+                            {program.name}
+                          </span>
+                          <span className="mt-2 block text-sm leading-snug text-muted-on-dark">
+                            {programPresentation.currentStage}
+                          </span>
                         </span>
-                        <span className="mt-2 block text-lg font-medium leading-none tracking-[-0.025em] text-on-dark sm:text-xl lg:text-[clamp(1.35rem,2.5vw,1.85rem)]">
-                          {program.name}
-                        </span>
-                        <span className="mt-2 block text-sm leading-snug text-muted-on-dark">
-                          {program.stage}
-                        </span>
-                      </span>
-                      <ArrowRight
-                        aria-hidden
-                        size={17}
-                        className={clsx(
-                          "relative z-10 hidden shrink-0 transition-transform duration-300 ease-soft lg:block",
-                          isActive ? "translate-x-0 text-gold" : "-translate-x-1 text-muted-on-dark group-hover:translate-x-0",
-                        )}
-                      />
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
+                        <ArrowRight
+                          aria-hidden
+                          size={17}
+                          className={clsx(
+                            "relative z-10 hidden shrink-0 transition-transform duration-300 ease-soft lg:block",
+                            isActive ? "translate-x-0 text-gold" : "-translate-x-1 text-muted-on-dark group-hover:translate-x-0",
+                          )}
+                        />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
           </div>
 
           <div
@@ -344,111 +524,121 @@ export default function HomePortfolioField() {
             className="flex min-w-0 flex-col lg:col-span-7 lg:col-start-1 lg:row-start-1"
           >
             <div className="relative aspect-[4/3] min-h-0 flex-1 overflow-hidden bg-tint-warm sm:aspect-[16/10] sm:min-h-[22rem] lg:aspect-auto lg:min-h-0">
-              <AnimatePresence initial={false} custom={direction} mode="sync">
-                <motion.div
-                  key={activeProgram.id}
-                  custom={direction}
-                  variants={IMAGE_VARIANTS}
-                  initial={prefersReducedMotion ? false : "enter"}
-                  animate="center"
-                  exit={prefersReducedMotion ? undefined : "exit"}
-                  transition={
-                    prefersReducedMotion
-                      ? { duration: 0 }
-                      : { duration: 0.68, ease: [0.22, 1, 0.36, 1] }
-                  }
-                  className="absolute inset-0 transform-gpu will-change-[clip-path,transform]"
+              {primedProgram &&
+              primedPresentation &&
+              primedIndex !== activeIndex &&
+              primedIndex !== previousIndex ? (
+                <div
+                  key={`${primedProgram.id}-primed`}
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 opacity-0"
                 >
-                  <Image
-                    src={activePresentation.image}
-                    alt={activePresentation.imageAlt}
-                    fill
-                    sizes="(min-width: 1184px) 650px, (min-width: 1024px) 55vw, 100vw"
-                    className={clsx(
-                      "object-contain sm:object-cover",
-                      activePresentation.imagePosition,
-                    )}
+                  <PortfolioProgramImage
+                    presentation={primedPresentation}
+                    alt=""
                   />
-                </motion.div>
-              </AnimatePresence>
-              <div
-                aria-hidden
-                className="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"
-              />
-              <AnimatePresence initial={false} mode="wait">
-                <motion.div
-                  key={`${activeProgram.id}-media-label`}
-                  initial={prefersReducedMotion ? false : { opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -6 }}
-                  transition={
-                    prefersReducedMotion
-                      ? { duration: 0 }
-                      : { duration: 0.32, ease: [0.22, 1, 0.36, 1] }
-                  }
-                  className="absolute left-5 top-5 bg-plum px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-on-dark sm:left-7 sm:top-7"
+                </div>
+              ) : null}
+              {previousProgram && previousPresentation ? (
+                <div
+                  key={`${previousProgram.id}-previous`}
+                  aria-hidden
+                  onAnimationEnd={() => setPreviousIndex(null)}
+                  className={clsx(
+                    "portfolio-image-exit absolute inset-0 z-0 transform-gpu",
+                    direction >= 0
+                      ? "portfolio-image-exit-forward"
+                      : "portfolio-image-exit-reverse",
+                  )}
                 >
-                  {activeProgram.area} · {activeProgram.modality}
-                </motion.div>
-              </AnimatePresence>
+                  <PortfolioProgramImage
+                    presentation={previousPresentation}
+                    alt=""
+                  />
+                </div>
+              ) : null}
+              <div
+                key={activeProgram.id}
+                className={clsx(
+                  "absolute inset-0 z-10 transform-gpu",
+                  hasInteracted && "portfolio-image-enter",
+                  hasInteracted &&
+                    (direction >= 0
+                      ? "portfolio-image-enter-forward"
+                      : "portfolio-image-enter-reverse"),
+                )}
+              >
+                <PortfolioProgramImage
+                  presentation={activePresentation}
+                  alt={activePresentation.imageAlt}
+                />
+              </div>
               <div
                 aria-hidden
-                className="absolute bottom-7 right-7 hidden h-16 w-16 rounded-full border border-rose/45 sm:block"
+                className="absolute inset-x-0 bottom-0 z-20 h-20 bg-gradient-to-t from-surface/70 to-transparent"
+              />
+              <div
+                key={`${activeProgram.id}-media-label`}
+                className={clsx(
+                  "absolute left-5 top-5 z-30 bg-plum px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-on-dark sm:left-7 sm:top-7",
+                  hasInteracted && "portfolio-copy-enter",
+                )}
               >
-                <span className="absolute inset-[0.42rem] rounded-full border border-teal/45" />
-                <span className="absolute inset-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold" />
+                {activeProgram.area} · {activeProgram.modality}
               </div>
+              {activeProgram.id !== "ENDO-205" ? (
+                <div
+                  aria-hidden
+                  className="absolute bottom-7 right-7 z-30 hidden h-16 w-16 rounded-full border border-rose/45 sm:block"
+                >
+                  <span className="absolute inset-[0.42rem] rounded-full border border-teal/45" />
+                  <span className="absolute inset-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold" />
+                </div>
+              ) : null}
             </div>
 
             <div className="flex min-h-[21rem] flex-col bg-surface px-5 pb-7 pt-1 sm:px-8 sm:pb-8 lg:px-10 lg:pb-9">
-              <AnimatePresence initial={false} custom={direction} mode="wait">
-                <motion.div
-                  key={`${activeProgram.id}-details`}
-                  custom={direction}
-                  variants={DETAIL_CONTAINER_VARIANTS}
-                  initial={prefersReducedMotion ? false : "enter"}
-                  animate="center"
-                  exit={prefersReducedMotion ? undefined : "exit"}
-                >
+              <div
+                key={`${activeProgram.id}-details`}
+                className={clsx(
+                  hasInteracted && "portfolio-details-enter",
+                  hasInteracted &&
+                    (direction >= 0
+                      ? "portfolio-details-enter-forward"
+                      : "portfolio-details-enter-reverse"),
+                )}
+              >
                   <div className="grid gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(10.5rem,0.58fr)] sm:items-end sm:gap-8">
-                    <motion.div
-                      custom={direction}
-                      variants={DETAIL_ITEM_VARIANTS}
-                    >
-                      <p className="text-sm font-semibold uppercase tracking-[0.11em] text-rose-ink md:text-[0.7rem] md:tracking-[0.14em]">
+                    <div data-portfolio-detail="title">
+                      <p className="text-sm font-semibold uppercase tracking-[0.11em] text-rose-ink md:text-xs md:tracking-[0.14em]">
                         {activeProgram.indication}
                       </p>
-                      <h3 className="mt-3 text-[clamp(2.35rem,5vw,4.6rem)] font-medium leading-[0.94] tracking-[-0.045em] text-ink">
+                      <h3
+                        className="mt-3 text-[clamp(2.35rem,5vw,4.6rem)] font-medium leading-[0.94] tracking-[-0.045em] text-ink"
+                        style={{ whiteSpace: "nowrap" }}
+                      >
                         {activeProgram.name}
                       </h3>
-                    </motion.div>
+                    </div>
 
-                    <motion.div
-                      custom={direction}
-                      variants={DETAIL_ITEM_VARIANTS}
+                    <div
+                      data-portfolio-detail="stage"
                       className="border-l border-line pl-5 sm:pb-1"
                     >
-                      <p className="text-sm text-muted">Current development</p>
-                      <p className="mt-1 text-xl font-medium leading-tight text-ink">
-                        {activePresentation.currentStage}
+                      <p className="text-sm text-muted">Program design</p>
+                      <p className="mt-1 text-base font-medium leading-snug text-ink sm:text-lg">
+                        {activeProgram.mechanism}
                       </p>
-                      {activePresentation.stageNote && (
-                        <p className="mt-2 text-sm leading-snug text-rose-ink">
-                          {activePresentation.stageNote}
-                        </p>
-                      )}
-                    </motion.div>
+                    </div>
                   </div>
 
-                  <motion.p
-                    custom={direction}
-                    variants={DETAIL_ITEM_VARIANTS}
+                  <p
+                    data-portfolio-detail="summary"
                     className="mt-6 max-w-2xl text-base leading-relaxed text-muted"
                   >
                     {firstSentence(activeProgram.summary)}
-                  </motion.p>
-                </motion.div>
-              </AnimatePresence>
+                  </p>
+              </div>
 
               <div className="mt-auto pt-7">
                 <div className="border-t border-line pt-5 sm:hidden">
@@ -475,20 +665,14 @@ export default function HomePortfolioField() {
                           <span className="relative flex h-4 w-4 shrink-0 items-center justify-center">
                             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-line" />
                             {isCurrent && (
-                              <motion.span
-                                layoutId="home-portfolio-mobile-stage-marker"
+                              <span
                                 aria-hidden
                                 className={clsx(
-                                  "absolute inset-0 rounded-full",
+                                  "portfolio-stage-pop absolute inset-0 rounded-full",
                                   activeProgram.modality === "Diagnostic"
                                     ? `border-2 bg-surface ${AREA_PRESENTATION[activeProgram.area].markerBorder}`
                                     : `border-[3px] border-surface ${AREA_PRESENTATION[activeProgram.area].markerFill}`,
                                 )}
-                                transition={
-                                  prefersReducedMotion
-                                    ? { duration: 0 }
-                                    : { duration: 0.42, ease: [0.22, 1, 0.36, 1] }
-                                }
                               />
                             )}
                           </span>
@@ -513,38 +697,36 @@ export default function HomePortfolioField() {
                       className="absolute inset-x-[8.333%] top-1/2 h-px -translate-y-1/2 bg-line"
                     />
                     <div aria-hidden className="absolute inset-0 grid grid-cols-6">
-                      {PHASES.map((phase, index) => (
+                      {PHASES.map((phase) => (
                         <span key={phase} className="relative">
                           <span className="absolute left-1/2 top-1/2 h-2 w-px -translate-x-1/2 -translate-y-1/2 bg-line" />
-                          {index === activeProgram.phaseIndex && (
-                            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                              <motion.span
-                                layoutId="home-portfolio-stage-marker"
-                                transition={
-                                  prefersReducedMotion
-                                    ? { duration: 0 }
-                                    : {
-                                        duration: 0.52,
-                                        ease: [0.22, 1, 0.36, 1],
-                                      }
-                                }
-                                className={clsx(
-                                  "block h-4 w-4 rounded-full shadow-[0_0_0_1px_rgb(57_38_56/0.12)]",
-                                  activeProgram.modality === "Diagnostic"
-                                    ? `border-2 bg-surface ${AREA_PRESENTATION[activeProgram.area].markerBorder}`
-                                    : `border-[3px] border-surface ${AREA_PRESENTATION[activeProgram.area].markerFill}`,
-                                )}
-                              />
-                            </span>
-                          )}
                         </span>
                       ))}
                     </div>
+                    <span
+                      aria-hidden
+                      style={
+                        {
+                          "--portfolio-stage-index": activeProgram.phaseIndex,
+                        } as React.CSSProperties
+                      }
+                      className="portfolio-stage-track absolute inset-y-0 left-0 flex w-1/6 items-center justify-center"
+                    >
+                      <span
+                        className={clsx(
+                          "block h-4 w-4 rounded-full shadow-[0_0_0_1px_rgb(57_38_56/0.12)]",
+                          activeProgram.modality === "Diagnostic"
+                            ? `border-2 bg-surface ${AREA_PRESENTATION[activeProgram.area].markerBorder}`
+                            : `border-[3px] border-surface ${AREA_PRESENTATION[activeProgram.area].markerFill}`,
+                        )}
+                      />
+                    </span>
                   </div>
                 </div>
 
                 <Link
                   href={activePresentation.href}
+                  prefetch={false}
                   className="group mt-2 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-teal-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-ink sm:mt-3"
                 >
                   Open program brief
@@ -561,8 +743,11 @@ export default function HomePortfolioField() {
       </section>
 
       <figcaption className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
-        Conceptual representations of investigational programs; imagery does not
-        depict clinical results or comparative development performance.
+        Conceptual representations of investigational programs. For ENDO-205,
+        the intact peptide remains visible within diseased tissue before a
+        separate state shows that same lesion receding to represent the preclinical
+        lesion-elimination finding; imagery does not depict clinical results or
+        restored-tissue histology.
       </figcaption>
     </figure>
   );

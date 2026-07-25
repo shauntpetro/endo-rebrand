@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/components/site/usePrefersReducedMotion";
 
 const EASE_OUT = (t: number) => 1 - Math.pow(1 - t, 4);
 
@@ -21,7 +21,7 @@ export default function CountUp({
   suffix?: string;
   className?: string;
 }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {

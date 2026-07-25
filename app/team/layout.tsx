@@ -1,35 +1,37 @@
 import type { Metadata } from "next";
+import {
+  FOUNDER_ID,
+  ORGANIZATION_ID,
+  SITE_ORIGIN,
+  WEBSITE_ID,
+  createPageMetadata,
+} from "@/lib/metadata";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Team",
+export const metadata: Metadata = createPageMetadata({
+  title: "Leadership",
   description:
-    "The founder-led team advancing EndoCyclic Therapeutics' precision peptide platform and Phase 1 lead program, ENDO-205.",
-  alternates: { canonical: "/team" },
-  openGraph: {
-    title: "Team | EndoCyclic Therapeutics",
-    description:
-      "Led by founder and CEO Dr. Tanya Petrossian, EndoCyclic is advancing a precision peptide platform across therapeutics, diagnostics, and oncology.",
-    url: "https://endocyclic.com/team",
-  },
-};
+    "Founder and CEO Dr. Tanya Petrossian leads EndoCyclic Therapeutics and its lead program, ENDO-205, now in Phase 1 following FDA IND Allowance in 2026.",
+  path: "/team",
+  socialDescription:
+    "Led by founder and CEO Dr. Tanya Petrossian, EndoCyclic is advancing a proprietary precision peptide platform across therapeutic and diagnostic programs in endometriosis and oncology.",
+});
 
 export default function TeamLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    name: "Team — EndoCyclic Therapeutics",
-    url: "https://endocyclic.com/team",
-    about: {
-      "@type": "Organization",
-      name: SITE.legalName,
-      founder: {
-        "@type": "Person",
-        name: SITE.founder,
-        jobTitle: "Founder & CEO",
-        image: "https://endocyclic.com/team/tanya-petrossian.avif",
-        worksFor: { "@type": "Organization", name: SITE.legalName },
-      },
+    name: "Leadership — EndoCyclic Therapeutics",
+    url: `${SITE_ORIGIN}/team`,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": ORGANIZATION_ID },
+    mainEntity: {
+      "@type": "Person",
+      "@id": FOUNDER_ID,
+      name: SITE.founder,
+      jobTitle: "Founder & CEO",
+      image: `${SITE_ORIGIN}/team/tanya-petrossian-v2.avif`,
+      worksFor: { "@id": ORGANIZATION_ID },
     },
   };
 

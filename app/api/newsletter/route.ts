@@ -1,144 +1,183 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
+import { NextRequest } from "next/server";
+import {
+  FORM_RATE_LIMIT_MESSAGE,
+  normalizeContactEmail,
+} from "@/lib/contact-config";
+import {
+  JsonBodyTooLargeError,
+  readLimitedJson,
+} from "@/lib/server/read-json-body";
+import {
+  formResponse,
+  getFormRequestMode,
+  jsonNoStore,
+  sanitizeHeaderText,
+  type FormRequestMode,
+  type NativeFormStatus,
+} from "@/lib/server/form-api";
+import {
+  deliverFormEmail,
+  deliveryRecoveryMessage,
+} from "@/lib/server/form-delivery";
+import { consumeFormRateLimit } from "@/lib/server/form-rate-limit";
+import {
+  readLimitedUrlEncoded,
+  UrlEncodedBodyTooLargeError,
+} from "@/lib/server/read-urlencoded-body";
 
-// Delivery must be configured before an update request can be accepted.
-const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
-  : null;
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
 
-// Simple in-memory rate limiting
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+type NewsletterRequestBody = {
+  email?: unknown;
+  _honeypot?: unknown;
+};
 
-function getRateLimitKey(request: NextRequest): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const ip = forwarded?.split(",")[0]?.trim() || "unknown";
-  return ip;
+function newsletterResponse<T>(
+  request: NextRequest,
+  mode: FormRequestMode,
+  nativeStatus: NativeFormStatus,
+  body: T,
+  init: ResponseInit = {},
+) {
+  return formResponse(request, mode, "newsletter", nativeStatus, body, init);
 }
 
-function checkRateLimit(key: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
+function rateLimitResponse(request: NextRequest, mode: FormRequestMode) {
+  const result = consumeFormRateLimit(request);
+  if (result.allowed) return null;
 
-  if (!entry || now > entry.resetTime) {
-    rateLimitMap.set(key, { count: 1, resetTime: now + 60_000 });
-    return true;
-  }
-
-  if (entry.count >= 5) {
-    return false;
-  }
-
-  entry.count += 1;
-  return true;
-}
-
-// Clean up stale entries periodically
-function cleanupRateLimitMap() {
-  const now = Date.now();
-  for (const [key, entry] of rateLimitMap) {
-    if (now > entry.resetTime) {
-      rateLimitMap.delete(key);
-    }
-  }
+  return newsletterResponse(
+    request,
+    mode,
+    "rate-limited",
+    { success: false, error: FORM_RATE_LIMIT_MESSAGE },
+    {
+      status: 429,
+      headers: { "Retry-After": String(result.retryAfterSeconds) },
+    },
+  );
 }
 
 export async function POST(request: NextRequest) {
-  // Periodically clean up stale rate limit entries
-  cleanupRateLimitMap();
-
-  // Rate limiting
-  const rateLimitKey = getRateLimitKey(request);
-  if (!checkRateLimit(rateLimitKey)) {
-    return NextResponse.json(
-      { success: false, error: "Too many requests. Please try again later." },
-      { status: 429 }
-    );
-  }
-
-  // Content-Type check
-  const contentType = request.headers.get("content-type");
-  if (!contentType?.includes("application/json")) {
-    return NextResponse.json(
+  const mode = getFormRequestMode(request);
+  if (!mode) {
+    return jsonNoStore(
       { success: false, error: "Invalid content type." },
-      { status: 415 }
+      { status: 415 },
     );
   }
+
+  const limitedResponse = rateLimitResponse(request, mode);
+  if (limitedResponse) return limitedResponse;
 
   try {
-    const body = await request.json();
+    const body =
+      mode === "native"
+        ? await readLimitedUrlEncoded<NewsletterRequestBody>(request)
+        : await readLimitedJson<NewsletterRequestBody>(request);
     const { email, _honeypot } = body;
 
-    // Honeypot check - silently accept to not tip off bots
     if (_honeypot) {
-      return NextResponse.json({ success: true });
+      return newsletterResponse(request, mode, "success", { success: true });
     }
 
-    // Validation
-    if (!email || typeof email !== "string" || email.trim().length === 0) {
-      return NextResponse.json(
+    if (typeof email !== "string" || email.trim().length === 0) {
+      return newsletterResponse(
+        request,
+        mode,
+        "invalid",
         { success: false, error: "Email is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (email.length > MAX_EMAIL_LENGTH) {
-      return NextResponse.json(
+      return newsletterResponse(
+        request,
+        mode,
+        "invalid",
         { success: false, error: "Email address is too long." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    if (!EMAIL_REGEX.test(email.trim())) {
-      return NextResponse.json(
+    const normalizedEmail = normalizeContactEmail(email);
+    if (!normalizedEmail) {
+      return newsletterResponse(
+        request,
+        mode,
+        "invalid",
         { success: false, error: "Please provide a valid email address." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const subscriberEmail = email.trim().toLowerCase();
+    const subscriberEmail = normalizedEmail.toLowerCase();
+    const safeSubscriberHeader = sanitizeHeaderText(subscriberEmail);
     const timestamp = new Date().toISOString();
 
-    if (!resend) {
-      return NextResponse.json(
+    const delivery = await deliverFormEmail({
+      kind: "newsletter",
+      senderName: "EndoCyclic Updates",
+      subject: `New Company Update Request: ${safeSubscriberHeader}`,
+      text: [
+        "New company update request:",
+        `Email: ${subscriberEmail}`,
+        `Requested: ${timestamp}`,
+      ].join("\n"),
+    });
+
+    if (delivery === "unconfigured") {
+      return newsletterResponse(
+        request,
+        mode,
+        "unavailable",
         {
           success: false,
-          error: "Update requests are temporarily unavailable. Please email info@endocyclic.com directly.",
+          error: deliveryRecoveryMessage(
+            "Update requests are temporarily unavailable.",
+          ),
         },
         { status: 503 },
       );
     }
 
-    try {
-      const { error } = await resend.emails.send({
-          from: "EndoCyclic Newsletter <contact@endocyclic.com>",
-          to: ["info@endocyclic.com"],
-          subject: `New Newsletter Subscriber: ${subscriberEmail}`,
-          text: [
-            "New newsletter subscription:",
-            `Email: ${subscriberEmail}`,
-            `Subscribed: ${timestamp}`,
-          ].join("\n"),
-      });
-      if (error) throw error;
-    } catch (emailError) {
-      console.error("[Update request delivery failed]", emailError);
-      return NextResponse.json(
+    if (delivery === "failed") {
+      return newsletterResponse(
+        request,
+        mode,
+        "unavailable",
         {
           success: false,
-          error: "We couldn’t deliver your update request. Please try again or email info@endocyclic.com directly.",
+          error: deliveryRecoveryMessage(
+            "We couldn’t deliver your update request. Please try again.",
+          ),
         },
         { status: 502 },
       );
     }
 
-    return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json(
+    return newsletterResponse(request, mode, "success", { success: true });
+  } catch (error) {
+    if (
+      error instanceof JsonBodyTooLargeError ||
+      error instanceof UrlEncodedBodyTooLargeError
+    ) {
+      return newsletterResponse(
+        request,
+        mode,
+        "too-large",
+        { success: false, error: "Request body is too large." },
+        { status: 413 },
+      );
+    }
+
+    return newsletterResponse(
+      request,
+      mode,
+      "invalid",
       { success: false, error: "Invalid request. Please try again." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

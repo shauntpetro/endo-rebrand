@@ -1,177 +1,259 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
+import { NextRequest } from "next/server";
+import {
+  FORM_RATE_LIMIT_MESSAGE,
+  normalizeContactEmail,
+} from "@/lib/contact-config";
+import { CONTACT_SUCCESS_MESSAGE } from "@/lib/form-messages";
+import {
+  JsonBodyTooLargeError,
+  readLimitedJson,
+} from "@/lib/server/read-json-body";
+import {
+  formResponse,
+  getFormRequestMode,
+  jsonNoStore,
+  sanitizeFormText,
+  sanitizeHeaderText,
+  type FormRequestMode,
+  type NativeFormStatus,
+} from "@/lib/server/form-api";
+import {
+  deliverFormEmail,
+  deliveryRecoveryMessage,
+} from "@/lib/server/form-delivery";
+import { consumeFormRateLimit } from "@/lib/server/form-rate-limit";
+import {
+  readLimitedUrlEncoded,
+  UrlEncodedBodyTooLargeError,
+} from "@/lib/server/read-urlencoded-body";
 
-// Delivery must be configured before a real submission can be accepted.
-const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
-  : null;
+const VALID_SUBJECTS = [
+  "partnership",
+  "media",
+  "investor",
+  "career",
+  "general",
+  "other",
+  "data",
+  "report",
+] as const;
+const MAX_FIELD_LENGTH = {
+  name: 200,
+  email: 254,
+  company: 200,
+  subject: 50,
+  message: 5000,
+};
 
-// Simple in-memory rate limiting
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+type ContactRequestBody = {
+  name?: unknown;
+  email?: unknown;
+  company?: unknown;
+  subject?: unknown;
+  message?: unknown;
+  _honeypot?: unknown;
+};
 
-function getRateLimitKey(request: NextRequest): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const ip = forwarded?.split(",")[0]?.trim() || "unknown";
-  return ip;
+function contactResponse<T>(
+  request: NextRequest,
+  mode: FormRequestMode,
+  nativeStatus: NativeFormStatus,
+  body: T,
+  init: ResponseInit = {},
+) {
+  return formResponse(request, mode, "contact", nativeStatus, body, init);
 }
 
-function checkRateLimit(key: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
+function rateLimitResponse(request: NextRequest, mode: FormRequestMode) {
+  const result = consumeFormRateLimit(request);
+  if (result.allowed) return null;
 
-  if (!entry || now > entry.resetTime) {
-    rateLimitMap.set(key, { count: 1, resetTime: now + 60_000 });
-    return true;
-  }
-
-  if (entry.count >= 5) {
-    return false;
-  }
-
-  entry.count += 1;
-  return true;
+  return contactResponse(
+    request,
+    mode,
+    "rate-limited",
+    { success: false, error: FORM_RATE_LIMIT_MESSAGE },
+    {
+      status: 429,
+      headers: { "Retry-After": String(result.retryAfterSeconds) },
+    },
+  );
 }
-
-// Clean up stale entries periodically
-function cleanupRateLimitMap() {
-  const now = Date.now();
-  for (const [key, entry] of rateLimitMap) {
-    if (now > entry.resetTime) {
-      rateLimitMap.delete(key);
-    }
-  }
-}
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const VALID_SUBJECTS = ["partnership", "media", "investor", "career", "general", "other", "data", "report"];
-const MAX_FIELD_LENGTH = { name: 200, email: 254, company: 200, subject: 50, message: 5000 };
 
 export async function POST(request: NextRequest) {
-  // Periodically clean up stale rate limit entries
-  cleanupRateLimitMap();
-
-  // Rate limiting
-  const rateLimitKey = getRateLimitKey(request);
-  if (!checkRateLimit(rateLimitKey)) {
-    return NextResponse.json(
-      { success: false, error: "Too many requests. Please try again later." },
-      { status: 429 }
-    );
-  }
-
-  // Content-Type check
-  const contentType = request.headers.get("content-type");
-  if (!contentType?.includes("application/json")) {
-    return NextResponse.json(
+  const mode = getFormRequestMode(request);
+  if (!mode) {
+    return jsonNoStore(
       { success: false, error: "Invalid content type." },
-      { status: 415 }
+      { status: 415 },
     );
   }
+
+  const limitedResponse = rateLimitResponse(request, mode);
+  if (limitedResponse) return limitedResponse;
 
   try {
-    const body = await request.json();
+    const body =
+      mode === "native"
+        ? await readLimitedUrlEncoded<ContactRequestBody>(request)
+        : await readLimitedJson<ContactRequestBody>(request);
     const { name, email, company, subject, message, _honeypot } = body;
 
-    // Honeypot check - if this hidden field is filled, it's likely a bot
     if (_honeypot) {
-      // Silently accept to not tip off the bot, but don't process
-      return NextResponse.json({
+      return contactResponse(request, mode, "success", {
         success: true,
-        message: "Thank you for your message. We'll get back to you soon.",
+        message: CONTACT_SUCCESS_MESSAGE,
       });
     }
 
-    // Validation
     const errors: string[] = [];
 
-    if (!name || typeof name !== "string" || name.trim().length === 0) {
+    if (typeof name !== "string" || name.trim().length === 0) {
       errors.push("Name is required.");
     } else if (name.length > MAX_FIELD_LENGTH.name) {
       errors.push(`Name must be under ${MAX_FIELD_LENGTH.name} characters.`);
     }
 
-    if (!email || typeof email !== "string" || email.trim().length === 0) {
+    if (typeof email !== "string" || email.trim().length === 0) {
       errors.push("Email is required.");
     } else if (email.length > MAX_FIELD_LENGTH.email) {
       errors.push("Email address is too long.");
-    } else if (!EMAIL_REGEX.test(email.trim())) {
+    } else if (!normalizeContactEmail(email)) {
       errors.push("Please provide a valid email address.");
     }
 
-    if (subject && typeof subject === "string" && !VALID_SUBJECTS.includes(subject.trim())) {
-      errors.push("Please select a valid subject.");
-    }
-
-    if (!message || typeof message !== "string" || message.trim().length < 10) {
-      errors.push("Message is required and must be at least 10 characters.");
-    } else if (message.length > MAX_FIELD_LENGTH.message) {
-      errors.push(`Message must be under ${MAX_FIELD_LENGTH.message} characters.`);
-    }
-
-    if (errors.length > 0) {
-      return NextResponse.json(
-        { success: false, error: errors.join(" ") },
-        { status: 400 }
+    if (company !== undefined && typeof company !== "string") {
+      errors.push("Company must be text.");
+    } else if (
+      typeof company === "string" &&
+      company.length > MAX_FIELD_LENGTH.company
+    ) {
+      errors.push(
+        `Company must be under ${MAX_FIELD_LENGTH.company} characters.`,
       );
     }
 
-    // Sanitize inputs (strip potential HTML/script injection)
-    const sanitize = (s: string) => s.trim().replace(/<[^>]*>/g, "");
+    if (subject !== undefined && typeof subject !== "string") {
+      errors.push("Please select a valid subject.");
+    } else if (
+      typeof subject === "string" &&
+      (subject.length > MAX_FIELD_LENGTH.subject ||
+        !VALID_SUBJECTS.includes(
+          subject.trim() as (typeof VALID_SUBJECTS)[number],
+        ))
+    ) {
+      errors.push("Please select a valid subject.");
+    }
 
-    const sanitizedData = {
-      name: sanitize(name),
-      email: email.trim(),
-      company: company ? sanitize(company) : "",
-      subject: subject?.trim() || "general",
-      message: sanitize(message),
-      timestamp: new Date().toISOString(),
-    };
+    if (typeof message !== "string" || message.trim().length < 10) {
+      errors.push("Message is required and must be at least 10 characters.");
+    } else if (message.length > MAX_FIELD_LENGTH.message) {
+      errors.push(
+        `Message must be under ${MAX_FIELD_LENGTH.message} characters.`,
+      );
+    }
 
-    if (!resend) {
-      return NextResponse.json(
+    if (errors.length > 0) {
+      return contactResponse(
+        request,
+        mode,
+        "invalid",
+        { success: false, error: errors.join(" ") },
+        { status: 400 },
+      );
+    }
+
+    // The validation branches above prove these fields are strings.
+    const safeName = sanitizeHeaderText(name as string);
+    const safeEmail = normalizeContactEmail(email as string)!;
+    const safeCompany =
+      typeof company === "string" ? sanitizeFormText(company) : "";
+    const safeSubject =
+      typeof subject === "string" ? subject.trim() : "general";
+    const safeMessage = sanitizeFormText(message as string);
+
+    if (!safeName || safeMessage.length < 10) {
+      return contactResponse(
+        request,
+        mode,
+        "invalid",
         {
           success: false,
-          error: "Message delivery is temporarily unavailable. Please email info@endocyclic.com directly.",
+          error: "Please provide a valid name and message.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const delivery = await deliverFormEmail({
+      kind: "contact",
+      senderName: "EndoCyclic Contact Form",
+      subject: `New Contact Form: ${safeSubject} — ${safeName}`,
+      replyTo: safeEmail,
+      text: [
+        `Name: ${safeName}`,
+        `Email: ${safeEmail}`,
+        `Company: ${safeCompany || "Not provided"}`,
+        `Subject: ${safeSubject}`,
+        `Message:\n${safeMessage}`,
+        `\n---\nSubmitted: ${new Date().toISOString()}`,
+      ].join("\n"),
+    });
+
+    if (delivery === "unconfigured") {
+      return contactResponse(
+        request,
+        mode,
+        "unavailable",
+        {
+          success: false,
+          error: deliveryRecoveryMessage(
+            "Message delivery is temporarily unavailable.",
+          ),
         },
         { status: 503 },
       );
     }
 
-    try {
-      const { error } = await resend.emails.send({
-          from: "EndoCyclic Contact Form <contact@endocyclic.com>",
-          to: ["info@endocyclic.com"],
-          subject: `New Contact Form: ${sanitizedData.subject} — ${sanitizedData.name}`,
-          replyTo: sanitizedData.email,
-          text: [
-            `Name: ${sanitizedData.name}`,
-            `Email: ${sanitizedData.email}`,
-            `Company: ${sanitizedData.company || "Not provided"}`,
-            `Subject: ${sanitizedData.subject}`,
-            `Message:\n${sanitizedData.message}`,
-            `\n---\nSubmitted: ${sanitizedData.timestamp}`,
-          ].join("\n"),
-      });
-      if (error) throw error;
-    } catch (emailError) {
-      console.error("[Contact delivery failed]", emailError);
-      return NextResponse.json(
+    if (delivery === "failed") {
+      return contactResponse(
+        request,
+        mode,
+        "unavailable",
         {
           success: false,
-          error: "We couldn’t deliver your message. Please try again or email info@endocyclic.com directly.",
+          error: deliveryRecoveryMessage(
+            "We couldn’t deliver your message. Please try again.",
+          ),
         },
         { status: 502 },
       );
     }
 
-    return NextResponse.json({
+    return contactResponse(request, mode, "success", {
       success: true,
-      message: "Thank you for your message. We'll get back to you soon.",
+      message: CONTACT_SUCCESS_MESSAGE,
     });
-  } catch {
-    return NextResponse.json(
+  } catch (error) {
+    if (
+      error instanceof JsonBodyTooLargeError ||
+      error instanceof UrlEncodedBodyTooLargeError
+    ) {
+      return contactResponse(
+        request,
+        mode,
+        "too-large",
+        { success: false, error: "Request body is too large." },
+        { status: 413 },
+      );
+    }
+
+    return contactResponse(
+      request,
+      mode,
+      "invalid",
       { success: false, error: "Invalid request. Please try again." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

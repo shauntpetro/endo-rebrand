@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useId, useState } from "react";
-import type { EmblaCarouselType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
+import type { UseEmblaCarouselType } from "embla-carousel-react";
 import { MILESTONES, PARTNERS } from "@/lib/site";
+
+type EmblaCarouselType = NonNullable<UseEmblaCarouselType[1]>;
 
 type CarouselState = {
   selectedIndex: number;

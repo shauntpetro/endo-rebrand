@@ -5,10 +5,10 @@ import { flushSync } from "react-dom";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { clsx } from "clsx";
-import { useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { Flip } from "gsap/Flip";
 import { PIPELINE } from "@/lib/site";
+import { usePrefersReducedMotion } from "@/components/site/usePrefersReducedMotion";
 
 gsap.registerPlugin(Flip);
 
@@ -29,7 +29,7 @@ export function ProgramAccordion({ className }: ProgramAccordionProps) {
   const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const detailTweenRef = useRef<gsap.core.Tween | null>(null);
   const flipTimelineRef = useRef<gsap.core.Timeline | null>(null);
-  const prefersReducedMotion = useReducedMotion();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const instanceId = useId();
 
   const activateProgram = useCallback(
@@ -200,7 +200,7 @@ export function ProgramAccordion({ className }: ProgramAccordionProps) {
                     >
                       <span
                         className={clsx(
-                          "block text-[0.68rem] font-semibold tracking-[0.08em] text-[#8b4b62]",
+                          "block text-xs font-semibold tracking-[0.08em] text-[#8b4b62]",
                           !isActive && "lg:[writing-mode:vertical-rl] lg:rotate-180",
                         )}
                       >

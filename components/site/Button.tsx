@@ -25,6 +25,46 @@ function resolveInternalHref(href: string) {
   return href;
 }
 
+export function resolveButtonSiteEvent(href: string) {
+  if (href === "#data-room") return "cta_data_room";
+
+  try {
+    const destination = new URL(href, "https://endocyclic.invalid");
+    if (destination.origin !== "https://endocyclic.invalid") return undefined;
+
+    if (
+      destination.pathname === "/contact" &&
+      destination.searchParams.get("subject") === "partnership"
+    ) {
+      return "cta_partnership";
+    }
+    if (
+      destination.pathname === "/investors" &&
+      destination.hash === "#data-room"
+    ) {
+      return "cta_data_room";
+    }
+    if (
+      /^\/downloads\/endocyclic-investor-summary-v\d+\.pdf$/.test(
+        destination.pathname,
+      )
+    ) {
+      return "cta_investor_summary";
+    }
+    if (
+      /^\/downloads\/media\/endocyclic-media-kit-web-v\d+\.zip$/.test(
+        destination.pathname,
+      )
+    ) {
+      return "cta_media_kit";
+    }
+  } catch {
+    // Invalid destinations retain normal link behavior without instrumentation.
+  }
+
+  return undefined;
+}
+
 export default function Button({
   href,
   children,
@@ -33,6 +73,10 @@ export default function Button({
   arrow = false,
   className,
   onClick,
+  onFocus,
+  onPointerEnter,
+  prefetch = false,
+  download,
 }: {
   href: string;
   children: React.ReactNode;
@@ -41,8 +85,13 @@ export default function Button({
   arrow?: boolean;
   className?: string;
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  onFocus?: React.FocusEventHandler<HTMLAnchorElement>;
+  onPointerEnter?: React.PointerEventHandler<HTMLAnchorElement>;
+  prefetch?: boolean;
+  download?: boolean | string;
 }) {
   const cls = clsx(base, variants[variant], className);
+  const siteEvent = resolveButtonSiteEvent(href);
   const inner = (
     <>
       <span className={clsx("relative z-10", variant === "quiet" && "link-underline")}>{children}</span>
@@ -58,13 +107,23 @@ export default function Button({
   if (external) {
     const opensNewTab = /^https?:\/\//.test(href);
     return (
-      <a href={href} target={opensNewTab ? "_blank" : undefined} rel={opensNewTab ? "noopener noreferrer" : undefined} onClick={onClick} className={clsx("group", cls)}>
+      <a href={href} target={opensNewTab ? "_blank" : undefined} rel={opensNewTab ? "noopener noreferrer" : undefined} onClick={onClick} onFocus={onFocus} onPointerEnter={onPointerEnter} download={download} data-site-event={siteEvent} className={clsx("group", cls)}>
         {inner}
+        {opensNewTab && <span className="sr-only">, opens in a new tab</span>}
       </a>
     );
   }
   return (
-    <Link href={resolveInternalHref(href)} onClick={onClick} className={clsx("group", cls)}>
+    <Link
+      href={resolveInternalHref(href)}
+      prefetch={prefetch}
+      onClick={onClick}
+      onFocus={onFocus}
+      onPointerEnter={onPointerEnter}
+      download={download}
+      data-site-event={siteEvent}
+      className={clsx("group", cls)}
+    >
       {inner}
     </Link>
   );

@@ -19,6 +19,10 @@ async function writeToClipboard(text: string) {
     throw new Error("Copy command was unavailable.");
   }
 
+  const previouslyFocused =
+    document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
   const textarea = document.createElement("textarea");
   textarea.value = text;
   textarea.setAttribute("readonly", "");
@@ -33,12 +37,16 @@ async function writeToClipboard(text: string) {
     }
   } finally {
     textarea.remove();
+    if (previouslyFocused?.isConnected) {
+      previouslyFocused.focus({ preventScroll: true });
+    }
   }
 }
 
 export default function BoilerplateActions({ text }: { text: string }) {
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const descriptionId = useId();
   const statusId = useId();
 
   useEffect(
@@ -69,14 +77,14 @@ export default function BoilerplateActions({ text }: { text: string }) {
       ? "Approved boilerplate copied to the clipboard."
       : copyState === "error"
         ? "Copy is unavailable in this browser. Select the boilerplate text below or download the text file."
-        : "Copy or download the approved boilerplate without reformatting it.";
+        : "";
 
   return (
     <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
       <button
         type="button"
         onClick={handleCopy}
-        aria-describedby={statusId}
+        aria-describedby={`${descriptionId} ${statusId}`}
         className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-teal-ink transition-[border-color,color,transform] duration-300 hover:border-plum hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-ink active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
       >
         {copyState === "copied" ? (
@@ -95,10 +103,16 @@ export default function BoilerplateActions({ text }: { text: string }) {
         <Download aria-hidden size={16} />
       </a>
       <p
+        id={descriptionId}
+        className="basis-full text-xs leading-relaxed text-muted"
+      >
+        Copy or download the approved boilerplate without reformatting it.
+      </p>
+      <p
         id={statusId}
         aria-live="polite"
         aria-atomic="true"
-        className="basis-full text-xs leading-relaxed text-muted"
+        className={copyState === "idle" ? "sr-only" : "basis-full text-xs leading-relaxed text-muted"}
       >
         {status}
       </p>

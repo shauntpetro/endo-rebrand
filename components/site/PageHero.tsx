@@ -4,9 +4,15 @@ import Container from "./Container";
 import Eyebrow from "./Eyebrow";
 
 type HeroTone = "paper" | "tint-warm" | "tint-teal" | "tint-plum";
-type HeroLayout = "editorial" | "reverse" | "stacked" | "portrait" | "evidence";
+type HeroLayout =
+  | "editorial"
+  | "balanced"
+  | "reverse"
+  | "stacked"
+  | "portrait"
+  | "evidence";
 type HeroFrame = "bleed" | "soft" | "line" | "arch" | "plain";
-type HeroAspect = "landscape" | "wide" | "portrait" | "auto";
+type HeroAspect = "landscape" | "wide" | "portrait" | "auto" | "content";
 type HeroVisualElement = "figure" | "div" | "aside" | "nav";
 
 const toneClass: Record<HeroTone, string> = {
@@ -18,6 +24,7 @@ const toneClass: Record<HeroTone, string> = {
 
 const copyClass: Record<HeroLayout, string> = {
   editorial: "lg:col-span-6 xl:col-span-5",
+  balanced: "lg:col-span-6",
   reverse: "lg:order-2 lg:col-span-6 lg:col-start-7",
   stacked: "lg:col-span-10 xl:col-span-9",
   portrait: "lg:col-span-7 xl:col-span-7",
@@ -26,6 +33,7 @@ const copyClass: Record<HeroLayout, string> = {
 
 const figureClass: Record<HeroLayout, string> = {
   editorial: "lg:col-span-6 xl:col-span-7 xl:-mr-[max(0px,calc((100vw-74rem)/2))]",
+  balanced: "lg:col-span-6",
   reverse: "lg:order-1 lg:col-span-6 xl:-ml-[max(0px,calc((100vw-74rem)/2))]",
   stacked: "lg:col-span-12",
   portrait: "lg:col-span-5 xl:col-span-4 xl:col-start-9",
@@ -44,7 +52,8 @@ const aspectClass: Record<HeroAspect, string> = {
   landscape: "aspect-[4/3] sm:aspect-[3/2]",
   wide: "aspect-[4/3] sm:aspect-[16/10] lg:aspect-[2/1]",
   portrait: "aspect-[4/5]",
-  auto: "min-h-[27rem] sm:min-h-[30rem]",
+  auto: "min-h-[27rem] sm:min-h-[24rem] lg:min-h-[30rem]",
+  content: "min-h-0",
 };
 
 export default function PageHero({
@@ -65,6 +74,7 @@ export default function PageHero({
   className,
   visualClassName,
   titleClassName,
+  titleMotion = true,
   visualAs: VisualTag = "figure",
   visualLabel,
 }: {
@@ -85,6 +95,7 @@ export default function PageHero({
   className?: string;
   visualClassName?: string;
   titleClassName?: string;
+  titleMotion?: boolean;
   visualAs?: HeroVisualElement;
   visualLabel?: string;
 }) {
@@ -94,6 +105,7 @@ export default function PageHero({
       alt={imageAlt}
       fill
       priority={imagePriority}
+      fetchPriority={imagePriority ? "high" : "auto"}
       sizes={layout === "stacked" ? "(min-width: 1184px) 1120px, 94vw" : "(min-width: 1024px) 58vw, 94vw"}
       className="object-cover"
     />
@@ -104,13 +116,13 @@ export default function PageHero({
   return (
     <section
       data-hero-layout={layout}
-      className={clsx("hero-stage relative overflow-hidden pb-16 pt-28 md:pb-24 md:pt-36", toneClass[tone], className)}
+      className={clsx("hero-stage relative overflow-hidden pb-16 pt-28 lg:pb-24 lg:pt-36", toneClass[tone], className)}
     >
       <div aria-hidden className="hero-thread-trace" />
       <Container className="relative z-10">
         <div
           className={clsx(
-            "grid gap-11 lg:grid-cols-12 lg:gap-x-12 lg:gap-y-14 xl:gap-x-16",
+            "grid gap-11 md:gap-9 lg:grid-cols-12 lg:gap-x-12 lg:gap-y-14 xl:gap-x-16",
             isStacked ? "items-end" : "items-center",
             !visual && "lg:min-h-[28rem]",
           )}
@@ -121,6 +133,7 @@ export default function PageHero({
             </div>
             <h1
               data-hero-step="title"
+              data-hero-title-motion={titleMotion ? "animated" : "static"}
               className={clsx(
                 "t-hero mt-6 max-w-[16ch] text-ink",
                 isStacked && "max-w-[19ch]",
@@ -135,7 +148,7 @@ export default function PageHero({
             {proof && (
               <div data-hero-step="proof" className="mt-9 flex max-w-2xl items-start gap-3 text-sm text-muted">
                 <span aria-hidden className="mt-[0.65rem] h-px w-9 shrink-0 bg-gradient-to-r from-rose via-gold to-teal" />
-                <span>{proof}</span>
+                <span className="min-w-0 [overflow-wrap:anywhere]">{proof}</span>
               </div>
             )}
           </div>

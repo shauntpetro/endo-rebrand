@@ -16,7 +16,7 @@ const METRICS = [
   {
     value: "8 years",
     label: "average diagnostic delay",
-    detail: "From symptoms to a confirmed diagnosis.",
+    detail: "Average time to an endometriosis diagnosis.",
     desktopClassName: "justify-center border-l border-line px-7",
     desktopValueClassName: "text-[clamp(2.15rem,4vw,3.75rem)]",
   },

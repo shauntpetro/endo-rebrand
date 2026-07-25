@@ -1,44 +1,65 @@
-const RING_POINTS = [
-  [0, -28],
-  [24.25, -14],
-  [24.25, 14],
-  [0, 28],
-  [-24.25, 14],
-  [-24.25, -14],
+const CANONICAL_RING_COLORS = [
+  { fill: "#E89A16", stroke: "#A95E05" },
+  { fill: "#B8AA9B", stroke: "#71675E" },
+  { fill: "#B8AA9B", stroke: "#71675E" },
+  { fill: "#B8AA9B", stroke: "#71675E" },
+  { fill: "#B8AA9B", stroke: "#71675E" },
+  { fill: "#B8AA9B", stroke: "#71675E" },
+  { fill: "#B8AA9B", stroke: "#71675E" },
+  { fill: "#6F38B5", stroke: "#432078" },
+  { fill: "#6F38B5", stroke: "#432078" },
+  { fill: "#6F38B5", stroke: "#432078" },
+  { fill: "#E89A16", stroke: "#A95E05" },
+  { fill: "#E89A16", stroke: "#A95E05" },
+  { fill: "#E89A16", stroke: "#A95E05" },
 ] as const;
 
-const RING_TONES = {
-  teal: { stroke: "#83C4B8", fill: "#43877D" },
-  rose: { stroke: "#F0B4C1", fill: "#C9798A" },
-  gold: { stroke: "#F1D98A", fill: "#D8B850" },
-  muted: { stroke: "#D9C4CC", fill: "#6D5E66" },
-} as const;
+const RING_POINTS = CANONICAL_RING_COLORS.map((color, index) => {
+  const angle =
+    (index / CANONICAL_RING_COLORS.length) * Math.PI * 2 - Math.PI / 2;
+  return {
+    color,
+    x: Math.cos(angle) * 28,
+    y: Math.sin(angle) * 28,
+  };
+});
 
 function PeptideRing({
   x,
   y,
   scale = 1,
-  tone = "teal",
   opacity = 1,
 }: {
   x: number;
   y: number;
   scale?: number;
-  tone?: keyof typeof RING_TONES;
   opacity?: number;
 }) {
-  const colors = RING_TONES[tone];
-
   return (
-    <g transform={`translate(${x} ${y}) scale(${scale})`} opacity={opacity} aria-hidden>
-      <polygon
-        points={RING_POINTS.map(([px, py]) => `${px},${py}`).join(" ")}
+    <g
+      data-canonical-peptide
+      data-residues={CANONICAL_RING_COLORS.length}
+      transform={`translate(${x} ${y}) scale(${scale})`}
+      opacity={opacity}
+      aria-hidden
+    >
+      <circle
+        r="28"
         fill="none"
-        stroke={colors.stroke}
-        strokeWidth="2"
+        stroke="#51463E"
+        strokeOpacity="0.48"
+        strokeWidth="1.8"
       />
-      {RING_POINTS.map(([px, py], index) => (
-        <circle key={index} cx={px} cy={py} r="6" fill={colors.fill} stroke={colors.stroke} strokeWidth="1" />
+      {RING_POINTS.map((point, index) => (
+        <circle
+          key={index}
+          cx={point.x}
+          cy={point.y}
+          r="4.6"
+          fill={point.color.fill}
+          stroke={point.color.stroke}
+          strokeWidth="1"
+        />
       ))}
     </g>
   );
@@ -94,9 +115,9 @@ export function HeroThreadArtwork() {
         strokeLinecap="round"
       />
 
-      <PeptideRing x={270} y={540} scale={0.72} tone="rose" opacity={0.54} />
-      <PeptideRing x={1025} y={430} scale={1.15} tone="teal" opacity={0.7} />
-      <PeptideRing x={1270} y={580} scale={0.56} tone="gold" opacity={0.52} />
+      <PeptideRing x={270} y={540} scale={0.72} opacity={0.54} />
+      <PeptideRing x={1025} y={430} scale={1.15} opacity={0.7} />
+      <PeptideRing x={1270} y={580} scale={0.56} opacity={0.52} />
 
       <circle data-thread-marker cx="0" cy="0" r="7" fill="#FFF8F4" />
       <circle data-thread-marker-halo cx="0" cy="0" r="20" fill="#F0B4C1" opacity="0.18" />
@@ -156,8 +177,8 @@ export function HeroBloomArtwork() {
         strokeWidth="2.6"
         strokeLinecap="round"
       />
-      <PeptideRing x={337} y={349} scale={1.55} tone="teal" />
-      <PeptideRing x={198} y={415} scale={0.58} tone="rose" opacity={0.72} />
+      <PeptideRing x={337} y={349} scale={1.55} />
+      <PeptideRing x={198} y={415} scale={0.58} opacity={0.72} />
       <circle cx="478" cy="340" r="9" fill="#D8B850" />
       <circle cx="478" cy="340" r="27" fill="none" stroke="#D8B850" strokeOpacity="0.28" />
     </svg>
@@ -228,7 +249,7 @@ export function MechanismThreadArtwork() {
 
       <g transform="translate(204 314)">
         <circle r="88" fill="#FFF8F4" fillOpacity="0.78" stroke="#D9C4CC" strokeOpacity="0.5" />
-        <PeptideRing x={0} y={0} scale={1.2} tone="muted" />
+        <PeptideRing x={0} y={0} scale={1.2} />
       </g>
       <text x="62" y="78" fill="#8B4B62" fontSize="12" fontWeight="600" letterSpacing="1.2">01 · PHYSIOLOGICAL pH</text>
       <text x="62" y="114" fill="#392638" fontSize="27" fontWeight="500">Inactive by design</text>
@@ -236,17 +257,17 @@ export function MechanismThreadArtwork() {
 
       <g transform="translate(600 294)">
         <ellipse rx="104" ry="119" fill="#F7E8E7" fillOpacity="0.7" stroke="#C9798A" strokeOpacity="0.54" strokeDasharray="4 9" />
-        <PeptideRing x={0} y={0} scale={1.3} tone="rose" />
+        <PeptideRing x={0} y={0} scale={1.3} />
         <circle cx="64" cy="-72" r="7" fill="#D8B850" />
       </g>
       <text x="452" y="78" fill="#8B4B62" fontSize="12" fontWeight="600" letterSpacing="1.2">02 · ACIDIC MICROENVIRONMENT</text>
-      <text x="452" y="114" fill="#392638" fontSize="27" fontWeight="500">Activated by disease</text>
+      <text x="452" y="114" fill="#392638" fontSize="24" fontWeight="500">pH-mediated activation</text>
       <text x="452" y="147" fill="#6D5E66" fontSize="15">pH-mediated activation changes the peptide state.</text>
 
       <g transform="translate(1012 312)">
         <ellipse rx="106" ry="118" fill="#E5F0EB" stroke="#43877D" strokeOpacity="0.72" />
         <circle cx="20" cy="10" r="44" fill="#FFF8F4" fillOpacity="0.8" stroke="#43877D" strokeOpacity="0.75" />
-        <PeptideRing x={20} y={10} scale={0.78} tone="teal" />
+        <PeptideRing x={20} y={10} scale={0.78} />
       </g>
       <circle cx="872" cy="414" r="48" fill="#FFF8F4" stroke="#D9C4CC" strokeWidth="1.5" />
       <path d="M834 414 H910" stroke="#D9C4CC" strokeWidth="1.5" />
@@ -293,17 +314,17 @@ export function MobileMechanismArtwork() {
 
       <path d="M36 70 C 88 18 191 20 232 74 C 268 122 238 186 174 202 C 112 217 38 188 24 130 C 18 105 22 84 36 70Z" fill="#F0E8F2" />
       <circle cx="164" cy="118" r="62" fill="#FFF8F4" stroke="#D9C4CC" strokeOpacity="0.6" />
-      <PeptideRing x={164} y={118} scale={1.05} tone="muted" />
+      <PeptideRing x={164} y={118} scale={1.05} />
 
       <path d="M68 244 C 122 205 236 209 286 276 C 328 332 284 406 206 420 C 130 434 52 390 42 322 C 37 289 46 260 68 244Z" fill="url(#mobile-rose-field)" />
       <ellipse cx="187" cy="318" rx="70" ry="82" fill="#F7E8E7" stroke="#C9798A" strokeOpacity="0.58" strokeDasharray="4 9" />
-      <PeptideRing x={187} y={318} scale={1.15} tone="rose" />
+      <PeptideRing x={187} y={318} scale={1.15} />
       <circle cx="238" cy="264" r="8" fill="#D8B850" />
 
       <path d="M42 492 C 96 438 222 442 290 506 C 345 558 306 644 220 658 C 132 672 48 625 28 558 C 20 532 25 509 42 492Z" fill="#E5F0EB" />
       <ellipse cx="190" cy="554" rx="82" ry="92" fill="none" stroke="#43877D" strokeOpacity="0.74" />
       <circle cx="206" cy="568" r="46" fill="#FFF8F4" stroke="#43877D" strokeOpacity="0.72" />
-      <PeptideRing x={206} y={568} scale={0.78} tone="teal" />
+      <PeptideRing x={206} y={568} scale={0.78} />
     </svg>
   );
 }
@@ -337,7 +358,7 @@ export function ClosingThreadMark() {
           <stop offset="1" stopColor="#43877D" />
         </linearGradient>
       </defs>
-      <PeptideRing x={250} y={150} scale={1.18} tone="teal" />
+      <PeptideRing x={250} y={150} scale={1.18} />
       <circle cx="506" cy="42" r="8" fill="#D8B850" />
       <circle cx="506" cy="42" r="24" fill="none" stroke="#D8B850" strokeOpacity="0.26" />
     </svg>

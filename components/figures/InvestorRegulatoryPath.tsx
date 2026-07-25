@@ -1,6 +1,4 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
+import Reveal from "@/components/site/Reveal";
 
 export type RegulatoryPathItem = {
   index: string;
@@ -18,7 +16,6 @@ export default function InvestorRegulatoryPath({
 }: {
   items: readonly RegulatoryPathItem[];
 }) {
-  const reducedMotion = useReducedMotion();
   const primaryItems = items.filter((item) => !item.parallel);
   const parallelItem = items.find((item) => item.parallel);
 
@@ -43,49 +40,27 @@ export default function InvestorRegulatoryPath({
             <div className="relative mt-8">
               <span
                 aria-hidden
-                className="absolute bottom-8 left-[1.1rem] top-8 w-px bg-line lg:bottom-auto lg:left-[16.667%] lg:right-[16.667%] lg:top-[1.1rem] lg:h-px lg:w-auto"
+                className="absolute bottom-8 left-[1.1rem] top-8 w-px bg-line md:bottom-auto md:left-[16.667%] md:right-[16.667%] md:top-[1.1rem] md:h-px md:w-auto"
               />
-              <motion.span
+              <span
                 aria-hidden
-                className="absolute bottom-8 left-[1.1rem] top-8 w-px origin-top bg-gradient-to-b from-gold via-teal to-rose lg:bottom-auto lg:left-[16.667%] lg:right-[16.667%] lg:top-[1.1rem] lg:h-px lg:w-auto lg:origin-left lg:bg-gradient-to-r"
-                initial={
-                  reducedMotion
-                    ? false
-                    : { scaleY: 0, scaleX: 0 }
-                }
-                whileInView={{ scaleY: 1, scaleX: 1 }}
-                viewport={{ once: true, amount: 0.55 }}
-                transition={
-                  reducedMotion
-                    ? { duration: 0 }
-                    : { duration: 0.95, ease: [0.22, 1, 0.36, 1] }
-                }
+                className="regulatory-path-sweep absolute bottom-8 left-[1.1rem] top-8 w-px origin-top bg-gradient-to-b from-gold via-teal to-rose md:bottom-auto md:left-[16.667%] md:right-[16.667%] md:top-[1.1rem] md:h-px md:w-auto md:origin-left md:bg-gradient-to-r"
               />
 
-              <ol className="relative grid list-none gap-0 lg:grid-cols-3 lg:gap-8">
+              <ol className="relative grid list-none gap-0 md:grid-cols-3 md:gap-8">
                 {primaryItems.map((item, index) => {
                   const current = item.title === "Phase 1";
 
                   return (
-                    <motion.li
+                    <Reveal
+                      as="li"
                       key={item.index}
-                      initial={reducedMotion ? false : { y: 12 }}
-                      whileInView={{ y: 0 }}
-                      viewport={{ once: true, amount: 0.55 }}
-                      transition={
-                        reducedMotion
-                          ? { duration: 0 }
-                          : {
-                              duration: 0.58,
-                              delay: index * 0.09,
-                              ease: [0.22, 1, 0.36, 1],
-                            }
-                      }
-                      className={`relative grid grid-cols-[2.5rem_1fr] gap-4 py-7 first:pt-0 last:pb-0 lg:block lg:py-0 ${
-                        index > 0 ? "border-t border-line lg:border-t-0" : ""
+                      delay={index * 0.08}
+                      className={`relative grid grid-cols-[2.5rem_1fr] gap-4 py-7 first:pt-0 last:pb-0 md:block md:py-0 ${
+                        index > 0 ? "border-t border-line md:border-t-0" : ""
                       }`}
                     >
-                      <div className="relative z-10 flex h-9 w-9 items-center justify-center self-start rounded-full bg-paper lg:mx-auto">
+                      <div className="relative z-10 flex h-9 w-9 items-center justify-center self-start rounded-full bg-paper md:mx-auto">
                         <span
                           aria-hidden
                           className={`block rounded-full ${
@@ -96,7 +71,7 @@ export default function InvestorRegulatoryPath({
                         />
                       </div>
 
-                      <div className="min-w-0 lg:mt-7">
+                      <div className="min-w-0 md:mt-7">
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                           <span className="text-xs font-semibold tracking-[0.16em] text-muted">
                             {item.index}
@@ -117,7 +92,7 @@ export default function InvestorRegulatoryPath({
                           {item.text}
                         </p>
                       </div>
-                    </motion.li>
+                    </Reveal>
                   );
                 })}
               </ol>
@@ -125,45 +100,40 @@ export default function InvestorRegulatoryPath({
           </div>
 
           {parallelItem ? (
-            <motion.aside
-              initial={reducedMotion ? false : { x: 14 }}
-              whileInView={{ x: 0 }}
-              viewport={{ once: true, amount: 0.55 }}
-              transition={
-                reducedMotion
-                  ? { duration: 0 }
-                  : { duration: 0.62, delay: 0.18, ease: [0.22, 1, 0.36, 1] }
-              }
-              aria-label={`${parallelItem.title}: ${parallelItem.status}`}
-              className="relative overflow-hidden rounded-tr-[2.5rem] border border-rose/25 bg-tint-plum p-6 sm:p-8 lg:border-y-0 lg:border-r-0 lg:border-l lg:bg-transparent lg:py-2 lg:pl-9 lg:pr-0"
-            >
-              <span
-                aria-hidden
-                className="absolute -right-12 -top-12 h-36 w-36 rounded-full border border-rose/20"
-              />
-              <div className="relative">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-rose/40 bg-paper">
-                    <span className={`h-3.5 w-3.5 rounded-full ${parallelItem.nodeClass}`} />
-                  </span>
-                  <span className="text-xs font-semibold tracking-[0.16em] text-muted">
-                    {parallelItem.index}
-                  </span>
+            <Reveal delay={0.16}>
+              <div
+                role="group"
+                aria-label={`${parallelItem.title}: ${parallelItem.status}`}
+                className="relative h-full overflow-hidden rounded-tr-[2.5rem] border border-rose/25 bg-tint-plum p-6 sm:p-8 lg:border-y-0 lg:border-r-0 lg:border-l lg:bg-transparent lg:py-2 lg:pl-9 lg:pr-0"
+              >
+                <span
+                  aria-hidden
+                  className="absolute -right-12 -top-12 h-36 w-36 rounded-full border border-rose/20"
+                />
+                <div className="relative">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-rose/40 bg-paper">
+                      <span className={`h-3.5 w-3.5 rounded-full ${parallelItem.nodeClass}`} />
+                    </span>
+                    <span className="text-xs font-semibold tracking-[0.16em] text-muted">
+                      {parallelItem.index}
+                    </span>
+                  </div>
+                  <p className="mt-7 text-xs font-semibold uppercase tracking-[0.13em] text-rose-ink">
+                    {parallelItem.label}
+                  </p>
+                  <h3 className="mt-3 text-[clamp(1.5rem,2.8vw,2.15rem)] font-medium leading-tight tracking-[-0.03em] text-ink">
+                    {parallelItem.title}
+                  </h3>
+                  <p className={`mt-4 text-xs font-semibold uppercase tracking-[0.12em] ${parallelItem.statusClass}`}>
+                    {parallelItem.status}
+                  </p>
+                  <p className="mt-4 text-sm leading-relaxed text-muted">
+                    {parallelItem.text}
+                  </p>
                 </div>
-                <p className="mt-7 text-xs font-semibold uppercase tracking-[0.13em] text-rose-ink">
-                  {parallelItem.label}
-                </p>
-                <h3 className="mt-3 text-[clamp(1.5rem,2.8vw,2.15rem)] font-medium leading-tight tracking-[-0.03em] text-ink">
-                  {parallelItem.title}
-                </h3>
-                <p className={`mt-4 text-xs font-semibold uppercase tracking-[0.12em] ${parallelItem.statusClass}`}>
-                  {parallelItem.status}
-                </p>
-                <p className="mt-4 text-sm leading-relaxed text-muted">
-                  {parallelItem.text}
-                </p>
               </div>
-            </motion.aside>
+            </Reveal>
           ) : null}
         </div>
       </div>

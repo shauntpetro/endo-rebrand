@@ -2,15 +2,11 @@
 
 import Image from "next/image";
 import { clsx } from "clsx";
-import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useEffect, useRef, useState } from "react";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
-
-type PlateAspect = "wide" | "landscape" | "square" | "auto";
+type PlateAspect = "wide" | "panoramic" | "landscape" | "square" | "auto";
 type PlateFrame = "line" | "soft" | "bleed" | "none";
+type PlateMotionState = "visible" | "pending" | "revealed";
 
 export default function SciencePlate({
   src,
@@ -19,6 +15,7 @@ export default function SciencePlate({
   disclosure,
   children,
   priority = false,
+  unoptimized = false,
   aspect = "wide",
   frame = "line",
   sizes = "(min-width: 1184px) 1120px, 94vw",
@@ -31,6 +28,7 @@ export default function SciencePlate({
   disclosure?: React.ReactNode;
   children?: React.ReactNode;
   priority?: boolean;
+  unoptimized?: boolean;
   aspect?: PlateAspect;
   frame?: PlateFrame;
   sizes?: string;
@@ -38,48 +36,87 @@ export default function SciencePlate({
   imageClassName?: string;
 }) {
   const root = useRef<HTMLElement>(null);
+  const [motionState, setMotionState] =
+    useState<PlateMotionState>("visible");
 
-  useGSAP(
-    () => {
-      const media = gsap.matchMedia();
+  useEffect(() => {
+    const rootNode = root.current;
+    if (!rootNode || typeof IntersectionObserver === "undefined") {
+      return;
+    }
 
-      media.add("(min-width: 640px) and (prefers-reduced-motion: no-preference)", () => {
-        const frameNode = root.current?.querySelector<HTMLElement>("[data-plate-frame]");
-        const imageNode = root.current?.querySelector<HTMLElement>("[data-plate-image]");
-        const captionNode = root.current?.querySelector<HTMLElement>("[data-plate-caption]");
+    const motionQuery = window.matchMedia(
+      "(min-width: 640px) and (prefers-reduced-motion: no-preference)",
+    );
+    let observer: IntersectionObserver | undefined;
+    let animationFrame = 0;
+    let cancelled = false;
+    let hasRevealed = false;
 
-        if (!frameNode || !imageNode) return;
+    const disconnectObserver = () => {
+      observer?.disconnect();
+      observer = undefined;
+    };
 
-        gsap.set(frameNode, { clipPath: "inset(3.5% 6% 3.5% 0)" });
-        gsap.set(imageNode, { scale: 1.025, transformOrigin: "50% 50%" });
-        if (captionNode) gsap.set(captionNode, { y: 8 });
+    const connectObserver = () => {
+      disconnectObserver();
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
 
-        const timeline = gsap.timeline({
-          defaults: { ease: "power3.out" },
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top 86%",
-            once: true,
-          },
-        });
+      if (!motionQuery.matches || hasRevealed) {
+        setMotionState("visible");
+        return;
+      }
 
-        timeline
-          .to(frameNode, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.82 }, 0)
-          .to(imageNode, { scale: 1, duration: 0.96 }, 0);
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = 0;
+        if (cancelled || !motionQuery.matches) {
+          setMotionState("visible");
+          return;
+        }
 
-        if (captionNode) {
-          timeline.to(captionNode, { y: 0, duration: 0.48 }, 0.2);
+        try {
+          observer = new IntersectionObserver(
+            (entries) => {
+              if (!entries.some((entry) => entry.isIntersecting)) return;
+
+              hasRevealed = true;
+              setMotionState("revealed");
+              disconnectObserver();
+            },
+            {
+              rootMargin: "0px 0px -14% 0px",
+              threshold: 0,
+            },
+          );
+
+          // The server-rendered default is fully visible. Only opt into the
+          // clipped start state once the observer is ready to reveal it.
+          setMotionState("pending");
+          observer.observe(rootNode);
+        } catch {
+          setMotionState("visible");
         }
       });
+    };
 
-      return () => media.revert();
-    },
-    { scope: root },
-  );
+    connectObserver();
+    motionQuery.addEventListener("change", connectObserver);
+
+    return () => {
+      cancelled = true;
+      motionQuery.removeEventListener("change", connectObserver);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      disconnectObserver();
+    };
+  }, []);
 
   const aspectClass: Record<PlateAspect, string> = {
     wide: "aspect-[4/3] sm:aspect-[3/2] lg:aspect-[2/1]",
-    landscape: "aspect-[4/3] lg:aspect-[3/2]",
+    panoramic: "aspect-[2/1]",
+    landscape: "aspect-[3/2]",
     square: "aspect-square",
     auto: "min-h-[24rem]",
   };
@@ -91,15 +128,60 @@ export default function SciencePlate({
   };
 
   return (
-    <figure ref={root} className={clsx("not-prose", className)}>
-      <div data-plate-frame className={clsx("relative overflow-hidden transform-gpu", aspectClass[aspect], frameClass[frame])}>
-        <Image data-plate-image src={src} alt={alt} fill priority={priority} sizes={sizes} className={clsx("object-cover transform-gpu", imageClassName)} />
+    <figure
+      ref={root}
+      data-plate-motion={
+        motionState === "visible" ? undefined : motionState
+      }
+      className={clsx("not-prose", className)}
+    >
+      <div
+        data-plate-frame
+        className={clsx(
+          "relative overflow-hidden transform-gpu",
+          aspectClass[aspect],
+          frameClass[frame],
+          motionState === "pending"
+            ? "[clip-path:inset(3.5%_6%_3.5%_0)]"
+            : "[clip-path:inset(0)]",
+          motionState === "revealed" &&
+            "transition-[clip-path] duration-[820ms] ease-[var(--ease-soft)] motion-reduce:transition-none",
+        )}
+      >
+        <Image
+          data-plate-image
+          src={src}
+          alt={alt}
+          fill
+          priority={priority}
+          unoptimized={unoptimized}
+          sizes={sizes}
+          className={clsx(
+            "origin-center object-cover transform-gpu motion-reduce:scale-100 motion-reduce:transition-none",
+            motionState === "pending" ? "scale-[1.025]" : "scale-100",
+            motionState === "revealed" &&
+              "transition-transform duration-[960ms] ease-[var(--ease-soft)]",
+            imageClassName,
+          )}
+        />
         {children}
       </div>
       {(caption || disclosure) && (
-        <figcaption data-plate-caption className="mt-4 grid gap-2 text-sm leading-relaxed text-muted md:grid-cols-12">
+        <figcaption
+          data-plate-caption
+          className={clsx(
+            "mt-4 grid gap-2 text-sm leading-relaxed text-muted motion-reduce:translate-y-0 motion-reduce:transition-none md:grid-cols-12",
+            motionState === "pending" ? "translate-y-2" : "translate-y-0",
+            motionState === "revealed" &&
+              "delay-200 duration-[480ms] ease-[var(--ease-soft)] transition-transform",
+          )}
+        >
           {caption && <span className="md:col-span-8">{caption}</span>}
-          {disclosure && <span className="text-xs md:col-span-4 md:text-right">{disclosure}</span>}
+          {disclosure && (
+            <span className="text-xs md:col-span-4 md:text-right">
+              {disclosure}
+            </span>
+          )}
         </figcaption>
       )}
     </figure>

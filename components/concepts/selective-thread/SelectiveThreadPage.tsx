@@ -2,7 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MoveDown } from "lucide-react";
 import Container from "@/components/site/Container";
-import { VALIDATION_WORDS } from "@/lib/site";
+import MobileMechanismFlow from "@/components/figures/MobileMechanismFlow";
+import {
+  PARTNERSHIP_CONTACT_HREF,
+  PLATFORM_MECHANISM_ALT,
+  PLATFORM_MECHANISM_IMAGE,
+  PLATFORM_MECHANISM_STEPS,
+  VALIDATION_WORDS,
+} from "@/lib/site";
 import DiagnosticCompare from "./DiagnosticCompare";
 import EvidenceCarousel from "./EvidenceCarousel";
 import ProgramAccordion from "./ProgramAccordion";
@@ -12,27 +19,14 @@ import {
   ClosingThreadMark,
   HeroBloomArtwork,
   HeroThreadArtwork,
-  MobileMechanismArtwork,
 } from "./ThreadArtwork";
 import styles from "./selective-thread.module.css";
 
-const MECHANISM_STEPS = [
-  {
-    step: "01 · Physiological pH",
-    title: "Inactive near healthy tissue",
-    body: "Designed to remain inactive near healthy tissue.",
-  },
-  {
-    step: "02 · Acidic microenvironment",
-    title: "pH-mediated activation",
-    body: "Designed to activate in the acidic disease microenvironment.",
-  },
-  {
-    step: "03 · Diseased tissue",
-    title: "Selective uptake",
-    body: "Selective uptake by diseased tissue via a proprietary endocytic pathway.",
-  },
-] as const;
+const MECHANISM_STEPS = PLATFORM_MECHANISM_STEPS.map((step) => ({
+  step: `${step.index} · ${step.label}`,
+  title: step.title,
+  body: step.body,
+}));
 
 function FlagshipLink({
   href,
@@ -108,7 +102,7 @@ export default function SelectiveThreadPage() {
               </p>
               <div data-hero-fade className="mt-10 flex flex-wrap gap-3">
                 <FlagshipLink href="/innovation">Follow the mechanism</FlagshipLink>
-                <FlagshipLink href="/contact?subject=partnership#contact-form" tone="outline">Discuss a partnership</FlagshipLink>
+                <FlagshipLink href={PARTNERSHIP_CONTACT_HREF} tone="outline">Discuss a partnership</FlagshipLink>
               </div>
               <a
                 href="#burden"
@@ -122,7 +116,7 @@ export default function SelectiveThreadPage() {
             <div data-hero-bloom className={styles.heroBloom} aria-hidden>
               <HeroBloomArtwork />
               <span className={styles.heroBloomLabel}>Inactive by design</span>
-              <span className={styles.heroBloomLabel}>Activated by disease</span>
+              <span className={styles.heroBloomLabel}>pH-mediated activation</span>
             </div>
           </div>
         </Container>
@@ -182,18 +176,21 @@ export default function SelectiveThreadPage() {
           <div data-chapter-intro className="grid gap-10 md:grid-cols-12 md:items-end">
             <div className="md:col-span-5">
               <ChapterLabel>The mechanism</ChapterLabel>
-              <h2 className="mt-5 text-[clamp(2.25rem,4vw,4.25rem)] font-medium leading-[1.04] tracking-[-0.03em] text-ink">A thread that changes state.</h2>
+              <h2 className="mt-5 text-[clamp(2.25rem,4vw,4.25rem)] font-medium leading-[1.04] tracking-[-0.03em] text-ink">A thread guided by pH.</h2>
             </div>
             <p className="max-w-xl text-lg leading-relaxed text-muted md:col-span-6 md:col-start-7">
-              The platform is designed to remain inactive near healthy tissue, activate in the acidic disease microenvironment, and undergo selective uptake by diseased tissue via a proprietary endocytic pathway.
+              The platform is designed for selective uptake by diseased tissue,
+              pH-mediated activation, and non-hormonal action. The illustration
+              then places the intact peptide in an intracellular-target pocket
+              before a separate ENDO-205 preclinical evidence state.
             </p>
           </div>
 
           <figure data-reveal-aperture className={`${styles.mechanismFrame} mt-16 hidden origin-center md:mt-24 md:block`}>
             <div className={styles.mechanismVisual}>
               <Image
-                src="/illustrations/selective-mechanism-v2.avif"
-                alt="Conceptual three-stage illustration of a precision peptide near healthy tissue, activating in an acidic disease microenvironment, and undergoing selective uptake by diseased tissue."
+                src={PLATFORM_MECHANISM_IMAGE}
+                alt={PLATFORM_MECHANISM_ALT}
                 width={1774}
                 height={887}
                 sizes="(min-width: 1280px) 1200px, calc(100vw - 64px)"
@@ -210,31 +207,14 @@ export default function SelectiveThreadPage() {
               </ol>
             </div>
             <figcaption className={styles.mechanismCaption}>
-              Conceptual representation of the EndoCyclic precision peptide platform.
+              Conceptual sequence through selective uptake and pH-mediated
+              activation. A separate final state represents the ENDO-205
+              preclinical lesion-elimination finding.
             </figcaption>
           </figure>
 
           <div data-reveal-aperture className="mt-14 md:hidden">
-            <figure>
-              <div className={styles.mobileMechanismFrame}>
-                <MobileMechanismArtwork />
-              </div>
-              <figcaption className={styles.mechanismCaption}>
-                Conceptual representation of the EndoCyclic precision peptide platform.
-              </figcaption>
-            </figure>
-            <ol className={styles.mechanismMobileSteps}>
-              {MECHANISM_STEPS.map((item) => (
-                <li key={item.step}>
-                  <span className={styles.mechanismMobileIndex}>{item.step.slice(0, 2)}</span>
-                  <div>
-                    <span className={styles.mechanismStepLabel}>{item.step.slice(5)}</span>
-                    <h3>{item.title}</h3>
-                    <p>{item.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <MobileMechanismFlow />
           </div>
 
           <div className={styles.mechanismTakeaway}>
@@ -302,7 +282,7 @@ export default function SelectiveThreadPage() {
               <h2 className="mt-6 max-w-4xl text-[clamp(2.6rem,5.5vw,5.25rem)] font-medium leading-[0.98] tracking-[-0.04em] text-ink">Move from overview to diligence.</h2>
               <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted">Connect with EndoCyclic about strategic partnerships, investment, or data-room access.</p>
               <div className="mt-10 flex flex-wrap gap-3">
-                <FlagshipLink href="/contact?subject=partnership#contact-form" tone="dark">Partner with us</FlagshipLink>
+                <FlagshipLink href={PARTNERSHIP_CONTACT_HREF} tone="dark">Partner with us</FlagshipLink>
                 <FlagshipLink href="/investors" tone="outline-light">Investor overview</FlagshipLink>
               </div>
             </div>
@@ -311,7 +291,7 @@ export default function SelectiveThreadPage() {
               <div className={`${styles.founderProof} mt-7`}>
                 <div className={styles.founderPortrait}>
                   <Image
-                    src="/team/tanya-petrossian.avif"
+                    src="/team/tanya-petrossian-v2.avif"
                     alt="Dr. Tanya Petrossian, Founder and CEO of EndoCyclic Therapeutics"
                     fill
                     sizes="84px"

@@ -1,48 +1,217 @@
 # EndoCyclic — Scientific Illustration Prompt Specs
 
-**Style: crisp editorial scientific illustration** — clean, precise, detailed, with defined edges and legible structure (like a modern Nature Reviews cover graphic). Not watercolor, not photoreal 3D. Every prompt is grounded in `truth.md` and uses the site's Calm Clinical palette.
+**Style: crisp editorial scientific illustration** — clean, precise, detailed, with defined edges and legible structure (like a modern Nature Reviews cover graphic). Not watercolor, not photoreal 3D. Public claims are grounded in `truth.md`; user-supplied mechanistic references may inform abstract visual transitions but never add public scientific claims. All prompts use the site's Calm Clinical palette.
 
 ## How to use
 1. Paste the **Prompt** into ChatGPT (image generation); add the aspect ratio in words.
 2. Iterate 2–3× using the *Avoid* / *Usage* notes ("crisp defined edges, not fuzzy", "no text", "lighter off-white background").
-3. Export to **.webp** (~2000px long edge) and save at the **Suggested file** path, then ask me to wire it in.
+3. Preserve the original generated PNG outside `public/`, then export the
+   approved production master to optimized **.avif** at its versioned path.
+   Create responsive variants as deterministic crops, never independent
+   redraws.
 
 ## Locked anchor (first line of every prompt)
 > Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
+
+## Locked peptide motif (mandatory; supersedes every legacy prompt below)
+
+Reference assets:
+
+- `docs/assets/canonical-endo-peptide-v1.svg`
+- `docs/assets/canonical-endo-peptide-v1.png`
+
+Every generated scientific illustration that contains a peptide uses this same
+conceptual platform motif. It is a visual identity system, not a published
+chemical formula or amino-acid sequence.
+
+- The motif is one intact, nearly front-facing ring of exactly 13 glossy,
+  individually countable spherical residues with a clean open center.
+- Lock the upright orientation and read clockwise from the orange bead at
+  12 o’clock: 1 orange, 5 warm taupe, 3 violet, 3 orange, 1 warm taupe.
+  Totals: 4 orange, 6 warm taupe, 3 violet.
+- Preserve the exact color adjacency and orientation. The upper-left bead next
+  to the top orange bead is warm taupe.
+- Use pearl/enamel dimensional shading, crisp brown/plum keylines, a consistent
+  upper-left cream highlight, short bronze/tan connectors behind the beads, and
+  a very soft neutral shadow down/right.
+- Never communicate targeting, uptake, activation, or program identity by
+  recoloring, changing the bead count, changing the sequence, adding side
+  chains, or converting the motif into a ball-and-stick structure. Use the
+  surrounding tissue, membrane pocket, endosome, pH field, selective thread,
+  localization contour, or target context instead.
+- Keep primary rings fully visible and at least 96 CSS pixels across in their
+  final use. Repeated/context rings should remain at least 48–56 CSS pixels.
+  For smaller appearances, composite the canonical sprite deterministically
+  rather than asking image generation to redraw it.
+- For four-stage mechanism visuals, the approved visual order is:
+  **Target** (diseased-tissue selectivity) → **Enter** (selective uptake and
+  early endosome) → **Activate** (pH-mediated activation in the acidified
+  endosome, with subsequent intracellular access shown conceptually) →
+  **ENDO-205 evidence** (the intact peptide visibly seated in an illustrated
+  intracellular-target pocket, followed by the separately qualified ENDO-205
+  preclinical lesion-elimination state). Uptake always precedes activation.
+  Keep the program-specific evidence visually and verbally distinct from the
+  three platform stages, with all labels and qualifications in accessible HTML.
+
+Only diseased-tissue selectivity, selective uptake through a proprietary
+endocytic pathway, pH-mediated activation, and the separately qualified
+ENDO-205 preclinical lesion-elimination finding are approved public claims.
+Early-endosome, cytoplasmic, and teal contact-pocket details are compositional
+metaphors derived from the user-supplied infographic; never repeat them as an
+approved ENDO-205 mechanism or target claim in public copy.
+
+Any older prompt text below that requests a teal-only peptide, an inert-to-active
+peptide recolor, a gray peptide, a gold/teal split ring, a side-chain appendage,
+or a different bead count is obsolete and must be replaced by this locked motif.
+
+### Four-stage visual semantics
+
+| Stage | What the illustration must show | What changes visually |
+|---|---|---|
+| **1 · Target** | The canonical ring localizes to diseased tissue while healthy tissue remains quiet. | Tissue placement, localization contour, or selective thread. |
+| **2 · Enter** | The intact ring enters through a diseased-cell membrane pocket and is enclosed in an early endosome. | Membrane invagination and early-endosome context. |
+| **3 · Activate** | The already-internalized ring sits in an acidified endosome where pH-mediated activation occurs; the conceptual art then shows the same intact ring in the cytoplasm. | Acidified endosomal field, restrained pH cue, and one unchanged cytoplasmic ring immediately downstream. |
+| **4 · ENDO-205 evidence** | Inside the diseased cell, the intact canonical ring is visibly seated in a pocket on an illustrated teal intracellular target. A separate downstream evidence state then shows the same lesion receding to represent the approved ENDO-205 preclinical lesion-elimination finding. | Unambiguous illustrated peptide-to-target contact first, then a separately qualified lesion/tissue state; never the peptide identity, bead count, sequence, or color. |
+
+The peptide remains visually identical in all four beats. External
+plasma-membrane or lesion-surface docking is scientifically incorrect for the
+illustrated target beat and must be rejected: the ring enters the diseased
+cell, undergoes pH-mediated activation, and only then appears seated in the
+illustrated intracellular-target pocket. Detailed pathway labels from research
+infographics—such as named membrane proteins or trafficking regulators—must
+not be promoted into public website copy unless they are first approved in
+`truth.md`.
+
+## Current production asset registry
+
+These are the active versioned masters and deterministic derivatives. Generate
+or revise only the master named for the task; make responsive derivatives by
+cropping the approved master so the peptide motif is never repainted.
+
+| Story / placement | Production master | Deterministic derivative |
+|---|---|---|
+| Homepage hero | `public/illustrations/hero-home-v8.avif` | `public/illustrations/hero-home-mobile-v8.avif` |
+| Innovation clearance hero | `public/illustrations/innovation-target-clearance-v2.avif` | `public/illustrations/innovation-target-clearance-mobile-v2.avif` |
+| Homepage state transition | `public/illustrations/selective-state-transition-v3.avif` | `public/illustrations/selective-state-transition-mobile-v3.avif` |
+| Shared four-stage mechanism | `public/illustrations/selective-mechanism-v11.avif` | — |
+| Platform breadth | `public/illustrations/platform-breadth-v3.avif` | — |
+| News regulatory threshold | `public/illustrations/news-regulatory-threshold-v2.avif` | — |
+| ENDO-205 translation | `public/illustrations/endo-205-translation-v6.avif` | — |
+| ENDO-205 portfolio banner | `public/illustrations/endo-205-portfolio-desktop-v6.avif` | `public/illustrations/endo-205-translation-v6.avif` below 1024px |
+| ENDO-205 clinical translation | `public/illustrations/endo-205-clinical-translation-v7.avif` | — |
+| Care-gap selective shift | `public/illustrations/care-gap-selective-shift-v7.avif` | `public/illustrations/care-gap-selective-path-mobile-v6.avif` |
+| Pipeline portfolio | `public/illustrations/pipeline-portfolio-wide-v2.avif` | — |
+| FemLUNA targeting | `public/illustrations/femluna-targeting-v3.avif` | `public/illustrations/femluna-targeting-v3-portrait.avif` |
+| FemLUNA comparison, targeted state | `public/illustrations/femluna-comparison-targeted-v2.avif` | — |
+| Oncology program pair | `public/illustrations/oncology-pair-v4.avif` | `public/illustrations/endo-311-localization-pair-v4.avif`, `public/illustrations/endo-995-intracellular-v4.avif` |
+| Investor platform | `public/illustrations/investor-platform-v3.avif` | — |
+
+The active shared mechanism is
+`public/illustrations/selective-mechanism-v11.avif`. The superseded
+`public/illustrations/selective-mechanism-v8.avif` plate is retained for
+version history but must not be reused because its escaped peptide appeared
+partially fragmented. Versions 7 and 6 are also retained only as historical
+records; v6 contains the rejected external-docking interpretation. No older
+plate is an active source.
+
+### Asset-specific outcome boundaries
+
+- **Homepage hero v8:** carries the approved sequence and includes one
+  secondary lesion-dispersal cue only when adjacent HTML explicitly qualifies
+  it as the ENDO-205 preclinical lesion-elimination finding.
+- **Innovation target-clearance v2:** is a close-up of the canonical intact
+  peptide physically seated in an illustrated intracellular-target pocket
+  inside one lesion. That lesion's right edge recedes in the same field to
+  represent the qualified ENDO-205 preclinical lesion-elimination finding. It
+  is a hero teaser; the shared mechanism plate remains the complete sequence.
+- **Innovation state transition v3:** ends at intracellular target access. It
+  may show uptake, pH-mediated endosomal escape, and the intact peptide
+  approaching or seating in an intracellular target pocket, but it must not
+  show lesion elimination or any treatment outcome.
+- **Shared mechanism v11 and ENDO-205 translation v6:** show selective uptake →
+  pH-mediated activation → the intact peptide seated in an illustrated
+  intracellular target → a spatially separate, explicitly qualified ENDO-205
+  preclinical lesion-elimination beat.
+- **ENDO-205 portfolio panorama v6:** distributes that same sequence across a
+  native 1774 × 887 full-bleed well matched to the component's 2:1 media
+  surface. Tissue and cellular context cross all four
+  edges; the intact canonical ring enters through a membrane pocket, remains
+  complete through the endosomal states, seats visibly in the illustrated teal
+  intracellular target, and only then gives way to a spatially separate
+  receding-lesion field. Its first localization beat sits below the top-left
+  HTML label-safe zone. Large baked-in ivory margins, obscured steps, or a small
+  centered mechanism strip are rejection criteria.
+- **ENDO-205 clinical translation v7:** isolates the qualified preclinical
+  lesion-elimination sequence on the left from the conceptual Phase 1 study pathway on
+  the right. The right side communicates study structure only—never clinical
+  efficacy, safety, or outcome.
+- **Care-gap selective shift v7:** keeps the current-therapy lesion visibly
+  persistent on the left. The right proceeds through an illustrated target
+  state to a separately qualified ENDO-205 preclinical lesion-elimination
+  beat; it must not read as a clinical before/after result.
+
+Every master containing the platform peptide must use the canonical 13-bead
+motif above. Teal, gold, rose, membrane pockets, endosomes, localization
+contours, selective threads, and target halos belong to the **surrounding
+context**, never to the peptide beads themselves.
 
 ## Palette (max 5 areas, colorblind-safe, never red/green)
 
 | Meaning | Hex |
 |---|---|
 | Background | `#FBFAF8` |
-| Peptide / healthy / active (hero) | `#4A9B8E` / `#2F6E62` |
+| Peptide motif | orange `#E89A16`, violet `#6F38B5`, warm taupe `#B8AA9B` |
+| Selective path / uptake context | `#4A9B8E` / `#2F6E62` |
 | Anatomy / linework | `#2E263A` |
 | Disease (sparing) | `#C98B84` / `#FBF4F3` |
 | Neutral / context | `#B7B2BB` `#EDF5F2` `#F6F3EE` |
 
 ---
 
-## 1. Homepage hero — the peptide over living tissue
+## 1. Homepage hero — approved mechanism to a qualified clearance endpoint
 
-- **Placement:** public/illustrations/hero-home.webp — full-bleed background/hero band on the homepage (app/page.tsx Hero section). Wide 16:9 master export; also export a 21:9 crop that keeps the subject in the central-right 60%. The entire LEFT third of the frame is intentionally empty negative space reserved for the HTML headline, subheadline, and CTA overlay — no illustrated subject matter should intrude into that left third.
+- **Current production files:** `public/illustrations/hero-home-v8.avif`
+  and the deterministic crop
+  `public/illustrations/hero-home-mobile-v8.avif`.
+- **Placement:** full-bleed homepage hero. Wide 16:9 master; keep the subject
+  in the center-right and the left third quiet for the HTML headline,
+  subheadline, and CTA.
 - **Aspect ratio:** wide 16:9 (with a secondary 21:9 letterbox crop)
-- **Suggested file:** `public/illustrations/hero-home.webp`
-- **Depicts (truth.md):** A single cyclic-peptide macrocycle (EndoCyclic's precision peptide platform) hovering above a field of living cells; one small contained cluster of abnormal diseased cells at lower-right. Conceptual, structurally legible, no invented chemical formula and no data/efficacy claims — traces to truth.md (precision peptide platform, non-hormonal, acts selectively in diseased tissue; endometriosis = endometrial-like tissue growing where it should not).
-- **Palette mapping:** background = clean warm soft off-white #FBFAF8 (flat, evenly lit, never dark, no gradient sky). THE PEPTIDE (key element, most saturated + crispest) = clinical teal #4A9B8E with deeper teal #2F6E62 for linework/emphasis. Cell membranes + anatomy linework = muted plum-ink #2E263A, with the healthy cell interiors in a very soft teal wash #EDF5F2 / neutral warm #F6F3EE. Diseased cell cluster (sparing) = dusty rose #C98B84 outline with pale rose fill #FBF4F3. Neutral background/context cells = soft cool gray #B7B2BB. No red, no green, no neon.
-- **Composition:** Center-right subject placement. Upper-right: the cyclic peptide ring. Mid-ground: a tidy sheet of healthy cells receding in scale toward the upper background. Lower-right: a small contained cluster of dusty-rose abnormal cells. Left third: clean empty negative space for headline overlay. Calm, minimal, generous breathing room, strong left-to-right / center-out flow.
+- **Suggested file:** `public/illustrations/hero-home-v8.avif`
+- **Approved claims (truth.md):** selective uptake through a proprietary
+  endocytic pathway, pH-mediated activation, and the separately qualified
+  ENDO-205 preclinical lesion-elimination finding. Any intracellular organelle
+  or teal contact-pocket detail is an abstract visual bridge from the supplied
+  reference, not an additional public mechanism or target claim. The neutral
+  cleared field does not imply restored histology, clinical outcome imagery,
+  or a platform-wide result.
+- **Palette mapping:** the peptide always uses the locked orange/violet/warm
+  taupe 13-bead motif. Clinical teal belongs only to the selective thread,
+  uptake contour, or tissue context. Background = #FBFAF8; anatomy linework =
+  #2E263A; healthy tissue = #EDF5F2 / #F6F3EE; diseased tissue = #C98B84 /
+  #FBF4F3.
+- **Composition:** Center-right subject placement. The primary focal event is
+  the intact canonical ring visibly seated in a teal intracellular target
+  pocket inside the rose lesion. A restrained acidified-endosome and escape
+  cue precedes it. Farther downstream, repeat that same lesion silhouette as a
+  paler receding state before progressively smaller remnants end in a neutral
+  cleared field.
+  This must read as one lesion changing state, not unrelated floating clusters.
+  Healthy surrounding cells remain quiet and spared. Keep the left third clean
+  for the HTML headline and qualification.
 
 **Prompt — copy into ChatGPT:**
 
 ```text
 Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
 
-SUBJECT: A calm, premium hero image for a precision-medicine biotech homepage. In the UPPER-RIGHT of the frame, a single clearly-drawn cyclic-peptide macrocycle — an obvious, legible closed ring of roughly ten to fourteen connected residues rendered as cleanly-outlined rounded nodes joined edge-to-edge by short clean bonds into a smooth continuous loop (a conceptual cyclic peptide, NOT a fuzzy string of beads and NOT a real labeled chemical formula). The ring hovers gently above the scene as the clear focal point. Beneath and to the right of it, a tidy sheet of living healthy cells fills the mid-ground and recedes in scale toward the upper background, kept quiet and uncrowded — each cell drawn with a DEFINED crisp membrane outline and a single clearly visible round nucleus, cells softly touching in an orderly sheet with generous spacing. Toward the LOWER-RIGHT, one small, clearly contained cluster of a few abnormal diseased cells — irregular, slightly clumped and misshapen compared to the neat healthy cells — signalling diseased tissue in a restrained, non-alarming way.
+SUBJECT: A calm, premium hero image for a precision-medicine biotech homepage. In the CENTER-RIGHT, show one intact instance of the canonical EndoCyclic peptide from docs/assets/canonical-endo-peptide-v1.png physically seated in a defined teal contact pocket inside rose diseased tissue. Treat that pocket as an abstract compositional metaphor from the supplied infographic, not a named or approved molecular target. The ring contains exactly 13 glossy, individually countable beads in the exact upright orange/violet/warm-taupe sequence with no side chains. To the left of that contact, include a restrained acidified-endosome opening and one unchanged ring emerging into the cytoplasm as a purely conceptual visual bridge after pH-mediated activation. To the far right, repeat the SAME lesion silhouette once as a paler, partially receding state, then show progressively smaller and fainter rose remnants ending in a neutral cleared field as the secondary cue for the separately qualified ENDO-205 preclinical lesion elimination finding. Do not imply restored histology. These must read as successive states of one lesion, not unrelated floating clusters. A fine clinical-teal selective thread may guide the sequence, but it must remain outside the peptide and must not recolor any bead. The peptide must never dock on an external plasma membrane, lesion edge, or lesion surface.
 
 CRISP STRUCTURAL DETAIL: every structure must read clearly and legibly with defined edges — the peptide ring's residues are individually distinct and connected; each healthy cell has a clean membrane and a nucleus; the diseased cluster has defined abnormal outlines. Crisp does NOT mean busy: keep it minimal, composed, and airy. Use crisp clean defined vector-like edges rather than soft diffused watercolor edges.
 
-COLOR MAPPING (use ONLY these, max five color areas, colorblind-safe, NO red and NO green): background is a clean, evenly-lit soft off-white (#FBFAF8), flat and calm — not dark, not a gradient sky. THE PEPTIDE RING is the most saturated and sharpest element, in clinical teal (#4A9B8E) with deeper teal (#2F6E62) linework and subtle flat shading. Healthy cell membranes and primary structural linework are muted plum-ink (#2E263A); healthy cell interiors are a very soft teal wash (#EDF5F2) or warm neutral (#F6F3EE). The small diseased cluster (used sparingly) is dusty rose (#C98B84) outlines with pale rose fill (#FBF4F3). Distant/background context cells are quiet soft cool gray (#B7B2BB) and less saturated so the teal peptide clearly dominates the hierarchy.
+COLOR MAPPING: preserve the canonical peptide colors exactly: orange #E89A16, violet #6F38B5, and warm taupe #B8AA9B, with brown/plum keylines and bronze/tan connectors. Background is a clean, evenly-lit soft off-white (#FBFAF8). Healthy cell membranes and primary structural linework are muted plum-ink (#2E263A); healthy cell interiors are a very soft teal wash (#EDF5F2) or warm neutral (#F6F3EE). The small diseased cluster is dusty rose (#C98B84) over pale rose (#FBF4F3). Clinical teal (#4A9B8E / #2F6E62) is reserved for the selective path or uptake context and never appears on the peptide beads.
 
-COMPOSITION & NEGATIVE SPACE: subject sits in the center-right; keep the ENTIRE LEFT THIRD of the frame as clean empty off-white negative space (no cells, no structures there) reserved for a headline that will be added later in HTML. Composition flows center-out from the peptide ring. No borders, no gridlines, no drop-shadows, no decorative icons, no scientific diagram lines or axes.
+COMPOSITION & NEGATIVE SPACE: subject sits in the center-right; keep the ENTIRE LEFT THIRD of the frame as clean empty off-white negative space reserved for a headline and preclinical qualification added later in HTML. Make intracellular target engagement the dominant focal point and the downstream lesion-remnant cue smaller, quieter, and unmistakably secondary. No borders, no gridlines, no drop-shadows, no decorative icons, no scientific diagram lines or axes.
 
 FORMAT: a wide 16:9 horizontal landscape composition (also intended to crop to an ultra-wide 21:9 with the subject held in the central-right sixty percent). Publication quality, isolated conceptual-but-detailed illustration on a clean soft off-white background.
 
@@ -50,7 +219,13 @@ EXCLUSIONS: no text, no labels, no letters or numbers; no neon or glow; no photo
 ```
 
 - **Avoid:** no text, no labels, no letters or numbers, no captions; no neon or glowing colors; no photorealistic 3D render; no loose watercolor, no fuzzy/diffused/blurry edges, no vague abstraction; no dark background, no gradient sky, no vignette; no red or green; no drop-shadows, borders, gridlines, or decorative icons; no busy clutter; no accurate/real chemical formula or labeled scientific diagram; no fabricated data, graphs, or efficacy indicators; the peptide ring must NOT be a fuzzy bead ring — it must be a clean legible macrocycle of connected residues.
-- **Usage:** Export a 16:9 master and a 21:9 crop keeping the subject in the central-right 60%. Convert to .webp and save at public/illustrations/hero-home.webp. Run 2–3 iterations; if the peptide reads as a fuzzy bead ring or the cells lose their defined membranes, re-prompt emphasizing 'crisp defined edges, clearly separated connected residues, legible nucleus in each cell.' Verify the left third stays empty for the headline overlay.
+- **Usage:** Export the approved master as
+  `public/illustrations/hero-home-v8.avif`, then create
+  `public/illustrations/hero-home-mobile-v8.avif` as a deterministic crop.
+  Keep the explicit lesion-clearance endpoint adjacent to an HTML qualification identifying
+  it as an ENDO-205 preclinical finding. If
+  the generator changes any bead count, color adjacency, or orientation,
+  composite the canonical sprite rather than accepting a redraw.
 
 ---
 
@@ -59,8 +234,14 @@ EXCLUSIONS: no text, no labels, no letters or numbers; no neon or glow; no photo
 - **Placement:** Hero illustration for the "how a cyclic peptide works" section on /innovation. Centered on the page with a headline/caption overlaid to one side in HTML; the illustration itself carries no baked-in text. Save to public/illustrations/cyclic-peptide.webp.
 - **Aspect ratio:** square 1:1
 - **Suggested file:** `public/illustrations/cyclic-peptide.webp`
-- **Depicts (truth.md):** A closed cyclic peptide macrocycle: a clean ring of eight connected amino-acid residue nodes with outward side-chain stubs, signaling EndoCyclic's proprietary precision peptide platform (cyclic peptide chemistry). Conceptual, not a real labeled chemical structure — no invented formula or data.
-- **Palette mapping:** Peptide (hero, most saturated + crispest): residue nodes and bonds in clinical teal #4A9B8E with deeper teal #2F6E62 for emphasis edges/bonds. Primary linework/outlines: muted plum-ink #2E263A. Background: soft off-white #FBFAF8. Optional very subtle supporting halo: soft teal wash #EDF5F2. No rose, no gold, no red/green.
+- **Depicts (truth.md):** The locked conceptual platform glyph: one intact,
+  upright ring of exactly 13 spherical beads with the approved color sequence,
+  no side chains, and no ball-and-stick conversion. It signals the proprietary
+  precision peptide platform without claiming a published chemical formula.
+- **Palette mapping:** Preserve the canonical orange #E89A16, violet #6F38B5,
+  and warm taupe #B8AA9B beads, brown/plum keylines, and bronze/tan connectors.
+  Background: soft off-white #FBFAF8. An optional supporting halo may use soft
+  teal #EDF5F2, but it cannot overlap or recolor the motif.
 - **Composition:** Centered ring occupying the middle ~55-65% of a square frame, faint elliptical tilt, open empty center, symmetrical, floating in generous negative space on all sides for an HTML headline/caption overlay. Upper-left light for subtle depth.
 
 **Prompt — copy into ChatGPT:**
@@ -68,11 +249,11 @@ EXCLUSIONS: no text, no labels, no letters or numbers; no neon or glow; no photo
 ```text
 Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
 
-SUBJECT: A single, isolated cyclic peptide macrocycle — a closed ring molecule — rendered so it instantly reads as "a cyclic (ring-shaped) peptide." Draw eight distinct amino-acid residues arranged evenly around a clean circular ring, each residue a crisp rounded node (a smooth capsule/bead about the same size) connected to its two neighbors by short, clean, evenly-spaced bonds (peptide bonds) that close the loop completely into one continuous ring with an open center. Give each node a small, cleanly-drawn side-chain stub pointing outward from the ring (short simple geometric shapes — a small circle, a short fork, a tiny hexagon — a few varied but restrained, to signal "different residues" without ever becoming a real labeled chemical formula). Keep the overall form an elegant, obvious ring — symmetrical, balanced, and legible — like a polished conceptual diagram of a macrocycle, not a fuzzy cluster of beads and not an accurate chemical structure.
+SUBJECT: Reproduce the canonical conceptual platform motif from docs/assets/canonical-endo-peptide-v1.png as one isolated, upright, nearly front-facing ring with a clean open center. It contains exactly 13 glossy, individually countable spherical beads. Starting from the orange bead at 12 o’clock and reading clockwise: 1 orange, 5 warm taupe, 3 violet, 3 orange, 1 warm taupe. Preserve this exact count, adjacency, and orientation. Use no side chains, appendages, letter labels, or ball-and-stick chemistry.
 
 STRUCTURAL DETAIL: Each residue node has a clean plum-ink outline and a smooth subtle flat/cel shading gradient within it for gentle rounded depth; bonds are clean solid strokes of consistent weight; the ring sits flat and centered, facing the viewer, with a very slight elliptical tilt for grace but still clearly circular. One small, tasteful detail may suggest 3D form — a soft, consistent light from upper-left giving each node a quiet highlight and a faint soft contact shadow beneath the whole ring — but keep edges crisp and defined, not diffused.
 
-COLOR MAPPING (use ONLY these, max 5 color areas): the peptide is the hero and the most saturated, sharpest element — fill the residue nodes and bonds in clinical teal #4A9B8E with a deeper teal #2F6E62 for the crispest emphasis edges and the connecting bonds; use muted plum-ink #2E263A for the clean primary outline/linework on the nodes and side-chain stubs; keep the background a clean, evenly-lit soft off-white #FBFAF8; if any faint supporting halo or ground is used behind the ring, keep it an extremely subtle soft teal wash #EDF5F2, quiet and secondary. Do NOT use dusty rose here (no disease element in this image), no gold, no reds or greens. Colorblind-safe, restrained, on-palette.
+COLOR MAPPING: exact canonical peptide colors only—orange #E89A16, violet #6F38B5, warm taupe #B8AA9B, crisp brown/plum keylines, bronze/tan connectors, and consistent upper-left cream highlights. Keep the background evenly-lit soft off-white #FBFAF8. A faint soft-teal #EDF5F2 supporting halo may sit behind the intact ring, but teal never replaces a bead color.
 
 COMPOSITION & NEGATIVE SPACE: The ring is centered and occupies roughly the middle 55–65% of the square frame, floating in generous calm negative space on all sides so a headline or caption can be overlaid in HTML nearby; the open center of the ring stays clean and empty. Balanced, symmetrical, premium, minimal — ruthlessly free of clutter: no gridlines, no borders, no drop-shadow boxes, no decorative icons, no scattered particles, no motion streaks.
 
@@ -80,106 +261,162 @@ FORMAT: square 1:1 aspect ratio. A single isolated illustration on a clean, even
 ```
 
 - **Avoid:** No text or labels; no real/accurate chemical formula or invented data; no neon; no photorealistic 3D render; no loose watercolor or fuzzy diffused abstraction; no fuzzy bead cluster (must read as an obvious ring); no dark or gradient-sky background; no gridlines, borders, drop-shadow boxes, decorative icons, scattered particles, or motion streaks; no red/green (colorblind-safe); no dusty rose (no disease element in this image).
-- **Usage:** Export at square 1:1, transparent or #FBFAF8 background, save as public/illustrations/cyclic-peptide.webp. Hero for the "how a cyclic peptide works" section on /innovation; overlay the headline/caption in HTML beside the centered ring (do not bake text into the image). Run 2-3 iterations tuning residue-node spacing and ring symmetry so it reads instantly as a clean cyclic (ring) molecule.
+- **Usage:** Prefer the deterministic
+  `docs/assets/canonical-endo-peptide-v1.svg` or PNG rather than regenerating
+  the isolated glyph. If a raster derivative is required, preserve exact bead
+  centers, scale, orientation, and color sequence.
 
 ---
 
-## 3. Mechanism step 1 — pH-mediated activation
+## 3. Mechanism stage 3 — pH-mediated activation
 
-- **Placement:** Innovation / mechanism section, as panel 1 of a 3-panel horizontal step sequence (steps 2 & 3 follow). Saved to public/illustrations/mech-1-activation.webp. Reserve calm negative space along the top third and directly beneath the two peptide states for an HTML headline and a caption that are overlaid in code (e.g. "pH-mediated activation" + short descriptor). No baked-in text in the image.
-- **Aspect ratio:** square 1:1 (must match the framing, scale, and eye-level of panels 2 and 3 in the set)
-- **Suggested file:** `public/illustrations/mech-1-activation.webp`
-- **Depicts (truth.md):** A single cyclic peptide drawn twice, left to right, showing a clean chemical "switch." LEFT: the peptide INERT in neutral healthy tissue (pH ~7.4) — a clearly drawn closed ring of connected amino-acid residues (small beads joined by short bonds into an obvious loop), rendered in muted neutral gray, sitting among calm, healthy cells with defined membranes and a single visible nucleus. RIGHT: the SAME cyclic peptide now ACTIVE as it reaches the subtly acidic microenvironment at the edge of disease — the identical ring, now rendered in crisp saturated clinical teal, positioned at the boundary of a defined pale-rose tissue zone (the acidic diseased microenvironment). A restrained motion cue (a simple slim arrow or gentle directional flow) carries the eye from the gray inert state on the left to the teal active state on the right. Traces to truth.md: proprietary precision peptide platform with pH-mediated activation; non-hormonal; designed to act only in diseased tissue. No efficacy figures, no real chemical formula, no labels.
-- **Palette mapping:** Background: clean warm soft off-white #FBFAF8, evenly lit, flat (never dark, no gradient sky). Healthy cells / neutral context: soft cool gray #B7B2BB fills with a soft teal wash #EDF5F2 around the healthy zone; membranes and the nucleus outlined in muted plum-ink #2E263A. INERT peptide (left): muted gray #B7B2BB with #2E263A linework — clearly drawn but visibly quiet/"off." ACTIVE peptide (right): the KEY element — crisp clinical teal #4A9B8E fills with deeper teal #2F6E62 for outline and emphasis; the most saturated and most sharply defined thing in the frame. Diseased acidic microenvironment (right, SPARING): defined dusty-rose #C98B84 edge with a pale rose #FBF4F3 fill. All anatomy/structure linework in muted plum-ink #2E263A. Max 5 distinct color areas; colorblind-safe; NO red, NO green, NO neon.
-- **Composition:** Center-out / left-to-right read. Two peptide states sit on a shared horizontal eye-line across the middle band: inert gray peptide slightly left of center, active teal peptide slightly right of center, connected by one slim directional cue. Healthy teal-wash cells cluster loosely behind/around the left peptide; the pale-rose acidic zone occupies the lower-right, its dusty-rose boundary curving up toward the active teal peptide. Generous negative space in the top third and along the outer margins for HTML headline/caption overlay. Balanced, calm, uncluttered — no borders, no gridlines, no drop-shadows, no decorative icons.
+- **Placement:** third beat inside the shared mechanism master
+  `public/illustrations/selective-mechanism-v11.avif`, following Target and Enter.
+- **Depicts (truth.md):** The already-internalized canonical peptide inside a
+  clearly acidified endosome. pH-mediated activation is communicated by the
+  endosomal environment, a restrained proton/pH field, and a contextual
+  antique-gold cue—not by changing the peptide. The same intact ring appearing
+  immediately afterward in the cytoplasm remains a conceptual visual detail,
+  not an additional public mechanism claim.
+- **Sequence guardrail:** The ring must already be inside the cell after
+  selective uptake. Activation must occur inside the acidified endosome, then a
+  second unchanged ring must be visibly outside that opening endosome in the
+  cytoplasm. Never place activation at the tissue boundary before entry, never
+  imply external plasma-membrane or lesion-surface docking, and never use a
+  gray-to-teal molecular “switch.”
+- **Palette mapping:** The peptide remains canonical orange/violet/warm taupe.
+  Endosomal membrane and disease context may use rose/plum; selective-entry
+  context may use teal; the acidified/pH cue may use restrained antique gold.
 
 **Prompt — copy into ChatGPT:**
 
 ```text
 Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
 
-Subject: a single cyclic peptide drawn twice, arranged left to right, to show one clean chemical "switch" from inert to active. On the LEFT, the peptide is INERT in neutral, healthy tissue at normal pH: draw it as an obvious, cleanly rendered closed ring — a loop of small connected amino-acid residue beads joined by short bonds — rendered in a muted, quiet neutral gray so it clearly reads as "off." Surround it with a few calm, healthy cells that have crisply defined membranes and a single clearly drawn nucleus each. On the RIGHT, the SAME cyclic peptide is now ACTIVE as it reaches the subtly acidic microenvironment at the edge of diseased tissue: draw the identical ring of connected beads, but now in crisp, saturated clinical teal — make this the most vivid and most sharply defined element in the whole image. Place this active teal peptide right at the boundary of a small, defined pale-rose zone representing the acidic diseased microenvironment. Add one slim, simple directional cue (a thin arrow or gentle flow line) leading the eye from the gray inert peptide on the left to the teal active peptide on the right, so the color change reads as a switch turning on.
+Subject: stage 3, Escape. Show the canonical 13-bead EndoCyclic peptide already enclosed inside a clean acidified endosome within a diseased cell, after selective uptake has occurred. Preserve the exact upright orange/violet/warm-taupe bead sequence from docs/assets/canonical-endo-peptide-v1.png. Communicate pH-mediated activation through a restrained warm acidic field inside the endosome, small abstract proton-context marks, and an antique-gold environmental cue around the intact ring. Then show that endosomal boundary opening in a controlled, nonviolent way and one identical intact canonical ring immediately outside it in the cytoplasm, establishing successful intracellular access. Do not recolor, deform, open, or add appendages to either peptide appearance.
 
-Color mapping — use ONLY these colors: background is a clean, evenly-lit warm soft off-white (#FBFAF8), flat and calm, never dark and never a gradient sky. The healthy cells and neutral context use soft cool gray (#B7B2BB) with a gentle soft-teal wash (#EDF5F2) behind the healthy zone, all outlined in muted plum-ink (#2E263A). The inert peptide on the left is muted gray (#B7B2BB) with plum-ink outlines — clearly drawn but visibly quiet. The active peptide on the right is crisp clinical teal (#4A9B8E) with a deeper teal (#2F6E62) outline for emphasis — the single most saturated, crispest element. The diseased acidic microenvironment on the lower right is small and sparing: a defined dusty-rose (#C98B84) edge with a pale rose (#FBF4F3) fill. Keep to a maximum of five distinct color areas, colorblind-safe, with NO red and NO green.
+Color mapping: preserve the canonical peptide colors exactly. Background is soft off-white #FBFAF8; primary structure is muted plum-ink #2E263A; the endosome uses dusty rose #C98B84 / pale rose #FBF4F3; selective-entry context may use clinical teal #4A9B8E / #2F6E62; the pH field uses restrained antique gold. Context color surrounds the ring and never replaces a bead color.
 
-Composition: square 1:1. The two peptide states sit on a shared horizontal center eye-line — inert gray peptide just left of center, active teal peptide just right of center, linked by one slim directional cue. Healthy teal-wash cells cluster loosely around the left peptide; the small pale-rose acidic zone sits in the lower-right, its dusty-rose boundary curving up toward the active teal peptide. Leave generous, calm negative space across the top third and along the outer margins for a headline and caption to be added later in HTML. Balanced, minimal, uncluttered.
+Composition: the acidified endosome and conceptual intracellular-access event are one continuous left-to-right beat. Center the first intact canonical ring inside the acidified endosome, open the endosomal boundary on its right side, and place the second unchanged ring just beyond that opening in the diseased-cell cytoplasm. Preserve a clear visual handoff from the early-endosome Enter beat on the left toward the illustrated-target and ENDO-205 evidence beat on the right. Do not show the ring seated in a target pocket until stage 4. Keep callouts and all stage labels in accessible HTML.
 
 Style reminders phrased both ways: use crisp, clean, defined edges rather than soft, diffused watercolor edges; use a clean, evenly-lit soft off-white background, not a dark or gradient one; render clearly legible structures (an obvious ring of connected beads, defined cell membranes, a distinct nucleus, a defined rose lesion zone) rather than vague fuzzy blobs. No text, no labels, no numbers, no real or invented chemical formulas, no neon, no glow, no drop-shadows, no borders or frames, no decorative icons, no photorealistic 3D. Publication quality, isolated conceptual-but-detailed illustration on a clean soft off-white background. Please generate this as a square 1:1 image, and run 2–3 iterations to refine.
 ```
 
 - **Avoid:** No text, no labels, no numbers, no letters. No real or invented chemical formulas or labeled diagram callouts. No neon or glow. No photorealistic 3D render. No loose watercolor, no fuzzy, diffused, or abstract blobs — use crisp, clean, defined edges instead. No dark background and no gradient sky — keep an evenly lit soft off-white ground. No red or green (colorblind-safe). No busy or loud composition, no clutter, no borders/frames, no drop-shadows, no decorative icons or sparkles. Do not depict a vague fuzzy bead ring — the cyclic peptide must read as an obvious, cleanly drawn closed loop of connected residues.
-- **Usage:** Run 2–3 iterations and keep the version where (a) the cyclic peptide clearly reads as a closed ring of connected beads in BOTH states, (b) the only strong color difference between left and right is gray→teal (the "switch"), and (c) the rose zone stays small and restrained. Export at 1:1 and confirm scale/eye-line match panels 2 and 3 before saving to public/illustrations/mech-1-activation.webp.
+- **Usage:** This is stage 3 of
+  `public/illustrations/selective-mechanism-v11.avif`. Reject any version that
+  puts activation before uptake, omits the cytoplasmic escape, changes the
+  canonical peptide, or docks it on an external membrane or lesion surface.
 
 ---
 
-## 4. Mechanism step 2 — selective uptake (endocytosis)
+## 4. Mechanism stage 2 — Enter through selective uptake
 
-- **Placement:** Second panel in the mechanism-of-action panel set on the Innovation / mechanism page (component: mechanism/*). Save to public/illustrations/mech-2-uptake.webp. Sits between the pH-activation panel (step 1) and the intracellular-action panel (step 3). Reserve calm negative space along the top edge and/or the lower-center for an HTML step label/caption overlay; keep the two cells and the endocytic event in the central band so text does not collide with structure.
-- **Aspect ratio:** square 1:1 (matched panel in a mechanism panel set)
-- **Suggested file:** `public/illustrations/mech-2-uptake.webp`
-- **Depicts (truth.md):** A diseased cell (rose-outlined membrane, plum nucleus) internalizing an active teal cyclic peptide via a clearly drawn membrane invagination and early endosome, while an adjacent healthy cell (teal outline) is passed over and takes up nothing — illustrating selective uptake by diseased tissue via the endocytic pathway.
-- **Palette mapping:** Teal #4A9B8E/#2F6E62 = active peptide drug + desired uptake (most saturated/crispest); pale teal #EDF5F2 = healthy cell interior; dusty rose #C98B84 line + #FBF4F3 fill = diseased cell membrane and endocytic vesicles; plum-ink #2E263A = nuclei and primary linework; soft off-white #FBFAF8 background; soft gray #B7B2BB sparingly for neutral spacing.
-- **Composition:** Square, center-out with left→right drug flow. Hero diseased cell center-right with an invaginating membrane pocket and a closed teal-loaded endosome; identical teal cyclic-peptide rings drift in from the left; quieter healthy cell lower-left with intact membrane ignoring a nearby ring. Calm negative space at top/lower-center reserved for an HTML caption.
+- **Placement:** second beat inside the shared mechanism master
+  `public/illustrations/selective-mechanism-v11.avif`, after Target and before
+  Escape.
+- **Depicts (truth.md):** A diseased cell internalizing the intact canonical
+  peptide through a membrane pocket into an early endosome, while nearby healthy
+  tissue remains quiet. This illustrates selective uptake via the proprietary
+  endocytic pathway.
+- **Palette mapping:** The peptide remains canonical orange/violet/warm taupe.
+  Clinical teal belongs to the uptake path and membrane-entry contour; rose/plum
+  defines diseased tissue and the early endosome.
+- **Composition:** Targeted ring → invaginating membrane pocket → closed early
+  endosome. Do not add an acidified pH field until stage 3.
 
 **Prompt — copy into ChatGPT:**
 
 ```text
 Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
 
-SUBJECT — a single, legible idea: SELECTIVE UPTAKE. One diseased cell internalizing an active cyclic-peptide drug by endocytosis, while an adjacent healthy cell is passed over and takes up nothing. This is the second panel in a three-panel mechanism set, so keep the visual language clean, minimal, and consistent with a calm publication figure.
+SUBJECT — stage 2, ENTER. One diseased cell internalizes the intact canonical cyclic-peptide motif by endocytosis while an adjacent healthy cell is passed over and takes up nothing. This beat follows Target and precedes acidified-endosome activation.
 
 COMPOSITION (square 1:1, center-out with a clear left→right read):
-- CENTER-RIGHT, the DISEASED CELL, drawn large and detailed as the hero: a cleanly outlined rounded cell with a crisply drawn membrane rendered in dusty rose (#C98B84 line) with a very pale rose interior fill (#FBF4F3), a defined round nucleus inside drawn in muted plum-ink (#2E263A) with a slightly darker plum nucleolus, and a few restrained interior organelle hints (one or two simple ovoid shapes) so the cell reads as a real cell, not a blob. Show the membrane cleanly INVAGINATING — a smooth, defined pocket dimpling inward on the upper-left flank of the cell — capturing the drug. Just inside, show a defined, closed early ENDOSOME: a clean circular rose-outlined vesicle that clearly CONTAINS the teal cyclic peptide, making internalization unambiguous. Optionally one second, smaller vesicle already fully budded off and moving toward the nucleus, also containing a tiny teal ring, to imply direction of travel inward.
-- THE PEPTIDE (the hero color): render the cyclic peptide as an OBVIOUS, cleanly drawn closed RING of connected residues — a neat loop of roughly 6–9 small uniform beads/nodes joined by clean short links (a legible macrocycle, like a tidy beaded ring), drawn in the most saturated clinical teal (#4A9B8E fills, #2F6E62 crisp outline). Show two or three of these identical teal peptide rings: one at the moment of contact nested in the membrane invagination of the diseased cell, one already enclosed inside the early endosome, and one free in the negative space to the LEFT drifting toward the diseased cell (establishing the left→right flow of drug into diseased tissue). Keep every ring the SAME clean design so they read as the same molecule.
-- LEFT / LOWER-LEFT, the HEALTHY CELL, drawn slightly smaller and quieter: a cleanly outlined rounded cell with a defined membrane and nucleus drawn in calm clinical teal (#4A9B8E line, pale teal wash #EDF5F2 interior) with a plum-ink nucleus — intact, smooth, UN-invaginated membrane, taking up NOTHING. A teal peptide ring may drift NEAR it but clearly stays OUTSIDE, not captured — the healthy cell is passed over. This contrast (diseased cell engulfs, healthy cell ignores) is the whole point; make the difference obvious and legible.
+- CENTER-RIGHT, the DISEASED CELL, drawn large and detailed as the hero: a cleanly outlined rounded cell with a crisply drawn membrane rendered in dusty rose (#C98B84 line) with a very pale rose interior fill (#FBF4F3), a defined round nucleus inside drawn in muted plum-ink (#2E263A) with a slightly darker plum nucleolus, and a few restrained interior organelle hints. Show the membrane cleanly INVAGINATING—a smooth, defined pocket dimpling inward—around the intact canonical peptide. Just inside, show a defined, closed early ENDOSOME that clearly contains the same unchanged canonical motif, making internalization unambiguous. Do not add an acidified field, pH cue, cytoplasmic escape, or intracellular target in this Enter stage.
+- THE PEPTIDE: use the exact canonical 13-bead motif from docs/assets/canonical-endo-peptide-v1.png for every appearance: upright orange/violet/warm-taupe sequence, no recoloring, no side chains, and no bead-count changes. Show one ring at the membrane pocket and, only if scale permits at least 48–56 CSS pixels in final use, one identical ring enclosed inside the early endosome. Use a teal directional contour around the entry event rather than on the peptide.
+- LEFT / LOWER-LEFT, the HEALTHY CELL, drawn slightly smaller and quieter: a cleanly outlined cell with an intact, smooth, un-invaginated membrane. If a canonical ring appears nearby, it remains outside. This contrast—diseased cell entry, healthy cell not internalizing—is the whole point.
 - Keep the two cells clearly separated with calm negative space between and around them; do not crowd the frame. Leave quiet open space at the top (and/or lower center) for a caption added later in HTML.
 
 COLOR MAPPING (use ONLY these, max 5 color areas, colorblind-safe, no red/green):
 - Background: clean, evenly-lit soft off-white #FBFAF8 filling the whole panel — never dark, never a gradient sky, rather a flat calm paper ground.
-- Active drug / desired therapeutic action / the internalized peptide = clinical teal (#4A9B8E fill, #2F6E62 line) — the MOST saturated and MOST sharply defined element.
+- Selective uptake path and membrane-entry contour = clinical teal (#4A9B8E fill, #2F6E62 line). The peptide itself retains its canonical colors.
 - Healthy cell = calm teal linework with a pale teal wash interior (#EDF5F2), quieter and less saturated than the drug rings.
 - Diseased cell membrane / disease context = dusty rose line (#C98B84) with pale rose fill (#FBF4F3), used sparingly and warmly, only for the diseased cell and its endocytic vesicles.
 - Primary structure linework / nuclei = muted plum-ink (#2E263A). Any neutral spacing/context = soft cool gray (#B7B2BB) very sparingly.
 
 STYLE NOTES: crisp, clean, defined edges rather than soft diffused watercolor edges; subtle flat / cel shading with gentle depth rather than heavy realistic rendering; every structure clearly legible — the ring reads unmistakably as a ring of connected residues, the invagination reads clearly as a membrane pocket folding inward, the endosome reads clearly as a closed vesicle holding the drug. Calm and restrained, not busy or loud, not cluttered. No gridlines, no borders, no drop shadows, no decorative icons, no arrows-with-text, no numbers, no chemical formulas, no letters anywhere. A clean, evenly-lit soft off-white background, not dark.
 
-FORMAT: perfectly SQUARE 1:1 aspect ratio. Publication quality, isolated illustration on a clean soft off-white background. Iterate 2–3 times to tighten the membrane invagination and keep the two teal peptide rings identical and crisp.
+FORMAT: stage 2 within the wide shared mechanism master. Publication quality on a clean soft off-white background. Iterate to tighten the membrane invagination, early endosome, and exact canonical peptide rendering.
 ```
 
 - **Avoid:** No text, labels, numbers, or chemical formulas; no arrows-with-text; no red or green; no neon; no dark or gradient background; no photoreal 3D render; no loose/fuzzy watercolor or diffused abstraction; no gridlines, borders, drop shadows, or decorative icons; no fabricated exact chemical structure — the cyclic peptide is a clean conceptual ring of connected residues, not a real labeled molecule.
-- **Usage:** Traces to truth.md: platform "selective uptake by diseased tissue via proprietary endocytic pathway" and tumor/diseased-tissue-selective cyclic peptides; depicts mechanism only, no efficacy or data claims. Export to public/illustrations/mech-2-uptake.webp. Keep the cyclic-peptide ring design identical across all three mechanism panels for continuity. Add the step label/caption in HTML over the reserved negative space, not baked into the image.
+- **Usage:** This is stage 2 of
+  `public/illustrations/selective-mechanism-v11.avif`. It must appear before the
+  acidified-endosome activation and cytoplasmic-escape beat. Keep labels in
+  HTML.
 
 ---
 
-## 5. Mechanism step 3 — correction, not destruction
+## 5. ENDO-205 evidence — illustrated target and lesion elimination
 
-- **Placement:** Third panel in the mechanism-of-action panel set on the /innovation (and mechanism) pages; save to public/illustrations/mech-3-correction.webp. Sits to the right of steps 1–2 as the resolution beat. Reserve calm negative space at the top and along one side for an HTML headline/caption overlay (e.g. "Correction, not destruction") — keep the cleared lesion and spared tissue in the lower/central weight so text can sit above.
-- **Aspect ratio:** square 1:1 (part of a matched panel set)
-- **Suggested file:** `public/illustrations/mech-3-correction.webp`
-- **Depicts (truth.md):** A central endometriosis lesion (dusty-rose defined mass) receding and clearing into crisp shrinking fragments, surrounded by an intact, orderly lattice of healthy teal cells with defined membranes and nuclei that are visibly spared — the "correction, not destruction" resolution step of EndoCyclic's precision peptide mechanism.
-- **Palette mapping:** Background #FBFAF8 (flat, evenly lit). Healthy spared tissue/cells = teal #4A9B8E with #2F6E62 membrane/nucleus linework (most saturated, crispest). Receding lesion/disease = dusty rose #C98B84 line + pale rose #FBF4F3 fill (sparing, central only). Structure outline = muted plum-ink #2E263A (thin). Optional context halo = soft teal wash #EDF5F2 or warm neutral #F6F3EE. No red, no green.
-- **Composition:** Single centered circular tissue field on soft off-white; center-out flow. Receding rose lesion breaking into a few crisp fragments at the very center leaving a cleared opening; even honeycomb-like field of pristine teal healthy cells filling the rest right up to the cleared zone. Faint plum-ink bounding contour; optional soft teal/warm-neutral halo. Negative space reserved top and one side for HTML caption.
+- **Placement:** fourth and final beat inside
+  `public/illustrations/selective-mechanism-v11.avif`, after Target, Enter, and
+  Escape.
+- **Depicts (truth.md):** First, the intact canonical peptide physically
+  seated in a teal abstract intracellular target pocket inside the diseased
+  cell. Second, a restrained conceptual representation of the approved
+  ENDO-205 preclinical finding: elimination of endometriosis lesions and
+  associated inflammation, with surrounding tissue visually spared.
+- **Qualification guardrail:** This stage is specific to **ENDO-205
+  preclinical evidence**. It is not a platform-wide mechanism claim, a clinical
+  outcome, an efficacy rate, or a promise. Keep “preclinical” and the
+  conceptual-disclosure language in accessible HTML adjacent to the art.
+- **Palette mapping:** Background #FBFAF8 (flat, evenly lit). Intracellular
+  target = clinical teal #4A9B8E / #2F6E62. Diseased-cell cytoplasm and receding
+  lesion = dusty rose #C98B84 line + pale rose #FBF4F3 fill. Healthy spared
+  tissue = quiet teal/neutral washes with muted plum-ink #2E263A structure.
+  Optional context halo = soft teal #EDF5F2 or warm neutral #F6F3EE. No red,
+  no green.
+- **Composition:** The final quarter has two immediately connected sub-beats.
+  First, inside the rose diseased-cell cytoplasm, the intact canonical peptide
+  is visibly seated in a defined pocket on a teal abstract intracellular
+  target. Second, downstream of that engagement, the lesion recedes into
+  progressively fewer and smaller crisp fragments toward a calm cleared
+  opening. An orderly field of healthy cells remains pristine around the
+  transition. Keep the peptide large enough to read as the locked 13-bead
+  motif, make peptide-to-target contact unmistakable, and keep the lesion
+  fragments subordinate to the engagement event.
 
 **Prompt — copy into ChatGPT:**
 
 ```text
 Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
 
-SUBJECT — the resolution step of a precision-medicine mechanism: an endometriosis lesion being corrected and cleared from a field of healthy tissue, so the surrounding tissue is visibly SPARED and intact. This is "correction, not destruction" — controlled, gentle, hopeful; NOT an explosion, burning, or violent tearing. Conceptual but detailed, not a real labeled medical diagram.
+SUBJECT — stage 4, ENDO-205 evidence: following Target → Enter → Activate, show the intact canonical peptide visibly seated in an illustrated intracellular-target pocket inside the diseased cell, then show the qualified ENDO-205 preclinical lesion-elimination finding downstream. The peptide must be seated in a teal intracellular-target pocket within rose cytoplasm; it must never dock on the external plasma membrane, lesion boundary, or lesion surface. After that unambiguous illustrated contact state, show the same lesion resolving while surrounding tissue remains visibly spared. This is a preclinical evidence beat, not a clinical result or a universal platform claim. Controlled and nonviolent; no explosion, burning, or tearing.
 
-COMPOSITION — a single centered, roughly circular tissue field on a clean soft off-white background. Center-out reading flow. AT THE CENTER: a clearly-defined abnormal lesion — a defined, slightly irregular tissue mass with a crisp rounded outline — shown in the act of RESOLVING: it is smaller and receding, breaking down into a few cleanly-drawn separating fragments that shrink and dissolve toward nothing at the very center, with a calm cleared opening emerging where the lesion used to be. Render the lesion in restrained dusty rose (#C98B84) outline with a pale rose fill (#FBF4F3), and show its clearance as it fading to fewer, smaller, softer fragments — controlled and orderly, edges still crisp and defined (not smeared or diffused). SURROUNDING the lesion, filling the rest of the circular field: a clean, orderly, WELL-RENDERED lattice of healthy cells — each cell with a defined membrane outline and a clear small round nucleus, drawn in clinical teal (#4A9B8E) with deeper teal (#2F6E62) linework for the membranes and nuclei, arranged in a calm even honeycomb-like tissue pattern. The healthy teal cells are pristine, uniform, and untouched right up to the edge of the cleared zone — clearly SPARED, communicating selectivity. Use muted plum-ink (#2E263A) only for the faint primary structural outline of the overall tissue field / a thin bounding contour. Keep everything anatomically grounded and legible.
+COMPOSITION — use the rightmost quarter of the shared landscape master as one continuous left-to-right intracellular-to-tissue sequence. FIRST SUB-BEAT: within the rose cytoplasm of the diseased cell, draw one abstract folded intracellular target in clinical teal with a crisp, concave binding pocket. Seat one exact intact canonical 13-bead ring from docs/assets/canonical-endo-peptide-v1.png deeply enough in that pocket that their contours visibly overlap and touch; the ring may remain mostly visible, but it cannot float beside or above the target. This contact is the focal point. Do not place the target outside the cell, and do not place the peptide on the external plasma membrane, lesion edge, or lesion surface. SECOND SUB-BEAT: downstream and spatially separate from the teal intracellular target, continue the same dusty-rose lesion identity into fewer and smaller cleanly drawn fragments that recede toward a calm cleared opening. Render the lesion in restrained dusty rose (#C98B84) outline with a pale rose fill (#FBF4F3), and keep the recession controlled and orderly with crisp edges rather than smearing. SURROUNDING both sub-beats: a clean, orderly, well-rendered field of healthy cells with defined membranes and small round nuclei. The healthy cells are pristine, uniform, and untouched right up to the receding lesion boundary—clearly spared. The canonical peptide remains intact, upright, and unchanged: exactly four orange beads, six warm-taupe beads, and three violet beads in the locked sequence. Use muted plum-ink (#2E263A) for faint structural outlines and a restrained clinical-teal thread for visual continuity from cytoplasmic escape into the intracellular target.
 
-COLOR MAPPING (use ONLY these, max ~5 areas, colorblind-safe, NO red, NO green): background = clean warm soft off-white #FBFAF8, evenly lit and flat, never dark and never a gradient sky. Healthy spared tissue / cells / the desired therapeutic outcome = clinical teal #4A9B8E with #2F6E62 line emphasis (make this the MOST saturated and MOST sharply defined element). The receding lesion / disease = SPARING dusty rose #C98B84 line with pale rose #FBF4F3 fill, used only for the small central mass. Primary structure outline = muted plum-ink #2E263A, used thinly. Optional quiet context = soft teal wash #EDF5F2 or warm neutral #F6F3EE for a faint halo behind the tissue field. Keep the teal healthy tissue crisper and more saturated than the quieter rose lesion.
+COLOR MAPPING (use ONLY these, max ~5 areas, colorblind-safe, NO red, NO green): background = clean warm soft off-white #FBFAF8, evenly lit and flat, never dark and never a gradient sky. The intracellular target = clinical teal #4A9B8E with #2F6E62 pocket and edge emphasis; make the target crisp, legible, and clearly distinct from the rose cytoplasm. The diseased-cell cytoplasm and receding lesion = sparing dusty rose #C98B84 line with pale rose #FBF4F3 fill. Healthy spared tissue / cells = quiet teal #EDF5F2 or warm neutral #F6F3EE with thin muted-plum structure. Primary structure outline = muted plum-ink #2E263A. Preserve the canonical peptide colors exactly and do not transfer teal into its beads.
 
 STYLE ENFORCEMENT — crisp, clean, defined edges rather than soft diffused watercolor edges; clearly legible cell membranes and nuclei rather than a fuzzy wash of blobs; a clean, evenly-lit soft off-white background, not dark and not a gradient. Subtle flat/cel shading and gentle depth only; refined thin linework; ruthless clutter removal — no gridlines, no borders, no drop shadows, no decorative icons, no glow, no sparkles. Calm and minimal with generous negative space.
 
-FORMAT — square 1:1 aspect ratio, part of a matched panel set (keep line weight, cell style, and palette consistent with sibling mechanism panels). Leave calm empty negative space toward the top and one side for a headline/caption to be added later in HTML. Publication quality, isolated illustration on a clean soft off-white background, no text, no labels.
+FORMAT — fourth beat in the wide shared mechanism master, with line weight, cell style, and palette consistent with Target, Enter, and Escape. Leave all qualification and disclosure text in HTML.
 
-Iterate 2–3 times: first pass for the overall composition and the spared teal tissue field, then refine so the central rose lesion reads as clearly RECEDING/CLEARING (fewer, smaller, crisp fragments dissolving to a clean center) while the surrounding teal cells stay pristine and untouched, keeping all edges defined and the palette restrained.
+Iterate 2–3 times: first verify that the intact canonical ring is unmistakably seated in the teal intracellular target pocket inside rose cytoplasm; reject the pass if the ring merely floats nearby or appears attached to an external surface. Then refine the downstream lesion so it reads as clearly receding/clearing—fewer, smaller, crisp fragments dissolving to a clean center—while surrounding cells stay pristine and untouched.
 ```
 
-- **Avoid:** No text or labels. No dark or gradient background. No loose/diffused watercolor edges, no fuzzy blobs. No neon, no glow, sparkles, or drop shadows. No photorealistic 3D render. No violence — not an explosion, burning, or tearing; the lesion gently recedes. No red/green. No gridlines, borders, or decorative icons. No fabricated chemical structures, formulas, efficacy figures, or real labeled diagram.
-- **Usage:** Third/resolution panel of the mechanism panel set; keep line weight, cell rendering, and palette identical to siblings (steps 1–2). Traces to truth.md: approved phrase "Correction, not destruction," ENDO-205 "designed to eliminate endometriosis lesions," selective action "only in diseased tissue while avoiding" harm to healthy tissue (spared teal cells). Purely conceptual — no efficacy/data claims baked in. Export as public/illustrations/mech-3-correction.webp. Generate 2–3 iterations and pick the one where the lesion most clearly reads as receding while teal cells stay pristine.
+- **Avoid:** No external plasma-membrane docking, lesion-edge contact, or
+  lesion-surface attachment. No peptide floating beside the intracellular
+  target. No text or labels. No dark or gradient background. No
+  loose/diffused watercolor edges or fuzzy blobs. No neon, glow, sparkles, or
+  drop shadows. No photorealistic 3D render. No violence—the lesion gently
+  recedes. No red/green. No gridlines, borders, decorative icons, fabricated
+  chemical structures, formulas, efficacy figures, or real labeled diagram.
+- **Usage:** Stage 4 of
+  `public/illustrations/selective-mechanism-v11.avif`. The HTML label must read
+  as qualified ENDO-205 preclinical evidence and must not imply clinical
+  clearance.
 
 ---
 
@@ -188,20 +425,28 @@ Iterate 2–3 times: first pass for the overall composition and the spared teal 
 - **Placement:** /innovation or /impact — full-width or two-thirds editorial figure illustrating the platform's core claim ("acts only where disease lives"). Reserve the left third or a clean horizontal band along the top as calm negative space for an HTML headline/caption overlay; keep the lesion + peptide cluster anchored right-of-center so text does not collide with the key structures. Export at 3:2, ~2400×1600px, transparent or soft off-white background. File: public/illustrations/selective-targeting.webp
 - **Aspect ratio:** landscape 3:2
 - **Suggested file:** `public/illustrations/selective-targeting.webp`
-- **Depicts (truth.md):** A tissue cross-section: a broad calm field of healthy tissue (defined, evenly-spaced cells with clear membranes and a nucleus each, rendered in muted neutral gray/plum linework) surrounds one clearly-bounded region of endometriosis lesion — a defined abnormal mass with irregular glandular pockets and a few fine vascular strands, in dusty rose over pale rose fill. Several cleanly-drawn teal cyclic peptides (each an obvious closed ring of ~6–8 connected bead-like residues) are selectively concentrated in and at the edge of the lesion, with only one or two drifting in the healthy field — visually stating that the therapeutic accumulates only in diseased tissue while sparing normal cells. No data, no numbers, no real chemical structure — conceptual but anatomically legible. Traces to truth.md: selective uptake by diseased tissue, non-hormonal precision peptide, endometriosis lesions (endometrial-like tissue outside the uterus).
-- **Palette mapping:** Teal #4A9B8E (deeper #2F6E62 for ring linework/emphasis) = THE PEPTIDE, the most saturated and crispest element. Dusty rose #C98B84 outlines over pale rose #FBF4F3 fill = the lesion / diseased tissue (sparing, warm). Muted plum-ink #2E263A = all primary anatomy linework and cell outlines. Soft cool gray #B7B2BB and warm neutral #F6F3EE = the healthy-tissue context, kept quiet and low-contrast. Background: clean warm soft off-white #FBFAF8 (or transparent). No red, no green, no neon. Colorblind-safe.
-- **Composition:** Center-out / left-to-right reading. Healthy tissue fills most of the frame as a calm, orderly field; the lesion sits as a single clearly-bounded island right-of-center; the teal peptides cluster densely on and around the lesion, with a sparse trail of one or two elsewhere to imply selectivity. Strong hierarchy: teal = brightest and sharpest, lesion = second, healthy tissue = quietest. Left third (or top band) intentionally open for a headline overlay.
+- **Depicts (truth.md):** A tissue cross-section in which several unchanged
+  canonical 13-bead peptide motifs concentrate at one clearly bounded
+  endometriosis lesion while healthy tissue stays quiet. No data, chemical
+  formula, or outcome claim.
+- **Palette mapping:** Peptides retain the locked orange/violet/warm-taupe
+  sequence. Teal #4A9B8E / #2F6E62 is reserved for selective paths, uptake
+  contours, and localization context. Lesion = #C98B84 / #FBF4F3; anatomy =
+  #2E263A; healthy context = #B7B2BB / #F6F3EE.
+- **Composition:** Healthy tissue fills most of the frame; the lesion sits as a
+  bounded island right-of-center; canonical rings cluster at its boundary with
+  a sparse trail elsewhere. Contextual teal guides the eye to the lesion.
 
 **Prompt — copy into ChatGPT:**
 
 ```text
 Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
 
-Subject: a tissue cross-section illustrating a targeted precision-medicine peptide that concentrates only in diseased tissue. Across most of the frame, draw a broad, calm, orderly field of HEALTHY tissue — evenly spaced, clearly-drawn cells, each with a defined rounded membrane and a single visible nucleus, rendered in quiet muted-gray and warm-neutral linework with very subtle flat shading. Right of center, draw ONE clearly-bounded region of endometriosis LESION: a defined abnormal tissue mass with irregular glandular pockets and a few fine branching vascular strands, outlined in dusty rose over a pale rose fill, its boundary crisp and legible so it reads distinctly as abnormal tissue sitting within the normal field. In and along the edge of the lesion, cluster several clearly-drawn cyclic PEPTIDES — each one an obvious small closed ring of six to eight connected bead-like residues, drawn cleanly in clinical teal with deeper teal ring linework, the most saturated and sharpest element in the image. Show the teal peptides densely concentrated at the lesion, with only one or two drifting in the surrounding healthy tissue — visually communicating that the therapeutic accumulates only where disease lives while sparing normal cells.
+Subject: a tissue cross-section illustrating a targeted precision-medicine peptide that concentrates at diseased tissue. Across most of the frame, draw a broad, calm, orderly field of healthy tissue. Right of center, draw one clearly bounded endometriosis lesion in restrained rose. In and along its edge, place several exact instances of the canonical 13-bead EndoCyclic motif from docs/assets/canonical-endo-peptide-v1.png, preserving the upright orange/violet/warm-taupe sequence in every ring. Use a fine clinical-teal selective path or localization contour around the lesion to communicate targeting; do not recolor the rings.
 
-Color mapping (use ONLY these): the peptide rings = clinical teal #4A9B8E with deeper teal #2F6E62 for line and emphasis (keep this the brightest, crispest element); the lesion / diseased tissue = dusty rose #C98B84 outlines over pale rose #FBF4F3 fill, used sparingly and warmly; all primary anatomy and cell outlines = muted plum-ink #2E263A; healthy-tissue context = soft cool gray #B7B2BB and warm neutral #F6F3EE, kept low-contrast and quiet; background = a clean, evenly-lit soft off-white #FBFAF8. Colorblind-safe; no red, no green.
+Color mapping: preserve the peptide's canonical orange #E89A16, violet #6F38B5, and warm taupe #B8AA9B beads. Use clinical teal #4A9B8E / #2F6E62 only for the selective path or localization contour; dusty rose #C98B84 / #FBF4F3 for the lesion; plum-ink #2E263A for structure; and #B7B2BB / #F6F3EE for healthy context on #FBFAF8.
 
-Composition: center-out, left-to-right visual flow. Healthy tissue as a calm orderly field; the lesion as a single distinct island right-of-center; the teal peptides clustered on and around it. Strong hierarchy — teal sharpest, lesion second, healthy tissue quietest. Leave the left third (or a clean horizontal band along the top) as open negative space for a headline to be added later in HTML.
+Composition: center-out, left-to-right visual flow. Healthy tissue is a calm orderly field; the lesion is a single distinct island right-of-center; the canonical peptide motifs cluster on and around it along a precise teal contextual path. Leave the left third or top band open for HTML.
 
 Style guardrails: crisp, clean, defined edges rather than soft diffused watercolor edges; clear legible structures rather than vague fuzzy blobs — every cyclic peptide must read as an obvious closed ring of connected residues, and the lesion boundary must be sharply defined; a clean, evenly-lit soft off-white background, not dark and not a gradient sky; subtle flat/cel shading with gentle depth, not a photorealistic 3D render; calm and minimal, not busy or loud. No text, no labels, no numbers, no gridlines, no borders, no drop-shadows, no decorative icons, no neon or glow. This is a conceptual-but-detailed illustration, not an accurate labeled diagram or real chemical formula.
 
@@ -243,11 +488,22 @@ Exclusions — stated plainly: no text, no labels, no numbers, no leader lines o
 
 ## 8. FemLUNA — targeted non-invasive imaging
 
+- **Current production files:** `public/illustrations/femluna-targeting-v3.avif`
+  (3:2 master),
+  `public/illustrations/femluna-targeting-v3-portrait.avif` (4:5
+  art-directed derivative), and
+  `public/illustrations/femluna-comparison-targeted-v2.avif` (targeted
+  comparison state).
+- **Responsive art direction:** The portrait derivative is a crop of the approved master centered on the pelvic anatomy and targeted peptide. It is served below 640px and from 1024px upward, where the hero frame is portrait; the landscape master remains the source for the 640–1023px landscape frame. This avoids browser upscaling and preserves the scientific focal point without downloading both assets.
 - **Placement:** /imaging page — hero or lead concept illustration. Landscape 3:2. Reserve calm negative space in the upper band and along the left third for an HTML headline/caption overlay (e.g. "Non-invasive. Targeted. Sub-millimeter."). The illustration weight sits center-right; the left third stays quiet off-white for text. File saved to public/illustrations/femluna-imaging.webp.
 - **Aspect ratio:** landscape 3:2 (horizontal, roughly 1500x1000)
-- **Suggested file:** `public/illustrations/femluna-imaging.webp`
+- **Suggested file:** `public/illustrations/femluna-targeting-v3.avif`
 - **Depicts (truth.md):** FemLUNA non-invasive targeted imaging: a clean plum-ink pelvic anatomy cross-section scanned from outside the body by a soft radiation-free imaging field, where a teal targeted imaging agent binds a small sub-millimeter endometriosis lesion and makes it pop with a clean teal highlight and halo, while an identical untagged lesion stays faint gray to show the contrast versus standard imaging.
-- **Palette mapping:** Background: soft off-white #FBFAF8. Anatomy linework: muted plum-ink #2E263A with pale warm neutral #F6F3EE fill. Targeted agent + detected lesion highlight + clean halo (HERO, most saturated/crispest): clinical teal #4A9B8E, emphasis #2F6E62. Undetected/standard-imaging lesion (recessive): soft cool gray #B7B2BB. External non-invasive scan field context: soft lilac #F4F1F8 and soft teal wash #EDF5F2. No red, no green.
+- **Palette mapping:** Background: soft off-white #FBFAF8. Anatomy linework:
+  muted plum-ink #2E263A with pale warm-neutral fill. Every peptide/probe ring
+  uses the canonical orange/violet/warm-taupe motif. Clinical teal
+  #4A9B8E / #2F6E62 belongs to the detected-lesion halo, localization contour,
+  and scan context—not the peptide beads.
 - **Composition:** Horizontal 3:2, center-out flow. External scan arcs enter from the left in pale lilac/teal wash; female pelvic cross-section (uterus, fallopian tubes, ovaries) sits slightly right of center in muted plum-ink outline with pale warm fill. Teal-highlighted target lesion with a clean concentric halo is the focal point at center-right; a same-size faint gray untagged lesion sits elsewhere for contrast. Left third and upper band left as open off-white negative space for HTML headline/caption.
 
 **Prompt — copy into ChatGPT:**
@@ -257,7 +513,7 @@ Clean, precise editorial scientific illustration in the style of a modern Nature
 
 SUBJECT: A conceptual illustration of a non-invasive, targeted molecular imaging agent detecting a tiny endometriosis lesion in the female pelvis. Center-right of the composition: a clean, simplified anatomical cross-section of the female pelvic region — a smooth uterus with the two fallopian tubes curving outward and small rounded ovaries at each side — drawn as confident, even-weight outlines in muted plum-ink (#2E263A) with a very pale warm neutral fill (#F6F3EE), like an elegant medical atlas plate. Keep the anatomy calm and legible with clean interior linework, no clutter, no extra organs.
 
-KEY STORY (make this the clear focal point): on the outer surface of one fallopian tube or the pelvic wall sits a very small, defined abnormal tissue mass — a sub-millimeter endometriosis lesion, drawn as a compact, clearly-edged irregular cluster (a small defined blob with a crisp outline, NOT a fuzzy smudge). This target lesion is cleanly HIGHLIGHTED in clinical teal (#4A9B8E) with a deeper teal (#2F6E62) crisp outline and a soft, tidy teal halo/ring around it (a clean concentric ring, not a diffuse glow) — signaling that the targeted imaging agent has bound it and made it stand out. Show a few clearly-drawn small teal targeting-agent markers (simple, crisp geometric dot-and-ring probe motifs) converging on and docking onto this lesion, indicating selective binding.
+KEY STORY (make this the clear focal point): on the outer surface of one fallopian tube or the pelvic wall sits a very small, defined abnormal tissue mass—a sub-millimeter endometriosis lesion. Highlight the lesion with a clean clinical-teal localization contour, not a diffuse glow. Show a restrained number of exact canonical 13-bead EndoCyclic ring motifs converging on the lesion; preserve their orange/violet/warm-taupe sequence and use teal only in the surrounding localization path.
 
 CONTRAST ELEMENT: elsewhere on the anatomy, place ONE more identical small lesion of the same size that is NOT highlighted — rendered only as a faint, barely-visible soft cool gray (#B7B2BB) outline with no halo, representing how the same sub-millimeter lesion looks faint and easily missed on standard imaging. The visual point: teal-tagged lesion pops and reads instantly; the gray untagged one nearly disappears. Keep both lesions the same small scale.
 
@@ -277,59 +533,82 @@ Iterate 2–3 times: (1) confirm the teal-tagged lesion with its clean halo is t
 ```
 
 - **Avoid:** No text/labels/callouts/legends; no red or green; no neon or glow; no photoreal 3D; no loose/fuzzy watercolor or diffuse smudges (lesion must be a defined shape); no dark or gradient background; no scanner hardware, medical device, needles, or surgical/laparoscopic tools; no clutter, gridlines, borders, or drop-shadows; no graphic gore.
-- **Usage:** All depicted claims trace to truth.md FemLUNA: targeted, non-invasive imaging agent detecting superficial and sub-millimeter endometriosis lesions often missed by current imaging; non-invasive alternative to laparoscopy. No efficacy numbers, no fabricated chemical structures. Export as public/illustrations/femluna-imaging.webp. Add the headline/caption over the left-third negative space in HTML. Run 2-3 ChatGPT iterations to confirm crisp edges, focal-point contrast, and clean anatomy.
+- **Usage:** Export the approved master as
+  `public/illustrations/femluna-targeting-v3.avif`, derive
+  `public/illustrations/femluna-targeting-v3-portrait.avif` mechanically, and
+  use `public/illustrations/femluna-comparison-targeted-v2.avif` for the
+  targeted comparison state. Keep claims and labels in HTML.
 
 ---
 
 ## 9. Oncology — reaching an undruggable intracellular target in a cold tumor
 
+- **Current production files:** `public/illustrations/oncology-pair-v4.avif`
+  with deterministic derivatives
+  `public/illustrations/endo-311-localization-pair-v4.avif` and
+  `public/illustrations/endo-995-intracellular-v4.avif`.
 - **Placement:** /pipeline oncology section (ENDO-995 tumor-selective cyclic peptide). Landscape banner or right-hand hero illustration beside the oncology copy; the calm off-white space at the top-left and lower band is reserved for an HTML headline/caption overlay. Save to public/illustrations/oncology-cold-tumor.webp.
 - **Aspect ratio:** landscape 3:2 (horizontal, roughly 1.5 times as wide as it is tall)
-- **Suggested file:** `public/illustrations/oncology-cold-tumor.webp`
-- **Depicts (truth.md):** A cross-section of a "cold" solid tumor where a tumor-selective teal cyclic peptide crosses a tumor-cell membrane and docks into a previously undruggable intracellular binding site, with cells shifting from muted gray to teal to signal restored responsiveness. Grounded in truth.md ENDO-995: tumor-selective cyclic peptide, non-hormonal, designed to overcome resistance and restore responsiveness in cold tumors and unlock undruggable intracellular targets. No efficacy figures, no real chemical structure, no fabricated data.
-- **Palette mapping:** Teal #4A9B8E (deeper #2F6E62 outlines) = the cyclic peptide + its docked target + "restored/responsive" cells (most saturated, crispest). Plum-ink #2E263A = all structural linework, cell membranes, nuclei. Cool gray #B7B2BB = untreated "cold" tumor cells and sparse inert immune cells. Dusty rose #C98B84 / pale rose #FBF4F3 = optional very sparing acidic-context warmth only. Background = flat soft off-white #FBFAF8; subtle context washes soft teal #EDF5F2 / warm neutral #F6F3EE.
-- **Composition:** Left-to-right / center-out flow: gray "cold" tumor cluster + sparse immune cells at left; enlarged hero tumor cell with the teal cyclic-peptide ring crossing its membrane into a defined interior binding pocket at center-right (focal point); 2–3 cells shifting gray→teal at right. Open off-white negative space at upper-left and a lower band reserved for HTML headline/caption.
+- **Suggested file:** `public/illustrations/oncology-pair-v4.avif`
+- **Depicts (truth.md):** A cold solid-tumor context where the unchanged
+  canonical peptide crosses a tumor-cell membrane toward a defined abstract
+  intracellular binding pocket. Grounded in ENDO-995's selective uptake and
+  intracellular-target access; no result or efficacy state is shown.
+- **Palette mapping:** Peptide = canonical orange/violet/warm taupe. Teal
+  #4A9B8E / #2F6E62 = selective path, membrane-access contour, and target
+  context. Plum = structure; cool gray and rose = tumor context.
+- **Composition:** Quiet tumor context at left; enlarged hero cell with the
+  canonical ring crossing its membrane at center-right. Do not recolor cells as
+  a result state or imply restored responsiveness visually.
 
 **Prompt — copy into ChatGPT:**
 
 ```text
 Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
 
-SUBJECT: A conceptual but clearly legible cross-section of a solid "cold" tumor and the moment a targeted cyclic peptide reaches a previously undruggable target inside one tumor cell. Read the scene left-to-right as a transformation: on the LEFT, a defined cluster of "cold" tumor cells rendered in muted cool gray — each cell cleanly outlined with a crisp cell membrane and a visible darker nucleus, packed together as an abnormal dense mass, with only one or two small, sparse, inert immune cells drifting nearby (small round cells, clearly outlined, few in number) to signal an immunologically quiet, unresponsive tumor. Toward the CENTER-RIGHT, focus on ONE enlarged hero tumor cell shown in clean detail: a clearly drawn double-outlined cell membrane, cytoplasm, and a central nucleus. A single teal CYCLIC PEPTIDE — drawn as an OBVIOUS, cleanly-rendered closed ring of connected round amino-acid residues (a distinct necklace-like loop of 7–9 beads joined by clear short bonds, unmistakably a ring, not a blob) — is caught crossing that cell's membrane, threading cleanly through the lipid bilayer into the interior. Inside the cell, draw a defined intracellular BINDING SITE: a small, crisply-drawn pocket or notched target structure that the leading edge of the peptide ring is docking into, so the viewer clearly reads "the peptide has reached and engaged a target inside the cell." To the RIGHT of this engaged cell, show 2–3 tumor cells shifting in color from muted gray toward calm clinical teal — a clean, graphic tonal shift (not a gradient haze) that hints at restored responsiveness and a re-awakened, treatable state.
+SUBJECT: A conceptual cross-section of a solid "cold" tumor and the moment a targeted peptide reaches an abstract intracellular target inside one tumor cell. On the left, show a restrained cluster of muted tumor cells. At center-right, show one enlarged cell with a clean double-line membrane, cytoplasm, and nucleus. One exact canonical EndoCyclic ring—13 upright, individually countable orange/violet/warm-taupe beads in the locked sequence—crosses the membrane and proceeds toward a defined abstract intracellular binding pocket. A thin clinical-teal contour can indicate the access path. Keep tissue state consistent across the frame; do not depict a gray-to-teal result transformation.
 
-COLOR MAPPING (use ONLY these, max 5 color areas, colorblind-safe, no red, no green): background = clean, evenly-lit soft off-white #FBFAF8, flat and calm, never dark, never a gradient sky. The cyclic peptide, its docked binding, and the "restored/responsive" cells = clinical teal #4A9B8E as the single most saturated and most sharply defined element, with deeper teal #2F6E62 reserved for its crisp outlines and emphasis. All primary structure linework and the cell/nucleus outlines = muted plum-ink #2E263A. The "cold," untreated tumor cells and sparse immune cells = soft cool gray #B7B2BB fills with plum-ink outlines, kept quiet and desaturated. If any faint warmth is needed for the acidic tumor context, use dusty rose #C98B84 VERY SPARINGLY as a pale rose #FBF4F3 wash only, never dominant. Neutral background context washes may use soft teal #EDF5F2 or warm neutral #F6F3EE, extremely subtle.
+COLOR MAPPING: background #FBFAF8. Preserve the peptide's canonical orange #E89A16, violet #6F38B5, and warm taupe #B8AA9B colors. Use clinical teal #4A9B8E / #2F6E62 only for the membrane-access path and target contour. Structure linework = #2E263A; tumor context = #B7B2BB with sparing #C98B84 / #FBF4F3 warmth.
 
-COMPOSITION & NEGATIVE SPACE: center-out / left-to-right flow, the hero cell and crossing peptide sit slightly right of center as the clear focal point; the "cold" gray cluster anchors the left, the teal "restored" cells trail off to the right. Keep the upper-left and a calm lower band as open off-white negative space for a headline and caption to be added later in HTML. Strong visual hierarchy: the teal cyclic peptide ring is the crispest, most saturated, most detailed thing in the frame; everything else is quieter and more muted. Ruthlessly remove clutter — no gridlines, no border frame, no drop shadows, no decorative icons, no scattered particles.
+COMPOSITION & NEGATIVE SPACE: the hero cell and crossing canonical ring sit slightly right of center. Keep the upper-left and lower band open for HTML. The contextual teal path may be precise and crisp, but the peptide retains its fixed identity colors.
 
 STYLE REMINDERS: crisp, clean, defined edges rather than soft diffused watercolor edges; clearly legible structures (an unmistakable peptide ring, defined cell membranes, a visible nucleus, a defined interior binding pocket, a defined dense tumor mass) rather than vague fuzzy shapes; a clean, evenly-lit soft off-white background, not dark and not a gradient; flat/cel shading with gentle depth, not a glossy photorealistic 3D render. Restrained and minimal — crisp does not mean busy or loud. Publication quality, isolated illustration on a clean soft off-white background. Landscape 3:2 aspect ratio (horizontal, about 1.5x wider than tall).
 
-ITERATION NOTES: expect 2–3 iterations — first pass, then push the cyclic peptide to read as an obvious clean ring of connected beads (not a blob) and make the intracellular binding pocket clearly defined; on the next pass, verify the left cluster reads as distinctly gray/"cold" and the right cells clearly shift toward teal, and confirm the peptide teal is the single most saturated, most sharply drawn element with the background staying flat soft off-white.
+ITERATION NOTES: verify the canonical ring count, color adjacency, and upright orientation first; then refine the membrane crossing and binding pocket. Reject any cell-state transformation, peptide recoloring, or outcome implication.
 ```
 
 - **Avoid:** No text or labels; no neon; no red or green (colorblind-safe); no photorealistic 3D render; no loose watercolor or fuzzy/diffused abstraction; no dark or gradient-sky background; no gridlines, border frame, drop shadows, decorative icons, or scattered particles; no real/accurate chemical formula or labeled diagram; no fabricated efficacy, data, or exact molecular structure; the peptide must read as an obvious clean ring, not a blob; keep it calm and minimal, not busy or loud.
-- **Usage:** Export as public/illustrations/oncology-cold-tumor.webp for the /pipeline oncology (ENDO-995) section. Reserve the upper-left and lower-band off-white space for an HTML headline/caption overlay; do not bake any text into the image. Run 2–3 iterations to lock the peptide-ring legibility, the defined intracellular binding pocket, and the gray→teal tonal shift. Verify on-palette (teal dominant, gray context, plum-ink linework) and confirm claims trace to truth.md (tumor-selective cyclic peptide, non-hormonal, restore responsiveness in cold tumors, unlock undruggable intracellular targets) with no invented data.
+- **Usage:** Use `public/illustrations/oncology-pair-v4.avif` as the master
+  and crop the ENDO-311 and ENDO-995 derivatives mechanically. Do not repaint
+  either derivative.
 
 ---
 
 ## 10. One platform, many applications
 
+- **Current production file:** `public/illustrations/platform-breadth-v3.avif`.
 - **Placement:** Homepage or /innovation page — a supporting "platform breadth" section illustration, placed to the right of (or above) a headline + short caption. Sized as a wide banner-style figure. Leave calm negative space in the upper-left or top band for an HTML headline overlay; the central peptide + three branch nodes should sit slightly below-center and read as a single balanced hub-and-spoke diagram.
 - **Aspect ratio:** landscape 3:2 (wide horizontal, roughly 1200 x 800)
-- **Suggested file:** `public/illustrations/platform-breadth.webp`
+- **Suggested file:** `public/illustrations/platform-breadth-v3.avif`
 - **Depicts (truth.md):** Conceptual, non-fabricated depiction of the truth.md platform claim "Platform spans therapeutics, diagnostics, and oncology" and "one selective precision peptide platform, many ways to reach disease." Central cyclic peptide = the precision peptide platform; three branches = therapeutic (e.g., ENDO-205 non-hormonal therapeutic, healthy orderly cells), diagnostic (FemLUNA/ENDO-311 non-invasive detection, target motif), oncology (ENDO-995 tumor-selective, lesion mass). Fully abstract — no real chemical structure, no efficacy data, no labels.
-- **Palette mapping:** Teal #4A9B8E = the peptide platform + connectors + healthy therapeutic cells (hero, most saturated); deep teal #2F6E62 = crispest ring bonds and emphasis linework; plum-ink #2E263A = primary structural linework + diagnostic target motif; dusty rose #C98B84 on pale rose #FBF4F3 = oncology lesion (sparing, only warm accent); soft gray #B7B2BB / soft teal wash #EDF5F2 = subtle neutral node halos; ground = off-white #FBFAF8. No red/green, colorblind-safe.
-- **Composition:** Central hub-and-spoke: one hero teal cyclic peptide ring at center, three uniform curved connector lines fanning right/lower-right to three equally-sized destination nodes (therapeutic healthy cells, diagnostic concentric target, oncology lesion mass). Diagram sits slightly below-and-right of center; top band and upper-left left open for headline overlay. Center-out radial flow, minimal, balanced, no frame.
+- **Palette mapping:** Central peptide = locked orange/violet/warm-taupe
+  motif. Teal #4A9B8E / #2F6E62 = connectors and selective context only;
+  plum = structural linework; rose = oncology lesion; neutral washes = node
+  context.
+- **Composition:** Central hub-and-spoke: one canonical 13-bead peptide at
+  center, with three contextual connectors leading to therapeutic, diagnostic,
+  and oncology applications.
 
 **Prompt — copy into ChatGPT:**
 
 ```text
 Clean, precise editorial scientific illustration in the style of a modern Nature Reviews cover graphic — crisp defined edges, clear and detailed anatomical and molecular structure, refined clean linework with subtle flat shading and gentle depth, calm and restrained, generous negative space, publication quality, no text, no labels, no neon, no photorealistic 3D render, no loose watercolor, no fuzzy or diffused abstraction.
 
-SUBJECT — a single "one platform, many applications" hub-and-spoke concept diagram. At the visual center sits ONE clearly-drawn cyclic peptide: a closed circular ring made of roughly ten to twelve distinct, cleanly-outlined amino-acid residues (small rounded bead-like nodes) connected edge-to-edge by short straight bond segments into an obvious, legible ring — like a neat molecular necklace, each residue a crisp defined circle with a subtle flat-shaded highlight, NOT a fuzzy blurred bead ring and NOT a real labeled chemical formula. This central peptide is the most saturated and the most sharply defined element on the page — the clear hero. From the ring, three thin, elegant, evenly-spaced connector lines (gentle curved paths, uniform weight, subtle rounded terminals) branch outward to three defined destination nodes arranged fanning to the right and lower-right (hub-and-spoke, center-out flow). The three destination nodes are simple, distinct, cleanly-drawn circular emblems, each about the same size and clearly smaller than the central hub: (1) a THERAPEUTIC node — a tidy cluster of two or three healthy cells with crisp defined membranes and a visible round nucleus, calm and orderly; (2) a DIAGNOSTIC node — a clean concentric target/locator motif (a small crisp crosshair-style ring pinpointing a tiny mass), suggesting non-invasive detection; (3) an ONCOLOGY node — a single defined abnormal tissue mass / irregular clustered-cell lobe with a slightly rougher but still crisp outline, calm not gory. Keep all three abstract and conceptual — no organs, no text, no medical iconography clichés. Each connector line ends in a small crisp dot where it meets its node so the branching reads clearly.
+SUBJECT — a single "one platform, many applications" hub-and-spoke concept diagram. At the visual center place one exact canonical EndoCyclic motif from docs/assets/canonical-endo-peptide-v1.png: an upright ring of exactly 13 glossy, individually countable orange/violet/warm-taupe beads in the locked sequence. From the intact ring, three thin clinical-teal contextual connectors branch toward three clean destination nodes: therapeutic, diagnostic, and oncology. The connectors express platform breadth; the peptide itself never changes color, count, sequence, or geometry.
 
 STRUCTURAL DETAIL — every structure must read at a glance: the ring is unmistakably a ring of connected residues; the cells have defined membranes and a nucleus; the target motif has clean concentric circles; the lesion mass is a defined clustered shape. Refined clean linework throughout with subtle flat/cel shading and just enough gentle depth (soft, minimal shading, no harsh shadows) to feel dimensional. Crisp, clean, defined edges everywhere rather than soft diffused watercolor edges.
 
-COLOR MAPPING — use ONLY these website colors, mapped to meaning: the central cyclic peptide and its connector lines and the healthy-therapeutic cell node in clinical teal #4A9B8E, with deeper teal #2F6E62 reserved for the crispest linework, ring bonds, and emphasis outlines. Primary structural linework and the diagnostic target motif drawn in muted plum-ink #2E263A. The oncology lesion mass rendered SPARINGLY in dusty rose #C98B84 with a pale rose #FBF4F3 fill — the only warm element, kept small and quiet. Optional neutral context (a faint soft-gray or soft-teal wash halo behind a node) in soft cool gray #B7B2BB or soft teal wash #EDF5F2, very subtle. Keep the KEY element (teal peptide) the most saturated and most sharply defined; render the branch nodes in quieter, slightly more muted tones so hierarchy is obvious. NO red, NO green, colorblind-safe.
+COLOR MAPPING — canonical peptide colors: orange #E89A16, violet #6F38B5, warm taupe #B8AA9B, with brown/plum keylines and bronze/tan connectors. Use clinical teal #4A9B8E / #2F6E62 only for the three external branch paths and therapeutic context. Use muted plum #2E263A for structural linework, dusty rose #C98B84 / #FBF4F3 for the oncology node, and neutral washes behind the nodes.
 
 COMPOSITION & NEGATIVE SPACE — strong visual hierarchy, ruthless clutter removal: no gridlines, no borders, no frame, no drop-shadows, no decorative icons, no scattered particles. Center-out radial flow from the single hub to three fanned nodes. Position the whole diagram slightly below and right of center, leaving calm open negative space across the top band and upper-left for an HTML headline/caption to be overlaid later. Balanced, minimal, breathable.
 
@@ -343,7 +622,9 @@ Please generate this, then iterate 2 to 3 times to sharpen edge crispness, tight
 ```
 
 - **Avoid:** Avoid: the earlier soft-watercolor failure (fuzzy blurred bead ring, vague wash of cells); dark or gradient backgrounds; neon/glow; photoreal 3D; red or green; in-image text, labels, numbers, or a real chemical formula; clichéd medical icons (organs, syringes); busy scatter of extra molecules; frames, borders, gridlines, drop-shadows. Keep the lesion small and quiet, not gory.
-- **Usage:** Export to public/illustrations/platform-breadth.webp. Headline/caption added in HTML over the open top-left negative space — do not bake any text in. Verify on render: the central ring reads unmistakably as a ring of connected residues; all three branch nodes are legible and distinct; teal remains the most saturated element; rose is used only for the lesion. If any structure looks fuzzy or abstract, re-run emphasizing "crisp defined edges, clearly legible structure." Landscape 3:2 fits a wide homepage/innovation banner slot.
+- **Usage:** Export to
+  `public/illustrations/platform-breadth-v3.avif`. Verify the canonical ring
+  against the reference sprite before optimizing.
 
 ---
 
@@ -352,9 +633,16 @@ Please generate this, then iterate 2 to 3 times to sharpen edge crispness, tight
 - **Placement:** Homepage selectivity/section band or /innovation page hero band. Save to public/illustrations/acts-only-where.webp. Compose so the disease zone sits lower-right (or right third) and the wide expanse of calm healthy tissue occupies the left two-thirds, leaving that left/upper area as clean negative space for an HTML headline + caption overlay. Runs full-bleed as a wide band; keep key content out of the extreme edges for safe cropping.
 - **Aspect ratio:** wide 16:9 (horizontal landscape, roughly 1.78:1)
 - **Suggested file:** `public/illustrations/acts-only-where.webp`
-- **Depicts (truth.md):** A wide field of calm, undisturbed healthy tissue (defined cells with membranes and nuclei, muted grays/neutrals) with one small, contained rose-toned lesion in the right third where 3-6 crisp teal cyclic peptides (clean rings of bead residues) are precisely concentrated — visualizing non-hormonal, systemic-toxicity-sparing selectivity: the therapy acts only where disease lives. Traces to truth.md: platform "designed to act only in diseased tissue while avoiding hormones, surgery, and systemic toxicity," selective uptake by diseased tissue, non-hormonal cyclic peptide.
-- **Palette mapping:** Background clean off-white #FBFAF8. Peptide + therapeutic action = clinical teal #4A9B8E, deeper teal #2F6E62 linework (KEY: most saturated + crispest). Healthy/neutral tissue = soft cool gray #B7B2BB + warm neutral #F6F3EE with muted plum-ink #2E263A membrane outlines. Disease/lesion = dusty rose #C98B84 accent + pale rose #FBF4F3 fill (sparing, contained). Five color areas, colorblind-safe, no red/green.
-- **Composition:** Center-out / left-to-right. Two-thirds of the frame (left + upper) is a quiet honeycomb field of muted, evenly-spaced healthy cells kept as open negative space for overlay text. The small, clearly-bounded disease pocket sits in the lower-right / right third, holding the only saturated element: crisp teal cyclic-peptide rings homing into irregular rose lesion cells.
+- **Depicts (truth.md):** A wide field of calm healthy tissue with one
+  contained rose-toned lesion where several exact canonical peptide motifs
+  concentrate. Selectivity is conveyed through their placement and a precise
+  teal contextual path, not through peptide recoloring.
+- **Palette mapping:** Peptides = canonical orange/violet/warm taupe.
+  Selective paths = clinical teal. Healthy context = gray/warm neutral with
+  plum linework. Lesion = sparing rose.
+- **Composition:** Quiet healthy field across the left and upper frame; a
+  bounded disease pocket at lower-right containing the canonical motifs along a
+  precise teal selective path.
 
 **Prompt — copy into ChatGPT:**
 
@@ -367,9 +655,9 @@ HEALTHY TISSUE (fills roughly two-thirds of the frame, the left and upper area) 
 
 DISEASE ZONE (one small, clearly contained region, placed in the lower-right / right third) — a defined, cleanly-bounded abnormal tissue mass that reads unmistakably as a lesion: its cells are visibly irregular, more crowded and disordered than the healthy field, enclosed within a soft, clearly-outlined boundary. Fill this zone with pale rose (#FBF4F3) and accent the irregular cells and boundary in dusty rose (#C98B84). Keep the rose SPARING and contained — it must feel like a small pocket, not spread into the healthy field.
 
-THE PEPTIDE / THERAPEUTIC ACTION (the key element — most saturated, crispest, only inside the disease zone) — depict a small number (3 to 6) of clearly-drawn cyclic peptides as the hero motif, each rendered as an obvious clean ring of connected bead-like residues (a closed loop of small circular subunits joined by short crisp linker segments, like a legible molecular necklace), unmistakably concentrated at and entering the diseased cells. Render these peptides in the most saturated clinical teal (#4A9B8E) with deeper teal (#2F6E62) for the ring linework and emphasis, so the eye immediately locks onto this precise teal activity sitting exactly where the disease is. Optionally add a few small crisp teal directional marks (clean tapered arrow-like cues, not glow, not haze) converging into the disease zone to imply selective homing — but keep them minimal and sharply drawn.
+THE PEPTIDE / THERAPEUTIC ACTION — depict 3 to 6 exact instances of the canonical 13-bead EndoCyclic motif, preserving the upright orange/violet/warm-taupe sequence in every ring. Concentrate them at and entering the disease zone. Use a few small crisp clinical-teal directional or localization marks around the motifs to imply selective homing; teal must not replace any peptide bead color.
 
-COLOR MAPPING (use ONLY these, max 5 color areas, colorblind-safe, no red, no green): background = clean warm soft off-white #FBFAF8, evenly lit, flat, never dark and never a gradient sky. Healthy/neutral tissue = soft cool gray #B7B2BB and warm neutral #F6F3EE with muted plum-ink #2E263A outlines. Disease/lesion = dusty rose #C98B84 with pale rose fill #FBF4F3, used sparingly and only in the small contained zone. Peptide/therapeutic action = clinical teal #4A9B8E with deeper teal #2F6E62 linework — the single most saturated and most sharply defined element.
+COLOR MAPPING: background #FBFAF8; healthy tissue #B7B2BB / #F6F3EE with #2E263A outlines; lesion #C98B84 / #FBF4F3; peptide colors locked to orange #E89A16, violet #6F38B5, and warm taupe #B8AA9B; selective path #4A9B8E / #2F6E62.
 
 COMPOSITION & NEGATIVE SPACE — left-to-right / center-out reading: the broad spared healthy field dominates the left and center, the small teal-active disease pocket sits in the right third. Keep the entire left and upper portion as clean, open negative space (calm off-white with only quiet muted cells) so a headline and caption can be overlaid in HTML later. Strong visual hierarchy, ruthless clutter removal — no gridlines, no borders, no drop shadows, no decorative icons, no background patterns.
 
@@ -379,11 +667,13 @@ FORMAT — wide 16:9 horizontal landscape orientation. Publication quality, isol
 
 EXCLUSIONS — no text, no labels, no numbers, no letters; no neon or glowing colors; no red or green; no photorealistic 3D render; no loose watercolor; no fuzzy, hazy, or diffused abstraction; no dark or gradient background; no clutter, borders, gridlines, or drop shadows; do not let the rose disease color bleed into the healthy field.
 
-ITERATION NOTE — run 2 to 3 iterations, refining until the healthy field reads as calm and clearly cellular, the disease pocket is small and contained, and the teal cyclic-peptide rings are the crispest, most saturated, most obvious element concentrated exactly where the disease is.
+ITERATION NOTE — run 2 to 3 iterations, refining until the healthy field reads as calm, the disease pocket is contained, and every canonical peptide preserves the exact 13-bead count and color adjacency.
 ```
 
 - **Avoid:** no text, no labels, no letters or numbers; no neon or glowing color; no red or green; no photorealistic 3D render; no loose watercolor; no fuzzy/hazy/diffused abstraction; no dark or gradient background; no clutter, borders, gridlines, drop shadows, or decorative icons; no real chemical formulas or labeled diagram; rose disease color must not bleed into the healthy field.
-- **Usage:** Homepage selectivity band or /innovation hero band. Overlay headline/caption in HTML over the calm left/upper negative space (e.g. "Acts only where disease lives"). Export at 16:9, convert to WebP at public/illustrations/acts-only-where.webp. Run 2-3 iterations; verify the teal cyclic-peptide rings remain the crispest, most saturated element and the disease pocket stays small and contained. Keep key content off extreme edges for safe full-bleed cropping.
+- **Usage:** Homepage selectivity band or innovation hero. Keep the disease
+  pocket contained, contextual teal separate from the peptide, and key content
+  inside responsive crop-safe bounds.
 
 ---
 
@@ -431,30 +721,182 @@ Iterate 2–3 times, refining toward cleaner linework, calmer negative space on 
 
 ---
 
-## 13. Care gap — symptom-management loop to selective uptake
+## 13. Care gap — symptom-management loop to preclinical lesion elimination
 
 - **Placement:** `/impact`, inside the “The care gap” section.
-- **Aspect ratio:** wide 16:9 master with a crop-safe central narrative for phone and tablet frames.
-- **Production file:** `public/illustrations/care-gap-selective-shift-v1.avif`
-- **Depicts (truth.md):** Current therapies are largely hormone-based and symptomatic and do not eliminate lesions or modify the underlying disease biology. The platform design objective combines pH-mediated activation, selective uptake by diseased tissue, and a non-hormonal mechanism.
-- **Disclosure:** Conceptual comparison of current therapies and the platform's design strategy; not clinical outcome data.
-- **Guardrail:** The diseased tissue remains visibly present on both sides. The image depicts activation and uptake only—never lesion removal, healing, or a treatment outcome.
+- **Aspect ratio:** 3:2 landscape, 1536 × 1024, with all essential content inside a centered 4:3 crop-safe area.
+- **Production files:** `public/illustrations/care-gap-selective-shift-v7.avif`
+  and deterministic targeted-state derivative
+  `public/illustrations/care-gap-selective-path-mobile-v6.avif`.
+- **Depicts (truth.md):** Current therapies are largely hormone-based and
+  symptomatic and do not eliminate lesions or modify underlying disease
+  biology. The left therefore keeps the current-therapy lesion intact. The
+  right shows selective uptake, pH-mediated escape, intracellular target
+  engagement, and a separately qualified visual of the ENDO-205 preclinical
+  lesion-elimination finding.
+- **Disclosure:** Conceptual comparison of current therapies and the
+  platform’s design strategy; the lesion-elimination beat reflects qualified ENDO-205
+  preclinical evidence, not clinical outcome data.
+- **Guardrail:** The left lesion remains visibly present from beginning to end.
+  On the right, lesion recession may begin only after the intact canonical
+  peptide is visibly seated in the teal intracellular target pocket. Never
+  dock the peptide on the external plasma membrane, lesion edge, or lesion
+  surface, and never frame the comparison as a clinical before/after result.
 
 **Final production prompt (built-in ImageGen):**
 
 ```text
 Use case: scientific-educational
-Asset type: wide responsive editorial illustration for a clinical-stage biotech website section
-Primary request: Create one sophisticated, continuous conceptual illustration contrasting today’s symptom-focused endometriosis care with a selective precision-peptide design objective.
-Scene/backdrop: warm ivory porcelain paper with softly painted cellular and tissue textures; no hard split-screen divider.
-Subject and narrative: on the left, a pale dusty-rose endometriosis lesion microenvironment remains visibly present while a graceful ribbon-like path loops around the tissue surface, communicating repeated symptom management without changing the lesion. At the center, the looping ribbon opens at a restrained gold transition point and becomes one purposeful peptide-like thread. On the right, that thread becomes a cyclic peptide ring, changes state at a subtle acidic-pH tissue boundary, and is selectively taken up into rose-colored diseased tissue rendered with refined cell-scale detail. The right side must show targeting and entry only—not lesion removal, shrinkage, healing, or a clinical result.
-Style/medium: premium hand-painted medical editorial illustration; delicate watercolor, colored pencil, and translucent gouache; feminine warmth, precise anatomy-inspired cellular detail, calm institutional sophistication; suitable for an Awwwards-level biotech annual report; organic and authored rather than diagrammatic.
-Composition/framing: wide cinematic 16:9 landscape; left 42 percent loop/tissue, a quiet gold pivot near center, right 58 percent selective uptake; continuous visual flow with generous ivory breathing room and a clear focal point on the cyclic peptide entering diseased tissue.
-Color palette: warm ivory, blush and dusty rose, muted sage and clinical teal, mulberry linework, restrained gold accents.
-Constraints: purely conceptual and non-clinical; scientifically sober; no claims embedded in the image; no people; no surgery; no medication packaging; no lesion disappearing; no before-and-after framing.
-Avoid: all text, letters, numbers, labels, logos, watermark, UI panels, flat vector infographic style, generic arrows, glossy 3D render, neon glow, blue-purple sci-fi palette, photorealistic gore.
+Asset type: responsive website section illustration for a pharmaceutical care-gap comparison
+Input images: Image 1 is a STYLE REFERENCE ONLY for the warm ivory ground, delicate editorial ink-and-gouache texture, rose/plum tissue rendering, teal accent, and premium scientific illustration language. Create a NEW composition; do not simply edit the existing layout.
+Primary request: Create one calm, wide conceptual illustration that contrasts a repeating symptom-management loop with the directional sequence Target → Enter → Activate → ENDO-205 evidence. The left is the persistent current-therapy state. The right may depict lesion elimination only as a separate, qualified ENDO-205 preclinical evidence beat after intracellular target engagement; the comparison must never read as clinical before/after efficacy.
+Subject and composition: landscape 3:2. Divide the composition into two visually related halves with generous quiet negative space at center. LEFT: show one clearly persistent, intact dusty-rose endometriosis lesion/tissue focus. A muted dusty-rose ribbon travels in a repeating closed loop around it without entering it; use 3 small neutral nodes to suggest repeated symptom management. The lesion stays present through the entire left half. RIGHT: begin with an intact dusty-rose lesion at approximately the same scale. One exact canonical 13-bead peptide ring follows a precise teal path through a diseased-cell membrane uptake pocket into an early endosome, appears unchanged inside a distinct acidified endosome with a restrained antique-gold pH context, then exits that opening endosome into the rose cytoplasm. Next, show the unchanged ring physically seated in a concave teal intracellular target pocket visibly embedded inside the full lesion. Only after that unmistakable intracellular contact, repeat the SAME lesion silhouette as a paler partially dispersing state, then show restrained remnants revealing orderly tissue in the same footprint. Uptake must precede pH-mediated escape; cytoplasmic escape must precede target engagement; target engagement must precede the qualified lesion-elimination cue. Preserve the canonical orange/violet/warm-taupe count, color adjacency, and orientation in every appearance.
+Responsive safe area: keep every essential lesion, loop, peptide ring, uptake pocket, acidified endosome, intracellular target, and clearance remnant inside the central 82% of the canvas. The image must remain complete and understandable in a centered 4:3 crop as well as the full 3:2 frame. Avoid important details at extreme edges.
+Style/medium: refined editorial scientific illustration, crisp defined biological and molecular structures with delicate ink linework, subtle flat/gouache shading, gentle paper texture, publication quality; warm, feminine, calm, and pharma-grade. Match the visual language of Image 1 while improving semantic clarity.
+Color palette: warm ivory #FFF8F4 background; muted plum #392638 linework; dusty rose #C9798A and pale peony #F1D8DE for diseased tissue and the looping current-therapy path; canonical peptide beads in orange #E89A16, violet #6F38B5, and warm taupe #B8AA9B; clinical teal #43877D and deep teal #27675E for the directional selective-uptake path; restrained gold #D8B850 only for the acidified-endosome activation context.
+Constraints: no embedded text, labels, letters, numbers, axes, measurements, clinical scans, anatomy labels, data, charts, efficacy rates, damaged tissue, explosion, or dramatic glow. No real chemical formula. No logos or watermark. Do not attach the peptide to an external membrane, lesion boundary, or lesion surface. Keep the left lesion persistent. On the right, keep the target-engagement event visually separate from the later controlled lesion-recession cue. The image communicates mechanism strategy plus a qualified ENDO-205 preclinical finding, not clinical performance or outcome.
 ```
 
-- **Usage:** Keep all factual labels in accessible HTML below the art. Preserve the original generated PNG outside `public/`; serve only the optimized AVIF. Test the image crop at 390, 880, and 1280 CSS pixels.
+- **Usage:** Keep factual labels and the ENDO-205 preclinical qualification in
+  accessible HTML. Serve the approved v7 master and the dedicated v6 mobile
+  targeted state mechanically. Test at 390,
+  880, and 1280 CSS pixels without `object-cover` cropping.
+
+---
+
+## 14. ENDO-205 — mechanism to clinical translation
+
+- **Placement:** `/innovation`, inside the “Clinical translation” section.
+- **Aspect ratio:** 3:2 landscape, 1536 × 1024.
+- **Production files:** `public/illustrations/endo-205-translation-v6.avif`
+  (mechanism/translation master) and
+  `public/illustrations/endo-205-clinical-translation-v7.avif`
+  (clinical-development master).
+- **Depicts (truth.md):** The mechanism master shows selective uptake →
+  pH-mediated endosomal escape → intracellular target engagement → a
+  separately qualified ENDO-205 preclinical lesion-elimination beat. The
+  clinical-development master places that qualified preclinical story on the
+  left and an abstract Phase 1 study pathway on the right.
+- **Disclosure:** Conceptual translation pathway. Lesion clearance is
+  explicitly preclinical; the Phase 1 pathway communicates study structure,
+  not clinical outcome data.
+- **Guardrail:** Keep FDA IND Allowance, Phase 1, preclinical, toxicology, and
+  participant-population facts in HTML. The left-side preclinical lesion elimination
+  beat must be visually separated from the right-side study pathway. Do not
+  transfer lesion recession, efficacy, safety, a clinical result, or an
+  approval into the Phase 1 side.
+
+**Final production edit prompt (built-in ImageGen):**
+
+```text
+Use case: precise-object-edit
+Asset type: website scientific editorial section illustration
+Input images: Image 1 is the current EndoCyclic clinical-translation illustration and is the primary style, palette, and composition reference.
+Primary request: preserve the exact canonical 13-bead orange/violet/warm-taupe peptide, the warm ivory negative space, the delicate translucent watercolor-and-pencil rendering, and the correct intracellular sequence. LEFT: show selective uptake into an early endosome → pH-mediated activation and escape from an opening acidified endosome → the intact peptide physically seated in one teal intracellular target pocket visibly embedded inside a full rose lesion → the SAME lesion silhouette repeated once as a paler dispersing state before restrained remnants reveal orderly tissue. Qualify this sequence in HTML as the ENDO-205 preclinical lesion-elimination finding. RIGHT: show only a restrained, abstract Phase 1 clinical-study pathway with one small unbranded investigational vial, two neutral sample vessels, and subtle concentric observation/monitoring rings. This right side communicates structured clinical translation and study discipline, not results.
+Composition/framing: keep the 3:2 landscape canvas and generous central negative space. Left half = the complete intracellular mechanism and separately qualified preclinical lesion elimination beat; center = a clear quiet translation threshold; right half = orderly clinical-study pathway. Do not let lesion fragments, clearance paths, or target-engagement marks cross the threshold into the Phase 1 side. Keep every essential subject inside the central 75% so 4:3 and 3:2 crops remain legible.
+Style/medium: match Image 1 exactly—pharma-grade scientific editorial illustration, translucent watercolor wash, fine graphite linework, soft material depth, calm feminine clinical refinement.
+Color palette: paper ivory #FBFAF8, muted plum, soft petal rose, clinical teal, minimal antique-gold accent; low saturation and quiet contrast.
+Constraints: preserve the canonical peptide’s exact 13-bead count, upright color adjacency, and orientation; do not recolor it for targeting, uptake, escape, or engagement. The peptide seats only in a teal intracellular target pocket—never on an external plasma membrane, lesion edge, or lesion surface. No embedded text, labels, numbers, logos, brands, watermark, patients, clinicians, hospital room, scans, DNA helix, pills, syringes, neon, dramatic glow, clinical before/after framing, efficacy arrows, safety claims, outcome charts, success symbols, or implied clinical results. The controlled lesion-recession cue is permitted only on the left as qualified ENDO-205 preclinical evidence. The vial and vessels must be generic and unbranded.
+```
+
+- **Usage:** Preserve the generated PNG outside `public/`; serve the optimized
+  v6 mechanism and v7 clinical-translation AVIFs. Place the clinical-translation
+  image before the clinical-stage dossier on mobile and beside it on desktop.
+  Keep the preclinical qualification and all scientific claims in accessible
+  HTML, and verify that the Phase 1 side contains no clearance or outcome cue.
+
+---
+
+## 15. Oncology pair — localization and intracellular access
+
+- **Placement:** `/pipeline`, inside the oncology program pair; responsive derivatives also appear in the homepage portfolio.
+- **Master aspect ratio:** 2:1 landscape, 1774 × 887.
+- **Production files:**
+  - `public/illustrations/oncology-pair-v4.avif`
+  - `public/illustrations/endo-311-localization-pair-v4.avif`
+  - `public/illustrations/endo-995-intracellular-v4.avif`
+- **Depicts (truth.md):** Two distinct conceptual applications of the precision peptide platform in malignant solid tumors: targeted localization for ENDO-311 and selective uptake with intracellular access for ENDO-995.
+- **Disclosure:** Conceptual representation of investigational preclinical programs; not clinical imaging, efficacy, or performance data.
+- **Guardrail:** The diagnostic half shows localization only; the therapeutic half shows uptake and intracellular access only. Do not imply an imaging result, efficacy, tumor shrinkage, cell death, or a clinical outcome.
+
+**Final production prompt (built-in ImageGen):**
+
+```text
+Use case: scientific-educational.
+Asset type: matched, crop-safe oncology therapeutic-and-diagnostic master illustration for a clinical-stage biotech website.
+
+Input images: Image 1 is the visual-style and paired-composition reference. Image 2 is the diagnostic-localization visual-language reference. Generate a new composition; do not reproduce either image.
+
+Primary request: Create one premium 2:1 editorial scientific illustration showing two distinct applications of the same precision-peptide platform within a continuous malignant-solid-tumor microenvironment.
+
+LEFT FOCAL ZONE — diagnostic logic:
+Show one intact, clearly bounded solid-tumor focus within quieter surrounding tissue. A small family of exact canonical 13-bead EndoCyclic motifs localizes specifically around the tumor boundary. Preserve their upright orange/violet/warm-taupe sequence. Add two or three precise, thin clinical-teal localization contours centered on that intact focus. The agents remain at the target region; do not show membrane penetration, cell destruction, treatment, or an imaging result.
+
+RIGHT FOCAL ZONE — therapeutic logic:
+Show one enlarged tumor cell from the same tissue family. One exact canonical 13-bead ring crosses a clean double-line membrane along a restrained clinical-teal uptake contour and proceeds toward a defined but abstract intracellular binding pocket. The motif stays orange/violet/warm taupe and unchanged. Depict selective uptake and intracellular access only. Do not show tumor shrinkage, cell death, immune activation, restored tissue, or a before-and-after outcome.
+
+SHARED PLATFORM LANGUAGE:
+Use the same exact canonical ring motif in both focal zones and one extremely fine, restrained clinical-teal contextual thread to connect the applications across a calm central seam. Distinguish diagnostic from therapeutic behavior through form—localization contours versus membrane crossing—not peptide color.
+
+Style/medium: Premium hand-painted medical editorial illustration; crisp colored-pencil linework, translucent gouache, and restrained watercolor. Warm, feminine, scientifically sober, calm institutional sophistication. Match the material sensibility and refined restraint of both references while creating an entirely new composition.
+
+Color palette: warm ivory ground, dusty rose and muted lilac tumor tissue, plum structural linework, canonical orange/violet/warm-taupe peptide beads, and clinical teal localization/uptake contours. Antique gold is limited to non-peptide environmental detail.
+
+Composition/framing: Wide 2:1 landscape. Place the diagnostic focal subject near x=25% and the therapeutic focal subject near x=75%. Keep x=40–60% quiet enough for overlapping responsive crops. Keep the upper 18–20% low-detail for HTML labels. All essential detail must survive independent 4:3 left and right crops.
+
+Constraints: conceptual and preclinical; no text, letters, numbers, labels, legends, arrows, logos, or watermark; no real chemical structure; no scan image, scanner hardware, radiation beam, heavy-metal symbol, efficacy data, performance data, measurement, clinical result, humans, surgery, gore, neon, glossy 3D, or blue-purple science-fiction styling.
+```
+
+- **Usage:** Keep the v4 master intact at tablet and desktop widths. Create the
+  two v4 4:3 derivatives as deterministic crops so the canonical motifs are not
+  redrawn.
+
+---
+
+## 16. Art-directed mobile hero derivatives
+
+- **Purpose:** Preserve crisp vertical detail when a wide desktop illustration
+  is rendered inside a taller mobile hero frame. These files contain no new or
+  regenerated scientific content; each is a deterministic crop of its listed
+  approved source.
+- **Breakpoint:** Served only below the 48rem `md` breakpoint through a
+  media-qualified `<picture>` source and matching priority preload. The desktop
+  source remains the fallback at 48rem and above.
+- **Production files:**
+  - `public/illustrations/hero-home-mobile-v8.avif` — deterministic crop of
+    `hero-home-v8.avif`, retaining the approved selective-uptake and
+    pH-activation story, the complete canonical ring, and the neutral,
+    qualified preclinical lesion-elimination endpoint.
+  - `public/illustrations/selective-state-transition-mobile-v3.avif` —
+    deterministic crop of `selective-state-transition-v3.avif`, retaining the
+    complete canonical ring, pH-mediated escape, and intracellular target
+    access while excluding lesion elimination.
+  - `public/illustrations/endometriosis-biology-mobile-v1.avif` — 819 × 1024
+    crop of `endometriosis-biology-v1.avif`, retaining the complete central
+    pelvic anatomy and visible lesion sites.
+- **Guardrail:** Derive future mobile variants from the approved master without
+  repainting anatomy, changing molecular structure, adding labels, or implying
+  treatment outcome. Verify that only one breakpoint-matched image is requested
+  at 390, 768, and 1280 CSS pixels.
+
+---
+
+## 17. Impact hero tablet/desktop derivative
+
+- **Purpose:** Remove the original Impact master’s right-side text-overlay
+  reserve when the anatomical art sits in its own PageHero well. The approved
+  anatomy is cropped, not repainted or regenerated.
+- **Production file:**
+  `public/illustrations/endometriosis-biology-impact-v2.avif` — deterministic
+  960 × 1024 crop of `endometriosis-biology-v1.avif`.
+- **Crop recipe:** Extract source pixels `left=0`, `top=0`, `width=960`,
+  `height=1024`; encode as AVIF at quality 82, effort 9, 4:4:4 chroma. The
+  original 1536 × 1024 master remains unchanged.
+- **Breakpoint:** Served from 48rem upward. The existing
+  `endometriosis-biology-mobile-v1.avif` portrait derivative remains active
+  below 48rem.
+- **Framing:** Tablet favors the upper clinical subject while desktop recenters
+  the complete crop. Preserve `object-cover` so the anatomical field fills the
+  dedicated visual well without reintroducing a blank copy area.
 
 ---
