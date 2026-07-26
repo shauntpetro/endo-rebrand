@@ -438,7 +438,27 @@ export const CONTACT_SUBJECTS = [
   { value: "other", label: "Not sure where to start" },
 ] as const;
 
-/* Leadership identity and biography are limited to facts approved in truth.md. */
+/*
+ * Leadership.
+ *
+ * TEAM[0] (founder) is limited to facts approved in truth.md.
+ *
+ * The functional-lead entries carry specific professional credentials — prior
+ * FDA review roles, named awards, trial counts, degrees — that sit outside
+ * truth.md. The content owner confirmed these as verified on 2026-07-25, which
+ * is the approval basis for publishing them. Several were additionally
+ * corroborated against public records on the same date; see
+ * docs/leadership-credential-research-2026-07-25.md.
+ *
+ * Two figures remain uncorroborated by any public source and are published on
+ * the content owner's attestation alone: David Lin's "over 27 years" (a public
+ * profile says 23) and Aileen Ryan's "MS in Basic Medical Sciences".
+ *
+ * These describe real, named individuals. Never add, embellish, or infer a
+ * credential here, and never source one from an unattributed search result;
+ * only the content owner may add or amend a claim. Narrow or remove an entry
+ * that cannot be substantiated on request.
+ */
 export interface Member {
   id: string;
   name: string;
@@ -457,7 +477,51 @@ export const TEAM: Member[] = [
     image: "/team/tanya-petrossian-v2.avif",
     linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics",
   },
+  {
+    id: "melanie",
+    name: "Dr. Melanie Hartsough, PhD",
+    role: "Nonclinical Toxicology",
+    bio: "Dr. Melanie Hartsough holds a PhD in Pharmacology from Penn State College of Medicine and completed a postdoctoral fellowship at the NIH. A former FDA reviewer in both CBER and CDER, she brings over two decades of experience in pharmacology and toxicology assessment. She is the first recipient of the ACT Mildred Christian Women's Leadership in Toxicology Award and a former President of the American Board of Toxicology, and now leads Hartsough Nonclinical Consulting.",
+    image: "/team/melanie-hartsough.avif",
+    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics",
+  },
+  {
+    id: "david",
+    name: "Dr. David Lin, PhD",
+    role: "Chemistry, Manufacturing & Controls",
+    bio: "Dr. David Lin brings over 27 years of pharmaceutical regulatory experience in Chemistry, Manufacturing, and Controls. He holds a PhD in organic chemistry and an MBA, and served at the FDA's Office of New Drug Chemistry (CDER) as a CMC reviewer, CMC team leader, and acting division director. He advises biotechnology and pharmaceutical sponsors through TS Pharma Experts and Biologics Consulting Group.",
+    image: "/team/david-lin.avif",
+    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics",
+  },
+  {
+    id: "andrea",
+    name: "Dr. Andrea Lukes, MD, MHSc",
+    role: "Clinical Affairs",
+    bio: "Dr. Andrea Lukes is a board-certified OB/GYN and Fellow of ACOG with over 30 years of clinical experience, holding a combined MD and a master's in statistics from Duke. She has participated in more than 75 FDA-approved clinical studies of investigational women's health products, spanning endometriosis, uterine fibroids, contraception, and menopause. She founded Carolina Women's Research & Wellness Center after a decade at Duke University Medical Center, where she co-founded and served as Director of Gynecology for the Women's Hemostasis and Thrombosis Clinic.",
+    image: "/team/andrea-lukes.avif",
+    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics",
+  },
+  {
+    id: "aileen",
+    name: "Aileen Ryan",
+    role: "Regulatory Affairs",
+    bio: "Aileen Ryan brings over 40 years of pharmaceutical regulatory experience. She served as Head of Regulatory Affairs and Compliance at the Ludwig Institute for Cancer Research and Head of Global Regulatory Strategy for Oncology at Bayer Pharmaceuticals, and has held vice-president regulatory roles at Allos Therapeutics, Ophtherion, and Vion Pharmaceuticals. She holds an MS in Basic Medical Sciences and has guided IND, NDA, BLA, and MAA submissions across the United States, Canada, the European Union, and Japan.",
+    image: "/team/aileen-ryan.avif",
+    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics",
+  },
+  {
+    id: "miganush",
+    name: "Dr. Miganush Stepanians, PhD",
+    role: "Biostatistics",
+    bio: "Dr. Miganush Stepanians holds a PhD in Statistics from Boston University and an MS in Mathematics from MIT, and is the founder, president, and CEO of the clinical research organization PROMETRIKA. With over 30 years in drug development, she has designed the efficacy and safety analyses for more than 20 successful marketing applications and has presented on behalf of sponsors in meetings with the FDA.",
+    image: "/team/miganush-stepanians.avif",
+    linkedin: "https://www.linkedin.com/company/endocyclic-therapeutics",
+  },
 ];
+
+/** The founder entry; the rest of TEAM are the functional leads. */
+export const FOUNDER_MEMBER = TEAM[0];
+export const LEADERSHIP_TEAM = TEAM.slice(1);
 
 /* Newsroom — verified event-level source records. */
 export type ArticleType = "Press Release" | "Award" | "Interview" | "Profile";

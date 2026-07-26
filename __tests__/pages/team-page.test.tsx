@@ -1,13 +1,19 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import TeamPage from "@/app/team/page";
-import { FOOTER_NAV, NAV_LINKS, TEAM } from "@/lib/site";
+import {
+  FOOTER_NAV,
+  LEADERSHIP_TEAM,
+  NAV_LINKS,
+  TEAM,
+} from "@/lib/site";
 
 describe("TeamPage founder profile", () => {
-  it("keeps the public leadership profile within the approved fact set", () => {
-    const { container } = render(<TeamPage />);
+  it("keeps the founder profile within the approved fact set", () => {
+    render(<TeamPage />);
 
-    expect(TEAM).toHaveLength(1);
+    // The founder must remain first and stay inside truth.md's fact set,
+    // independent of how many officers and functional leads are published.
     expect(TEAM[0]).toMatchObject({
       name: "Dr. Tanya Petrossian, PhD",
       role: "Founder & CEO",
@@ -58,7 +64,79 @@ describe("TeamPage founder profile", () => {
         })
         .closest("section"),
     ).toHaveClass("overflow-clip");
-    expect(container.querySelector("#development-team")).not.toBeInTheDocument();
+  });
+
+  it("publishes every functional lead with a portrait, role, and bio", () => {
+    const { container } = render(<TeamPage />);
+
+    expect(LEADERSHIP_TEAM.length).toBeGreaterThan(0);
+    expect(TEAM).toHaveLength(LEADERSHIP_TEAM.length + 1);
+
+    const region = container.querySelector("#leadership-team");
+    expect(region).toBeInTheDocument();
+    expect(region).toHaveAttribute("aria-labelledby", "leadership-team-title");
+    expect(region).toHaveAttribute("tabindex", "-1");
+
+    // Every direct child of the roster list must be a list item.
+    const roster = container.querySelector("#leadership-team ol");
+    expect(roster).toBeInTheDocument();
+    expect(
+      Array.from(roster?.children ?? []).every(
+        (child) => child.tagName === "LI",
+      ),
+    ).toBe(true);
+    expect(roster?.children).toHaveLength(LEADERSHIP_TEAM.length);
+
+    for (const member of LEADERSHIP_TEAM) {
+      expect(
+        screen.getByRole("heading", { level: 3, name: member.name }),
+      ).toBeVisible();
+      expect(
+        screen.getByRole("img", { name: `Portrait of ${member.name}` }),
+      ).toBeInTheDocument();
+      expect(screen.getByText(member.bio)).toBeVisible();
+    }
+
+    // Frank Fernandez was removed on 2026-07-25: he does not appear on the
+    // company's own team page and no independent record was found. Nothing
+    // should reintroduce him without a verified source.
+    expect(
+      screen.queryByRole("heading", { level: 3, name: "Frank Fernandez" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Chief Financial Officer/)).not.toBeInTheDocument();
+    expect(TEAM.some((member) => member.id === "frank")).toBe(false);
+  });
+
+  it("states Andrea Lukes' trial count at the evidenced figure", () => {
+    render(<TeamPage />);
+
+    const lukes = TEAM.find((member) => member.id === "andrea");
+    // Public sources support "over 75 FDA approved clinical studies"; the
+    // earlier "more than 90" figure was not corroborated anywhere.
+    expect(lukes?.bio).toContain("more than 75");
+    expect(lukes?.bio).not.toMatch(/more than 90|over 90/);
+  });
+
+  it("keeps every published leadership entry complete", () => {
+    // Credentials here sit outside truth.md and were confirmed by the content
+    // owner on 2026-07-25. Guard the shape so an entry cannot ship half-filled.
+    for (const member of LEADERSHIP_TEAM) {
+      expect(member.name.trim().length).toBeGreaterThan(0);
+      expect(member.role.trim().length).toBeGreaterThan(0);
+      expect(member.bio.trim().length).toBeGreaterThan(40);
+      expect(member.image).toMatch(/^\/team\/.+\.avif$/);
+      expect(member.linkedin).toMatch(/^https:\/\//);
+    }
+  });
+
+  it("keeps prohibited and superseded regulatory language out of every bio", () => {
+    for (const member of TEAM) {
+      expect(member.bio).not.toMatch(/\bcures?\b/i);
+      expect(member.bio).not.toMatch(/\bguaranteed\b/i);
+      expect(member.bio).not.toMatch(/\bproven\b/i);
+      // The approved term is "FDA IND Allowance", never "IND clearance".
+      expect(member.bio).not.toMatch(/IND clearance/i);
+    }
   });
 
   it("anchors the leadership brief in four approved source records", () => {
@@ -110,7 +188,7 @@ describe("TeamPage founder profile", () => {
     ).toBe(true);
   });
 
-  it("labels the one-person public surface as Leadership without changing its stable route", () => {
+  it("labels the public surface as Leadership without changing its stable route", () => {
     expect(NAV_LINKS).toContainEqual({
       name: "Leadership",
       href: "/team",

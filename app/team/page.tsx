@@ -8,6 +8,8 @@ import Reveal from "@/components/site/Reveal";
 import Section from "@/components/site/Section";
 import {
   EVIDENCE_LINKS,
+  LEADERSHIP_TEAM,
+  type Member,
   NEWS,
   PARTNERSHIP_CONTACT_HREF,
   TEAM,
@@ -15,6 +17,15 @@ import {
 
 const FOUNDER = TEAM[0];
 const ARCHIVAL_FOUNDER_PROFILE = NEWS.find((article) => article.id === 8);
+
+/* Crops each authentic portrait to the subject rather than the frame centre. */
+const PORTRAIT_FOCAL_POINTS: Record<string, string> = {
+  melanie: "object-[50%_18%]",
+  david: "object-[50%_15%]",
+  andrea: "object-[50%_16%]",
+  aileen: "object-[50%_18%]",
+  miganush: "object-[50%_14%]",
+};
 
 const LEADERSHIP_BRIEF = [
   {
@@ -209,6 +220,90 @@ function FounderDossier() {
   );
 }
 
+function LeadershipProfile({
+  member,
+  index,
+}: {
+  member: Member;
+  index: number;
+}) {
+  return (
+    <Reveal
+      as="li"
+      delay={Math.min(index * 0.035, 0.1)}
+      className="border-t border-line pt-7"
+    >
+      <article>
+        <div className="flex items-start gap-5">
+          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-line bg-tint-warm sm:h-24 sm:w-24">
+            <Image
+              src={member.image}
+              alt={`Portrait of ${member.name}`}
+              fill
+              loading="lazy"
+              sizes="(min-width: 640px) 96px, 80px"
+              className={`object-cover saturate-[0.9] ${PORTRAIT_FOCAL_POINTS[member.id] ?? "object-center"}`}
+            />
+          </div>
+          <div className="min-w-0 pt-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.13em] text-teal-ink [overflow-wrap:anywhere]">
+              {member.role}
+            </p>
+            <h3 className="t-h3 mt-2 text-ink [overflow-wrap:anywhere]">
+              {member.name}
+            </h3>
+          </div>
+        </div>
+        <p className="mt-6 text-[0.95rem] leading-relaxed text-muted">
+          {member.bio}
+        </p>
+      </article>
+    </Reveal>
+  );
+}
+
+function LeadershipTeam() {
+  return (
+    <Section tone="paper" size="chapter" className="overflow-hidden">
+      <Container
+        id="leadership-team"
+        tabIndex={-1}
+        role="region"
+        aria-labelledby="leadership-team-title"
+        className="scroll-mt-24 outline-none"
+      >
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <Reveal className="lg:col-span-7">
+            <Eyebrow>Functional leads</Eyebrow>
+            <h2
+              id="leadership-team-title"
+              className="t-h2 mt-5 max-w-2xl text-ink"
+            >
+              The work around the molecule.
+            </h2>
+          </Reveal>
+          <Reveal delay={0.06} className="lg:col-span-4 lg:col-start-9">
+            <p className="max-w-lg text-muted">
+              Nonclinical toxicology, CMC, clinical affairs, regulatory
+              affairs, and biostatistics.
+            </p>
+          </Reveal>
+        </div>
+
+        <ol className="mt-14 grid list-none gap-x-10 gap-y-12 border-b border-line pb-12 md:mt-16 md:grid-cols-2">
+          {LEADERSHIP_TEAM.map((member, index) => (
+            <LeadershipProfile
+              key={member.id}
+              member={member}
+              index={index}
+            />
+          ))}
+        </ol>
+      </Container>
+    </Section>
+  );
+}
+
 function DiligenceRecord() {
   return (
     <Section
@@ -300,6 +395,7 @@ export default function TeamPage() {
     <main id="main-content" tabIndex={-1}>
       <Hero />
       <FounderDossier />
+      <LeadershipTeam />
       <DiligenceRecord />
       <NextChapter
         eyebrow="Strategic conversations"
