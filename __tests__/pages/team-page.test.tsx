@@ -66,7 +66,7 @@ describe("TeamPage founder profile", () => {
     ).toHaveClass("overflow-clip");
   });
 
-  it("publishes every officer and functional lead with a portrait, role, and bio", () => {
+  it("publishes every functional lead with a portrait, role, and bio", () => {
     const { container } = render(<TeamPage />);
 
     expect(LEADERSHIP_TEAM.length).toBeGreaterThan(0);
@@ -97,11 +97,24 @@ describe("TeamPage founder profile", () => {
       expect(screen.getByText(member.bio)).toBeVisible();
     }
 
-    // The CFO is presented as an officer, not an advisor.
+    // Frank Fernandez was removed on 2026-07-25: he does not appear on the
+    // company's own team page and no independent record was found. Nothing
+    // should reintroduce him without a verified source.
     expect(
-      screen.getByRole("heading", { level: 3, name: "Frank Fernandez" }),
-    ).toBeVisible();
-    expect(screen.getByText("Chief Financial Officer")).toBeVisible();
+      screen.queryByRole("heading", { level: 3, name: "Frank Fernandez" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Chief Financial Officer/)).not.toBeInTheDocument();
+    expect(TEAM.some((member) => member.id === "frank")).toBe(false);
+  });
+
+  it("states Andrea Lukes' trial count at the evidenced figure", () => {
+    render(<TeamPage />);
+
+    const lukes = TEAM.find((member) => member.id === "andrea");
+    // Public sources support "over 75 FDA approved clinical studies"; the
+    // earlier "more than 90" figure was not corroborated anywhere.
+    expect(lukes?.bio).toContain("more than 75");
+    expect(lukes?.bio).not.toMatch(/more than 90|over 90/);
   });
 
   it("keeps every published leadership entry complete", () => {

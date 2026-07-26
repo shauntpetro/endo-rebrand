@@ -22,7 +22,6 @@ const ARCHIVAL_FOUNDER_PROFILE = NEWS.find((article) => article.id === 8);
 const PORTRAIT_FOCAL_POINTS: Record<string, string> = {
   melanie: "object-[50%_18%]",
   david: "object-[50%_15%]",
-  frank: "object-[50%_22%]",
   andrea: "object-[50%_16%]",
   aileen: "object-[50%_18%]",
   miganush: "object-[50%_14%]",
@@ -275,7 +274,7 @@ function LeadershipTeam() {
       >
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <Reveal className="lg:col-span-7">
-            <Eyebrow>Officers &amp; functional leads</Eyebrow>
+            <Eyebrow>Functional leads</Eyebrow>
             <h2
               id="leadership-team-title"
               className="t-h2 mt-5 max-w-2xl text-ink"
@@ -285,8 +284,8 @@ function LeadershipTeam() {
           </Reveal>
           <Reveal delay={0.06} className="lg:col-span-4 lg:col-start-9">
             <p className="max-w-lg text-muted">
-              Financial leadership, nonclinical toxicology, CMC, clinical
-              affairs, regulatory affairs, and biostatistics.
+              Nonclinical toxicology, CMC, clinical affairs, regulatory
+              affairs, and biostatistics.
             </p>
           </Reveal>
         </div>
