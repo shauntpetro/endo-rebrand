@@ -11,10 +11,10 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = createPageMetadata({
   title: "Leadership",
   description:
-    "Founder and CEO Dr. Tanya Petrossian leads EndoCyclic Therapeutics and its lead program, ENDO-205, now in Phase 1 following FDA IND Allowance in 2026.",
+    "Founder and CEO Dr. Tanya Petrossian leads EndoCyclic Therapeutics, with officers and functional leads across finance, nonclinical toxicology, CMC, clinical affairs, regulatory affairs, and biostatistics.",
   path: "/team",
   socialDescription:
-    "Led by founder and CEO Dr. Tanya Petrossian, EndoCyclic is advancing a proprietary precision peptide platform across therapeutic and diagnostic programs in endometriosis and oncology.",
+    "Led by founder and CEO Dr. Tanya Petrossian, with officers and functional leads carrying ENDO-205 through development across endometriosis and oncology.",
 });
 
 export default function TeamLayout({ children }: { children: React.ReactNode }) {
